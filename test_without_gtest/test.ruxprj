@@ -33,7 +33,7 @@
 				"include_paths":
 				[
 					"./src",
-					"./../includes"
+					"./../include"
 				],
 				"lib_paths":
 				[
