@@ -20,7 +20,7 @@ namespace booldog
 		size_t _size;
 		size_t _count;
 	public:
-		array< T >( booldog::allocator* allocator = ::booldog::_allocator )
+		array( booldog::allocator* allocator = ::booldog::_allocator )
 			: ::booldog::object( allocator )
 		{
 			_ref = 1;
@@ -30,7 +30,7 @@ namespace booldog
 			_size = 0;
 			_count = 0;
 		};
-		~array< T >( void )
+		~array( void )
 		{
 			if( _array )
 			{

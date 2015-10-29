@@ -38,7 +38,7 @@ namespace booldog
 		{
 			if( string )
 			{
-				size_t size = bytes;
+				size_t size = bytes , dstbyteindex = 0;
 				if( code_page == ::booldog::enums::string::UTF8 )
 				{
 					const ::booldog::byte* ptr = (::booldog::byte*)&string[ byteindex ];
@@ -78,7 +78,6 @@ namespace booldog
 						else if( code_page == ::booldog::enums::string::CP1251 )
 							size *= 4;
 					}
-					size_t dstbyteindex = 0;
 					_utf8str = 0;
 					_size = 0;
 					_utf8length = 0;
@@ -102,7 +101,7 @@ goto_convert_to_utf8:
 							res = ::booldog::cp1251::to_utf8( string , byteindex , bytes , _utf8str , dstbyteindex , _size , _bytes , _utf8length );
 						else if( code_page == ::booldog::enums::string::Unknown )
 						{
-							mbstowcs( 
+							//mbstowcs( 
 						}
 						if( res == ::booldog::enums::string::conversion_result_targetExhausted )
 						{
