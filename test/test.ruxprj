@@ -12,7 +12,7 @@
 			"global":
 			{
 				"os":"linux",
-				"compiler_flags":"-std=gnu++0x -fvisibility=hidden -fPIC",
+				"compiler_flags":"-fvisibility=hidden -fPIC",
 				"sources":
 				[
 					"./src/main.cpp"
@@ -20,8 +20,8 @@
 				"post_builds":
 				[					
 				],
-				"isystem":"./../../extern_sources/gtest-1.7.0/include",
-				"intermediate_directory":"./../../build/$(os)/$(architecture)",
+				"isystem":"./../extern_sources/gtest-1.7.0/include",
+				"intermediate_directory":"./../build/$(os)/$(architecture)",
 				"rm_command":"rm -f",
 				"mk_dir_command":"mkdir -p",
 				"object_suffix":".o",
@@ -40,7 +40,7 @@
 				"lib_paths":
 				[
 					"$(intermediate_directory)",
-					"./../../extern_lib/$(os)/$(architecture)"
+					"./../extern_lib/$(os)/$(architecture)"
 				],
 				"libs":
 				[
@@ -51,7 +51,7 @@
 					"rt"
 				],
 				"output_file":"$(intermediate_directory)/$(project_name)",
-				"makefile":"../../projects/$(os)/$(architecture)/$(project_name)/Makefile"				
+				"makefile":"../projects/$(os)/$(architecture)/$(project_name)/Makefile"				
 			},
 			"linux x64":
 			{
