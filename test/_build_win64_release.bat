@@ -1,0 +1,1 @@
+@call _build.bat "test" "Release" "x64"
