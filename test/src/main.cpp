@@ -6221,9 +6221,22 @@ TEST_F( boo_checkTest , test )
 //	booldog::string< &booldog::_heap > g( "l" );
 	//obj = get_string();
 };
-
+#ifdef __LINUX__
+#include <locale.h>
+#include <langinfo.h>
+#endif
 int main( int argc , char **argv )
 {
+#ifdef __LINUX__
+	char* encoding = nl_langinfo(CODESET);
+    printf("Encoding is %s\n", encoding);
+
+	setlocale(LC_ALL, "");
+    char* locstr = setlocale(LC_CTYPE, NULL);
+    encoding = nl_langinfo(CODESET);
+    printf("Locale is %s\n", locstr);
+    printf("Encoding is %s\n", encoding);
+#endif
     ::testing::InitGoogleTest( &argc , argv );
     return RUN_ALL_TESTS();
 };
