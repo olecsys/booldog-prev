@@ -1,5 +1,5 @@
 {
-	"project_name":"booldog.test",
+	"project_name":"booldog_wo_gtest.test",
 	"configurations":
 	{
 		"global":
@@ -12,7 +12,7 @@
 			"global":
 			{
 				"os":"linux",
-				"compiler_flags":"-std=gnu++0x -fvisibility=hidden -fPIC",
+				"compiler_flags":"-fvisibility=hidden -fPIC",
 				"sources":
 				[
 					"./src/main.cpp"
@@ -20,8 +20,7 @@
 				"post_builds":
 				[					
 				],
-				"isystem":"./../../extern_sources/gtest-1.7.0/include",
-				"intermediate_directory":"./../../build/$(os)/$(architecture)",
+				"intermediate_directory":"./../build/$(os)/$(architecture)",
 				"rm_command":"rm -f",
 				"mk_dir_command":"mkdir -p",
 				"object_suffix":".o",
@@ -34,25 +33,21 @@
 				"include_paths":
 				[
 					"./src",
-					"./../../includes",
-					"./../../extern_includes",
-					"./../../extern_sources/gtest-1.7.0/include"
+					"./../includes"
 				],
 				"lib_paths":
 				[
-					"$(intermediate_directory)",
-					"./../../extern_lib/$(os)/$(architecture)"
+					"$(intermediate_directory)"
 				],
 				"libs":
 				[
-					"gtest",
 					"pthread",
 					"dl",
 					"m",
 					"rt"
 				],
 				"output_file":"$(intermediate_directory)/$(project_name)",
-				"makefile":"../../projects/$(os)/$(architecture)/$(project_name)/Makefile"				
+				"makefile":"../projects/$(os)/$(architecture)/$(project_name)/Makefile"				
 			},
 			"linux x64":
 			{
