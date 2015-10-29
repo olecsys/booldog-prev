@@ -34,9 +34,8 @@
 				"include_paths":
 				[
 					"./src",
-					"./../../includes",
-					"./../../extern_includes",
-					"./../../extern_sources/gtest-1.7.0/include"
+					"./../includes",
+					"./../extern_sources/gtest-1.7.0/include"
 				],
 				"lib_paths":
 				[
