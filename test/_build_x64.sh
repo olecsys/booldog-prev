@@ -12,7 +12,7 @@ rebuild_success="true"
 if [ $rebuild_success = "true" ]
 then	
 	rebuild_success="false"
-	"$script_dir/../../tools/rux.configure/$os/$platform/rux.configure" --rebuild-project "$script_dir/test.ruxprj" --configuration "$os $platform" && rebuild_success="true"
+	"$script_dir/../tools/rux.configure/$os/$platform/rux.configure" --rebuild-project "$script_dir/test.ruxprj" --configuration "$os $platform" && rebuild_success="true"
 fi
 red='\e[0;31m'
 green='\e[0;32m'

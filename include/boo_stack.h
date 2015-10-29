@@ -67,8 +67,8 @@ namespace booldog
 				};
 				virtual void* alloc( size_t size , const char* file , int line )
 				{
-					UNREFERENCED_PARAMETER( file );
-					UNREFERENCED_PARAMETER( line );
+					file = file;
+					line = line;
 					if( _avail > 0 )
 					{
 						void* endptr = end();

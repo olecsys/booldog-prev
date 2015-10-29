@@ -56,4 +56,7 @@ namespace booldog
 #include <WinSock2.h>
 #include <windows.h>
 #endif
+#define __STDC_LIMIT_MACROS
+#define __STDC_CONSTANT_MACROS
+#include <stdint.h>
 #endif
