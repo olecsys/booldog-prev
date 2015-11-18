@@ -9,6 +9,36 @@ namespace booldog
 {
 	namespace utf8
 	{
+#define validate_character_check_without_length_macros( ptr ) ptr++;\
+	if( !( ( *ptr >> 6 ) == 0x2 ) )\
+		return ::booldog::enums::string::conversion_result_sourceIllegal
+		booinline bool validate_character( const ::booldog::byte*& ptr )
+		{
+			if( *ptr <= 0x7f )
+			{
+			}
+			else if( (*ptr >> 5 ) == 0x6 )
+			{
+				validate_character_check_without_length_macros( ptr );
+			}
+			/* three byte */
+			else if( ( *ptr >> 4 ) == 0x0e ) 
+			{
+				validate_character_check_without_length_macros( ptr );
+				validate_character_check_without_length_macros( ptr );
+			}
+			/* four byte */        
+			else if( ( *ptr >> 3 ) == 0x1e )
+			{
+				validate_character_check_without_length_macros( ptr );
+				validate_character_check_without_length_macros( ptr );
+				validate_character_check_without_length_macros( ptr );
+			}
+			else
+				return false;
+			ptr++;
+			return true;
+		};
 		booinline bool validate_character_check_with_length( const ::booldog::byte*& ptr , size_t* length )
 		{
 			ptr++;

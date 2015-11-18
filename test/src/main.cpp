@@ -99,5278 +99,725 @@ static yajl_callbacks callbacks = {
 
 #define test_0il_utf16 48 , 0 , 53 , 4 , 59 , 4 , 76 , 4
 #define test_il0_utf16 53 , 4 , 59 , 4 , 76 , 4 , 48 , 0
-char cp1251_test0[] = 
+char utf8_AprilApril_var[] =
+{
+	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0
+};
+
+char cp1251_April_var[] = 
 {
 	test_Apr_cp1251 , test_il_cp1251 , 0 
 };
-char utf8_test0[] = 
+char utf8_April_var[] = 
 {
 	test_Apr_utf8 , test_il_utf8 , 0
 };
-char utf16_test0[] = 
+char utf16_April_var[] = 
 {
 	test_Apr_utf16 , test_il_utf16 , 0 , 0
 };
-char utf32_test0[] = 
+char utf32_April_var[] = 
 {
 	test_Apr_utf32 , test_il_utf32 , 0 , 0 , 0 , 0
 };
 
-
-char cp1251_test1[] = 
-{
-	test_Apr_cp1251 , 0 
-};
-char utf8_test1[] = 
-{
-	test_Apr_utf8 , 0
-};
-char utf16_test1[] = 
-{
-	test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test2[] = 
-{
-	test_il_cp1251 , 0 
-};
-char utf8_test2[] = 
-{
-	test_il_utf8 , 0
-};
-char utf16_test2[] = 
-{
-	test_il_utf16 , 0 , 0
-};
-
-char cp1251_test3[] = 
+char cp1251_Aprilil_var[] = 
 {
 	test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , 0 
 };
-char utf8_test3[] = 
+char utf8_Aprilil_var[] = 
 {
 	test_Apr_utf8 , test_il_utf8 , test_il_utf8 , 0
 };
-char utf16_test3[] = 
+char utf16_Aprilil_var[] = 
 {
 	test_Apr_utf16 , test_il_utf16 , test_il_utf16 , 0 , 0
 };
-
-char cp1251_test4[] = 
-{
-	test_il_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test4[] = 
-{
-	test_il_utf8 , test_il_utf8 , 0
-};
-char utf16_test4[] = 
-{
-	test_il_utf16 , test_il_utf16 , 0 , 0
-};
-
-char cp1251_test5[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test5[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_il_utf8 , 0
-};
-char utf16_test5[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_il_utf16 , 0 , 0
-};
-
-char cp1251_test6[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test6[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test6[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test7[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test7[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0 
-};
-char utf16_test7[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , 0 
-};
-
-char cp1251_test8[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test8[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0
-};
-char utf16_test8[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , 0 , 0
-};
-
-char cp1251_test9[] = 
-{
-	test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test9[] = 
-{
-	test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test9[] = 
-{
-	test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test10[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test10[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test10[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test11[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test11[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test11[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test12[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test12[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test12[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test13[] = 
+char utf32_Aprilil_var[] = 
 {
-	test_rpr_cp1251 , test_il_cp1251 , test_rpr_cp1251 , test_il_cp1251 , test_rpr_cp1251 , 0 
+	test_Apr_utf32 , test_il_utf32 , test_il_utf32 , 0 , 0 , 0 , 0
 };
-char utf8_test13[] = 
-{
-	test_rpr_utf8 , test_il_utf8 , test_rpr_utf8 , test_il_utf8 , test_rpr_utf8 , 0
-};
-char utf16_test13[] = 
-{
-	test_rpr_utf16 , test_il_utf16 , test_rpr_utf16 , test_il_utf16 , test_rpr_utf16 , 0 , 0
-};
-
-char cp1251_test14[] = 
-{
-	test_rpr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test14[] = 
-{
-	test_rpr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test14[] = 
-{
-	test_rpr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test15[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_rpr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test15[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_rpr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test15[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_rpr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
-};
-
-char cp1251_test16[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_rpr_cp1251 , test_il_cp1251 , test_rpr_cp1251 , 0 
-};
-char utf8_test16[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_rpr_utf8 , test_il_utf8 , test_rpr_utf8 , 0
-};
-char utf16_test16[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_rpr_utf16 , test_il_utf16 , test_rpr_utf16 , 0 , 0
-};
 
-char cp1251_test17[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_rpr_cp1251 , 0 
-};
-char utf8_test17[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_rpr_utf8 , 0
-};
-char utf16_test17[] = 
-{
-	test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_rpr_utf16 , 0 , 0
-};
 
-char cp1251_test18[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test18[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0
-};
-char utf16_test18[] = 
+char utf8_AprilAprilApril_var[] = 
 {
-	test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , 0 , 0
+	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0 
 };
 
-char cp1251_test19[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test19[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0
-};
-char utf16_test19[] = 
+char utf8_ililil_var[] = 
 {
-	test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , 0 , 0
+	test_il_utf8 , test_il_utf8 , test_il_utf8 , 0 
 };
 
-char cp1251_test20[] = 
-{
-	test_rpr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test20[] = 
-{
-	test_rpr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test20[] = 
+char utf8_ilililililil_var[] = 
 {
-	test_rpr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
+	test_il_utf8 , test_il_utf8 , test_il_utf8 , test_il_utf8 , test_il_utf8 , test_il_utf8 , 0 
 };
 
-char cp1251_test21[] = 
-{
-	test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test21[] = 
-{
-	test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test21[] = 
+char utf8_AprAprilAprAprilAprApril_var[] = 
 {
-	test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
+	test_Apr_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_Apr_utf8 , test_il_utf8 , 0 
 };
 
-char cp1251_test22[] = 
-{
-	test_Apr_cp1251 , test_il_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , 0 
-};
-char utf8_test22[] = 
-{
-	test_Apr_utf8 , test_il_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , 0
-};
-char utf16_test22[] = 
+char cp1251_il_var[] = 
 {
-	test_Apr_utf16 , test_il_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , 0 , 0
+	test_il_cp1251 , 0 
 };
-
-char cp1251_test23[] = 
+char utf8_il_var[] = 
 {
-	test_0Apr_cp1251 , test_il_cp1251 , 0 
+	test_il_utf8 , 0
 };
-char utf8_test23[] = 
+char utf16_il_var[] = 
 {
-	test_0Apr_utf8 , test_il_utf8 , 0
+	test_il_utf16 , 0 , 0
 };
-char utf16_test23[] = 
+char utf32_il_var[] = 
 {
-	test_0Apr_utf16 , test_il_utf16 , 0 , 0
+	test_il_utf32 , 0 , 0 , 0 , 0
 };
 
-char cp1251_test24[] = 
-{
-	test_Apr_cp1251 , test_0il_cp1251 , 0 
-};
-char utf8_test24[] = 
-{
-	test_Apr_utf8 , test_0il_utf8 , 0
-};
-char utf16_test24[] = 
+char cp1251_Apr_var[] = 
 {
-	test_Apr_utf16 , test_0il_utf16 , 0 , 0
+	test_Apr_cp1251 , 0 
 };
-
-char cp1251_test25[] = 
+char utf8_Apr_var[] = 
 {
-	test_Apr_cp1251 , test_il0_cp1251 , 0 
+	test_Apr_utf8 , 0
 };
-char utf8_test25[] = 
+char utf16_Apr_var[] = 
 {
-	test_Apr_utf8 , test_il0_utf8 , 0
+	test_Apr_utf16 , 0 , 0
 };
-char utf16_test25[] = 
+char utf32_Apr_var[] = 
 {
-	test_Apr_utf16 , test_il0_utf16 , 0 , 0
+	test_Apr_utf32 , 0 , 0 , 0 , 0
 };
 
-char cp1251_test26[] = 
-{
-	test_0Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test26[] = 
-{
-	test_0Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0
-};
-char utf16_test26[] = 
+char utf8_TESTApril_var[] = 
 {
-	test_0Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , 0 , 0
+	'T' , 'E' , 'S' , 'T' , test_Apr_utf8 , test_il_utf8 , 0
 };
 
-char cp1251_test27[] = 
-{
-	test_0Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , test_Apr_cp1251 , test_il_cp1251 , 0 
-};
-char utf8_test27[] = 
-{
-	test_0Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , test_Apr_utf8 , test_il_utf8 , 0
-};
-char utf16_test27[] = 
-{
-	test_0Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , test_Apr_utf16 , test_il_utf16 , 0 , 0
-};
-/*
-class StringTest : public ::testing::Test 
-{
-};
-TEST_F( StringTest , Convert ) 
+char utf8_TESTApr_var[] = 
 {
-	{
-		{
-			::booldog::XString res_str;
-			{
-				::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-			
-				res_str.set_ByRef( str0.ConvertToAnsi() );
-				if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-				{
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test0 , sizeof( cp1251_test0 ) ) == 0 );
-
-					ASSERT_TRUE( res_str.Length() == 6 );
-				}
-				else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				{
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-
-					ASSERT_TRUE( res_str.Length() == 6 );
-				}				
-			
-				res_str.set_ByRef( str0.ConvertToUTF8() );
-
-				ASSERT_TRUE( memcmp( res_str.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-
-				ASSERT_TRUE( res_str.Length() == 6 );
-
-				res_str.set_ByRef( str0.ConvertToUTF16() );
-
-				ASSERT_TRUE( memcmp( res_str.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-
-				ASSERT_TRUE( res_str.Length() == 6 );
-			}
-
-			{
-				::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-			
-				res_str.set_ByRef( str0.ConvertToAnsi() );
-				if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-				{
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test0 , sizeof( cp1251_test0 ) ) == 0 );
-
-					ASSERT_TRUE( res_str.Length() == 6 );
-				}
-				else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				{
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-
-					ASSERT_TRUE( res_str.Length() == 6 );
-				}				
-			
-				res_str.set_ByRef( str0.ConvertToUTF8() );
-
-				ASSERT_TRUE( memcmp( res_str.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-
-				ASSERT_TRUE( res_str.Length() == 6 );
-
-				res_str.set_ByRef( str0.ConvertToUTF16() );
-
-				ASSERT_TRUE( memcmp( res_str.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-
-				ASSERT_TRUE( res_str.Length() == 6 );
-			}
-
-			{
-				::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-			
-				res_str.set_ByRef( str0.ConvertToAnsi() );
-				if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-				{
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test0 , sizeof( cp1251_test0 ) ) == 0 );
-
-					ASSERT_TRUE( res_str.Length() == 6 );
-				}
-				else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				{
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-
-					ASSERT_TRUE( res_str.Length() == 6 );
-				}				
-			
-				res_str.set_ByRef( str0.ConvertToUTF8() );
-
-				ASSERT_TRUE( memcmp( res_str.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-
-				ASSERT_TRUE( res_str.Length() == 6 );
-
-				res_str.set_ByRef( str0.ConvertToUTF16() );
-
-				ASSERT_TRUE( memcmp( res_str.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-
-				ASSERT_TRUE( res_str.Length() == 6 );
-			}
-		}
-	}
+	'T' , 'E' , 'S' , 'T' , test_Apr_utf8 , 0
 };
 
-TEST_F( StringTest , Substring ) 
+char utf8_TESTil_var[] = 
 {
-	{
-		{
-			::booldog::XString res_str;
-			{
-				::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-			
-				res_str.set_ByRef( str0.Substring( 3 ) );
-				
-				ASSERT_TRUE( memcmp( res_str.str() , cp1251_test2 , sizeof( cp1251_test2 ) ) == 0 );
-				
-				ASSERT_TRUE( res_str.Length() == 3 );
-
-				res_str.set_ByRef( str0.Substring( 0 , 3 ) );
-				
-				ASSERT_TRUE( memcmp( res_str.str() , cp1251_test1 , sizeof( cp1251_test1 ) ) == 0 );
-				
-				ASSERT_TRUE( res_str.Length() == 3 );			
-			}
-
-			{
-				::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-			
-				res_str.set_ByRef( str0.Substring( 3 ) );
-				
-				ASSERT_TRUE( memcmp( res_str.str() , utf8_test2 , sizeof( utf8_test2 ) ) == 0 );
-				
-				ASSERT_TRUE( res_str.Length() == 3 );
-
-				res_str.set_ByRef( str0.Substring( 0 , 3 ) );
-				
-				ASSERT_TRUE( memcmp( res_str.str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-				
-				ASSERT_TRUE( res_str.Length() == 3 );
-			}
-
-			{
-				::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-			
-				res_str.set_ByRef( str0.Substring( 3 ) );
-				
-				ASSERT_TRUE( memcmp( res_str.str() , utf16_test2 , sizeof( utf16_test2 ) ) == 0 );
-				
-				ASSERT_TRUE( res_str.Length() == 3 );
-
-				res_str.set_ByRef( str0.Substring( 0 , 3 ) );
-				
-				ASSERT_TRUE( memcmp( res_str.str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-				
-				ASSERT_TRUE( res_str.Length() == 3 );
-			}
-		}
-	}
+	'T' , 'E' , 'S' , 'T' , test_il_utf8 , 0
 };
-
-TEST_F( StringTest , ReplaceAll ) 
-{
-	{
-		{
-			::booldog::XString res_str;
-			{
-				::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceAll( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test13 , sizeof( cp1251_test13 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test4 , sizeof( cp1251_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test7 , sizeof( cp1251_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test7 , sizeof( utf16_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test4 , sizeof( utf8_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test4 , sizeof( utf16_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test7 , sizeof( utf16_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test7 , sizeof( utf16_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceAll( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf16_test13 , sizeof( utf16_test13 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test4 , sizeof( utf16_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test7 , sizeof( utf16_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test7 , sizeof( utf16_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test4 , sizeof( utf8_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test4 , sizeof( utf16_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test7 , sizeof( utf16_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test7 , sizeof( utf16_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceAll( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test13 , sizeof( utf8_test13 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test4 , sizeof( utf8_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test4 , sizeof( utf8_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test4 , sizeof( utf8_test4 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 6 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test7 , sizeof( utf8_test7 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 24 );
-					}
-				}
-			}	
-
-
-
-			{
-				::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceAll( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test16 , sizeof( cp1251_test16 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test3 , sizeof( cp1251_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test8 , sizeof( cp1251_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test8 , sizeof( utf16_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test8 , sizeof( utf16_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test8 , sizeof( utf16_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceAll( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf16_test16 , sizeof( utf16_test16 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test8 , sizeof( utf16_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test8 , sizeof( utf16_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test8 , sizeof( utf16_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test8 , sizeof( utf16_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceAll( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test16 , sizeof( utf8_test16 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceAll( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 9 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceAll( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test8 , sizeof( utf8_test8 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 21 );
-					}
-				}
-			}	
-		}
-	}
-};
-
-TEST_F( StringTest , ReplaceFirst ) 
-{
-	{
-		{
-			::booldog::XString res_str;
-			{
-				::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceFirst( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test14 , sizeof( cp1251_test14 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test9 , sizeof( cp1251_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test10 , sizeof( cp1251_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test10 , sizeof( utf16_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test9 , sizeof( utf8_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test9 , sizeof( utf16_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test10 , sizeof( utf16_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test10 , sizeof( utf16_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceFirst( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf16_test14 , sizeof( utf16_test14 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test9 , sizeof( utf16_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test10 , sizeof( utf16_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test10 , sizeof( utf16_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test9 , sizeof( utf8_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test9 , sizeof( utf16_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test10 , sizeof( utf16_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test10 , sizeof( utf16_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceFirst( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test14 , sizeof( utf8_test14 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test9 , sizeof( utf8_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test9 , sizeof( utf8_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test9 , sizeof( utf8_test9 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test10 , sizeof( utf8_test10 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}	
-
-
-
-			{
-				::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceFirst( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test15 , sizeof( cp1251_test15 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test11 , sizeof( cp1251_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test12 , sizeof( cp1251_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test12 , sizeof( utf16_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test11 , sizeof( utf8_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test11 , sizeof( utf16_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test12 , sizeof( utf16_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test12 , sizeof( utf16_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceFirst( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf16_test15 , sizeof( utf16_test15 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test11 , sizeof( utf16_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test12 , sizeof( utf16_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test12 , sizeof( utf16_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test11 , sizeof( utf8_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test11 , sizeof( utf16_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test12 , sizeof( utf16_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test12 , sizeof( utf16_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceFirst( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test15 , sizeof( utf8_test15 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test11 , sizeof( utf8_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test11 , sizeof( utf8_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test11 , sizeof( utf8_test11 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceFirst( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test12 , sizeof( utf8_test12 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}	
-		}
-	}
-};
-
-TEST_F( StringTest , ReplaceLast ) 
-{
-	{
-		{
-			::booldog::XString res_str;
-			{
-				::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceLast( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test17 , sizeof( cp1251_test17 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test18 , sizeof( cp1251_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test19 , sizeof( cp1251_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test19 , sizeof( utf16_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test18 , sizeof( utf8_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test18 , sizeof( utf16_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test19 , sizeof( utf16_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test19 , sizeof( utf16_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceLast( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf16_test17 , sizeof( utf16_test17 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test18 , sizeof( utf16_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test19 , sizeof( utf16_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test19 , sizeof( utf16_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test18 , sizeof( utf8_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test18 , sizeof( utf16_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test19 , sizeof( utf16_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test19 , sizeof( utf16_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceLast( (char)-64 , (char)-16 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test17 , sizeof( utf8_test17 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test18 , sizeof( utf8_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test18 , sizeof( utf8_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test18 , sizeof( utf8_test18 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test19 , sizeof( utf8_test19 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}	
-
-
-
-			{
-				::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceLast( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , cp1251_test20 , sizeof( cp1251_test20 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test21 , sizeof( cp1251_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , cp1251_test22 , sizeof( cp1251_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test22 , sizeof( utf16_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test21 , sizeof( utf8_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test21 , sizeof( utf16_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test22 , sizeof( utf16_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test22 , sizeof( utf16_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceLast( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf16_test20 , sizeof( utf16_test20 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test21 , sizeof( utf16_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test22 , sizeof( utf16_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test22 , sizeof( utf16_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test21 , sizeof( utf8_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test21 , sizeof( utf16_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test22 , sizeof( utf16_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf16_test22 , sizeof( utf16_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}
-
-			{
-				::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-
-				{
-#ifdef __WINDOWS__
-					res_str.set_ByRef( str0.ReplaceLast( (char)-64 , (char)-16 , 4 ) );
-				
-					ASSERT_TRUE( memcmp( res_str.str() , utf8_test20 , sizeof( utf8_test20 ) ) == 0 );
-				
-					ASSERT_TRUE( res_str.Length() == 15 );
-#endif
-				}
-
-				{
-					::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test21 , sizeof( utf8_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test21 , sizeof( utf8_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-
-				{
-					::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-					
-					{
-						res_str.set_ByRef( str0.ReplaceLast( str1 , "" , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test21 , sizeof( utf8_test21 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 12 );
-					}
-
-					{
-						::booldog::XString str2( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-
-					{
-						::booldog::XString str2( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-						res_str.set_ByRef( str0.ReplaceLast( str1 , str2 , 4 ) );
-				
-						ASSERT_TRUE( memcmp( res_str.str() , utf8_test22 , sizeof( utf8_test22 ) ) == 0 );
-				
-						ASSERT_TRUE( res_str.Length() == 18 );
-					}
-				}
-			}	
-		}
-	}
-};
-
-TEST_F( StringTest , IndexOf ) 
-{
-	{
-		{
-			::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-
-			{
-				if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-					ASSERT_TRUE( str0.IndexOf( cp1251_test2 ) == 3 );
-				else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-					ASSERT_TRUE( str0.IndexOf( utf8_test2 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-
-			{
-				if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-					ASSERT_TRUE( str0.IndexOf( cp1251_test2 ) == 3 );
-				else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-					ASSERT_TRUE( str0.IndexOf( utf8_test2 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-
-			{
-				if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-					ASSERT_TRUE( str0.IndexOf( cp1251_test2 ) == 3 );
-				else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-					ASSERT_TRUE( str0.IndexOf( utf8_test2 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.IndexOf( str1 , 2 ) == 6 );
-			}
-		}
-	}
-};
-
-TEST_F( StringTest , LastIndexOf ) 
-{
-	{
-		{
-			::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 ) == 9 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0.LastIndexOf( str1 , 7 ) == 3 );
-			}
-		}
-	}
-};
-
-TEST_F( StringTest , Equals ) 
-{
-	{
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_FALSE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0 == str1 );
-			}
-		}
-	}
-
-	{
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-			{
-				::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_TRUE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-
-			{
-				::booldog::XString str1( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-				ASSERT_FALSE( str0 != str1 );
-			}
-		}
-	}
-}
-
-
-TEST_F( StringTest , InsertRange ) 
-{
-	{
-		{
-			::booldog::XString str0;
-					
-			::booldog::XString str1;
-				
-			str0.InsertRange( 0 , str1 );
-
-			ASSERT_TRUE( str0.Length() == 0 );
-		}
-
-		{
-			::booldog::XString str0;
-					
-			::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.InsertRange( SIZE_MAX , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test2 , sizeof( cp1251_test2 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0;
-					
-			::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.InsertRange( SIZE_MAX , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test2 , sizeof( utf8_test2 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0;
-					
-			::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.InsertRange( SIZE_MAX , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test2 , sizeof( utf16_test2 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0;
-					
-			::booldog::XString str1( cp1251_test27 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.InsertRange( SIZE_MAX , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test27 , sizeof( cp1251_test27 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 43 );
-		}
-
-		{
-			::booldog::XString str0;
-					
-			::booldog::XString str1( utf8_test27 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.InsertRange( SIZE_MAX , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test27 , sizeof( utf8_test27 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 43 );
-		}
-
-		{
-			::booldog::XString str0;
-					
-			::booldog::XString str1( utf16_test27 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.InsertRange( SIZE_MAX , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test27 , sizeof( utf16_test27 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 43 );
-		}
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-					
-			::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test3 , sizeof( cp1251_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-					
-			::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-					
-			::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-					
-			::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-					
-			::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-					
-			::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-					
-			::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-					
-			::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-					
-			::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.InsertRange( 3 , str1 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-				
-		{
-			::booldog::XString str0;
-
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-			{
-				str0.InsertRange( 3 , cp1251_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , cp1251_test2 , sizeof( cp1251_test2 ) ) == 0 );
-			}
-			else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			{
-				str0.InsertRange( 3 , utf8_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf8_test2 , sizeof( utf8_test2 ) ) == 0 );
-			}
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-			{
-				str0.InsertRange( 3 , cp1251_test4 , SIZE_MAX );
-
-				ASSERT_TRUE( memcmp( str0.str() , cp1251_test5 , sizeof( cp1251_test5 ) ) == 0 );
-			}
-			else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			{
-				str0.InsertRange( 3 , utf8_test4 , SIZE_MAX );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf8_test5 , sizeof( utf8_test5 ) ) == 0 );
-			}
-
-			ASSERT_TRUE( str0.Length() == 12 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-					
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-				str0.InsertRange( 3 , cp1251_test4 , SIZE_MAX );
-			else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				str0.InsertRange( 3 , utf8_test4 , SIZE_MAX );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test5 , sizeof( utf8_test5 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 12 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-					
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-			{
-				str0.InsertRange( 3 , cp1251_test4 , SIZE_MAX );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf16_test5 , sizeof( utf16_test5 ) ) == 0 );
-			}
-			else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			{
-				str0.InsertRange( 3 , utf8_test4 , SIZE_MAX );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf8_test5 , sizeof( utf8_test5 ) ) == 0 );
-			}
-
-			ASSERT_TRUE( str0.Length() == 12 );
-		}
-
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-			{
-				str0.InsertRange( 3 , cp1251_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , cp1251_test3 , sizeof( cp1251_test3 ) ) == 0 );
-			}
-			else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			{
-				str0.InsertRange( 3 , utf8_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-			}
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-					
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-				str0.InsertRange( 3 , cp1251_test4 , 3 );
-			else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				str0.InsertRange( 3 , utf8_test4 , 3 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-					
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-			{
-				str0.InsertRange( 3 , cp1251_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-			}
-			else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			{
-				str0.InsertRange( 3 , utf8_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-			}
-
-			ASSERT_TRUE( str0.Length() == 9 );
-		}
-		if( sizeof( wchar_t ) == 2 )
-		{
-			{
-				::booldog::XString str0;
-				
-				str0.InsertRange( 3 , (wchar_t*)utf16_test4 , 3 );
-
-				if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-					ASSERT_TRUE( memcmp( str0.str() , utf16_test2 , sizeof( utf16_test2 ) ) == 0 );
-				else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-					ASSERT_TRUE( memcmp( str0.str() , utf8_test2 , sizeof( utf8_test2 ) ) == 0 );
-
-				ASSERT_TRUE( str0.Length() == 3 );
-			}
-
-			{
-				::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-				
-				str0.InsertRange( 3 , (wchar_t*)utf16_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-
-				ASSERT_TRUE( str0.Length() == 9 );
-			}
-
-			{
-				::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-					
-				str0.InsertRange( 3 , (wchar_t*)utf16_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf8_test3 , sizeof( utf8_test3 ) ) == 0 );
-
-				ASSERT_TRUE( str0.Length() == 9 );
-			}
-
-			{
-				::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-					
-				str0.InsertRange( 3 , (wchar_t*)utf16_test4 , 3 );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf16_test3 , sizeof( utf16_test3 ) ) == 0 );
-
-				ASSERT_TRUE( str0.Length() == 9 );
-			}
-
-			{
-				::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-				str0.InsertRange( 3 , (wchar_t*)utf16_test4 , SIZE_MAX );
-				
-				ASSERT_TRUE( memcmp( str0.str() , utf16_test5 , sizeof( utf16_test5 ) ) == 0 );
-
-				ASSERT_TRUE( str0.Length() == 12 );
-			}
-
-			{
-				::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-					
-				str0.InsertRange( 3 , (wchar_t*)utf16_test4 , SIZE_MAX );
-
-				ASSERT_TRUE( memcmp( str0.str() , utf8_test5 , sizeof( utf8_test5 ) ) == 0 );
-
-				ASSERT_TRUE( str0.Length() == 12 );
-			}
-
-			{
-				::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-					
-				str0.InsertRange( 3 , (wchar_t*)utf16_test4 , SIZE_MAX );
-				
-				ASSERT_TRUE( memcmp( str0.str() , utf16_test5 , sizeof( utf16_test5 ) ) == 0 );
-
-				ASSERT_TRUE( str0.Length() == 12 );
-			}
-		}
-	}
-};
-
-TEST_F( StringTest , RemoveRange ) 
-{
-	{
-		{
-			::booldog::XString str0;
-				
-			str0.RemoveRange( 0 , 3 );
-
-			ASSERT_TRUE( str0.Length() == 0 );
-		}
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.RemoveRange( 3 , 3 );
-
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test1 , sizeof( cp1251_test1 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.RemoveRange( 3 , 3 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.RemoveRange( 3 , 3 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.RemoveRange( 3 , SIZE_MAX );
-
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test1 , sizeof( cp1251_test1 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.RemoveRange( 3 , SIZE_MAX );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.RemoveRange( 3 , SIZE_MAX );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-				
-			str0.RemoveRange( 0 , 3 );
-
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test2 , sizeof( cp1251_test2 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-				
-			str0.RemoveRange( 0 , 3 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test2 , sizeof( utf8_test2 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-
-		{
-			::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-				
-			str0.RemoveRange( 0 , 3 );
-
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test2 , sizeof( utf16_test2 ) ) == 0 );
-
-			ASSERT_TRUE( str0.Length() == 3 );
-		}
-	}
-};
-
-TEST_F( StringTest , Plus ) 
-{
-	::booldog::XString res_string;
-	{
-		::booldog::XString str0( cp1251_test1 , 0 , XEnumCodePage_CP1251 );
-
-		{
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				res_string.set_ByRef( str0 + utf8_test2 );
-			else
-				res_string.set_ByRef( str0 + cp1251_test2 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-			else
-				ASSERT_TRUE( memcmp( res_string.str() , cp1251_test0 , sizeof( cp1251_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , cp1251_test0 , sizeof( cp1251_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-		}
-	}
-
-	{
-		::booldog::XString str0( utf16_test1 , 0 , XEnumCodePage_UTF16 );
-
-		{
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				res_string.set_ByRef( str0 + utf8_test2 );
-			else
-				res_string.set_ByRef( str0 + cp1251_test2 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-			else
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-		}
-	}
-
-	{
-		::booldog::XString str0( utf8_test1 , 0 , XEnumCodePage_UTF8 );
-
-		{
-			if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-				res_string.set_ByRef( str0 + utf8_test2 );
-			else
-				res_string.set_ByRef( str0 + cp1251_test2 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		}
-
-		{
-			::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-			res_string.set_ByRef( str0 + str1 );
-			
-			ASSERT_TRUE( res_string.Length() == 6 );
-			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		}
-	}
-
-	{
-		::booldog::XString str1( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			res_string.set_ByRef( utf8_test1 + str1 );
-		else
-			res_string.set_ByRef( cp1251_test1 + str1 );
-			
-		ASSERT_TRUE( res_string.Length() == 6 );
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		else
-			ASSERT_TRUE( memcmp( res_string.str() , cp1251_test0 , sizeof( cp1251_test0 ) ) == 0 );
-	}
-
-	{
-		::booldog::XString str1( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			res_string.set_ByRef( utf8_test1 + str1 );
-		else
-			res_string.set_ByRef( cp1251_test1 + str1 );
-			
-		ASSERT_TRUE( res_string.Length() == 6 );
-			
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )			
-			ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-		else
-			ASSERT_TRUE( memcmp( res_string.str() , utf16_test0 , sizeof( utf16_test0 ) ) == 0 );
-	}
-
-	{
-		::booldog::XString str1( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			res_string.set_ByRef( utf8_test1 + str1 );
-		else
-			res_string.set_ByRef( cp1251_test1 + str1 );
-			
-		ASSERT_TRUE( res_string.Length() == 6 );
-			
-		ASSERT_TRUE( memcmp( res_string.str() , utf8_test0 , sizeof( utf8_test0 ) ) == 0 );
-	}
-};
-
-TEST_F( StringTest , Split ) 
-{
-	{
-		::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-		{
-			::booldog::XString str1( cp1251_test23 , 0 , XEnumCodePage_CP1251 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , cp1251_test1 , sizeof( cp1251_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , cp1251_test1 , sizeof( cp1251_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , cp1251_test1 , sizeof( cp1251_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-		}
-
-		{
-			::booldog::XString str1( utf8_test23 , 0 , XEnumCodePage_UTF8 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-		}
-
-		{
-			::booldog::XString str1( utf16_test23 , 0 , XEnumCodePage_UTF16 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf8_test1 , sizeof( utf8_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				splits.set_ByRef( str0.Split( splits ) );
-
-				ASSERT_TRUE( splits.Count() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 0 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 0 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 1 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 1 ].Length() == 3 );
-
-				ASSERT_TRUE( memcmp( splits[ 2 ].str() , utf16_test1 , sizeof( utf16_test1 ) ) == 0 );
-		
-				ASSERT_TRUE( splits[ 2 ].Length() == 3 );
-			}
-		}
-	}
-};
-
-TEST_F( StringTest , Join ) 
-{
-	::booldog::XString res_string;
-	{
-		::booldog::XString str0( cp1251_test6 , 0 , XEnumCodePage_CP1251 );
-		{
-			::booldog::XString str1( cp1251_test23 , 0 , XEnumCodePage_CP1251 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , cp1251_test26 , sizeof( cp1251_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test26 , sizeof( utf16_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}
-
-		{
-			::booldog::XString str1( utf16_test23 , 0 , XEnumCodePage_UTF16 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test26 , sizeof( utf16_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test26 , sizeof( utf16_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}
-
-		{
-			::booldog::XString str1( utf8_test23 , 0 , XEnumCodePage_UTF8 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}		
-	}
-
-	{
-		::booldog::XString str0( utf16_test6 , 0 , XEnumCodePage_UTF16 );
-		{
-			::booldog::XString str1( cp1251_test23 , 0 , XEnumCodePage_CP1251 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test26 , sizeof( utf16_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test26 , sizeof( utf16_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}
-
-		{
-			::booldog::XString str1( utf16_test23 , 0 , XEnumCodePage_UTF16 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test26 , sizeof( utf16_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-				
-				ASSERT_TRUE( memcmp( res_string.str() , utf16_test26 , sizeof( utf16_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}
-
-		{
-			::booldog::XString str1( utf8_test23 , 0 , XEnumCodePage_UTF8 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}		
-	}
-
-	{
-		::booldog::XString str0( utf8_test6 , 0 , XEnumCodePage_UTF8 );
-		{
-			::booldog::XString str1( cp1251_test23 , 0 , XEnumCodePage_CP1251 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}
-
-		{
-			::booldog::XString str1( utf16_test23 , 0 , XEnumCodePage_UTF16 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}
-
-		{
-			::booldog::XString str1( utf8_test23 , 0 , XEnumCodePage_UTF8 );
-			{
-				::booldog::XString str2( cp1251_test2 , 0 , XEnumCodePage_CP1251 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}
-
-			{
-				::booldog::XString str2( utf16_test2 , 0 , XEnumCodePage_UTF16 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-
-			{
-				::booldog::XString str2( utf8_test2 , 0 , XEnumCodePage_UTF8 );
-
-				::booldog::XArray< ::booldog::XString > splits;
-				splits.AddByRef( str1 );
-				splits.AddByRef( str2 );		
-
-				res_string.set_ByRef( ::booldog::XString::Join( str0 , splits ) );
-
-				ASSERT_TRUE( memcmp( res_string.str() , utf8_test26 , sizeof( utf8_test26 ) ) == 0 );
-		
-				ASSERT_TRUE( res_string.Length() == 25 );
-			}	
-		}		
-	}
-};
-
-
-TEST_F( StringTest , Insert ) 
-{
-	{
-		::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-		str0.Insert( 0 , '0' );
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test23 , sizeof( utf8_test23 ) ) == 0 );
-		else if( ::booldog::XString::get_global_code_page() == XEnumCodePage_CP1251 )
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test23 , sizeof( cp1251_test23 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-		str0.Insert( 0 , '0' );
-
-		ASSERT_TRUE( memcmp( str0.str() , utf8_test23 , sizeof( utf8_test23 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-		str0.Insert( 0 , '0' );
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test23 , sizeof( utf8_test23 ) ) == 0 );
-		else
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test23 , sizeof( utf16_test23 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-		str0.Insert( 3 , '0' );
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test24 , sizeof( utf8_test24 ) ) == 0 );
-		else
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test24 , sizeof( cp1251_test24 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-		str0.Insert( 3 , '0' );
-
-		ASSERT_TRUE( memcmp( str0.str() , utf8_test24 , sizeof( utf8_test24 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-		str0.Insert( 3 , '0' );
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test24 , sizeof( utf8_test24 ) ) == 0 );
-		else
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test24 , sizeof( utf16_test24 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( cp1251_test0 , 0 , XEnumCodePage_CP1251 );
-
-		str0.Insert( SIZE_MAX , '0' );
-
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test25 , sizeof( utf8_test25 ) ) == 0 );
-		else
-			ASSERT_TRUE( memcmp( str0.str() , cp1251_test25 , sizeof( cp1251_test25 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( utf8_test0 , 0 , XEnumCodePage_UTF8 );
-
-		str0.Insert( SIZE_MAX , '0' );
-
-		ASSERT_TRUE( memcmp( str0.str() , utf8_test25 , sizeof( utf8_test25 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-
-	{
-		::booldog::XString str0( utf16_test0 , 0 , XEnumCodePage_UTF16 );
-
-		str0.Insert( SIZE_MAX , '0' );
-		if( ::booldog::XString::get_global_code_page() == XEnumCodePage_UTF8 )
-			ASSERT_TRUE( memcmp( str0.str() , utf8_test25 , sizeof( utf8_test25 ) ) == 0 );
-		else
-			ASSERT_TRUE( memcmp( str0.str() , utf16_test25 , sizeof( utf16_test25 ) ) == 0 );
-		
-		ASSERT_TRUE( str0.Length() == 7 );
-	}
-};
-*/
-/*
-class JsonTest : public ::testing::Test 
-{
-};
-
-TEST_F( JsonTest , DesrializeSpeed ) 
-{
-	::booldog::XConsole::Print( stdout , XColors::XWhite , "%s" , "Enter to start json test:" );
-	//::booldog::XConsole::WaitForEnter();
-
-	declare_variable( ::booldog::XString , error );
-	declare_variable( ::booldog::XString , js );
-	::booldog::XString dir( ::booldog::engine::_globals->_executable_directory );
-	dir += "/json_test_files";
-	::booldog::XArray< ::booldog::io::XFile > files;
-	::booldog::io::XDirectory::GetFiles( dir , XAllDirectories , files );
-	for( size_t index0 = 0 ; index0 < files.Count() ; index0++ )
-	{
-		js.set_ByRef( files[ index0 ].ReadTextAll( error ) );
-		if( error.Length() == 0 )
-		{
-			if( js.Length() > 0 )
-			{
-				::booldog::uint32 hash = 0;
-				::booldog::XConsole::Print( stdout , XColors::XWhite , files[ index0 ].get_FileName() + "\n" );
-
-				::booldog::XConsole::Print( stdout , XColors::XWhite , "%s" , "======================\n" );
-				for( size_t index2 = 0 ; index2 < 10 ; index2++ )
-				{
-					size_t number_of_tests = 1000;
-					::booldog::XConsole::Print( stdout , XColors::XWhite , "%s" , "-------------------\n" );
-					::booldog::uint64 test_begin = ::booldog::XTime::get_NowAsUnixTime();
-					for( size_t index1 = 0 ; index1 < number_of_tests ; index1++ )
-					{
-#if USE_YAJL
-						yajl_handle hand;
-						yajl_gen g;
-						yajl_status stat;
-						size_t rd;
-						int retval = 0;
-						int a = 1;  
-  
-						g = yajl_gen_alloc( NULL );  
-						yajl_gen_config( g , yajl_gen_beautify , 1 );  
-						yajl_gen_config( g , yajl_gen_validate_utf8 , 1 );  
-  
-						// ok.  open file.  let's read and parse
-						hand = yajl_alloc(&callbacks, NULL, (void *) g);  
-						// and let's allow comments by default
-						yajl_config( hand , yajl_allow_comments , 1 );  
-						stat = yajl_parse( hand , (::booldog::byte*)js.str() , js.Size() - 1 );  
-  
-						stat = yajl_complete_parse(hand);
-  
-						yajl_gen_free(g);  
-						yajl_free(hand);  
-#else
-						//XObject obj( ::booldog::data::XJsonSerializer::Deserialize( js , error , __FILE__ , __LINE__ , 0 ) );
-
-						//::booldog::data::XJsonSerializer::IsValidJSON( js.str() , 1 , error , __FILE__ , __LINE__ , 0);//&hash );
-
-						//size_t length = strlen( js.str() );
-						//char* ptr = js.str();
-						//while( *ptr++ != 0 )
-						//	length++;						
-#endif
-					}
-					::booldog::uint64 test_end = ::booldog::XTime::get_NowAsUnixTime();
-					::booldog::uint64 delta = test_end - test_begin;
-					::booldog::XConsole::Print( stdout , XColors::XWhite , ::booldog::XUInt64( delta ).ToString() + " microseconds, avg " + ::booldog::XUInt64( delta / number_of_tests ).ToString() + " microseconds\n" );
-					::booldog::XConsole::Print( stdout , XColors::XWhite , "%s" , "-------------------\n" );
-				}
-				::booldog::XConsole::Print( stdout , XColors::XWhite , "%s" , "======================\n" );
-			}
-		}
-	}
-};
-
-TEST_F( JsonTest , Desrialize ) 
-{
-
-
-	TestString string0;
-	TestString string1;
-
-
-
-	declare_stack_variable( char , filename , 1024 );
-	::booldog::safe_strncpy( filename , ::booldog::engine::_globals->_executable_directory , 1024 );
-	rux_concatenation( filename , "/../../rux.framework/test/test.ruxprj" );
-
-	::booldog::XString error;
-	//rux::generator::XRUXProject::load( filename , error );
-
-	::booldog::io::file file( filename );
-	if( file.opened() )
-	{
-		size_t size = file.size() + 1 , readen = 0;
-		char* json = alloc_array_macros( char , size );
-		if( file.read_text( json , size , readen ) )
-		{
-			char* ptr = json;
-			if( memcmp( json , _rux_utf8_header , 3 ) == 0 )
-				ptr = &json[ 3 ];
-			
-			{
-				LAZY_PERFORMANCE;
-				XObject obj( ::booldog::data::XJsonSerializer::Deserialize( ptr , 1 , error , __FILE__ , __LINE__ ) );
-
-				ASSERT_TRUE( error.Length() == 0 );
-
-				ASSERT_TRUE( rux_is_object( obj , ::booldog::data::XDataObject ) );
-			}
-		}
-		::booldog::engine::free_mem( json );
-	}
-
-	
-	{
-		XObject obj;
-		obj.set_ByRef( ::booldog::data::XJsonSerializer::Deserialize( "[{\"name\":\"Joe\"},{\"name\":\"Matthew\"},{\"name\":\"Bill\"}]" , 1 , error , __FILE__ , __LINE__ ) );
-
-		ASSERT_TRUE( error.Length() == 0 );
-
-		ASSERT_TRUE( rux_is_object( obj , ::booldog::XArray< ::booldog::data::XDataObject > ) );
-	}
-
-	{
-		::booldog::XTime time( 1970 , 1 , 1 , 0 , 0 , 0 , 0 );
-	}
-};
-
-TEST_F( JsonTest , Merge ) 
-{
-	declare_stack_variable( char , filename , 1024 );
-	::booldog::safe_strncpy( filename , ::booldog::engine::_globals->_executable_directory , 1024 );
-	::booldog::safe_strncat( filename , "/../../addons/tests/json/config.txt" , 1024 );
-
-	declare_variable( ::booldog::data::XDataObject , config );
-
-	::booldog::XString error;
-	::booldog::io::file file( filename );
-	if( file.opened() )
-	{
-		size_t size = file.size() + 1 , readen = 0;
-		char* json = alloc_array_macros( char , size );
-		if( file.read_text( json , size , readen ) )
-		{
-			char* ptr = json;
-			if( memcmp( json , _rux_utf8_header , 3 ) == 0 )
-				ptr = &json[ 3 ];
-			
-			{
-				LAZY_PERFORMANCE;
-				XObject object( ::booldog::data::XJsonSerializer::Deserialize( ptr , 1 , error , __FILE__ , __LINE__ ) );
-
-				ASSERT_TRUE( error.Length() == 0 );
-
-				ASSERT_TRUE( rux_is_object( object , ::booldog::data::XDataObject ) );
-
-				config.set_ByRef( object );
-			}
-		}
-		::booldog::engine::free_mem( json );
-	}
-	::booldog::safe_strncpy( filename , ::booldog::engine::_globals->_executable_directory , 1024 );
-	::booldog::safe_strncat( filename , "/../../addons/tests/json/obj.txt" , 1024 );
-
-	declare_variable( ::booldog::data::XDataObject , obj );
-
-	file.open( filename );
-	if( file.opened() )
-	{
-		size_t size = file.size() + 1 , readen = 0;
-		char* json = alloc_array_macros( char , size );
-		if( file.read_text( json , size , readen ) )
-		{
-			char* ptr = json;
-			if( memcmp( json , _rux_utf8_header , 3 ) == 0 )
-				ptr = &json[ 3 ];
-			
-			{
-				LAZY_PERFORMANCE;
-				XObject object( ::booldog::data::XJsonSerializer::Deserialize( ptr , 1 , error , __FILE__ , __LINE__ ) );
-
-				ASSERT_TRUE( error.Length() == 0 );
-
-				ASSERT_TRUE( rux_is_object( object , ::booldog::data::XDataObject ) );
-
-				obj.set_ByRef( object );
-			}
-		}
-		::booldog::engine::free_mem( json );
-	}
 
-	::booldog::byte changed = 0;
-	config.Merge( obj , changed );
-};*/
-#define BOOLDOG_STRING_STEP 6
+#define BOOLDOG_STRING_TEST
 #include <boo_object.h>
 #include <boo_if.h>
 #include <boo_check.h>
 #include <boo_string.h>
-#include <boo_array.h>
+#include <boo_list.h>
 #include <boo_stack.h>
 #include <boo_mem.h>
-namespace booldog
+#include <boo_base_loader.h>
+#include <boo_module_utils.h>
+#include <boo_io_utils.h>
+#include <boo_array.h>
+#include <boo_param.h>
+#include <boo_string_utils.h>
+
+class boo_paramTest : public ::testing::Test 
 {
-	/*class string
+};
+TEST_F( boo_paramTest , test )
+{
+	booldog::int32 int32value = 0;
+	booldog::uint32 uint32value = 0;
+	bool boolvalue = 0;
+	booldog::uchar ucharvalue = 0;
+	short shortvalue = 0;
+	booldog::ushort ushortvalue = 0;
+	booldog::int64 int64value = 0;
+	booldog::uint64 uint64value = 0;
+	booldog::param p0[] =
 	{
-	private:
-		char* _str;
-	public:
-		string( const char* str )
-		{
-			if( str )
-			{
-				size_t len = 0;
-				while( str[ len++ ] != 0 ){};
-				_str = (char*)_allocator->alloc( len + 1 , __FILE__ , _LINE_ );
-				memcpy( _str , str , len );
-				_str[ len ] = 0;
-			}
-			else
-				_str = 0;
-		};
-		string( string& str )
-		{
-			if( str._str )
-			{
-				size_t len = 0;
-				while( str._str[ len++ ] != 0 ){};
-				_str = (char*)_allocator->malloc( len + 1 );
-				memcpy( _str , str._str , len );
-				_str[ len ] = 0;
-			}
-			else
-				_str = 0;
-		};
-		~string( void )
-		{
-			if( _str )
-				_allocator->free( _str );
-		};
-	};*/
+		BOOPARAM_INT32( -32 ) , 
+		BOOPARAM_BOOL( false ) ,
+		BOOPARAM_CHAR( -127 ) ,
+		BOOPARAM_UCHAR( 128 ) , 
+		BOOPARAM_SHORT( -1986 ) ,
+		BOOPARAM_USHORT( 1986 ) ,
+		BOOPARAM_INT64( -123456789 ) ,
+		BOOPARAM_UINT64( 123456789 ) ,
+		BOOPARAM_WCHAR( L'W' ) ,
+		BOOPARAM_PCHAR( "hello" ) ,
+		BOOPARAM_PWCHAR( L"hello" ) ,
+		BOOPARAM_PVOID( &p0 ) ,
+		//BOOPARAM_PNAMED_PARAM( val ) ,
+		BOOPARAM_PPARAM( p0 ) ,
+		BOOPARAM_PINT32( &int32value ) ,
+		BOOPARAM_PUINT32( &uint32value ) ,
+		BOOPARAM_PBOOL( &boolvalue ) ,
+		BOOPARAM_PUCHAR( &ucharvalue ) ,
+		BOOPARAM_PSHORT( &shortvalue ) ,
+		BOOPARAM_PUSHORT( &ushortvalue ) ,
+		BOOPARAM_PINT64( &int64value ) ,
+		BOOPARAM_PUINT64( &uint64value ) ,
+		BOOPARAM_NONE
+	};
+
+	size_t index = 0;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_int32 );
+
+	ASSERT_EQ( p0[ index ].int32value , -32 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_bool );
+
+	ASSERT_EQ( p0[ index ].boolvalue , false );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_char );
+
+	ASSERT_EQ( p0[ index ].charvalue , -127 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_uchar );
+
+	ASSERT_EQ( p0[ index ].ucharvalue , 128 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_short );
+
+	ASSERT_EQ( p0[ index ].shortvalue , -1986 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_ushort );
+
+	ASSERT_EQ( p0[ index ].ushortvalue , 1986 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_int64 );
+
+	ASSERT_EQ( p0[ index ].int64value , -123456789 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_uint64 );
+
+	ASSERT_EQ( p0[ index ].uint64value , 123456789 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_wchar );
+
+	ASSERT_EQ( p0[ index ].wcharvalue , L'W' );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pchar );
+
+	ASSERT_EQ( strcmp( p0[ index ].pcharvalue , "hello" ) , 0 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pwchar );
+
+	ASSERT_EQ( wcscmp( p0[ index ].pwcharvalue , L"hello" ) , 0 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pvoid );
+
+	ASSERT_EQ( p0[ index ].pvoidvalue , &p0 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pparam );
+
+	ASSERT_EQ( p0[ index ].pparamvalue , p0 );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pint32 );
+
+	ASSERT_EQ( p0[ index ].pint32value , &int32value );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_puint32 );
+
+	ASSERT_EQ( p0[ index ].puint32value , &uint32value );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pbool );
+
+	ASSERT_EQ( p0[ index ].pboolvalue , &boolvalue );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_puchar );
+
+	ASSERT_EQ( p0[ index ].pucharvalue , &ucharvalue );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pshort );
+
+	ASSERT_EQ( p0[ index ].pshortvalue , &shortvalue );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pushort );
+
+	ASSERT_EQ( p0[ index ].pushortvalue , &ushortvalue );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_pint64 );
+
+	ASSERT_EQ( p0[ index ].pint64value , &int64value );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_puint64 );
+
+	ASSERT_EQ( p0[ index ].puint64value , &uint64value );
+
+	index++;
+
+	ASSERT_EQ( p0[ index ].type , ::booldog::enums::param::type_none );
+
+
+	booldog::named_param p1[] =
+	{
+		BOONAMED_PARAM_INT32( "test0" , -32 ) , 
+		BOONAMED_PARAM_BOOL( "test1" , false ) ,
+		BOONAMED_PARAM_CHAR( "test2" , -127 ) ,
+		BOONAMED_PARAM_UCHAR( "test3" , 128 ) , 
+		BOONAMED_PARAM_SHORT( "test4" , -1986 ) ,
+		BOONAMED_PARAM_USHORT( "test5" , 1986 ) ,
+		BOONAMED_PARAM_INT64( "test6" , -123456789 ) ,
+		BOONAMED_PARAM_UINT64( "test7" , 123456789 ) ,
+		BOONAMED_PARAM_WCHAR( "test8" , L'W' ) ,
+		BOONAMED_PARAM_PCHAR( "test9" , "hello" ) ,
+		BOONAMED_PARAM_PWCHAR( "test10" , L"hello" ) ,
+		BOONAMED_PARAM_PVOID( "test11" , &p0 ) ,
+		BOONAMED_PARAM_PNAMED_PARAM( "test12" , &p1 ) ,
+		BOONAMED_PARAM_PPARAM( "test13" , p0 ) ,
+		BOONAMED_PARAM_PINT32( "test14" , &int32value ) ,
+		BOONAMED_PARAM_PUINT32( "test15" , &uint32value ) ,
+		BOONAMED_PARAM_PBOOL( "test16" , &boolvalue ) ,
+		BOONAMED_PARAM_PUCHAR( "test17" , &ucharvalue ) ,
+		BOONAMED_PARAM_PSHORT( "test18" , &shortvalue ) ,
+		BOONAMED_PARAM_PUSHORT( "test19" , &ushortvalue ) ,
+		BOONAMED_PARAM_PINT64( "test20" , &int64value ) ,
+		BOONAMED_PARAM_PUINT64( "test21" , &uint64value ) ,
+		BOONAMED_PARAM_NONE
+	};
+
+	index = 0;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test0" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_int32 );
+
+	ASSERT_EQ( p1[ index ].param.int32value , -32 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test1" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_bool );
+
+	ASSERT_EQ( p1[ index ].param.boolvalue , false );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test2" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_char );
+
+	ASSERT_EQ( p1[ index ].param.charvalue , -127 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test3" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_uchar );
+
+	ASSERT_EQ( p1[ index ].param.ucharvalue , 128 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test4" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_short );
+
+	ASSERT_EQ( p1[ index ].param.shortvalue , -1986 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test5" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_ushort );
+
+	ASSERT_EQ( p1[ index ].param.ushortvalue , 1986 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test6" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_int64 );
+
+	ASSERT_EQ( p1[ index ].param.int64value , -123456789 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test7" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_uint64 );
+
+	ASSERT_EQ( p1[ index ].param.uint64value , 123456789 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test8" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_wchar );
+
+	ASSERT_EQ( p1[ index ].param.wcharvalue , L'W' );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test9" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pchar );
+
+	ASSERT_EQ( strcmp( p1[ index ].param.pcharvalue , "hello" ) , 0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test10" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pwchar );
+
+	ASSERT_EQ( wcscmp( p1[ index ].param.pwcharvalue , L"hello" ) , 0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test11" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pvoid );
+
+	ASSERT_EQ( p1[ index ].param.pvoidvalue , &p0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test12" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pnamed_param );
+
+	ASSERT_EQ( p1[ index ].param.pnamed_paramvalue , p1 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test13" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pparam );
+
+	ASSERT_EQ( p1[ index ].param.pparamvalue , p0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test14" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pint32 );
+
+	ASSERT_EQ( p1[ index ].param.pint32value , &int32value );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test15" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_puint32 );
+
+	ASSERT_EQ( p1[ index ].param.puint32value , &uint32value );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test16" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pbool );
+
+	ASSERT_EQ( p1[ index ].param.pboolvalue , &boolvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test17" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_puchar );
+
+	ASSERT_EQ( p1[ index ].param.pucharvalue , &ucharvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test18" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pshort );
+
+	ASSERT_EQ( p1[ index ].param.pshortvalue , &shortvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test19" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pushort );
+
+	ASSERT_EQ( p1[ index ].param.pushortvalue , &ushortvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test20" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pint64 );
+
+	ASSERT_EQ( p1[ index ].param.pint64value , &int64value );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p1[ index ].name , "test21" ) , 0 );
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_puint64 );
+
+	ASSERT_EQ( p1[ index ].param.puint64value , &uint64value );
+
+	index++;
+
+	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_none );
+
+
+	booldog::named_param p2[] =
+	{
+		BOO_SEARCH_NAMED_PARAM_BOOL( "not found test1" ) ,
+		BOO_SEARCH_NAMED_PARAM_INT32( "test0" ) , 
+		BOO_SEARCH_NAMED_PARAM_BOOL( "test1" ) ,
+		BOO_SEARCH_NAMED_PARAM_CHAR( "test2" ) ,
+		BOO_SEARCH_NAMED_PARAM_UCHAR( "test3" ) , 
+		BOO_SEARCH_NAMED_PARAM_SHORT( "test4" ) ,
+		BOO_SEARCH_NAMED_PARAM_USHORT( "test5" ) ,
+		BOO_SEARCH_NAMED_PARAM_INT64( "test6" ) ,
+		BOO_SEARCH_NAMED_PARAM_UINT64( "test7" ) ,
+		BOO_SEARCH_NAMED_PARAM_WCHAR( "test8" ) ,
+		BOO_SEARCH_NAMED_PARAM_PCHAR( "test9" ) ,
+		BOO_SEARCH_NAMED_PARAM_PWCHAR( "test10" ) ,
+		BOO_SEARCH_NAMED_PARAM_PVOID( "test11" ) ,
+		BOO_SEARCH_NAMED_PARAM_PNAMED_PARAM( "test12" ) ,
+		BOO_SEARCH_NAMED_PARAM_PPARAM( "test13" ) ,
+		BOO_SEARCH_NAMED_PARAM_PINT32( "test14" ) ,
+		BOO_SEARCH_NAMED_PARAM_PUINT32( "test15" ) ,
+		BOO_SEARCH_NAMED_PARAM_PBOOL( "test16" ) ,
+		BOO_SEARCH_NAMED_PARAM_PUCHAR( "test17" ) ,
+		BOO_SEARCH_NAMED_PARAM_PSHORT( "test18" ) ,
+		BOO_SEARCH_NAMED_PARAM_PUSHORT( "test19" ) ,
+		BOO_SEARCH_NAMED_PARAM_PINT64( "test20" ) ,
+		BOO_SEARCH_NAMED_PARAM_PUINT64( "test21" ) ,
+		BOO_SEARCH_NAMED_PARAM_NONE
+	};
+
+	::booldog::utils::param::search( p1 , p2 );
+
+	index = 0;
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_not_found );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test0" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_int32 );
+
+	ASSERT_EQ( p2[ index ].param.int32value , -32 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test1" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_bool );
+
+	ASSERT_EQ( p2[ index ].param.boolvalue , false );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test2" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_char );
+
+	ASSERT_EQ( p2[ index ].param.charvalue , -127 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test3" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_uchar );
+
+	ASSERT_EQ( p2[ index ].param.ucharvalue , 128 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test4" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_short );
+
+	ASSERT_EQ( p2[ index ].param.shortvalue , -1986 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test5" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_ushort );
+
+	ASSERT_EQ( p2[ index ].param.ushortvalue , 1986 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test6" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_int64 );
+
+	ASSERT_EQ( p2[ index ].param.int64value , -123456789 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test7" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_uint64 );
+
+	ASSERT_EQ( p2[ index ].param.uint64value , 123456789 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test8" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_wchar );
+
+	ASSERT_EQ( p2[ index ].param.wcharvalue , L'W' );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test9" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pchar );
+
+	ASSERT_EQ( strcmp( p2[ index ].param.pcharvalue , "hello" ) , 0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test10" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pwchar );
+
+	ASSERT_EQ( wcscmp( p2[ index ].param.pwcharvalue , L"hello" ) , 0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test11" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pvoid );
+
+	ASSERT_EQ( p2[ index ].param.pvoidvalue , &p0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test12" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pnamed_param );
+
+	ASSERT_EQ( p2[ index ].param.pnamed_paramvalue , p1 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test13" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pparam );
+
+	ASSERT_EQ( p2[ index ].param.pparamvalue , p0 );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test14" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pint32 );
+
+	ASSERT_EQ( p2[ index ].param.pint32value , &int32value );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test15" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_puint32 );
+
+	ASSERT_EQ( p2[ index ].param.puint32value , &uint32value );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test16" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pbool );
+
+	ASSERT_EQ( p2[ index ].param.pboolvalue , &boolvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test17" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_puchar );
+
+	ASSERT_EQ( p2[ index ].param.pucharvalue , &ucharvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test18" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pshort );
+
+	ASSERT_EQ( p2[ index ].param.pshortvalue , &shortvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test19" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pushort );
+
+	ASSERT_EQ( p2[ index ].param.pushortvalue , &ushortvalue );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test20" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pint64 );
+
+	ASSERT_EQ( p2[ index ].param.pint64value , &int64value );
+
+	index++;
+
+	ASSERT_EQ( strcmp( p2[ index ].name , "test21" ) , 0 );
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_puint64 );
+
+	ASSERT_EQ( p2[ index ].param.puint64value , &uint64value );
+
+	index++;
+
+	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_none );
+
 };
 
-booldog::string get_string( void )
-{
-	booldog::string g;
-	return g;
-};
 #define boo_stackTestAllocatorSize 64
 class boo_stackTest : public ::testing::Test 
 {
@@ -5383,7 +830,7 @@ TEST_F( boo_stackTest , test )
 
 	char* begin = (char*)allocator.begin();
 
-	void* ptr0 = allocator.alloc( boo_stackTestAllocatorSize , __FILE__ , __LINE__ );
+	void* ptr0 = allocator.alloc( boo_stackTestAllocatorSize );
 
 	ASSERT_TRUE( allocator.begin() == allocator.end() );
 
@@ -5391,7 +838,7 @@ TEST_F( boo_stackTest , test )
 
 	ASSERT_EQ( allocator.available() , 0 );
 
-	void* ptr1 = allocator.alloc( 17 , __FILE__ , __LINE__ );
+	void* ptr1 = allocator.alloc( 17 );
 
 	ASSERT_TRUE( allocator.begin() == allocator.end() );
 
@@ -5405,7 +852,7 @@ TEST_F( boo_stackTest , test )
 
 	ASSERT_EQ( allocator.available() , total );
 
-	ptr0 = allocator.alloc( 23 , __FILE__ , __LINE__ );
+	ptr0 = allocator.alloc( 23 );
 
 	ASSERT_TRUE( allocator.begin() == &begin[ 23 + sizeof( ::booldog::mem::info ) ] );
 
@@ -5413,7 +860,7 @@ TEST_F( boo_stackTest , test )
 
 	ASSERT_EQ( allocator.available() , total - 23 - sizeof( ::booldog::mem::info ) );
 
-	ptr1 = allocator.alloc( 17 , __FILE__ , __LINE__ );
+	ptr1 = allocator.alloc( 17 );
 
 	ASSERT_TRUE( allocator.begin() == &begin[ 40 + 2 * sizeof( ::booldog::mem::info ) ] );
 
@@ -5433,7 +880,7 @@ TEST_F( boo_stackTest , test )
 
 	ASSERT_EQ( allocator.available() , total );
 
-	ptr0 = allocator.alloc( 45 , __FILE__ , __LINE__ );
+	ptr0 = allocator.alloc( 45 );
 
 	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
 
@@ -5450,7 +897,7 @@ TEST_F( boo_stackTest , test )
 
 	ptr0 = 0;
 
-	ptr0 = allocator.realloc( ptr0 , 45 , __FILE__ , __LINE__ );
+	ptr0 = allocator.realloc( ptr0 , 45 );
 
 	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
 
@@ -5458,7 +905,7 @@ TEST_F( boo_stackTest , test )
 
 	ASSERT_EQ( allocator.available() , total - 45 - sizeof( ::booldog::mem::info ) );
 
-	ptr0 = allocator.realloc( ptr0 , 45 , __FILE__ , __LINE__ );
+	ptr0 = allocator.realloc( ptr0 , 45 );
 
 	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
 
@@ -5466,7 +913,7 @@ TEST_F( boo_stackTest , test )
 
 	ASSERT_EQ( allocator.available() , total - 45 - sizeof( ::booldog::mem::info ) );
 
-	ptr0 = allocator.realloc( ptr0 , 50 , __FILE__ , __LINE__ );
+	ptr0 = allocator.realloc( ptr0 , 50 );
 
 	ASSERT_TRUE( allocator.begin() == &begin[ 50 + sizeof( ::booldog::mem::info ) ] );
 
@@ -5474,13 +921,30 @@ TEST_F( boo_stackTest , test )
 
 	ASSERT_EQ( allocator.available() , total - 50 - sizeof( ::booldog::mem::info ) );
 
-	ptr0 = allocator.realloc( ptr0 , 45 , __FILE__ , __LINE__ );
+	ptr0 = allocator.realloc( ptr0 , 45 );
 
 	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
 
 	ASSERT_TRUE( ptr0 == ( begin + sizeof( ::booldog::mem::info ) ) );
 
 	ASSERT_EQ( allocator.available() , total - 45 - sizeof( ::booldog::mem::info ) );
+
+	allocator.free( ptr0 );
+
+	ptr0 = 0;
+
+	ASSERT_TRUE( allocator.begin() == begin );
+
+	ASSERT_EQ( allocator.available() , total );
+
+
+	ptr0 = allocator.realloc_array< wchar_t >( (wchar_t*)ptr0 , 11 );
+
+	ASSERT_TRUE( allocator.begin() == &begin[ 22 + sizeof( ::booldog::mem::info ) ] );
+
+	ASSERT_TRUE( ptr0 == ( begin + sizeof( ::booldog::mem::info ) ) );
+
+	ASSERT_EQ( allocator.available() , total - 22 - sizeof( ::booldog::mem::info ) );
 };
 
 class boo_memTest : public ::testing::Test 
@@ -5494,90 +958,90 @@ TEST_F( boo_memTest , test )
 
 	size_t dstsize = 0;
 	size_t dst_allocsize = 8;
-	char* dst = (char*)allocator.alloc( dst_allocsize , __FILE__ , __LINE__ );
+	char* dst = (char*)allocator.alloc( dst_allocsize );
 
-	ASSERT_TRUE( ::booldog::mem::insert( 0 , dst , dstsize , dst_allocsize , 0 , "Test" , 5 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 0 , dst , dstsize , dst_allocsize , 0 , "Test" , 5 ) );
 
 	dstsize = 4;
 
 	ASSERT_TRUE( ::memcmp( "Test" , dst , dstsize ) == 0 );
 
-	ASSERT_TRUE( ::booldog::mem::insert( 1 , dst , dstsize , dst_allocsize , 0 , "r" , 1 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 1 , dst , dstsize , dst_allocsize , 0 , "r" , 1 ) );
 
 	dstsize = 5;
 
 	ASSERT_TRUE( ::memcmp( "Trest" , dst , dstsize ) == 0 );
 
-	ASSERT_TRUE( ::booldog::mem::insert( 8 , dst , dstsize , dst_allocsize , 0 , "#7" , 2 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 8 , dst , dstsize , dst_allocsize , 0 , "#7" , 2 ) );
 
 	dstsize = 7;
 
 	ASSERT_TRUE( ::memcmp( "Trest#7" , dst , dstsize ) == 0 );
 
-	ASSERT_TRUE( ::booldog::mem::insert( 2 , dst , dstsize , dst_allocsize , 2 , "om" , 2 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 2 , dst , dstsize , dst_allocsize , 2 , "om" , 2 ) );
 
 	dstsize = 7;
 
 	ASSERT_TRUE( ::memcmp( "Tromt#7" , dst , dstsize ) == 0 );
 
-	ASSERT_TRUE( ::booldog::mem::insert( 2 , dst , dstsize , dst_allocsize , 2 , "usd" , 3 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 2 , dst , dstsize , dst_allocsize , 2 , "usd" , 3 ) );
 
 	dstsize = 8;
 
 	ASSERT_TRUE( ::memcmp( "Trusdt#7" , dst , dstsize ) == 0 );
 
-	ASSERT_TRUE( ::booldog::mem::insert( 2 , dst , dstsize , dst_allocsize , 3 , "es" , 2 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 2 , dst , dstsize , dst_allocsize , 3 , "es" , 2 ) );
 
 	dstsize = 7;
 
 	ASSERT_TRUE( ::memcmp( "Trest#7" , dst , dstsize ) == 0 );
 
-	ASSERT_TRUE( ::booldog::mem::insert( 5 , dst , dstsize , dst_allocsize , 4 , "e" , 1 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 5 , dst , dstsize , dst_allocsize , 4 , "e" , 1 ) );
 
 	dstsize = 6;
 
 	ASSERT_TRUE( ::memcmp( "Treste" , dst , dstsize ) == 0 );
 
-	ASSERT_FALSE( ::booldog::mem::insert( 5 , dst , dstsize , dst_allocsize , 2 , "TEST00000" , 9 ) );
+	ASSERT_FALSE( ::booldog::mem::insert< char >( 5 , dst , dstsize , dst_allocsize , 2 , "TEST00000" , 9 ) );
 
 	dstsize = 6;
 
 	ASSERT_TRUE( ::memcmp( "Treste" , dst , dstsize ) == 0 );
 
-	::booldog::mem::remove( 1 , dst , dstsize , 2 );
+	::booldog::mem::remove< char >( 1 , dst , dstsize , 2 );
 
 	dstsize = 4;
 
 	ASSERT_TRUE( ::memcmp( "Tste" , dst , dstsize ) == 0 );
 
-	::booldog::mem::remove( 2 , dst , dstsize , 2 );
+	::booldog::mem::remove< char >( 2 , dst , dstsize , 2 );
 
 	dstsize = 2;
 
 	ASSERT_TRUE( ::memcmp( "Ts" , dst , dstsize ) == 0 );
 
 
-	::booldog::mem::remove( 1 , dst , dstsize , 3 );
+	::booldog::mem::remove< char >( 1 , dst , dstsize , 3 );
 
 	dstsize = 1;
 
 	ASSERT_TRUE( ::memcmp( "T" , dst , dstsize ) == 0 );
 
 
-	ASSERT_TRUE( ::booldog::mem::insert( 1 , dst , dstsize , dst_allocsize , 0 , "est0" , 4 ) );
+	ASSERT_TRUE( ::booldog::mem::insert< char >( 1 , dst , dstsize , dst_allocsize , 0 , "est0" , 4 ) );
 
 	dstsize = 5;
 
 	ASSERT_TRUE( ::memcmp( "Test0" , dst , dstsize ) == 0 );
 
 
-	ASSERT_TRUE( ::booldog::mem::expand( 1 , dst , dstsize , dst_allocsize , 2 ) );
+	ASSERT_TRUE( ::booldog::mem::expand< char >( 1 , dst , dstsize , dst_allocsize , 2 ) );
 
 	dstsize = 7;
 
 	ASSERT_TRUE( ::memcmp( "Tesest0" , dst , dstsize ) == 0 );
 
-	ASSERT_FALSE( ::booldog::mem::expand( 1 , dst , dstsize , dst_allocsize , 2 ) );
+	ASSERT_FALSE( ::booldog::mem::expand< char >( 1 , dst , dstsize , dst_allocsize , 2 ) );
 
 	dstsize = 7;
 
@@ -5591,188 +1055,2609 @@ TEST_F( boo_stringTest , test )
 {
 	::booldog::allocators::stack::simple< 4096 > allocator;
 
+	size_t total = allocator.available();
+
+	char* begin = (char*)allocator.begin();
+
 	::booldog::_allocator = &allocator;
-
+#ifdef BOOLDOG_STRING_TEST
+	for( ::booldog::string_step = 1 ; ::booldog::string_step < 25 ; ::booldog::string_step++ )
 	{
-		::booldog::string string( (const char*)0 );
 
-		ASSERT_TRUE( strcmp( string.str() , "" ) == 0 );
+#endif
+		{
+			::booldog::string string( (const char*)0 );
 
-		ASSERT_EQ( string.length() , 0 );
+			ASSERT_TRUE( strcmp( string.str() , "" ) == 0 );
 
-		ASSERT_EQ( string.bytes() , 0 );
-	}
+			ASSERT_EQ( string.length() , 0 );
 
-	{
-		::booldog::string string( "" );
+			ASSERT_EQ( string.bytes() , 1 );
+		}
 
-		ASSERT_TRUE( strcmp( string.str() , "" ) == 0 );
+		{
+			::booldog::string string( "" );
 
-		ASSERT_EQ( string.length() , 0 );
+			ASSERT_TRUE( strcmp( string.str() , "" ) == 0 );
 
-		ASSERT_EQ( string.bytes() , 0 );
-	}
+			ASSERT_EQ( string.length() , 0 );
 
-	{
-		::booldog::string string( "TEST" );
+			ASSERT_EQ( string.bytes() , 1 );
+		}
 
-		ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+		{
+			::booldog::string string( "TEST" );
 
-		ASSERT_EQ( string.length() , 4 );
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
-		ASSERT_EQ( string.bytes() , 5 );
-	}
+			ASSERT_EQ( string.length() , 4 );
 
-	{
-		::booldog::string string( "TEST" , 0 , 4 );
+			ASSERT_EQ( string.bytes() , 5 );
+		}
 
-		ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+		{
+			::booldog::string string( "TEST" , 0 , 4 );
 
-		ASSERT_EQ( string.length() , 4 );
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
-		ASSERT_EQ( string.bytes() , 5 );
-	}
+			ASSERT_EQ( string.length() , 4 );
 
-	{
-		::booldog::string string( "Hello, TEST" , 7 );
+			ASSERT_EQ( string.bytes() , 5 );
+		}
 
-		ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+		{
+			::booldog::string string( "Hello, TEST" , 7 );
 
-		ASSERT_EQ( string.length() , 4 );
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
-		ASSERT_EQ( string.bytes() , 5 );
-	}
+			ASSERT_EQ( string.length() , 4 );
 
-	{
-		::booldog::string string( "Hello, TEST, it's our first meeting" , 7 , 4 );
+			ASSERT_EQ( string.bytes() , 5 );
+		}
 
-		ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+		{
+			::booldog::string string( "Hello, TEST, it's our first meeting" , 7 , 4 );
 
-		ASSERT_EQ( string.length() , 4 );
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
-		ASSERT_EQ( string.bytes() , 5 );
-	}
+			ASSERT_EQ( string.length() , 4 );
 
-	{
-		::booldog::string string( cp1251_test0 , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			ASSERT_EQ( string.bytes() , 5 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test0 ) == 0 );
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
-		ASSERT_EQ( string.length() , 6 );
+			ASSERT_EQ( string.length() , 6 );
 
-		ASSERT_EQ( string.bytes() , 13 );
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 3 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_il_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , 6 , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , 3 , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_Apr_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+		}
+
+
+		{
+			::booldog::string string( utf16_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+		
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );		
+		}
+
+		{
+			::booldog::string string( utf16_April_var , 6 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+		
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_il_var ) == 0 );		
+		}
+
+		{
+			::booldog::string string( utf16_April_var , 0 , 12 , ::booldog::enums::string::UTF16 );
+		
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );		
+		}
+
+		{
+			::booldog::string string( utf16_April_var , 0 , 6 , ::booldog::enums::string::UTF16 );
+		
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Apr_var ) == 0 );
+		}
+
+
+		{
+			::booldog::string string( utf32_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( utf32_April_var , 12 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_il_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+		}
+
+		{
+			::booldog::string string( utf32_April_var , 0 , 24 , ::booldog::enums::string::UTF32 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( utf32_April_var , 0 , 12 , ::booldog::enums::string::UTF32 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_Apr_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+		}
+
+		const wchar_t* wchar_test = 0;
+		if( ::booldog::compile::If< sizeof( wchar_t ) == 2 >::test() )
+			wchar_test = (wchar_t*)utf16_April_var;
+		else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
+			wchar_test = (wchar_t*)utf32_April_var;
+		{
+			::booldog::string string( wchar_test , 0 , SIZE_MAX );
+		
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );		
+		}
+
+		{
+			::booldog::string string( wchar_test , 3 , SIZE_MAX );
+		
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_il_var ) == 0 );		
+		}
+
+		{
+			::booldog::string string( wchar_test , 0 , 6 );
+		
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );		
+		}
+
+		{
+			::booldog::string string( wchar_test , 0 , 3 );
+		
+			ASSERT_EQ( string.length() , 3 );
+
+			ASSERT_EQ( string.bytes() , 7 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Apr_var ) == 0 );
+		}
+
+
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 10 );
+
+			ASSERT_EQ( string.bytes() , 17 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf8_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 10 );
+
+			ASSERT_EQ( string.bytes() , 17 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf16_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 10 );
+
+			ASSERT_EQ( string.bytes() , 17 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf32_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 10 );
+
+			ASSERT_EQ( string.bytes() , 17 );
+		}
+
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( cp1251_April_var , 3 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf8_April_var , 6 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf16_April_var , 6 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf32_April_var , 12 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( cp1251_April_var , 0 , 3 , ::booldog::enums::string::CP1251 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApr_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf8_April_var , 0 , 6 , ::booldog::enums::string::UTF8 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApr_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf16_April_var , 0 , 6 , ::booldog::enums::string::UTF16 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApr_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+		{
+			::booldog::string string( "TEST" );
+
+			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
+
+			ASSERT_EQ( string.length() , 4 );
+
+			ASSERT_EQ( string.bytes() , 5 );
+
+			string.append( utf32_April_var , 0 , 12 , ::booldog::enums::string::UTF32 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_TESTApr_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 7 );
+
+			ASSERT_EQ( string.bytes() , 11 );
+		}
+
+
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , cp1251_il_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf16_il_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf32_il_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf8_il_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , cp1251_April_var , 3 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf16_April_var , 6 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf32_April_var , 12 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf8_April_var , 6 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , cp1251_April_var , 3 , 3 , ::booldog::enums::string::CP1251 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf16_April_var , 6 , 6 , ::booldog::enums::string::UTF16 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf32_April_var , 12 , 12 , ::booldog::enums::string::UTF32 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , utf8_April_var , 6 , 6 , ::booldog::enums::string::UTF8 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+
+
+		if( ::booldog::compile::If< sizeof( wchar_t ) == 2 >::test() )
+			wchar_test = (wchar_t*)utf16_il_var;
+		else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
+			wchar_test = (wchar_t*)utf32_il_var;
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , wchar_test , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		if( ::booldog::compile::If< sizeof( wchar_t ) == 2 >::test() )
+			wchar_test = (wchar_t*)utf16_April_var;
+		else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
+			wchar_test = (wchar_t*)utf32_April_var;
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , wchar_test , 3 , SIZE_MAX );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+
+			string.insert( 3 , wchar_test , 3 , 3 );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_Aprilil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_il_var , cp1251_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_il_var , utf16_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_il_var , utf32_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_il_var , utf8_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_il_var , cp1251_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_il_var , utf16_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_il_var , utf32_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_il_var , utf8_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_il_var , cp1251_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_il_var , utf16_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_il_var , utf32_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_il_var , utf8_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_il_var , cp1251_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_il_var , utf16_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_il_var , utf32_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_il_var , utf8_April_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , cp1251_April_var , SIZE_MAX , 3 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf16_April_var , SIZE_MAX , 3 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf32_April_var , SIZE_MAX , 3 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf8_April_var , SIZE_MAX , 3 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , cp1251_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf16_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf32_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf8_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , cp1251_April_var , SIZE_MAX , 12 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf16_April_var , SIZE_MAX , 12 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf32_April_var , SIZE_MAX , 12 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf8_April_var , SIZE_MAX , 12 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , cp1251_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf16_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf32_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf8_April_var , SIZE_MAX , 6 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , cp1251_April_var , SIZE_MAX , 3 , 3 , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf16_April_var , SIZE_MAX , 3 , 3 , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf32_April_var , SIZE_MAX , 3 , 3 , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf8_April_var , SIZE_MAX , 3 , 3 , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , cp1251_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf16_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf32_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf8_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , cp1251_April_var , SIZE_MAX , 12 , 12 , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf16_April_var , SIZE_MAX , 12 , 12 , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf32_April_var , SIZE_MAX , 12 , 12 , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf8_April_var , SIZE_MAX , 12 , 12 , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , cp1251_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf16_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf32_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf8_April_var , SIZE_MAX , 6 , 6 , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprAprilAprAprilAprApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 27 );
+
+			ASSERT_EQ( string.bytes() , 55 );
+		}
+
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_April_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_April_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_April_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_April_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 9 );
+
+			ASSERT_EQ( string.bytes() , 19 );
+		}
+
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_Apr_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_Apr_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_Apr_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , cp1251_Apr_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_Apr_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_Apr_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_Apr_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf8_Apr_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_Apr_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_Apr_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_Apr_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf16_Apr_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_Apr_var , cp1251_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_Apr_var , utf8_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_Apr_var , utf16_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 0 , utf32_Apr_var , utf32_il_var , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_ilililililil_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+		}
+
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , utf32_April_var , 0 , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , utf16_April_var , 0 , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , utf8_April_var , 0 , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , cp1251_April_var , 0 , SIZE_MAX , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 6 );
+
+			ASSERT_EQ( string.bytes() , 13 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , utf32_April_var , 0 , 1 , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 12 );
+
+			ASSERT_EQ( string.bytes() , 25 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , utf16_April_var , 0 , 1 , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF16
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 12 );
+
+			ASSERT_EQ( string.bytes() , 25 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , utf8_April_var , 0 , 1 , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF8
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 12 );
+
+			ASSERT_EQ( string.bytes() , 25 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			string.replace( 3 , cp1251_April_var , 0 , 1 , 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::CP1251
+				, 0 , SIZE_MAX , SIZE_MAX , ::booldog::enums::string::UTF32 , true , true );
+
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 12 );
+
+			ASSERT_EQ( string.bytes() , 25 );
+		}
+
+		{
+			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+		
+			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
+
+			ASSERT_EQ( string.length() , 18 );
+
+			ASSERT_EQ( string.bytes() , 37 );
+
+			::booldog::string res;
+			res = string.substring( 12 );
+
+			ASSERT_TRUE( strcmp( res.str() , utf8_April_var ) == 0 );
+
+			ASSERT_EQ( res.length() , 6 );
+
+			ASSERT_EQ( res.bytes() , 13 );
+		}
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
 	}
+};
+
+class boo_string_utilsTest : public ::testing::Test 
+{
+};
+TEST_F( boo_string_utilsTest , test )
+{
+	::booldog::allocators::stack::simple< 4096 > allocator;
+
+	size_t total = allocator.available();
+
+	char* begin = (char*)allocator.begin();
+
+	booldog::_allocator = &allocator;
 
 	{
-		::booldog::string string( cp1251_test0 , 3 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+		::booldog::result_bool resbool;
+
+		wchar_t* wcsdst = 0;
+		size_t wcsdstlen = 0;
+		size_t wcsdstsize = 0;
+
+		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , 0 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"" );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" , 3 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_EQ( wcsdstlen , 3 );
+
+		ASSERT_EQ( wcsdstsize , 4 * sizeof( wchar_t ) );
+
+		ASSERT_TRUE( wcscmp( wcsdst , L"lib" ) == 0 );
+
+
+		::booldog::utils::string::wcs::insert( &resbool , 3 , wcsdst , wcsdstlen , wcsdstsize , L"re" );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_EQ( wcsdstlen , 5 );
+
+		ASSERT_EQ( wcsdstsize , 6 * sizeof( wchar_t ) );
+
+		ASSERT_TRUE( wcscmp( wcsdst , L"libre" ) == 0 );
+
+
+		::booldog::utils::string::wcs::insert( &resbool , 3 , wcsdst , wcsdstlen , wcsdstsize , L"libcore.so" , 3 , 2 );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_EQ( wcsdstlen , 7 );
+
+		ASSERT_EQ( wcsdstsize , 8 * sizeof( wchar_t ) );
+
+		ASSERT_TRUE( wcscmp( wcsdst , L"libcore" ) == 0 );
+
+		allocator.free( wcsdst );
+
+		ASSERT_TRUE( allocator.begin() == begin );
 		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test2 ) == 0 );
-
-		ASSERT_EQ( string.length() , 3 );
-
-		ASSERT_EQ( string.bytes() , 7 );
+		ASSERT_EQ( allocator.available() , total );
 	}
 
-	{
-		::booldog::string string( cp1251_test0 , 0 , 6 , ::booldog::enums::string::CP1251 );
-		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test0 ) == 0 );
-
-		ASSERT_EQ( string.length() , 6 );
-
-		ASSERT_EQ( string.bytes() , 13 );
-	}
 
 	{
-		::booldog::string string( cp1251_test0 , 0 , 3 , ::booldog::enums::string::CP1251 );
+		::booldog::result_bool resbool;
+
+		char* mbsdst = 0;
+		size_t mbsdstlen = 0;
+		size_t mbsdstsize = 0;
+
+		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_EQ( mbsdstlen , 3 );
+
+		ASSERT_EQ( mbsdstsize , 4 );
+
+		ASSERT_TRUE( strcmp( mbsdst , "lib" ) == 0 );
+
+
+		::booldog::utils::string::mbs::insert( &resbool , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_EQ( mbsdstlen , 5 );
+
+		ASSERT_EQ( mbsdstsize , 6 );
+
+		ASSERT_TRUE( strcmp( mbsdst , "libre" ) == 0 );
+
+
+		::booldog::utils::string::mbs::insert( &resbool , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_EQ( mbsdstlen , 7 );
+
+		ASSERT_EQ( mbsdstsize , 8 );
+
+		ASSERT_TRUE( strcmp( mbsdst , "libcore" ) == 0 );
+
+		allocator.free( mbsdst );
+
+		ASSERT_TRUE( allocator.begin() == begin );
 		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test1 ) == 0 );
-
-		ASSERT_EQ( string.length() , 3 );
-
-		ASSERT_EQ( string.bytes() , 7 );
-	}
-
-
-	{
-		::booldog::string string( utf16_test0 , 0 , SIZE_MAX , ::booldog::enums::string::UTF16 );
-		
-		ASSERT_EQ( string.length() , 6 );
-
-		ASSERT_EQ( string.bytes() , 13 );
-
-		ASSERT_TRUE( strcmp( string.str() , utf8_test0 ) == 0 );		
-	}
-
-	{
-		::booldog::string string( utf16_test0 , 6 , SIZE_MAX , ::booldog::enums::string::UTF16 );
-		
-		ASSERT_EQ( string.length() , 3 );
-
-		ASSERT_EQ( string.bytes() , 7 );
-
-		ASSERT_TRUE( strcmp( string.str() , utf8_test2 ) == 0 );		
-	}
-
-	{
-		::booldog::string string( utf16_test0 , 0 , 12 , ::booldog::enums::string::UTF16 );
-		
-		ASSERT_EQ( string.length() , 6 );
-
-		ASSERT_EQ( string.bytes() , 13 );
-
-		ASSERT_TRUE( strcmp( string.str() , utf8_test0 ) == 0 );		
-	}
-
-	{
-		::booldog::string string( utf16_test0 , 0 , 6 , ::booldog::enums::string::UTF16 );
-		
-		ASSERT_EQ( string.length() , 3 );
-
-		ASSERT_EQ( string.bytes() , 7 );
-
-		ASSERT_TRUE( strcmp( string.str() , utf8_test1 ) == 0 );
-	}
-
-
-	{
-		::booldog::string string( utf32_test0 , 0 , SIZE_MAX , ::booldog::enums::string::UTF32 );
-		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test0 ) == 0 );
-
-		ASSERT_EQ( string.length() , 6 );
-
-		ASSERT_EQ( string.bytes() , 13 );
-	}
-
-	{
-		::booldog::string string( utf32_test0 , 12 , SIZE_MAX , ::booldog::enums::string::UTF32 );
-		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test2 ) == 0 );
-
-		ASSERT_EQ( string.length() , 3 );
-
-		ASSERT_EQ( string.bytes() , 7 );
-	}
-
-	{
-		::booldog::string string( utf32_test0 , 0 , 24 , ::booldog::enums::string::UTF32 );
-		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test0 ) == 0 );
-
-		ASSERT_EQ( string.length() , 6 );
-
-		ASSERT_EQ( string.bytes() , 13 );
-	}
-
-	{
-		::booldog::string string( utf32_test0 , 0 , 12 , ::booldog::enums::string::UTF32 );
-		
-		ASSERT_TRUE( strcmp( string.str() , utf8_test1 ) == 0 );
-
-		ASSERT_EQ( string.length() , 3 );
-
-		ASSERT_EQ( string.bytes() , 7 );
+		ASSERT_EQ( allocator.available() , total );
 	}
 };
 
@@ -5785,24 +3670,112 @@ TEST_F( boo_arrayTest , test )
 
 	booldog::_allocator = &allocator;
 
+	::booldog::array< wchar_t* > wcs_array;
+
+	ASSERT_EQ( wcs_array.insert( 3 , L"TEST2" ) , 0 );
+
+	ASSERT_EQ( wcs_array.count() , 1 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+	ASSERT_EQ( wcs_array.insert( 0 , L"TEST0" ) , 0 );
+
+	ASSERT_EQ( wcs_array.count() , 2 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST0" ) == 0 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST2" ) == 0 );
+
+	ASSERT_EQ( wcs_array.insert( 1 , L"TEST1" ) , 1 );
+
+	ASSERT_EQ( wcs_array.count() , 3 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST0" ) == 0 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST1" ) == 0 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 2 ] , L"TEST2" ) == 0 );
+
+	wcs_array.clear();
+
+	ASSERT_EQ( wcs_array.count() , 0 );
+
+
+	ASSERT_EQ( wcs_array.add( L"TEST2" ) , 0 );
+
+	ASSERT_EQ( wcs_array.count() , 1 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+	ASSERT_EQ( wcs_array.add( L"TEST0" ) , 1 );
+
+	ASSERT_EQ( wcs_array.count() , 2 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST0" ) == 0 );
+
+	ASSERT_EQ( wcs_array.add( L"TEST1" ) , 2 );
+
+	ASSERT_EQ( wcs_array.count() , 3 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST0" ) == 0 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 2 ] , L"TEST1" ) == 0 );
+
+
+	wcs_array.remove( 1 , 4 );
+
+	ASSERT_EQ( wcs_array.count() , 1 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+
+	ASSERT_EQ( wcs_array.add( L"TEST1" ) , 1 );
+
+	ASSERT_EQ( wcs_array.count() , 2 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST1" ) == 0 );
+
+
+	wcs_array.remove( 0 , 1 );
+
+	ASSERT_EQ( wcs_array.count() , 1 );
+
+	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST1" ) == 0 );
+};
+
+class boo_listTest : public ::testing::Test 
+{
+};
+TEST_F( boo_listTest , test )
+{
+	::booldog::allocators::stack::simple< 4096 > allocator;
+
+	booldog::_allocator = &allocator;
+
 	::booldog::string item0( "TEST0" );
 
 	::booldog::string item1( "TEST1" );
 
 	::booldog::string item2( "TEST2" );
 
-	::booldog::array< ::booldog::string > string_array;
+	::booldog::list< ::booldog::string > string_array;
 
-	::booldog::array< ::booldog::object > object_array;
+	::booldog::list< ::booldog::object > object_array;
 
 
-	ASSERT_EQ( string_array.insert( 3 , item2 , __FILE__ , __LINE__ ) , 0 );
+	ASSERT_EQ( string_array.insert( 3 , item2 ) , 0 );
 
 	ASSERT_EQ( string_array.count() , 1 );
 
 	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
 
-	ASSERT_EQ( string_array.insert( 0 , item0 , __FILE__ , __LINE__ ) , 0 );
+	ASSERT_EQ( string_array.insert( 0 , item0 ) , 0 );
 
 	ASSERT_EQ( string_array.count() , 2 );
 
@@ -5810,7 +3783,7 @@ TEST_F( boo_arrayTest , test )
 
 	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST2" ) == 0 );
 
-	ASSERT_EQ( string_array.insert( 1 , item1 , __FILE__ , __LINE__ ) , 1 );
+	ASSERT_EQ( string_array.insert( 1 , item1 ) , 1 );
 
 	ASSERT_EQ( string_array.count() , 3 );
 
@@ -5825,13 +3798,13 @@ TEST_F( boo_arrayTest , test )
 	ASSERT_EQ( string_array.count() , 0 );
 
 
-	ASSERT_EQ( string_array.add( item2 , __FILE__ , __LINE__ ) , 0 );
+	ASSERT_EQ( string_array.add( item2 ) , 0 );
 
 	ASSERT_EQ( string_array.count() , 1 );
 
 	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
 
-	ASSERT_EQ( string_array.add( item0 , __FILE__ , __LINE__ ) , 1 );
+	ASSERT_EQ( string_array.add( item0 ) , 1 );
 
 	ASSERT_EQ( string_array.count() , 2 );
 
@@ -5839,7 +3812,7 @@ TEST_F( boo_arrayTest , test )
 
 	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST0" ) == 0 );
 
-	ASSERT_EQ( string_array.add( item1 , __FILE__ , __LINE__ ) , 2 );
+	ASSERT_EQ( string_array.add( item1 ) , 2 );
 
 	ASSERT_EQ( string_array.count() , 3 );
 
@@ -5850,14 +3823,14 @@ TEST_F( boo_arrayTest , test )
 	ASSERT_TRUE( strcmp( string_array[ 2 ].str() , "TEST1" ) == 0 );
 
 
-	string_array.remove( 1 , 4 , __FILE__ , __LINE__ );
+	string_array.remove( 1 , 4 );
 
 	ASSERT_EQ( string_array.count() , 1 );
 
 	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
 
 
-	ASSERT_EQ( string_array.add( item1 , __FILE__ , __LINE__ ) , 1 );
+	ASSERT_EQ( string_array.add( item1 ) , 1 );
 
 	ASSERT_EQ( string_array.count() , 2 );
 
@@ -5866,14 +3839,14 @@ TEST_F( boo_arrayTest , test )
 	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST1" ) == 0 );
 
 
-	string_array.remove( 0 , 1 , __FILE__ , __LINE__ );
+	string_array.remove( 0 , 1 );
 
 	ASSERT_EQ( string_array.count() , 1 );
 
 	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST1" ) == 0 );
 
 
-	string_array.insert( 1 , object_array , __FILE__ , __LINE__ );
+	string_array.insert( 1 , object_array );
 };
 
 
@@ -5890,13 +3863,13 @@ TEST_F( boo_assignmentTest , test )
 
 	::booldog::string str;
 
-	::booldog::array< ::booldog::string > str_array;
+	::booldog::list< ::booldog::string > str_array;
 
-	::booldog::array< ::booldog::object > obj_array;
+	::booldog::list< ::booldog::object > obj_array;
 
-	::booldog::array< ::booldog::array< ::booldog::object > > obj_array_array;
+	::booldog::list< ::booldog::list< ::booldog::object > > obj_array_array;
 
-	::booldog::array< ::booldog::array< ::booldog::string > > str_array_array;
+	::booldog::list< ::booldog::list< ::booldog::string > > str_array_array;
 };
 
 
@@ -5913,169 +3886,169 @@ TEST_F( boo_checkTest , test )
 
 	::booldog::string str( &allocator );
 
-	::booldog::array< ::booldog::string > str_array( &allocator );
+	::booldog::list< ::booldog::string > str_array( &allocator );
 
-	::booldog::array< ::booldog::object > obj_array( &allocator );
+	::booldog::list< ::booldog::object > obj_array( &allocator );
 
-	::booldog::array< ::booldog::array< ::booldog::object > > obj_array_array( &allocator );
+	::booldog::list< ::booldog::list< ::booldog::object > > obj_array_array( &allocator );
 
-	::booldog::array< ::booldog::array< ::booldog::string > > str_array_array( &allocator );
+	::booldog::list< ::booldog::list< ::booldog::string > > str_array_array( &allocator );
 
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str ) );
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::string >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( str ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( str ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( str ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( str ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str ) );
 
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str_array ) );
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( str_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( str_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( str_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( str_array ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( str_array ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array ) );
 
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj_array ) );
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array ) );
 
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj_array_array ) );
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj_array_array ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj_array_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj_array_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj_array_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array_array ) );
 
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str_array_array ) );
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( str_array_array ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( str_array_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( str_array_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( str_array_array ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array_array ) );
 
 
 	ASSERT_TRUE( ::booldog::isclass< ::booldog::object >( obj ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str ) );
 
 	ASSERT_TRUE( ::booldog::isclass< ::booldog::string >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( str ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( str ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( str ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( str ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str_array ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( str_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( str_array ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( str_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( str_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( str_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj_array ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj_array ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj_array_array ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj_array_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj_array_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj_array_array ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj_array_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array_array ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str_array_array ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( str_array_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( str_array_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( str_array_array ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( str_array_array ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array_array ) );
 
 
 	obj = str;
@@ -6084,26 +4057,26 @@ TEST_F( boo_checkTest , test )
 
 	ASSERT_TRUE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
 	ASSERT_TRUE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	obj = str_array;
@@ -6112,26 +4085,26 @@ TEST_F( boo_checkTest , test )
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	obj = obj_array;
@@ -6140,26 +4113,26 @@ TEST_F( boo_checkTest , test )
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	obj = obj_array_array;
@@ -6168,26 +4141,26 @@ TEST_F( boo_checkTest , test )
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	obj = str_array_array;
@@ -6196,30 +4169,1442 @@ TEST_F( boo_checkTest , test )
 
 	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
 	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::string > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::object > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::object > > >( obj ) );
+	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::array< ::booldog::array< ::booldog::string > > >( obj ) );
+	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 	//obj().ref;
 
 //	booldog::string< &booldog::_heap > g( "l" );
 	//obj = get_string();
+};
+class boo_io_utilsTest : public ::testing::Test 
+{
+};
+TEST_F( boo_io_utilsTest , test )
+{
+	::booldog::allocators::stack::simple< 4096 > allocator;
+
+	booldog::_allocator = &allocator;
+
+	wchar_t* wtest = L"C:/privet\\../gui.exe\\./..\\ui.exe";
+	char* mbtest = "C:/privet\\../gui.exe\\./..\\ui.exe";
+
+	wchar_t* wtest2 = L"C:/privet\\../gui.exe\\./..\\ui";
+	char* mbtest2 = "C:/privet\\../gui.exe\\./..\\ui";
+
+	::booldog::result_wchar reswchar( ::booldog::_allocator );
+	
+	::booldog::utils::io::path::wcs::filename( &reswchar , wtest );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 7 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 6 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"ui.exe" ) == 0 );
+
+	::booldog::utils::io::path::wcs::filename( &reswchar , wtest , 3 , 17 );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 8 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 7 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"gui.exe" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::directory( &reswchar , wtest );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 26 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 25 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"C:/privet\\../gui.exe\\./.." ) == 0 );
+
+	::booldog::utils::io::path::wcs::directory( &reswchar , wtest , 3 , 17 );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 10 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 9 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"privet\\.." ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::extension( &reswchar , wtest );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 4 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 3 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"exe" ) == 0 );
+
+	::booldog::utils::io::path::wcs::extension( &reswchar , wtest , 3 , 16 );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 2 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"ex" ) == 0 );
+
+	::booldog::utils::io::path::wcs::extension( &reswchar , wtest2 );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 0 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+	::booldog::result_mbchar resmbchar( ::booldog::_allocator );
+	
+	::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 7 );
+
+	ASSERT_EQ( resmbchar.mblen , 6 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "ui.exe" ) == 0 );
+
+	::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest , 3 , 17 );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 8 );
+
+	ASSERT_EQ( resmbchar.mblen , 7 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "gui.exe" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 26 );
+
+	ASSERT_EQ( resmbchar.mblen , 25 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "C:/privet\\../gui.exe\\./.." ) == 0 );
+
+	::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest , 3 , 17 );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 10 );
+
+	ASSERT_EQ( resmbchar.mblen , 9 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "privet\\.." ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 4 );
+
+	ASSERT_EQ( resmbchar.mblen , 3 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "exe" ) == 0 );
+
+	::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest , 3 , 16 );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 3 );
+
+	ASSERT_EQ( resmbchar.mblen , 2 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "ex" ) == 0 );
+
+	::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest2 );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 1 );
+
+	ASSERT_EQ( resmbchar.mblen , 0 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\kill/." );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 12 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 9 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./.\\kill/." );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 16 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 9 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home\\./.\\kill/." );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 18 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 9 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/." );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 36 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 9 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/joke\\.." );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 42 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 9 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"/home/.." );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 0 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L".\\" );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 0 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"." );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 2 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 0 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./\\.\\kill/." );
+
+	ASSERT_FALSE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./.\\../kill/." );
+
+	ASSERT_FALSE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"../local" );
+
+	ASSERT_FALSE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\kill/." );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 12 );
+
+	ASSERT_EQ( resmbchar.mblen , 9 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./.\\kill/." );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 16 );
+
+	ASSERT_EQ( resmbchar.mblen , 9 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home\\./.\\kill/." );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 18 );
+
+	ASSERT_EQ( resmbchar.mblen , 9 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/." );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 36 );
+
+	ASSERT_EQ( resmbchar.mblen , 9 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/joke\\.." );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 42 );
+
+	ASSERT_EQ( resmbchar.mblen , 9 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "/home/.." );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 9 );
+
+	ASSERT_EQ( resmbchar.mblen , 0 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , ".\\" );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 3 );
+
+	ASSERT_EQ( resmbchar.mblen , 0 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "." );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 2 );
+
+	ASSERT_EQ( resmbchar.mblen , 0 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./\\.\\kill/." );
+
+	ASSERT_FALSE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./.\\../kill/." );
+
+	ASSERT_FALSE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "../local" );
+
+	ASSERT_FALSE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+	::booldog::result_bool resbool;
+
+	::booldog::utils::io::path::wcs::has_levels( &resbool , 0 );
+
+	ASSERT_FALSE( resbool.succeeded() );
+
+	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+	::booldog::utils::io::path::wcs::has_levels( &resbool , L"" );
+
+	ASSERT_FALSE( resbool.succeeded() );
+
+	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local/" , 9 );
+
+	ASSERT_FALSE( resbool.succeeded() );
+
+	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" );
+
+	ASSERT_TRUE( resbool.succeeded() );
+
+	ASSERT_TRUE( resbool.bres );
+
+
+	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" , 2 );
+
+	ASSERT_TRUE( resbool.succeeded() );
+
+	ASSERT_TRUE( resbool.bres );
+
+
+	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" , 3 );
+
+	ASSERT_TRUE( resbool.succeeded() );
+
+	ASSERT_FALSE( resbool.bres );
+
+
+
+	::booldog::utils::io::path::mbs::has_levels( &resbool , 0 );
+
+	ASSERT_FALSE( resbool.succeeded() );
+
+	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+	::booldog::utils::io::path::mbs::has_levels( &resbool , "" );
+
+	ASSERT_FALSE( resbool.succeeded() );
+
+	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local/" , 9 );
+
+	ASSERT_FALSE( resbool.succeeded() );
+
+	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" );
+
+	ASSERT_TRUE( resbool.succeeded() );
+
+	ASSERT_TRUE( resbool.bres );
+
+
+	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" , 2 );
+
+	ASSERT_TRUE( resbool.succeeded() );
+
+	ASSERT_TRUE( resbool.bres );
+
+
+	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" , 3 );
+
+	ASSERT_TRUE( resbool.succeeded() );
+
+	ASSERT_FALSE( resbool.bres );
+
+
+	
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"" );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 0 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"core" );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 4 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core" );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 4 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core.dll.exe" );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 8 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 0 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" , 7 );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 4 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 8 );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 4 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+
+
+	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 9 );
+
+	ASSERT_TRUE( reswchar.succeeded() );
+
+	ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
+
+	ASSERT_EQ( reswchar.wlen , 8 );
+
+	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
+
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "" );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 1 );
+
+	ASSERT_EQ( resmbchar.mblen , 0 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "core" );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 5 );
+
+	ASSERT_EQ( resmbchar.mblen , 4 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core" );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 5 );
+
+	ASSERT_EQ( resmbchar.mblen , 4 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core.dll.exe" );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 9 );
+
+	ASSERT_EQ( resmbchar.mblen , 8 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 1 );
+
+	ASSERT_EQ( resmbchar.mblen , 0 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" , 7 );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 5 );
+
+	ASSERT_EQ( resmbchar.mblen , 4 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 8 );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 5 );
+
+	ASSERT_EQ( resmbchar.mblen , 4 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 9 );
+
+	ASSERT_TRUE( resmbchar.succeeded() );
+
+	ASSERT_EQ( resmbchar.mbsize , 9 );
+
+	ASSERT_EQ( resmbchar.mblen , 8 );
+
+	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
+
+
+
+	{
+		::booldog::result res;
+
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::wcs::pathname_without_extension( &res , 0 , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e','.','d','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 9 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"core.d/ll" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e','.','d','l','l','.', 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 8 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"core.dll" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { '.','c','o','r','e', 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 0 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"" ) == 0 );
+	}
+
+
+	{
+		::booldog::result res;
+
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::mbs::pathname_without_extension( &res , 0 , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e','.','d','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 9 );
+
+		ASSERT_TRUE( strcmp( pathname , "core.d/ll" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e','.','d','l','l','.', 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 8 );
+
+		ASSERT_TRUE( strcmp( pathname , "core.dll" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { '.','c','o','r','e', 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 0 );
+
+		ASSERT_TRUE( strcmp( pathname , "" ) == 0 );
+	}
+
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 1 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core.dll.exe" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 9 );
+
+		ASSERT_EQ( resmbchar.mblen , 8 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , ".core" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 1 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core." , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 15 );
+
+		ASSERT_EQ( resmbchar.mblen , 14 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "/home.exe\\core" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 9 , 4 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "\\cor" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 1 , 6 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home" ) == 0 );
+	}
+
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 0 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 4 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core.dll.exe" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 8 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L".core" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 0 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core." , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 4 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 15 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 14 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"/home.exe\\core" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 9 , 4 );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 4 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"\\cor" ) == 0 );
+	}
+
+	{
+
+		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 1 , 6 );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 4 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home" ) == 0 );
+	}
+
+
+	{
+		::booldog::result res;
+
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::wcs::directory( &res , 0 , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e','\\','d','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 6 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"core.d" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { '/','c','o','r','e','.','d','l','l','.', 0 };
+		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 0 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"" ) == 0 );
+	}
+
+
+	{
+		::booldog::result res;
+
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::mbs::directory( &res , 0 , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e', 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e','\\','d','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 4 );
+
+		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 6 );
+
+		ASSERT_TRUE( strcmp( pathname , "core.d" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { '/','c','o','r','e','.','d','l','l','.', 0 };
+		size_t pathnamelen = sizeof( pathname ) - 1;
+		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 0 );
+
+		ASSERT_TRUE( strcmp( pathname , "" ) == 0 );
+	}
+
+
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'h','o','m','e','/','.','.','\\','t','e','s','t','/','.','\\','c','o','r','e','\\', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 10 );
+#ifdef __WINDOWS__
+		ASSERT_TRUE( wcscmp( pathname , L"\\test\\core" ) == 0 );
+#else
+		ASSERT_TRUE( wcscmp( pathname , L"/test/core" ) == 0 );
+#endif
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'h','o','m','e','\\','.','/','\\','.','\\','k','i','l','l','/','.', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { '.','/','.','\\','.','.','/','k','i','l','l','/','.', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+	}
+
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'h','o','m','e','/','.','.','\\','t','e','s','t','/','.','\\','c','o','r','e','\\', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 10 );
+#ifdef __WINDOWS__
+		ASSERT_TRUE( strcmp( pathname , "\\test\\core" ) == 0 );
+#else
+		ASSERT_TRUE( strcmp( pathname , "/test/core" ) == 0 );
+#endif
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'h','o','m','e','\\','.','/','\\','.','\\','k','i','l','l','/','.', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { '.','/','.','\\','.','.','/','k','i','l','l','/','.', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+	}
+};
+class boo_base_loaderTest : public ::testing::Test 
+{
+};
+TEST_F( boo_base_loaderTest , test )
+{
+	::booldog::allocators::stack::simple< 4096 > allocator;
+
+	booldog::_allocator = &allocator;
+
+	::booldog::result_mbchar resmbchar( booldog::_allocator );
+	::booldog::utils::executable::mbs::filename< 4 >( &resmbchar );
+
+	::booldog::result_wchar reswchar( booldog::_allocator );
+	::booldog::utils::executable::wcs::filename< 4 >( &reswchar );
+	
+	::booldog::loader loader( &allocator );
+
+	::booldog::result_module res;
+
+	booldog::param search_paths_params[] =
+	{
+		BOOPARAM_PCHAR( "../../test_data\\modules0" ) ,
+		BOOPARAM_PWCHAR( L"..\\../test_data\\modules1" ) ,
+		BOOPARAM_NONE
+	};
+	booldog::named_param load_params[] =
+	{
+		BOONAMED_PARAM_PCHAR( "search_paths" , search_paths_params ) ,
+		BOONAMED_PARAM_BOOL( "exedir_as_root_path" , true ) ,
+		BOONAMED_PARAM_NONE
+	};
+
+	loader.wcsload( &res , L"core.dll" , load_params );
+
+	//loader.add_search_path( ::booldog::string( ".\\../../.\\test_data\\modules" ) );
 };
 #ifdef __LINUX__
 #include <locale.h>

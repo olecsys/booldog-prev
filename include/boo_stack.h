@@ -65,10 +65,9 @@ namespace booldog
 				{
 					return &_data[ s + sizeof( ::booldog::mem::info ) ];
 				};
-				virtual void* alloc( size_t size , const char* file , int line )
+				virtual void* alloc( size_t size , ::booldog::debug::info* debuginfo = 0 )
 				{
-					file = file;
-					line = line;
+					debuginfo = debuginfo;
 					if( _avail > 0 )
 					{
 						void* endptr = end();
@@ -98,13 +97,25 @@ namespace booldog
 						}
 						else
 						{
+							::booldog::mem::info* prev = _begin;
 							info = _begin;
 							for( ; ; )
 							{
 								info = (::booldog::mem::info*)( ( (char*)info ) + info->_size + sizeof( ::booldog::mem::info ) );
-								begin = check_alloc( info , size , total );
-								if( info >= endptr || begin )
+								if( info >= endptr )
 									break;
+								if( info->_busy == false )
+								{
+									if( info != prev && prev->_busy == false )
+									{
+										prev->_size += info->_size + sizeof( ::booldog::mem::info );
+										info = prev;
+									}
+									begin = check_alloc( info , size , total );
+								}
+								if( begin )
+									break;
+								prev = info;
 							}
 						}
 						if( begin )
@@ -133,8 +144,10 @@ namespace booldog
 						if( _begin > begin )
 							_begin = begin;
 					}
+					else 
+						throw int();
 				};
-				virtual void* realloc( void* pointer , size_t size , const char* file , int line )
+				virtual void* realloc( void* pointer , size_t size , ::booldog::debug::info* debuginfo = 0 )
 				{
 					if( size == 0 )
 					{
@@ -142,7 +155,7 @@ namespace booldog
 						return 0;
 					}
 					if( pointer == 0 )
-						return alloc( size , file , line );
+						return alloc( size , debuginfo );
 
 					char* ptr = (char*)pointer;
 					::booldog::mem::info* begin = (::booldog::mem::info*)( ptr - sizeof( ::booldog::mem::info ) );
@@ -241,7 +254,7 @@ namespace booldog
 						}
 						else
 						{
-							void* new_pointer = alloc( size , file , line );
+							void* new_pointer = alloc( size , debuginfo );
 							if( new_pointer )
 								::memcpy( new_pointer , pointer , old_size );
 							free( pointer );

@@ -120,14 +120,22 @@ namespace booldog
 		::booldog::object* detach( void ) const
 		{
 			::booldog::object* _obj_ = const_cast< ::booldog::object* >( this );
-			if( _obj )
+			if( _obj == 0 )
 			{
-				size_t size = type_size();
-				_obj_->_obj = (::booldog::object*)_obj_->_allocator->alloc( size , __FILE__ , __LINE__ );
-				::memcpy( _obj_->_obj , this , size );
-				_obj_->_obj->_ref = 1;
-				_obj_->_obj->_allocator = _allocator;
-				_obj_->_obj->_obj = _obj;
+				size_t size = _obj_->type_size();
+				::booldog::allocator* new_allocator = _allocator;
+				::booldog::object* new_obj = (::booldog::object*)_obj_->_allocator->alloc( size );
+				::memcpy( new_obj , _obj_ , size );
+				
+				void* zero = (void*)&_obj_->_ref;
+				size -= (char*)zero - (char*)_obj_;
+				::memset( zero , 0 , size );
+
+				new_obj->_ref = 1;
+				new_obj->_allocator = new_allocator;
+				new_obj->_obj = new_obj;
+
+				_obj_->_obj = new_obj;
 			}
 			::booldog::object* res = _obj;
 			_obj_->_ref = 1;
@@ -157,13 +165,22 @@ namespace booldog
 					if( get_type_hash( 0 , true ) == ::booldog::object::type_hash
 						|| is_equal_classes( obj ) )
 					{
-						size_t size = obj.type_size();
 						::booldog::object* _obj_ = const_cast< ::booldog::object* >( &obj );
-						_obj_->_obj = (::booldog::object*)_obj_->_allocator->alloc( size , __FILE__ , __LINE__ );
-						::memcpy( _obj_->_obj , &obj , size );
-						_obj_->_obj->_ref = 1;
-						_obj_->_obj->_allocator = obj._allocator;
-						_obj_->_obj->_obj = obj._obj;
+
+						size_t size = _obj_->type_size();
+						::booldog::allocator* new_allocator = _allocator;
+						::booldog::object* new_obj = (::booldog::object*)new_allocator->alloc( size );
+						::memcpy( new_obj , _obj_ , size );
+
+						void* zero = (void*)&_obj_->_ref;
+						size -= (char*)zero - (char*)_obj_;
+						::memset( zero , 0 , size );
+
+						new_obj->_ref = 1;
+						new_obj->_allocator = new_allocator;
+						new_obj->_obj = new_obj;
+
+						_obj_->_obj = new_obj;
 						return operator =( obj );
 					}
 				}

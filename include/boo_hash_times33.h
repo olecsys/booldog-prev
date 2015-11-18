@@ -4,7 +4,6 @@
 #include <config.h>
 #endif
 #include <boo_types.h>
-
 namespace booldog
 {
 	namespace hash
@@ -29,6 +28,47 @@ namespace booldog
 #ifdef __WINDOWS__
 #pragma warning( pop )
 #endif
+		namespace times33
+		{
+			::booldog::uint64 calculate( const char* data , size_t data_len )
+			{
+				::booldog::uint64 hash = 0;
+				const ::booldog::byte* begin = (const ::booldog::byte*)data;
+				if( data_len == SIZE_MAX )
+				{
+					const ::booldog::byte* ptr = begin;
+					for( ; *ptr ; ptr++ )
+						hash = hash * 33 + *ptr;
+				}
+				else
+				{
+					const ::booldog::byte* ptr = begin;
+					for( size_t index0 = data_len ; index0 ; index0-- , ptr++ )
+						hash = hash * 33 + *ptr;
+				}
+				return hash;
+			};
+			::booldog::uint64 calculate( size_t count , va_list ap )
+			{
+				::booldog::uint64 hash = 0;
+				const ::booldog::byte* ptr = 0;
+				for( size_t index0 = 0 ; index0 < count ; index0++ )
+				{
+					ptr = (const ::booldog::uint8*)va_arg( ap , char* );
+					for( ; *ptr ; ptr++ )
+						hash = hash * 33 + *ptr;
+				}
+				return hash;
+			};
+			::booldog::uint64 calculate( size_t count , ... )
+			{
+				va_list ap;
+				va_start( ap , count );
+				::booldog::uint64 hash = calculate( count , ap );
+				va_end( ap );
+				return hash;
+			};
+		};
 	};
 };
 

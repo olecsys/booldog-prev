@@ -5,17 +5,17 @@
 #endif
 #include <boo_platform.h>
 #ifdef __WINDOWS__
-#define modinternal
+#define boointernal
 #define booinline __forceinline
 #elif defined( __UNIX__ )
 #ifdef __LINUX__
 #if __GNUC__ >= 4
-#define modinternal  __attribute__ ((visibility ("hidden")))
+#define boointernal  __attribute__ ((visibility ("hidden")))
 #else
-#define modinternal
+#define boointernal
 #endif
 #elif defined( __SOLARIS__ )
-#define modinternal __hidden
+#define boointernal __hidden
 #endif
 #define booinline inline
 #endif
@@ -36,6 +36,16 @@ namespace booldog
 	typedef long long int int64;
 	typedef unsigned long long int uint64;
 #endif
+	typedef ::booldog::byte uchar;
+	typedef ::booldog::uint16 ushort;
+	typedef ::booldog::int32* pint32;
+	typedef ::booldog::uint32* puint32;
+	typedef bool* pbool;
+	typedef ::booldog::byte* puchar;
+	typedef ::booldog::int16* pshort;
+	typedef ::booldog::uint16* pushort;
+	typedef ::booldog::int64* pint64;
+	typedef ::booldog::uint64* puint64;
 };
 #ifdef __WINDOWS__
 #define I64d "%I64d"
@@ -59,4 +69,31 @@ namespace booldog
 #define __STDC_LIMIT_MACROS
 #define __STDC_CONSTANT_MACROS
 #include <stdint.h>
+namespace booldog
+{
+	namespace io
+	{
+		namespace mbs
+		{
+#ifdef __WINDOWS__
+			const char slash = '\\';
+#else
+			const char slash = '/';
+#endif
+		};
+		namespace wcs
+		{
+#ifdef __WINDOWS__
+			const wchar_t slash = '\\';
+#else
+			const wchar_t slash = '/';
+#endif
+		};
+	};
+#ifdef __WINDOWS__	
+	typedef HMODULE module_handle;
+#else
+	typedef void* module_handle;
+#endif
+};
 #endif

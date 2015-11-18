@@ -636,7 +636,12 @@ namespace booldog
 			const ::booldog::uint32* source = (::booldog::uint32*)&utf32_ptr[ srcbyteindex ] , * source_end = (::booldog::uint32*)( &utf32_ptr[ utf32_ptr_count - 1 ] + 1 );
 			if( source_end < source )
 				source_end = (::booldog::uint32*)SIZE_MAX;
-			::booldog::uint8* target = (::booldog::uint8*)&utf8_ptr[ dstbyteindex ] , * target_end = (::booldog::uint8*)( utf8_ptr + utf8_ptr_count );
+			::booldog::uint8* target = (::booldog::uint8*)SIZE_MAX , * target_end = 0;
+			if( utf8_ptr )
+			{
+				target = (::booldog::uint8*)&utf8_ptr[ dstbyteindex ];
+				target_end = (::booldog::uint8*)( &utf8_ptr[ utf8_ptr_count - 1 ] + 1 );
+			}
 			::booldog::uint32 ch = 0;
 			::booldog::byte diff = 0;
 			if( target == 0 )
@@ -656,12 +661,20 @@ namespace booldog
 					target += 1;
 					if( target > target_end )
 					{
+						if( (::booldog::byte)( ch | ::booldog::consts::utf32::_firstByteMark[ 1 ] ) == 0 )
+						{
+							target--;
+							break;
+						}
 						diff = 1;
 						goto goto_conversion_result_targetExhausted;
 					}
 					target[ -1 ] = (::booldog::byte)( ch | ::booldog::consts::utf32::_firstByteMark[ 1 ] );
 					if( target[ -1 ] == 0 )
+					{
+						target--;
 						break;
+					}
 				}
 				else if( ch < (::booldog::uint32)0x800 )
 				{
@@ -724,9 +737,9 @@ goto_conversion_result_targetExhausted:
 					return ::booldog::enums::string::conversion_result_sourceIllegal;
 				if( ch < (::booldog::uint32)0x80 )
 				{
-					utf8_bytes++;
 					if( (::booldog::byte)( ch | ::booldog::consts::utf32::_firstByteMark[ 1 ] ) == 0 )
 						break;
+					utf8_bytes++;
 				}
 				else if( ch < (::booldog::uint32)0x800 )
 					utf8_bytes += 2;

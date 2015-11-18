@@ -82,7 +82,12 @@ goto_conversion_result_targetExhausted:
 			const ::booldog::uint8* source = (::booldog::uint8*)&cp1251_ptr[ srcbyteindex ] , * source_end = (::booldog::uint8*)( cp1251_ptr + cp1251_ptr_count );
 			if( source_end < source )
 				source_end = (::booldog::uint8*)SIZE_MAX;
-			::booldog::uint8* target = (::booldog::uint8*)&utf8_ptr[ dstbyteindex ] , * target_end = (::booldog::uint8*)( utf8_ptr + utf8_ptr_count );
+			::booldog::uint8* target = (::booldog::uint8*)SIZE_MAX , * target_end = 0;
+			if( utf8_ptr )
+			{
+				target = (::booldog::uint8*)&utf8_ptr[ dstbyteindex ];
+				target_end = (::booldog::uint8*)( &utf8_ptr[ utf8_ptr_count - 1 ] + 1 );
+			}
 			::booldog::byte diff = 0;
 			while( source < source_end )
 			{
@@ -92,13 +97,20 @@ goto_conversion_result_targetExhausted:
 					{
 						if( ++target > target_end )
 						{
+							if( *(::booldog::uint8*)&::booldog::consts::cp1251::_cp1251_to_utf8[ *source++ ] == 0 )
+							{
+								target--;
+								goto goto_conversion_result_null_terminated;
+							}
 							diff = 1;
-							source++;
 							goto goto_conversion_result_targetExhausted;
 						}
 						target[ -1 ] = *(::booldog::uint8*)&::booldog::consts::cp1251::_cp1251_to_utf8[ *source++ ];
 						if( target[ -1 ] == 0 )
+						{
+							target--;
 							goto goto_conversion_result_null_terminated;
+						}
 						break;
 					}
 				case 2:
@@ -151,9 +163,9 @@ goto_conversion_result_targetExhausted:
 				{
 				case 1:
 					{
-						utf8_bytes++;
 						if( *(::booldog::uint8*)&::booldog::consts::cp1251::_cp1251_to_utf8[ *source++ ] == 0 )
 							goto goto_conversion_result_null_terminated_end;
+						utf8_bytes++;
 						break;
 					}
 				case 2:
