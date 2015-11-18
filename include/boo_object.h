@@ -5,7 +5,6 @@
 #endif
 #include <boo_allocator.h>
 #include <boo_interlocked.h>
-#include <boo_new.h>
 #include <boo_hash_times33.h>
 #include <string.h>
 namespace booldog

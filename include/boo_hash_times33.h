@@ -4,6 +4,7 @@
 #include <config.h>
 #endif
 #include <boo_types.h>
+#include <stdarg.h>
 namespace booldog
 {
 	namespace hash
