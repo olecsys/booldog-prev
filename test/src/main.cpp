@@ -3670,7 +3670,7 @@ TEST_F( boo_arrayTest , test )
 
 	booldog::_allocator = &allocator;
 
-	::booldog::array< wchar_t* > wcs_array;
+	::booldog::array< const wchar_t* > wcs_array;
 
 	ASSERT_EQ( wcs_array.insert( 3 , L"TEST2" ) , 0 );
 
@@ -4203,11 +4203,11 @@ TEST_F( boo_io_utilsTest , test )
 
 	booldog::_allocator = &allocator;
 
-	wchar_t* wtest = L"C:/privet\\../gui.exe\\./..\\ui.exe";
-	char* mbtest = "C:/privet\\../gui.exe\\./..\\ui.exe";
+	const wchar_t* wtest = L"C:/privet\\../gui.exe\\./..\\ui.exe";
+	const char* mbtest = "C:/privet\\../gui.exe\\./..\\ui.exe";
 
-	wchar_t* wtest2 = L"C:/privet\\../gui.exe\\./..\\ui";
-	char* mbtest2 = "C:/privet\\../gui.exe\\./..\\ui";
+	const wchar_t* wtest2 = L"C:/privet\\../gui.exe\\./..\\ui";
+	const char* mbtest2 = "C:/privet\\../gui.exe\\./..\\ui";
 
 	::booldog::result_wchar reswchar( ::booldog::_allocator );
 	

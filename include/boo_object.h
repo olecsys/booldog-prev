@@ -44,7 +44,7 @@ namespace booldog
 		void release( void ) const
 		{
 			if( ::booldog::interlocked::decrement( const_cast< ::booldog::interlocked::atomic* >( &_ref ) ) == 0 )
-				::booldog::destroy< ::booldog::object >( const_cast< ::booldog::object* >( this ) , _allocator );
+				_allocator->destroy< ::booldog::object >( const_cast< ::booldog::object* >( this ) );
 		};
 		object& operator ()( void )
 		{

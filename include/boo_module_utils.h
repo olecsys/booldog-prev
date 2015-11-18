@@ -59,7 +59,7 @@ namespace booldog
 							}
 						}
 #else
-						dlinfo
+						//dlinfo
 #endif
 					}
 					else
@@ -216,7 +216,7 @@ namespace booldog
 					if( ::booldog::utils::executable::mbs::filename< step >( res , allocator , debuginfo ) )
 					{
 						::booldog::result locres;
-						if( ::booldog::utils::io::path::mbs::directory( &locres , res_root_dir.mbchar , res_root_dir.mblen ) == false )
+						if( ::booldog::utils::io::path::mbs::directory( &locres , res->mbchar , res->mblen ) == false )
 							res->copy( locres );
 					}
 					return res->succeeded();

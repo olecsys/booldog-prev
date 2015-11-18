@@ -31,7 +31,6 @@
     <ClInclude Include="..\include\boo_list.h" />
     <ClInclude Include="..\include\boo_mem.h" />
     <ClInclude Include="..\include\boo_module_utils.h" />
-    <ClInclude Include="..\include\boo_new.h" />
     <ClInclude Include="..\include\boo_object.h" />
     <ClInclude Include="..\include\boo_param.h" />
     <ClInclude Include="..\include\boo_platform.h" />
