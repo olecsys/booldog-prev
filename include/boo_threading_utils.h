@@ -6,7 +6,9 @@
 #include <boo_interlocked.h>
 #ifdef __UNIX__
 #include <time.h>
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE
+#endif
 #include <unistd.h>
 #include <sys/syscall.h>
 #include <sys/types.h>

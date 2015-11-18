@@ -17,7 +17,18 @@ namespace booldog
 		booclass* realloc_array( booclass* pointer , size_t size , ::booldog::debug::info* debuginfo = 0 )
 		{
 			return (booclass*)realloc( pointer , size * sizeof( booclass ) , debuginfo );
-		}; 
+		};
+		template< class booclass >
+		booclass* create( ::booldog::debug::info* debuginfo = 0 )
+		{	
+			return new ( this->alloc( sizeof( booclass ) , debuginfo ) )booclass;
+		};
+		template< class booclass >
+		void destroy( booclass* object )
+		{
+			object->~booclass();
+			this->free( object );
+		};
 	};
 	booldog::allocator* _allocator = 0;
 };
