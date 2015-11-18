@@ -182,7 +182,7 @@ namespace booldog
 					res->mbsize = step;
 					for( ; ; )
 					{
-						res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , __FILE__ , __LINE__ );
+						res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
 						if( res->mbchar )
 						{
 							res->mblen = readlink( path , res->mbchar , res->mbsize );
@@ -269,9 +269,8 @@ namespace booldog
 					else
 						res->GetLastError();
 #else
-					::booldog::result_mbchar mbcharres( allocator );
-					filename< step >( mbcharres , allocator );
-					if( mbcharres.succeeded() )
+					::booldog::result_mbchar resmbchar( allocator );
+					if( ::booldog::utils::executable::mbs::filename( &resmbchar , allocator , debuginfo ) )
 					{
 					}
 					else
