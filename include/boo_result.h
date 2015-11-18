@@ -4,6 +4,7 @@
 #include <config.h>
 #endif
 #include <boo_allocator.h>
+#include <errno.h>
 namespace booldog
 {
 	namespace enums
@@ -14,7 +15,9 @@ namespace booldog
 			{
 				error_type_no_error ,
 				error_type_errno ,
+#ifdef __WINDOWS__
 				error_type_GetLastError , 
+#endif
 				error_type_booerr
 			};
 		};
@@ -35,7 +38,9 @@ namespace booldog
 		union
 		{
 			int errno_err;
+#ifdef __WINDOWS__
 			::booldog::uint32 get_last_error;
+#endif
 			::booldog::uint32 booerror;
 		};
 		result( void )
@@ -62,6 +67,7 @@ namespace booldog
 			this->error_type = ::booldog::enums::result::error_type_errno;
 			this->errno_err = error;
 		};
+#ifdef __WINDOWS__
 		void GetLastError( void )
 		{
 			clear();
@@ -74,6 +80,7 @@ namespace booldog
 			this->error_type = ::booldog::enums::result::error_type_GetLastError;
 			this->get_last_error = get_last_error;
 		};
+#endif
 		void booerr( ::booldog::uint32 booerror )
 		{
 			clear();
