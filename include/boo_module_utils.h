@@ -270,11 +270,11 @@ namespace booldog
 						res->GetLastError();
 #else
 					::booldog::result_mbchar resmbchar( allocator );
-					if( ::booldog::utils::executable::mbs::filename( &resmbchar , allocator , debuginfo ) )
+					if( ::booldog::utils::executable::mbs::filename< step >( &resmbchar , allocator , debuginfo ) )
 					{
 					}
 					else
-						res->copy( mbcharres );		
+						res->copy( resmbchar );		
 #endif
 					return res->succeeded();
 				};
