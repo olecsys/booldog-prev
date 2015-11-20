@@ -41,7 +41,7 @@ namespace booldog
 goto_next:
 					charcount = ptr - begin - 1;
 
-					res->wsize = charcount + 1;
+					res->wsize = 2;//charcount + 1;
 					res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
 					if( res->wchar )
 					{
@@ -104,6 +104,59 @@ goto_next:
 						res->wlen = mbsrtowcs( res->wchar , &src , res->wsize - 1 , &state );
 						if( res->wlen != (size_t)-1 )
 						{
+							if( src != 0 && src < ptr - 1 )
+							{
+								size_t cnvsize = 0;
+								for( ; ; )
+								{
+									res->wsize += (size_t)( ptr - 1 - src );
+									res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
+									if( res->wchar )
+									{
+										cnvsize = mbsrtowcs( res->wchar , &src , res->wsize - res->wlen - 1 , &state );
+										if( cnvsize != (size_t)-1 )
+										{
+											res->wlen += cnvsize;
+											if( src == 0 || src >= ptr - 1 )
+											{
+												res->wchar[ res->wlen ] = 0;
+												res->wsize *= sizeof( wchar_t );
+												break;
+											}
+										}
+										else
+										{
+											res->seterrno();
+											break;
+										}
+									}
+									else
+									{
+										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+										break;
+									}
+								}
+							}
+							else
+							{
+								if( res->wlen == res->wsize )
+								{
+									res->wsize = res->wlen + 1;
+									res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
+									if( res->wchar )
+									{
+										res->wchar[ res->wlen ] = 0;
+										res->wsize *= sizeof( wchar_t );
+									}
+									else
+										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );	
+								}
+								else
+								{
+									res->wchar[ res->wlen ] = 0;
+									res->wsize *= sizeof( wchar_t );
+								}
+							}
 							printf( "ptr %p\n" , ptr );
 							printf( "begin %p\n" , begin );
 							printf( "src %p\n" , src );
@@ -290,7 +343,6 @@ goto_next:
 					return res->succeeded();
 				}
 			};
-			//booinline size_t wcsindexof( const wchar_t* src , const wchar_t* 
 		};
 	};
 };
