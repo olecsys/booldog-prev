@@ -35,6 +35,13 @@ namespace booldog
 						if( (size_t)( ptr - begin ) >= charcount )
 						{
 							ptr++;
+#ifndef __WINDOWS__
+							charcount = ptr - begin;
+							begin = allocator->realloc_array< char >( 0 , charcount , debuginfo );
+							::memcpy( begin , &mbchar[ charindex ] , charcount );
+							ptr = &begin[ charcount ];
+							*ptr = 0;						
+#endif
 							break;
 						}
 					}
@@ -106,36 +113,31 @@ goto_next:
 						{
 							if( src != 0 && src < ptr - 1 )
 							{
-								size_t cnvsize = 0;
-								for( ; ; )
+								::memset( &state , 0 , sizeof( state ) );
+								src = begin;
+								res->wlen = mbsrtowcs( 0 , &src , 0 , &state );
+								if( res->wlen != (size_t)-1 )
 								{
-									res->wsize += (size_t)( ptr - 1 - src );
+									res->wsize = res->wlen + 1;
 									res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
 									if( res->wchar )
 									{
-										cnvsize = mbsrtowcs( res->wchar , &src , res->wsize - res->wlen - 1 , &state );
-										if( cnvsize != (size_t)-1 )
+										::memset( &state , 0 , sizeof( state ) );
+										src = begin;
+										res->wlen = mbsrtowcs( res->wchar , &src , res->wsize - 1 , &state );
+										if( res->wlen != (size_t)-1 )
 										{
-											res->wlen += cnvsize;
-											if( src == 0 || src >= ptr - 1 )
-											{
-												res->wchar[ res->wlen ] = 0;
-												res->wsize *= sizeof( wchar_t );
-												break;
-											}
+											res->wchar[ res->wlen ] = 0;
+											res->wsize *= sizeof( wchar_t );
 										}
 										else
-										{
 											res->seterrno();
-											break;
-										}
 									}
 									else
-									{
 										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-										break;
-									}
 								}
+								else
+									res->seterrno();
 							}
 							else
 							{
@@ -164,6 +166,8 @@ goto_next:
 						}
 						else
 							res->seterrno();
+						if( begin != &mbchar[ charindex ] )
+							allocator->free( begin );
 #endif
 					}
 					else
