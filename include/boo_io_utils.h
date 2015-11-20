@@ -322,6 +322,49 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 						return res->succeeded();
 					};
+					booinline bool filename_without_extension( ::booldog::result* pres , char* pathname , size_t& pathnamelen )
+					{
+						::booldog::result locres;
+						BOOINIT_RESULT( ::booldog::result );
+						if( pathname && pathnamelen > 0 )
+						{
+							const char* ptr = pathname , * start = pathname;
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case '/':
+								case '\\':
+									start = ptr;
+									break;
+								case 0:
+									goto goto_next0;
+								}
+							}
+	goto_next0:
+							const char* end = ptr;
+							ptr = start;						
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case '.':
+									end = ptr;
+									break;
+								case 0:
+									goto goto_next1;
+								}
+							}
+	goto_next1:
+							pathnamelen = end - start - 1;
+							if( pathnamelen )
+								::memmove( pathname , start , pathnamelen );
+							pathname[ pathnamelen ] = 0;
+						}
+						else
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						return res->succeeded();
+					};
 					booinline bool pathname_without_extension( ::booldog::result* pres , char* pathname , size_t& pathnamelen )
 					{
 						::booldog::result locres;
@@ -614,6 +657,49 @@ goto_return:
 				};
 				namespace wcs
 				{
+					booinline bool filename_without_extension( ::booldog::result* pres , wchar_t* pathname , size_t& pathnamelen )
+					{
+						::booldog::result locres;
+						BOOINIT_RESULT( ::booldog::result );
+						if( pathname && pathnamelen > 0 )
+						{
+							const wchar_t* ptr = pathname , * start = pathname;
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case '/':
+								case '\\':
+									start = ptr;
+									break;
+								case 0:
+									goto goto_next0;
+								}
+							}
+	goto_next0:
+							const wchar_t* end = ptr;
+							ptr = start;						
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case '.':
+									end = ptr;
+									break;
+								case 0:
+									goto goto_next1;
+								}
+							}
+	goto_next1:
+							pathnamelen = end - start - 1;
+							if( pathnamelen )
+								::memmove( pathname , start , pathnamelen * sizeof( wchar_t ) );
+							pathname[ pathnamelen ] = 0;
+						}
+						else
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						return res->succeeded();
+					};
 					booinline bool directory( ::booldog::result* pres , wchar_t* pathname , size_t& pathnamelen )
 					{
 						::booldog::result locres;

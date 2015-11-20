@@ -3682,6 +3682,83 @@ TEST_F( boo_string_utilsTest , test )
 		
 		ASSERT_EQ( allocator.available() , total );
 	}
+
+
+	{
+		::booldog::result_wchar reswchar( &allocator );
+
+		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 7 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 6 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"locale" ) == 0 );
+	}
+
+	{
+		::booldog::result_wchar reswchar( &allocator );
+
+		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 3 , SIZE_MAX );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 4 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 3 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ale" ) == 0 );
+	}
+
+	{
+		::booldog::result_wchar reswchar( &allocator );
+
+		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 3 , 2 );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 2 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"al" ) == 0 );
+
+		::booldog::result res;
+
+		::booldog::utils::string::mbs::insert( &res , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "e" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 4 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 3 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ale" ) == 0 );
+
+
+		::booldog::utils::string::mbs::insert( &res , 0 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 0 , 2 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 6 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 5 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"loale" ) == 0 );
+
+
+		::booldog::utils::string::mbs::insert( &res , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 2 , 1 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 7 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 6 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"locale" ) == 0 );
+	}
 };
 
 class boo_arrayTest : public ::testing::Test 
@@ -5592,6 +5669,155 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
 	}
+
+
+
+	{
+		::booldog::result res;
+
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::mbs::filename_without_extension( &res , 0 , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 5 );
+
+		ASSERT_TRUE( strcmp( pathname , "local" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { '.','.','/','b','.','l','o','c','a','l','.','e', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 7 );
+
+		ASSERT_TRUE( strcmp( pathname , "b.local" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		char pathname[] = { 'l','o','c','a','l', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize - 1;
+		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 5 );
+
+		ASSERT_TRUE( strcmp( pathname , "local" ) == 0 );
+	}
+
+
+	{
+		::booldog::result res;
+
+		size_t pathnamelen = 0;
+		::booldog::utils::io::path::wcs::filename_without_extension( &res , 0 , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 5 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"local" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { '.','.','/','b','.','l','o','c','a','l','.','e', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 7 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"b.local" ) == 0 );
+	}
+
+	{
+		::booldog::result res;
+
+		wchar_t pathname[] = { 'l','o','c','a','l', 0 };
+		size_t pathnamesize = sizeof( pathname );
+		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( pathnamelen , 5 );
+
+		ASSERT_TRUE( wcscmp( pathname , L"local" ) == 0 );
+	}
 };
 class boo_base_loaderTest : public ::testing::Test 
 {
@@ -5601,13 +5827,36 @@ TEST_F( boo_base_loaderTest , test )
 	::booldog::allocators::stack::simple< 4096 > allocator;
 
 	booldog::_allocator = &allocator;
+	{
+		::booldog::result_mbchar resmbchar( booldog::_allocator );
+		::booldog::utils::executable::mbs::filename< 4 >( &resmbchar );
+		{
+			::booldog::result res;
 
-	::booldog::result_mbchar resmbchar( booldog::_allocator );
-	::booldog::utils::executable::mbs::filename< 4 >( &resmbchar );
+			::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
 
-	::booldog::result_wchar reswchar( booldog::_allocator );
-	::booldog::utils::executable::wcs::filename< 4 >( &reswchar );
-	
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( resmbchar.mblen , 12 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "booldog.test" ) == 0 );
+		}
+	}
+	{
+		::booldog::result_wchar reswchar( booldog::_allocator );
+		::booldog::utils::executable::wcs::filename< 4 >( &reswchar );
+		{
+			::booldog::result res;
+
+			::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( reswchar.wlen , 12 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"booldog.test" ) == 0 );
+		}
+	}
 	::booldog::loader loader( &allocator );
 
 	::booldog::result_module res;
