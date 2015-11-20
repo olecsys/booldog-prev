@@ -37,10 +37,11 @@ namespace booldog
 							ptr++;
 #ifndef __WINDOWS__
 							charcount = ptr - begin;
-							begin = allocator->realloc_array< char >( 0 , charcount , debuginfo );
-							::memcpy( begin , &mbchar[ charindex ] , charcount );
-							ptr = &begin[ charcount ];
-							*ptr = 0;						
+							char* newbegin = allocator->realloc_array< char >( 0 , charcount , debuginfo );
+							::memcpy( newbegin , begin , charcount );
+							newbegin[ charcount ] = 0;
+							begin = newbegin;
+							ptr = &newbegin[ charcount ];
 #endif
 							break;
 						}
@@ -167,7 +168,7 @@ goto_next:
 						else
 							res->seterrno();
 						if( begin != &mbchar[ charindex ] )
-							allocator->free( begin );
+							allocator->free( (void*)begin );
 #endif
 					}
 					else
