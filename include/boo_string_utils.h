@@ -196,7 +196,7 @@ goto_next:
 							if( dstcharindex > dstlen )
 								dstcharindex = dstlen;
 							srccharcount = ptr - srcbegin - 1;
-
+#ifdef __WINDOWS__
 							size_t srcwcharcount = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , srcbegin , srccharcount , dst , 0 );
 							if( srcwcharcount > 0 )
 							{
@@ -225,6 +225,7 @@ goto_next:
 							}
 							else
 								res->GetLastError();
+#endif
 						}
 						else
 							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
