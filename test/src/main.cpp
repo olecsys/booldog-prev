@@ -826,25 +826,31 @@ TEST_F( boo_stackTest , test )
 {
 	::booldog::allocators::stack::simple< boo_stackTestAllocatorSize > allocator;
 
-	size_t total = boo_stackTestAllocatorSize + sizeof( ::booldog::mem::info );
+	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
 
 	void* ptr0 = allocator.alloc( boo_stackTestAllocatorSize );
 
-	ASSERT_TRUE( allocator.begin() == allocator.end() );
+	size_t ptr0_mswi = ::booldog::mem::info::memory_size_with_info( boo_stackTestAllocatorSize );
+	size_t ptr0_mis = ::booldog::mem::info::memory_info_size( boo_stackTestAllocatorSize );
 
-	ASSERT_FALSE( ptr0 == 0 );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_EQ( allocator.available() , 0 );
+	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
+
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
+
+	size_t ptr1_mswi = ::booldog::mem::info::memory_size_with_info( 17 );
+	size_t ptr1_mis = ::booldog::mem::info::memory_info_size( 17 );
 
 	void* ptr1 = allocator.alloc( 17 );
 
-	ASSERT_TRUE( allocator.begin() == allocator.end() );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
 	ASSERT_TRUE( ptr1 == 0 );
 
-	ASSERT_EQ( allocator.available() , 0 );
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	allocator.free( ptr0 );
 
@@ -854,25 +860,31 @@ TEST_F( boo_stackTest , test )
 
 	ptr0 = allocator.alloc( 23 );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 23 + sizeof( ::booldog::mem::info ) ] );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 23 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 23 );
 
-	ASSERT_FALSE( ptr0 == 0 );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_EQ( allocator.available() , total - 23 - sizeof( ::booldog::mem::info ) );
+	ASSERT_TRUE( ptr0 == begin + ptr0_mis );
+
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	ptr1 = allocator.alloc( 17 );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 40 + 2 * sizeof( ::booldog::mem::info ) ] );
+	ptr1_mswi = ::booldog::mem::info::memory_size_with_info( 17 );
+	ptr1_mis = ::booldog::mem::info::memory_info_size( 17 );
 
-	ASSERT_FALSE( ptr1 == 0 );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi + ptr1_mswi );
 
-	ASSERT_EQ( allocator.available() , total - 40 - 2 * sizeof( ::booldog::mem::info ) );
+	ASSERT_TRUE( ptr1 == begin + ptr0_mswi + ptr1_mis );
+
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi - ptr1_mswi );
 
 	allocator.free( ptr0 );
 
 	ASSERT_TRUE( allocator.begin() == begin );
 
-	ASSERT_EQ( allocator.available() , total - 17 - sizeof( ::booldog::mem::info ) );
+	ASSERT_EQ( allocator.available() , total - ptr1_mswi );
 
 	allocator.free( ptr1 );
 
@@ -882,11 +894,14 @@ TEST_F( boo_stackTest , test )
 
 	ptr0 = allocator.alloc( 45 );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 45 );
 
-	ASSERT_FALSE( ptr0 == 0 );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_EQ( allocator.available() , total - 45 - sizeof( ::booldog::mem::info ) );
+	ASSERT_TRUE( ptr0 == begin + ptr0_mis );
+
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	allocator.free( ptr0 );
 
@@ -898,36 +913,42 @@ TEST_F( boo_stackTest , test )
 	ptr0 = 0;
 
 	ptr0 = allocator.realloc( ptr0 , 45 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 45 );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_TRUE( ptr0 == ( begin + sizeof( ::booldog::mem::info ) ) );
+	ASSERT_TRUE( ptr0 == begin + ptr0_mis );
 
-	ASSERT_EQ( allocator.available() , total - 45 - sizeof( ::booldog::mem::info ) );
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	ptr0 = allocator.realloc( ptr0 , 45 );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_TRUE( ptr0 == ( begin + sizeof( ::booldog::mem::info ) ) );
+	ASSERT_TRUE( ptr0 == begin + ptr0_mis );
 
-	ASSERT_EQ( allocator.available() , total - 45 - sizeof( ::booldog::mem::info ) );
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	ptr0 = allocator.realloc( ptr0 , 50 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 50 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 50 );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 50 + sizeof( ::booldog::mem::info ) ] );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_TRUE( ptr0 == ( begin + sizeof( ::booldog::mem::info ) ) );
+	ASSERT_TRUE( ptr0 == begin + ptr0_mis );
 
-	ASSERT_EQ( allocator.available() , total - 50 - sizeof( ::booldog::mem::info ) );
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	ptr0 = allocator.realloc( ptr0 , 45 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 45 );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 45 + sizeof( ::booldog::mem::info ) ] );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_TRUE( ptr0 == ( begin + sizeof( ::booldog::mem::info ) ) );
+	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
 
-	ASSERT_EQ( allocator.available() , total - 45 - sizeof( ::booldog::mem::info ) );
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	allocator.free( ptr0 );
 
@@ -939,12 +960,14 @@ TEST_F( boo_stackTest , test )
 
 
 	ptr0 = allocator.realloc_array< wchar_t >( (wchar_t*)ptr0 , 11 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 11 * sizeof( wchar_t ) );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 11 * sizeof( wchar_t ) );
 
-	ASSERT_TRUE( allocator.begin() == &begin[ 22 + sizeof( ::booldog::mem::info ) ] );
+	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );
 
-	ASSERT_TRUE( ptr0 == ( begin + sizeof( ::booldog::mem::info ) ) );
+	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
 
-	ASSERT_EQ( allocator.available() , total - 22 - sizeof( ::booldog::mem::info ) );
+	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 };
 
 class boo_memTest : public ::testing::Test 

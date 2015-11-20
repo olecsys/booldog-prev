@@ -144,7 +144,7 @@ namespace booldog
 							}
 						}
 
-						for( ; ; )
+						//for( ; ; )
 						{
 
 						}

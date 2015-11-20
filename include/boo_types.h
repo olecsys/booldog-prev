@@ -4,6 +4,18 @@
 #include <config.h>
 #endif
 #include <boo_platform.h>
+
+#ifdef __WINDOWS__
+#define boobegin_struct_pack( bytes ) __pragma( pack( push ) )\
+	__pragma( pack( bytes ) )\
+	__declspec( align( bytes ) )
+#define booend_struct_pack( bytes ) ;\
+	__pragma( pack( pop ) )
+#else
+#define boobegin_struct_pack( bytes )
+#define booend_struct_pack( bytes ) __attribute__( ( packed , aligned( 1 ) ) );
+#endif
+
 #ifdef __WINDOWS__
 #define boointernal
 #define booinline __forceinline

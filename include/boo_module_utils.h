@@ -144,7 +144,7 @@ namespace booldog
 							res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
 							if( res->mbchar )
 							{
-								res->mblen = GetModuleFileNameA( module_handle , res->mbchar , res->mbsize );
+								res->mblen = GetModuleFileNameA( module_handle , res->mbchar , (DWORD)res->mbsize );
 								if( res->mblen == 0 )
 								{
 									res->GetLastError();
@@ -239,7 +239,7 @@ namespace booldog
 							res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
 							if( res->wchar )
 							{
-								res->wlen = GetModuleFileNameW( module_handle , res->wchar , res->wsize );
+								res->wlen = GetModuleFileNameW( module_handle , res->wchar , (DWORD)res->wsize );
 								if( res->wlen == 0 )
 								{
 									res->GetLastError();
@@ -274,7 +274,7 @@ namespace booldog
 					{
 					}
 					else
-						res->copy( resmbchar );		
+						res->copy( resmbchar );
 #endif
 					return res->succeeded();
 				};
