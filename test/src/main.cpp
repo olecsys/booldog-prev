@@ -3719,6 +3719,8 @@ TEST_F( boo_string_utilsTest , test )
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
+		printf( "%ls\n" , reswchar.wchar );
+
 		ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
 
 		ASSERT_EQ( reswchar.wlen , 2 );

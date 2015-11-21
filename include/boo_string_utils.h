@@ -119,6 +119,9 @@ goto_next:
 						::memset( &state , 0 , sizeof( state ) );
 						const char* src = begin;
 						res->wlen = mbsrtowcs( res->wchar , &src , res->wsize - 1 , &state );
+
+						printf( "wlen %d\n" , (int)res->wlen );
+
 						if( res->wlen != (size_t)-1 )
 						{
 							if( src != 0 && src < ptr - 1 )
