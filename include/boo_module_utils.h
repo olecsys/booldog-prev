@@ -111,12 +111,11 @@ namespace booldog
 							}
 						}
 #else
-						::booldog::result_mbchar mbcharres( allocator );
-						filename< step >( mbcharres , allocator );
-						if( mbcharres.succeeded() )
-							::booldog::utils::string::mbs::towcs( res , mbcharres.mbchar , 0 , SIZE_MAX , allocator , debuginfo );
+						::booldog::result_mbchar resmbchar( allocator );
+						if( ::booldog::utils::module::mbs::filename< step >( &resmbchar , module_handle , allocator , debuginfo ) )
+							::booldog::utils::string::mbs::towcs( res , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo );
 						else
-							res->copy( mbcharres );
+							res->copy( resmbchar );
 #endif
 					}
 					else
@@ -271,8 +270,7 @@ namespace booldog
 #else
 					::booldog::result_mbchar resmbchar( allocator );
 					if( ::booldog::utils::executable::mbs::filename< step >( &resmbchar , allocator , debuginfo ) )
-					{
-					}
+						::booldog::utils::string::mbs::towcs( res , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo );
 					else
 						res->copy( resmbchar );
 #endif

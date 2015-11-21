@@ -3754,8 +3754,6 @@ TEST_F( boo_string_utilsTest , test )
 
 		::booldog::utils::string::mbs::insert( &res , 0 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 0 , 2 );
 
-		printf( "%ls\n" , reswchar.wchar );
-
 		ASSERT_TRUE( res.succeeded() );
 
 		ASSERT_EQ( reswchar.wsize , 6 * sizeof( wchar_t ) );
