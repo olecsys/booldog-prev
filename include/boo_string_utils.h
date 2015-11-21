@@ -49,25 +49,25 @@ namespace booldog
 goto_next:
 					charcount = ptr - begin - 1;
 
-					res->wsize = 2;//charcount + 1;
+					res->wsize = charcount + 1;
 					res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
 					if( res->wchar )
 					{
 #ifdef __WINDOWS__
-						res->wlen = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , begin , charcount , res->wchar , res->wsize );
+						res->wlen = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , begin , (int)charcount , res->wchar , (int)res->wsize );
 						if( res->wlen == 0 )
 						{
 							DWORD get_last_error = GetLastError();
 							if( get_last_error == ERROR_INSUFFICIENT_BUFFER )
 							{
-								res->wlen = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , begin , charcount , res->wchar , 0 );
+								res->wlen = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , begin , (int)charcount , res->wchar , 0 );
 								if( res->wlen > 0 )
 								{
 									res->wsize = res->wlen + 1;
 									res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
 									if( res->wchar )
 									{
-										res->wlen = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , begin , charcount , res->wchar , res->wsize );
+										res->wlen = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , begin , (int)charcount , res->wchar , (int)res->wsize );
 										if( res->wlen > 0 )
 										{
 											res->wchar[ res->wlen ] = 0;
@@ -106,7 +106,7 @@ goto_next:
 							}
 						}
 #else
-						 mbstate_t state;
+						mbstate_t state;
 						::memset( &state , 0 , sizeof( state ) );
 						const char* src = begin;
 						res->wlen = mbsrtowcs( res->wchar , &src , res->wsize - 1 , &state );
@@ -160,9 +160,6 @@ goto_next:
 									res->wsize *= sizeof( wchar_t );
 								}
 							}
-							printf( "ptr %p\n" , ptr );
-							printf( "begin %p\n" , begin );
-							printf( "src %p\n" , src );
 
 						}
 						else
@@ -247,6 +244,14 @@ goto_next:
 								if( (size_t)( ptr - srcbegin ) >= srccharcount )
 								{
 									ptr++;
+#ifndef __WINDOWS__
+									srccharcount = ptr - srcbegin;
+									char* newbegin = allocator->realloc_array< char >( 0 , srccharcount , debuginfo );
+									::memcpy( newbegin , begin , srccharcount );
+									newbegin[ srccharcount ] = 0;
+									begin = newbegin;
+									ptr = &newbegin[ srccharcount ];
+#endif
 									break;
 								}
 							}
@@ -255,8 +260,15 @@ goto_next:
 								dstcharindex = dstlen;
 							srccharcount = ptr - srcbegin - 1;
 #ifdef __WINDOWS__
-							size_t srcwcharcount = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , srcbegin , srccharcount , dst , 0 );
+							size_t srcwcharcount = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , srcbegin , (int)srccharcount , dst , 0 );
 							if( srcwcharcount > 0 )
+#else
+							mbstate_t state;
+							::memset( &state , 0 , sizeof( state ) );
+							const char* mbsrtowcssrc = begin;
+							size_t srcwcharcount = mbsrtowcs( 0 , &mbsrtowcssrc , 0 , &state );
+							if( srcwcharcount != (size_t)-1 )
+#endif							
 							{
 								dstsize_in_bytes /= sizeof( wchar_t );
 								if( dstlen + srcwcharcount + 1 > dstsize_in_bytes )
@@ -267,22 +279,37 @@ goto_next:
 								if( dst )
 								{
 									::booldog::mem::expand< wchar_t >( dstcharindex , dst , dstlen , dstsize_in_bytes , srcwcharcount );
-
-									srcwcharcount = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , srcbegin , srccharcount , &dst[ dstcharindex ] , dstsize_in_bytes - dstcharindex );
+#ifdef __WINDOWS__
+									srcwcharcount = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , srcbegin , (int)srccharcount , &dst[ dstcharindex ] , (int)( dstsize_in_bytes - dstcharindex ) );
 									if( srcwcharcount > 0 )
+#else
+									::memset( &state , 0 , sizeof( state ) );
+									mbsrtowcssrc = begin;
+									srcwcharcount = mbsrtowcs( &dst[ dstcharindex ] , &mbsrtowcssrc , dstsize_in_bytes - dstcharindex , &state );
+									if( srcwcharcount != (size_t)-1 )
+#endif
 									{
 										dstlen += srccharcount;
 										dst[ dstlen ] = 0;
 									}
 									else
+#ifdef __WINDOWS__
 										res->GetLastError();
+#else
+										res->seterrno();
+#endif
 								}
 								else
 									res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 								dstsize_in_bytes *= sizeof( wchar_t );
 							}
 							else
+#ifdef __WINDOWS__
 								res->GetLastError();
+#else
+								res->seterrno();
+							if( srcbegin != &src[ srccharindex ] )
+								allocator->free( (void*)srcbegin );
 #endif
 						}
 						else

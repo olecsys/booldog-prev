@@ -3688,9 +3688,7 @@ TEST_F( boo_string_utilsTest , test )
 		::booldog::result_wchar reswchar( &allocator );
 
 		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 0 , SIZE_MAX );
-
-		printf( "%ls\n" , reswchar.wchar );
-
+		
 		ASSERT_TRUE( reswchar.succeeded() );
 
 		ASSERT_EQ( reswchar.wsize , 7 * sizeof( wchar_t ) );
