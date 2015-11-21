@@ -247,9 +247,9 @@ goto_next:
 #ifndef __WINDOWS__
 									srccharcount = ptr - srcbegin;
 									char* newbegin = allocator->realloc_array< char >( 0 , srccharcount , debuginfo );
-									::memcpy( newbegin , begin , srccharcount );
+									::memcpy( newbegin , srcbegin , srccharcount );
 									newbegin[ srccharcount ] = 0;
-									begin = newbegin;
+									srcbegin = newbegin;
 									ptr = &newbegin[ srccharcount ];
 #endif
 									break;
