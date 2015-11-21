@@ -43,6 +43,9 @@ namespace booldog
 							{
 								::memcpy( newbegin , begin , charcount );
 								newbegin[ charcount ] = 0;
+
+								printf( "newbegin %s\n" , newbegin );
+
 								begin = newbegin;
 								ptr = &newbegin[ charcount ];
 							}
@@ -57,6 +60,8 @@ namespace booldog
 					}
 goto_next:
 					charcount = ptr - begin - 1;
+
+					printf( "charcount %d\n" , (int)charcount );
 
 					res->wsize = charcount + 1;
 					res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
