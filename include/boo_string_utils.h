@@ -262,9 +262,6 @@ goto_next:
 									{
 										::memcpy( newbegin , srcbegin , srccharcount );
 										newbegin[ srccharcount ] = 0;
-
-printf( "newbegin %s\n" , newbegin );
-
 										srcbegin = newbegin;
 										ptr = &newbegin[ srccharcount ];
 										ptr++;
@@ -282,9 +279,6 @@ goto_next:
 							if( dstcharindex > dstlen )
 								dstcharindex = dstlen;
 							srccharcount = ptr - srcbegin - 1;
-
-printf( "srccharcount %d\n" , (int)srccharcount );
-
 #ifdef __WINDOWS__
 							size_t srcwcharcount = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , srcbegin , (int)srccharcount , dst , 0 );
 							if( srcwcharcount > 0 )
@@ -293,9 +287,6 @@ printf( "srccharcount %d\n" , (int)srccharcount );
 							::memset( &state , 0 , sizeof( state ) );
 							const char* mbsrtowcssrc = srcbegin;
 							size_t srcwcharcount = mbsrtowcs( 0 , &mbsrtowcssrc , 0 , &state );
-
-printf( "srcwcharcount %d\n" , (int)srcwcharcount );
-
 							if( srcwcharcount != (size_t)-1 )
 #endif							
 							{
@@ -314,7 +305,7 @@ printf( "srcwcharcount %d\n" , (int)srcwcharcount );
 #else
 									::memset( &state , 0 , sizeof( state ) );
 									mbsrtowcssrc = srcbegin;
-									srcwcharcount = mbsrtowcs( &dst[ dstcharindex ] , &mbsrtowcssrc , dstsize_in_bytes - dstcharindex , &state );
+									srcwcharcount = mbsrtowcs( &dst[ dstcharindex ] , &mbsrtowcssrc , srcwcharcount , &state );
 									if( srcwcharcount != (size_t)-1 )
 #endif
 									{
