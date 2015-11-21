@@ -265,7 +265,7 @@ goto_next:
 #else
 							mbstate_t state;
 							::memset( &state , 0 , sizeof( state ) );
-							const char* mbsrtowcssrc = begin;
+							const char* mbsrtowcssrc = srcbegin;
 							size_t srcwcharcount = mbsrtowcs( 0 , &mbsrtowcssrc , 0 , &state );
 							if( srcwcharcount != (size_t)-1 )
 #endif							
@@ -284,12 +284,12 @@ goto_next:
 									if( srcwcharcount > 0 )
 #else
 									::memset( &state , 0 , sizeof( state ) );
-									mbsrtowcssrc = begin;
+									mbsrtowcssrc = srcbegin;
 									srcwcharcount = mbsrtowcs( &dst[ dstcharindex ] , &mbsrtowcssrc , dstsize_in_bytes - dstcharindex , &state );
 									if( srcwcharcount != (size_t)-1 )
 #endif
 									{
-										dstlen += srccharcount;
+										dstlen += srcwcharcount;
 										dst[ dstlen ] = 0;
 									}
 									else
