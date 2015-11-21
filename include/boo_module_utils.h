@@ -8,6 +8,7 @@
 #include <boo_mem.h>
 #include <boo_error.h>
 #include <boo_io_utils.h>
+#include <boo_string_utils.h>
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
@@ -113,10 +114,9 @@ namespace booldog
 						::booldog::result_mbchar mbcharres( allocator );
 						filename< step >( mbcharres , allocator );
 						if( mbcharres.succeeded() )
-						{
-						}
+							::booldog::utils::string::mbs::towcs( res , mbcharres.mbchar , 0 , SIZE_MAX , allocator , debuginfo );
 						else
-							res->copy( mbcharres );		
+							res->copy( mbcharres );
 #endif
 					}
 					else
