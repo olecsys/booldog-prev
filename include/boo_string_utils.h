@@ -48,6 +48,7 @@ namespace booldog
 
 								begin = newbegin;
 								ptr = &newbegin[ charcount ];
+								ptr++;
 							}
 							else
 							{
@@ -272,6 +273,7 @@ goto_next:
 										newbegin[ srccharcount ] = 0;
 										srcbegin = newbegin;
 										ptr = &newbegin[ srccharcount ];
+										ptr++;
 									}
 									else
 									{
