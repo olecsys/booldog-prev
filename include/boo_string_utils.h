@@ -34,14 +34,23 @@ namespace booldog
 						}
 						if( (size_t)( ptr - begin ) >= charcount )
 						{
+#ifdef __WINDOWS__
 							ptr++;
-#ifndef __WINDOWS__
+#else
 							charcount = ptr - begin;
-							char* newbegin = allocator->realloc_array< char >( 0 , charcount , debuginfo );
-							::memcpy( newbegin , begin , charcount );
-							newbegin[ charcount ] = 0;
-							begin = newbegin;
-							ptr = &newbegin[ charcount ];
+							char* newbegin = allocator->realloc_array< char >( 0 , charcount + 1 , debuginfo );
+							if( newbegin )
+							{
+								::memcpy( newbegin , begin , charcount );
+								newbegin[ charcount ] = 0;
+								begin = newbegin;
+								ptr = &newbegin[ charcount ];
+							}
+							else
+							{
+								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+								goto goto_return;
+							}
 #endif
 							break;
 						}
@@ -170,6 +179,7 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+goto_return:
 					return res->succeeded();
 				};
 				bool insert( ::booldog::result_bool* pres , size_t dstcharindex , char*& dst , size_t& dstlen 
@@ -243,14 +253,23 @@ goto_next:
 								}
 								if( (size_t)( ptr - srcbegin ) >= srccharcount )
 								{
+#ifdef __WINDOWS__
 									ptr++;
-#ifndef __WINDOWS__
+#else
 									srccharcount = ptr - srcbegin;
-									char* newbegin = allocator->realloc_array< char >( 0 , srccharcount , debuginfo );
-									::memcpy( newbegin , srcbegin , srccharcount );
-									newbegin[ srccharcount ] = 0;
-									srcbegin = newbegin;
-									ptr = &newbegin[ srccharcount ];
+									char* newbegin = allocator->realloc_array< char >( 0 , srccharcount + 1 , debuginfo );
+									if( newbegin )
+									{
+										::memcpy( newbegin , srcbegin , srccharcount );
+										newbegin[ srccharcount ] = 0;
+										srcbegin = newbegin;
+										ptr = &newbegin[ srccharcount ];
+									}
+									else
+									{
+										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+										goto goto_return;
+									}
 #endif
 									break;
 								}
@@ -317,6 +336,7 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+goto_return:
 					return res->succeeded();
 				}
 			};

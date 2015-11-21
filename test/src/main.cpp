@@ -3724,6 +3724,20 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( reswchar.wlen , 2 );
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"al" ) == 0 );
+	}
+
+	{
+		::booldog::result_wchar reswchar( &allocator );
+
+		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 3 , 2 );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 2 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"al" ) == 0 );
 
 		::booldog::result res;
 
