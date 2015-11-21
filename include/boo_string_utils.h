@@ -43,9 +43,6 @@ namespace booldog
 							{
 								::memcpy( newbegin , begin , charcount );
 								newbegin[ charcount ] = 0;
-
-								printf( "newbegin %s\n" , newbegin );
-
 								begin = newbegin;
 								ptr = &newbegin[ charcount ];
 								ptr++;
@@ -61,9 +58,6 @@ namespace booldog
 					}
 goto_next:
 					charcount = ptr - begin - 1;
-
-					printf( "charcount %d\n" , (int)charcount );
-
 					res->wsize = charcount + 1;
 					res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
 					if( res->wchar )
@@ -125,9 +119,6 @@ goto_next:
 						::memset( &state , 0 , sizeof( state ) );
 						const char* src = begin;
 						res->wlen = mbsrtowcs( res->wchar , &src , res->wsize - 1 , &state );
-
-						printf( "wlen %d\n" , (int)res->wlen );
-
 						if( res->wlen != (size_t)-1 )
 						{
 							if( src != 0 && src < ptr - 1 )
@@ -271,6 +262,9 @@ goto_next:
 									{
 										::memcpy( newbegin , srcbegin , srccharcount );
 										newbegin[ srccharcount ] = 0;
+
+printf( "newbegin %s\n" , newbegin );
+
 										srcbegin = newbegin;
 										ptr = &newbegin[ srccharcount ];
 										ptr++;
@@ -288,6 +282,9 @@ goto_next:
 							if( dstcharindex > dstlen )
 								dstcharindex = dstlen;
 							srccharcount = ptr - srcbegin - 1;
+
+printf( "srccharcount %d\n" , (int)srccharcount );
+
 #ifdef __WINDOWS__
 							size_t srcwcharcount = MultiByteToWideChar( CP_ACP , MB_USEGLYPHCHARS , srcbegin , (int)srccharcount , dst , 0 );
 							if( srcwcharcount > 0 )
@@ -296,6 +293,9 @@ goto_next:
 							::memset( &state , 0 , sizeof( state ) );
 							const char* mbsrtowcssrc = srcbegin;
 							size_t srcwcharcount = mbsrtowcs( 0 , &mbsrtowcssrc , 0 , &state );
+
+printf( "srcwcharcount %d\n" , (int)srcwcharcount );
+
 							if( srcwcharcount != (size_t)-1 )
 #endif							
 							{
