@@ -482,7 +482,7 @@ goto_next:
 						}
 						else
 							res->seterrno();
-						if( begin != &mbchar[ charindex ] )
+						if( begin != &wchar[ charindex ] )
 							allocator->free( (void*)begin );
 #endif
 					}
