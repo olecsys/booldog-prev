@@ -222,7 +222,7 @@ char utf8_TESTil_var[] =
 #include <boo_array.h>
 #include <boo_param.h>
 #include <boo_string_utils.h>
-
+#include <boo_error_format.h>
 class boo_paramTest : public ::testing::Test 
 {
 };
@@ -3611,42 +3611,42 @@ TEST_F( boo_string_utilsTest , test )
 
 
 	{
-		::booldog::result_bool resbool;
+		::booldog::result res;
 
 		char* mbsdst = 0;
 		size_t mbsdstlen = 0;
 		size_t mbsdstsize = 0;
 
-		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
+		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
 
-		ASSERT_FALSE( resbool.succeeded() );
+		ASSERT_FALSE( res.succeeded() );
 
-		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
 
-		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-
-
-		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
-
-		ASSERT_FALSE( resbool.succeeded() );
-
-		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
+		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
 
-		ASSERT_FALSE( resbool.succeeded() );
+		ASSERT_FALSE( res.succeeded() );
 
-		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
 
-		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &resbool , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
+		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
 
-		ASSERT_TRUE( resbool.succeeded() );
+		ASSERT_FALSE( res.succeeded() );
+
+		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
+
+		ASSERT_TRUE( res.succeeded() );
 
 		ASSERT_EQ( mbsdstlen , 3 );
 
@@ -3655,9 +3655,9 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "lib" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &resbool , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
+		::booldog::utils::string::mbs::insert( &res , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
 
-		ASSERT_TRUE( resbool.succeeded() );
+		ASSERT_TRUE( res.succeeded() );
 
 		ASSERT_EQ( mbsdstlen , 5 );
 
@@ -3666,9 +3666,9 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "libre" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &resbool , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
+		::booldog::utils::string::mbs::insert( &res , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
 
-		ASSERT_TRUE( resbool.succeeded() );
+		ASSERT_TRUE( res.succeeded() );
 
 		ASSERT_EQ( mbsdstlen , 7 );
 
@@ -3772,6 +3772,98 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( reswchar.wlen , 6 );
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"locale" ) == 0 );
+	}
+
+
+
+	{
+		::booldog::result_mbchar resmbchar( &allocator );
+
+		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 0 , SIZE_MAX );
+		
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 7 );
+
+		ASSERT_EQ( resmbchar.mblen , 6 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "locale" ) == 0 );
+	}
+
+	{
+		::booldog::result_mbchar resmbchar( &allocator );
+
+		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 3 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 4 );
+
+		ASSERT_EQ( resmbchar.mblen , 3 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ale" ) == 0 );
+	}
+
+	{
+		::booldog::result_mbchar resmbchar( &allocator );
+
+		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 3 , 2 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 3 );
+
+		ASSERT_EQ( resmbchar.mblen , 2 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "al" ) == 0 );
+	}
+
+	{
+		::booldog::result_mbchar resmbchar( &allocator );
+
+		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 3 , 2 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 3 );
+
+		ASSERT_EQ( resmbchar.mblen , 2 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "al" ) == 0 );
+
+		::booldog::result res;
+
+		::booldog::utils::string::wcs::insert( &res , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"e" , 0 , SIZE_MAX );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 4 );
+
+		ASSERT_EQ( resmbchar.mblen , 3 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ale" ) == 0 );
+
+
+		::booldog::utils::string::wcs::insert( &res , 0 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 0 , 2 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 6 );
+
+		ASSERT_EQ( resmbchar.mblen , 5 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "loale" ) == 0 );
+
+
+		::booldog::utils::string::wcs::insert( &res , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 2 , 1 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 7 );
+
+		ASSERT_EQ( resmbchar.mblen , 6 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "locale" ) == 0 );
 	}
 };
 
@@ -5874,21 +5966,37 @@ TEST_F( boo_base_loaderTest , test )
 	::booldog::loader loader( &allocator );
 
 	::booldog::result_module res;
-
+#ifdef __x64__
 	booldog::param search_paths_params[] =
 	{
-		BOOPARAM_PCHAR( "../../test_data\\modules0" ) ,
-		BOOPARAM_PWCHAR( L"..\\../test_data\\modules1" ) ,
+		BOOPARAM_PCHAR( "../../test_data\\modules0/x64" ) ,
+		BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x64" ) ,
 		BOOPARAM_NONE
 	};
+#elif defined( __x86__ )
+	booldog::param search_paths_params[] =
+	{
+		BOOPARAM_PCHAR( "../../test_data\\modules0/x86" ) ,
+		BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x86" ) ,
+		BOOPARAM_NONE
+	};
+#endif
 	booldog::named_param load_params[] =
 	{
-		BOONAMED_PARAM_PCHAR( "search_paths" , search_paths_params ) ,
+		BOONAMED_PARAM_PPARAM( "search_paths" , search_paths_params ) ,
 		BOONAMED_PARAM_BOOL( "exedir_as_root_path" , true ) ,
 		BOONAMED_PARAM_NONE
 	};
 
-	loader.wcsload( &res , L"core.dll" , load_params );
+	loader.wcsload( &res , L"core1" , load_params );
+
+	loader.wcsload( &res , L"core" , load_params );
+
+	loader.wcsload( &res , L"core" , 0 );
+
+	//char* error_string = 0;
+	//size_t error_string_len = 0 , error_string_size = 0;
+	//::booldog::error::format( &res , error_string , error_string_len , error_string_size );
 
 	//loader.add_search_path( ::booldog::string( ".\\../../.\\test_data\\modules" ) );
 };

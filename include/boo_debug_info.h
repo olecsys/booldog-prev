@@ -11,6 +11,11 @@ namespace booldog
 		{
 			const char* file;
 			int line;
+			info( const char* file , int line )
+			{
+				this->file = file;
+				this->line = line;
+			};
 		};
 	};
 };

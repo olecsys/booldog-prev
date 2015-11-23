@@ -179,15 +179,14 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-goto_return:
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result_bool* pres , size_t dstcharindex , char*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , size_t dstcharindex , char*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const char* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
-					::booldog::result_bool locres;
-					BOOINIT_RESULT( ::booldog::result_bool );
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
 					if( src )
 					{
 						const char* srcbegin = &src[ srccharindex ];
@@ -337,18 +336,160 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-goto_return:
 					return res->succeeded();
 				}
 			};
 			namespace wcs
 			{
-				bool insert( ::booldog::result_bool* pres , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
+				bool tombs( ::booldog::result_mbchar* pres , const wchar_t* wchar , size_t charindex = 0 , size_t charcount = SIZE_MAX , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				{
+					::booldog::result_mbchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_mbchar );
+					const wchar_t* begin = &wchar[ charindex ];
+					const wchar_t* ptr = begin;
+					for( ; ; )
+					{
+						switch( *ptr++ )
+						{
+						case 0:
+							goto goto_next;
+						}
+						if( (size_t)( ptr - begin ) >= charcount )
+						{
+#ifdef __WINDOWS__
+							ptr++;
+#else
+							charcount = ptr - begin;
+							wchar_t* newbegin = allocator->realloc_array< wchar_t >( 0 , charcount + 1 , debuginfo );
+							if( newbegin )
+							{
+								::memcpy( newbegin , begin , charcount * sizeof( wchar_t ) );
+								newbegin[ charcount ] = 0;
+								begin = newbegin;
+								ptr = &newbegin[ charcount ];
+								ptr++;
+							}
+							else
+							{
+								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+								goto goto_return;
+							}
+#endif
+							break;
+						}
+					}
+goto_next:
+					charcount = ptr - begin - 1;
+					res->mbsize = charcount + 1;
+					res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+					if( res->mbchar )
+					{
+#ifdef __WINDOWS__
+						res->mblen = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , begin , (int)charcount , res->mbchar , res->mbsize , NULL , NULL );
+						if( res->mblen == 0 )
+						{
+							DWORD get_last_error = GetLastError();
+							if( get_last_error == ERROR_INSUFFICIENT_BUFFER )
+							{
+								res->mblen = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , begin , (int)charcount , res->mbchar , 0 , NULL , NULL );
+								if( res->mblen > 0 )
+								{
+									res->mbsize = res->mblen + 1;
+									res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+									if( res->mbchar )
+									{
+										res->mblen = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , begin , (int)charcount , res->mbchar , res->mbsize , NULL , NULL );
+										if( res->mblen > 0 )
+											res->mbchar[ res->mblen ] = 0;
+										else
+											res->GetLastError();
+									}
+									else
+										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+								}
+								else
+									res->GetLastError();
+							}
+							else
+								res->GetLastError( get_last_error );
+						}
+						else
+						{
+							if( res->mblen == res->mbsize )
+							{
+								res->mbsize = res->mblen + 1;
+								res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+								if( res->mbchar )
+									res->mbchar[ res->mblen ] = 0;
+								else
+									res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );	
+							}
+							else
+								res->mbchar[ res->mblen ] = 0;
+						}
+#else
+						mbstate_t state;
+						::memset( &state , 0 , sizeof( state ) );
+						const wchar_t* src = begin;
+						res->mblen = wcsrtombs( res->mbchar , &src , res->mbsize - 1 , &state );
+						if( res->mblen != (size_t)-1 )
+						{
+							if( src != 0 && src < ptr - 1 )
+							{
+								::memset( &state , 0 , sizeof( state ) );
+								src = begin;
+								res->mblen = wcsrtombs( 0 , &src , 0 , &state );
+								if( res->mblen != (size_t)-1 )
+								{
+									res->mbsize = res->mblen + 1;
+									res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+									if( res->mbchar )
+									{
+										::memset( &state , 0 , sizeof( state ) );
+										src = begin;
+										res->mblen = wcsrtombs( res->mbchar , &src , res->mbsize - 1 , &state );
+										if( res->mblen != (size_t)-1 )
+											res->mbchar[ res->mblen ] = 0;
+										else
+											res->seterrno();
+									}
+									else
+										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+								}
+								else
+									res->seterrno();
+							}
+							else
+							{
+								if( res->mblen == res->mbsize )
+								{
+									res->mbsize = res->mblen + 1;
+									res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+									if( res->mbchar )
+										res->mbchar[ res->mblen ] = 0;
+									else
+										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );	
+								}
+								else
+									res->mbchar[ res->mblen ] = 0;
+							}
+						}
+						else
+							res->seterrno();
+						if( begin != &mbchar[ charindex ] )
+							allocator->free( (void*)begin );
+#endif
+					}
+					else
+						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+					return res->succeeded();
+				};
+				bool insert( ::booldog::result* pres , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
-					::booldog::result_bool locres;
-					BOOINIT_RESULT( ::booldog::result_bool );
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
 					if( src )
 					{
 						const wchar_t* srcbegin = &src[ srccharindex ];
@@ -387,6 +528,111 @@ goto_next:
 							}
 							else
 								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+						}
+						else
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					}
+					else
+						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					return res->succeeded();
+				};
+				bool insert( ::booldog::result* pres , size_t dstcharindex , char*& dst , size_t& dstlen 
+					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
+					, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+					if( src )
+					{
+						const wchar_t* srcbegin = &src[ srccharindex ];
+						if( *srcbegin != 0 )
+						{
+							const wchar_t* ptr = srcbegin;
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case 0:
+									goto goto_next;
+								}
+								if( (size_t)( ptr - srcbegin ) >= srccharcount )
+								{
+#ifdef __WINDOWS__
+									ptr++;
+#else
+									srccharcount = ptr - srcbegin;
+									wchar_t* newbegin = allocator->realloc_array< wchar_t >( 0 , srccharcount + 1 , debuginfo );
+									if( newbegin )
+									{
+										::memcpy( newbegin , srcbegin , srccharcount * sizeof( wchar_t ) );
+										newbegin[ srccharcount ] = 0;
+										srcbegin = newbegin;
+										ptr = &newbegin[ srccharcount ];
+										ptr++;
+									}
+									else
+									{
+										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+										goto goto_return;
+									}
+#endif
+									break;
+								}
+							}
+goto_next:
+							if( dstcharindex > dstlen )
+								dstcharindex = dstlen;
+							srccharcount = ptr - srcbegin - 1;
+#ifdef __WINDOWS__
+							size_t srcwcharcount = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , srcbegin , (int)srccharcount , dst , 0 , NULL , NULL );
+							if( srcwcharcount > 0 )
+#else
+							mbstate_t state;
+							::memset( &state , 0 , sizeof( state ) );
+							const wchar_t* mbsrtowcssrc = srcbegin;
+							size_t srcwcharcount = wcsrtombs( 0 , &mbsrtowcssrc , 0 , &state );
+							if( srcwcharcount != (size_t)-1 )
+#endif							
+							{
+								if( dstlen + srcwcharcount + 1 > dstsize_in_bytes )
+								{
+									dstsize_in_bytes = dstlen + srcwcharcount + 1;
+									dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
+								}
+								if( dst )
+								{
+									::booldog::mem::expand< char >( dstcharindex , dst , dstlen , dstsize_in_bytes , srcwcharcount );
+#ifdef __WINDOWS__
+									srcwcharcount = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , srcbegin , (int)srccharcount , &dst[ dstcharindex ] , (int)( dstsize_in_bytes - dstcharindex ) , NULL , NULL );
+									if( srcwcharcount > 0 )
+#else
+									::memset( &state , 0 , sizeof( state ) );
+									mbsrtowcssrc = srcbegin;
+									srcwcharcount = wcsrtombs( &dst[ dstcharindex ] , &mbsrtowcssrc , srcwcharcount , &state );
+									if( srcwcharcount != (size_t)-1 )
+#endif
+									{
+										dstlen += srcwcharcount;
+										dst[ dstlen ] = 0;
+									}
+									else
+#ifdef __WINDOWS__
+										res->GetLastError();
+#else
+										res->seterrno();
+#endif
+								}
+								else
+									res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+							}
+							else
+#ifdef __WINDOWS__
+								res->GetLastError();
+#else
+								res->seterrno();
+							if( srcbegin != &src[ srccharindex ] )
+								allocator->free( (void*)srcbegin );
+#endif
 						}
 						else
 							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );

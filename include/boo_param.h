@@ -361,7 +361,7 @@ namespace booldog
 		{
 			booinline void search( ::booldog::named_param* src , ::booldog::named_param* dst )
 			{
-				if( src && dst )
+				if( dst )
 				{
 					for( ::booldog::named_param* pdst = (::booldog::named_param*)dst ; pdst && pdst->param.type != ::booldog::enums::param::type_none 
 						; ++pdst )

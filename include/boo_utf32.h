@@ -630,7 +630,9 @@ namespace booldog
 				|| utfchar == 0x2126 || utfchar == 0x2128 || utfchar == 0x214e || utfchar == 0x2d6f	|| utfchar == 0xfb1d
 				|| utfchar == 0xfb3e;
 		};
-		booinline ::booldog::enums::string::conversion_result to_utf8( const char* utf32_ptr , size_t& srcbyteindex , size_t utf32_ptr_count , char* utf8_ptr , size_t& dstbyteindex , size_t utf8_ptr_count , size_t& utf8_bytes , size_t& utf8length )
+		booinline ::booldog::enums::string::conversion_result to_utf8( const char* utf32_ptr , size_t& srcbyteindex 
+			, size_t utf32_ptr_count , char* utf8_ptr , size_t& dstbyteindex , size_t utf8_ptr_count , size_t& utf8_bytes 
+			, size_t& utf8length )
 		{
 			utf8_bytes = 0;
 			const ::booldog::uint32* source = (::booldog::uint32*)&utf32_ptr[ srcbyteindex ] , * source_end = (::booldog::uint32*)( &utf32_ptr[ utf32_ptr_count - 1 ] + 1 );

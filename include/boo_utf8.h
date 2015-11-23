@@ -3376,7 +3376,8 @@ goto_conversion_result_targetExhausted:
 				dst_bytes = (char*)target - dst_ptr;
 			return ::booldog::enums::string::conversion_result_targetExhausted;
 		};
-		booinline ::booldog::enums::string::conversion_result to_utf16( const char* utf8_ptr , size_t utf8_ptr_count , char* utf16_ptr , size_t utf16_ptr_count , size_t& utf16_bytes )
+		booinline ::booldog::enums::string::conversion_result to_utf16( const char* utf8_ptr , size_t utf8_ptr_count , char* utf16_ptr
+			, size_t utf16_ptr_count , size_t& utf16_bytes )
 		{					
 			utf16_bytes = 0;
 			const ::booldog::uint8* source = (::booldog::uint8*)utf8_ptr , * source_end = (::booldog::uint8*)( &utf8_ptr[ utf8_ptr_count - 1 ] + 1 );

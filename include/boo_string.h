@@ -371,7 +371,7 @@ goto_new_not_utf8:
 						bytes += byteindex;
 						if( code_page == ::booldog::enums::string::UTF16 )
 							size *= 2;
-						else if( code_page == ::booldog::enums::string::CP1251 )
+						else if( code_page == ::booldog::enums::string::UTF32 )
 							size *= 4;
 					}
 goto_convert_to_utf8:

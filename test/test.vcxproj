@@ -23,6 +23,7 @@
     <ClInclude Include="..\include\boo_cp1251_consts.h" />
     <ClInclude Include="..\include\boo_debug_info.h" />
     <ClInclude Include="..\include\boo_error.h" />
+    <ClInclude Include="..\include\boo_error_format.h" />
     <ClInclude Include="..\include\boo_executable.h" />
     <ClInclude Include="..\include\boo_hash_times33.h" />
     <ClInclude Include="..\include\boo_if.h" />
