@@ -174,24 +174,32 @@ namespace booldog
 						if( begin_size == sizeof( ::booldog::mem::info1 ) )
 						{
 							::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
+							info->_flags = 0;
+							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO1 );
 							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 							info->_eflags = info->_flags;
 						}
 						else if( begin_size == sizeof( ::booldog::mem::info2 ) )
 						{
 							::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
+							info->_flags = 0;
+							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO2 );
 							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 							info->_eflags = info->_flags;
 						}
 						else if( begin_size == sizeof( ::booldog::mem::info3 ) )
 						{
 							::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
+							info->_flags = 0;
+							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO3 );
 							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 							info->_eflags = info->_flags;
 						}
 						else if( begin_size == sizeof( ::booldog::mem::info4 ) )
 						{
 							::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
+							info->_flags = 0;
+							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO4 );
 							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 							info->_eflags = info->_flags;
 						}
@@ -234,24 +242,32 @@ namespace booldog
 							if( begin_size == sizeof( ::booldog::mem::info1 ) )
 							{
 								::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
+								info->_flags = 0;
+								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO1 );
 								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 								info->_eflags = info->_flags;
 							}
 							else if( begin_size == sizeof( ::booldog::mem::info2 ) )
 							{
 								::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
+								info->_flags = 0;
+								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO2 );
 								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 								info->_eflags = info->_flags;
 							}
 							else if( begin_size == sizeof( ::booldog::mem::info3 ) )
 							{
 								::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
+								info->_flags = 0;
+								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO3 );
 								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 								info->_eflags = info->_flags;
 							}
 							else if( begin_size == sizeof( ::booldog::mem::info4 ) )
 							{
 								::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
+								info->_flags = 0;
+								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO4 );
 								::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
 								info->_eflags = info->_flags;
 							}
