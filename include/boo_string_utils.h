@@ -179,6 +179,9 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+#ifndef __WINDOWS__
+goto_return:
+#endif
 					return res->succeeded();
 				};
 				bool insert( ::booldog::result* pres , size_t dstcharindex , char*& dst , size_t& dstlen 
@@ -336,6 +339,9 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+#ifndef __WINDOWS__
+goto_return:
+#endif
 					return res->succeeded();
 				}
 			};
@@ -482,6 +488,9 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+#ifndef __WINDOWS__
+goto_return:
+#endif
 					return res->succeeded();
 				};
 				bool insert( ::booldog::result* pres , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
@@ -639,6 +648,9 @@ goto_next:
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+#ifndef __WINDOWS__
+goto_return:
+#endif
 					return res->succeeded();
 				}
 			};
