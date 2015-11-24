@@ -632,7 +632,11 @@ goto_step0_and_return:
 						goto goto_return;
 					}
 					else
+					{
 						dl_error = dlerror();
+						
+						printf( "%s\n" , dl_error );
+					}
 					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
 					if( module_handle )
 					{
