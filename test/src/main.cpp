@@ -6281,18 +6281,18 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_FALSE( res.succeeded() );
 
 		loader.wcsload( &res , L"core" , load_params );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::base::module* module0 = res.module;
+
+		loader.wcsload( &res , L"core" , 0 );
 
 		char* error_string = 0;
 		size_t error_string_len = 0 , error_string_size = 0;
 		::booldog::error::format( &res , error_string , error_string_len , error_string_size );
 
 		printf( "error %s\n" , error_string );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		::booldog::base::module* module0 = res.module;
-
-		loader.wcsload( &res , L"core" , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 
