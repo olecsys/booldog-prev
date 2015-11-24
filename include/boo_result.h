@@ -17,6 +17,8 @@ namespace booldog
 				error_type_errno ,
 #ifdef __WINDOWS__
 				error_type_GetLastError , 
+#else
+				error_type_dlerror ,
 #endif
 				error_type_booerr
 			};
@@ -40,7 +42,7 @@ namespace booldog
 			int errno_err;
 #ifdef __WINDOWS__
 			::booldog::uint32 get_last_error;
-#endif
+#endif	
 			::booldog::uint32 booerror;
 		};
 		result( void )
@@ -53,7 +55,7 @@ namespace booldog
 		};
 		virtual bool succeeded( void )
 		{
-			return error_type == ::booldog::enums::result::error_type_no_error;;
+			return error_type == ::booldog::enums::result::error_type_no_error;
 		};
 		void seterrno( void )
 		{
@@ -79,6 +81,11 @@ namespace booldog
 			clear();
 			this->error_type = ::booldog::enums::result::error_type_GetLastError;
 			this->get_last_error = get_last_error;
+		};
+#else
+		virtual char* dlerror( void )
+		{
+			return 0;
 		};
 #endif
 		void booerr( ::booldog::uint32 booerror )

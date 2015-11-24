@@ -6280,7 +6280,6 @@ TEST_F( boo_base_loaderTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
-
 		loader.wcsload( &res , L"core" , load_params );
 
 		ASSERT_TRUE( res.succeeded() );
@@ -6292,6 +6291,41 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		::booldog::base::module* module1 = res.module;
+
+		::booldog::result resres;
+		loader.unload( &resres , module0 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		loader.unload( &resres , module1 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+
+
+		loader.mbsload( &res , "core1" , load_params );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		loader.mbsload( &res , "core" , load_params );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module0 = res.module;
+
+		loader.mbsload( &res , "core" , 0 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module1 = res.module;
+
+		loader.unload( &resres , module0 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		loader.unload( &resres , module1 );
+
+		ASSERT_TRUE( res.succeeded() );
 
 	//char* error_string = 0;
 	//size_t error_string_len = 0 , error_string_size = 0;

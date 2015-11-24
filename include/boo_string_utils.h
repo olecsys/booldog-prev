@@ -391,7 +391,7 @@ goto_next:
 					if( res->mbchar )
 					{
 #ifdef __WINDOWS__
-						res->mblen = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , begin , (int)charcount , res->mbchar , res->mbsize , NULL , NULL );
+						res->mblen = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , begin , (int)charcount , res->mbchar , (int)res->mbsize , NULL , NULL );
 						if( res->mblen == 0 )
 						{
 							DWORD get_last_error = GetLastError();
@@ -404,7 +404,7 @@ goto_next:
 									res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
 									if( res->mbchar )
 									{
-										res->mblen = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , begin , (int)charcount , res->mbchar , res->mbsize , NULL , NULL );
+										res->mblen = WideCharToMultiByte( CP_ACP , WC_NO_BEST_FIT_CHARS , begin , (int)charcount , res->mbchar , (int)res->mbsize , NULL , NULL );
 										if( res->mblen > 0 )
 											res->mbchar[ res->mblen ] = 0;
 										else
