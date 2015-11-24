@@ -163,7 +163,7 @@ namespace booldog
 				_lock.wlock( debuginfo );
 
 				char* dl_error = 0;
-				module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
+				module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD | RTLD_LAZY );
 				if( module_handle )
 				{
 					::booldog::module* module = 0;
@@ -472,7 +472,7 @@ goto_step0_and_return:
 
 					_lock.wlock( debuginfo );
 					char* dl_error = 0;
-					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
+					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD | RTLD_LAZY );
 					if( module_handle )
 					{
 						::booldog::module* module = 0;
@@ -518,7 +518,7 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD | RTLD_LAZY );
 					if( module_handle )
 					{
 						::booldog::module* module = 0;
@@ -566,7 +566,7 @@ goto_step0_and_return:
 						goto goto_return;
 					}
 					
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD | RTLD_LAZY );
 					if( module_handle )
 					{
 						::booldog::module* module = 0;
@@ -611,7 +611,7 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD | RTLD_LAZY );
 					if( module_handle )
 					{
 						::booldog::module* module = 0;
