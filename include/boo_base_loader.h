@@ -309,6 +309,25 @@ goto_step0_and_return:
 						res_root_dir.mbchar[ res_dir_mblen ] = 0;
 						res_root_dir.mblen = res_dir_mblen;
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
+							, SIZE_MAX , allocator , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+							, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
+							, SIZE_MAX , allocator , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( mbsload( res , res_root_dir.mbchar , 0 , allocator , debuginfo ) )
+							goto goto_return;
+
+						res_root_dir.mbchar[ res_dir_mblen ] = 0;
+						res_root_dir.mblen = res_dir_mblen;
+						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , "lib" , 0
 							, SIZE_MAX , allocator , debuginfo ) == false )
 						{
@@ -317,6 +336,32 @@ goto_step0_and_return:
 						}
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
+							, SIZE_MAX , allocator , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( mbsload( res , res_root_dir.mbchar , 0 , allocator , debuginfo ) )
+							goto goto_return;
+
+						res_root_dir.mbchar[ res_dir_mblen ] = 0;
+						res_root_dir.mblen = res_dir_mblen;
+						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+							, res_root_dir.mblen , res_root_dir.mbsize , "lib" , 0
+							, SIZE_MAX , allocator , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
+							, SIZE_MAX , allocator , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+							, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
 							, SIZE_MAX , allocator , debuginfo ) == false )
 						{
 							res->copy( resres );
