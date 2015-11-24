@@ -6287,15 +6287,21 @@ TEST_F( boo_base_loaderTest , test )
 		::booldog::base::module* module0 = res.module;
 
 
-		void* h = dlopen( "libcore" , RTLD_NOLOAD | RTLD_LAZY );
+		void* h = dlopen( "/home/olecsys/booldog/test_data/modules0/x64/libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
 		if( h == 0 )
 			printf( "my %s\n" , dlerror() );
+		else
+			printf( "my success\n" );
 		h = dlopen( "libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
 		if( h == 0 )
 			printf( "my %s\n" , dlerror() );
+		else
+			printf( "my success\n" );
 		h = dlopen( "./libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
 		if( h == 0 )
 			printf( "my %s\n" , dlerror() );
+		else
+			printf( "my success\n" );
 
 
 		loader.wcsload( &res , L"core" , 0 );
