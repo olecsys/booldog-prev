@@ -511,8 +511,8 @@ goto_step0_and_return:
 						res->setdlerror( dl_error , allocator , debuginfo );
 					}
 					
-					res_name_or_path.mbchar[ res_dir_mblen ] = 0;
-					res_name_or_path.mblen = res_dir_mblen;
+					res_name_or_path.mbchar[ res_root_dir_mblen ] = 0;
+					res_name_or_path.mblen = res_root_dir_mblen;
 					if( ::booldog::utils::string::mbs::insert( &resres , 0 , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , "lib" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
@@ -576,12 +576,12 @@ goto_step0_and_return:
 							{
 								module = _modules[ index0 ];
 								module->addref();
-								goto goto_step2_and_return;
+								goto goto_step4_and_return;
 							}
 						}
 						module = _allocator->create< ::booldog::module >( debuginfo );
 						module->_handle = module_handle;
-	goto_step2_and_return:
+	goto_step4_and_return:
 						res->module = module;
 						_lock.wunlock( debuginfo );
 						goto goto_return;
