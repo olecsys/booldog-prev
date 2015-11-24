@@ -153,6 +153,8 @@ namespace booldog
 			}
 			if( resbool.bres )
 			{
+				printf( "%s\n" , res_name_or_path.mbchar );
+				
 				if( ::booldog::utils::io::path::mbs::normalize( &resres , res_name_or_path.mbchar , res_name_or_path.mblen 
 					, res_name_or_path.mbsize ) == false )
 				{
@@ -198,6 +200,9 @@ goto_step0_and_return:
 				else
 				{
 					dl_error = dlerror();
+
+					printf( "%s\n" , dl_error );
+					
 					res->setdlerror( dl_error , allocator , debuginfo );
 				}
 				_lock.wunlock( debuginfo );
