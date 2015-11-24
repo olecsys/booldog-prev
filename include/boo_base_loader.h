@@ -75,7 +75,7 @@ namespace booldog
 			_dlerror = 0;
 			
 			size_t dstlen = 0 , dstsize_in_bytes = 0;
-			if( ::booldog::utils::string::mbs::insert( 0 , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
+			if( ::booldog::utils::string::mbs::insert( 0 , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , (size_t)0 , (size_t)SIZE_MAX 
 				, allocator , debuginfo ) )
 				_allocator = allocator;
 			else
@@ -467,6 +467,7 @@ goto_step0_and_return:
 					_lock.wunlock( debuginfo );
 				}
 			}
+goto_return:
 #endif
 			return res->succeeded();
 		};
@@ -797,6 +798,7 @@ goto_step0_and_return:
 					_lock.wunlock( debuginfo );
 				}
 			}
+goto_return:
 #else
 			::booldog::result_mbchar resmbchar( allocator );
 			if( ::booldog::utils::string::wcs::tombs( &resmbchar , name_or_path , 0 , SIZE_MAX , allocator , debuginfo ) )
@@ -804,7 +806,6 @@ goto_step0_and_return:
 			else
 				res->copy( resmbchar );
 #endif
-goto_return:
 			return res->succeeded();
 		};
 		virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module , ::booldog::debug::info* debuginfo = 0 )
