@@ -6286,6 +6286,18 @@ TEST_F( boo_base_loaderTest , test )
 
 		::booldog::base::module* module0 = res.module;
 
+
+		void* h = dlopen( "libcore" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+		h = dlopen( "libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+		h = dlopen( "./libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+
+
 		loader.wcsload( &res , L"core" , 0 );
 
 		char* error_string = 0;
@@ -6318,17 +6330,6 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		module0 = res.module;
-
-		void* h = dlopen( "libcore" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		h = dlopen( "libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		h = dlopen( "./libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-
 
 		loader.mbsload( &res , "core" , 0 );
 
