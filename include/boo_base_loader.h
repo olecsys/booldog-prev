@@ -71,17 +71,17 @@ namespace booldog
 			, ::booldog::debug::info* debuginfo = 0 )
 		{
 			if( _dlerror )
-				_obj_->_allocator->free( _obj_->_dlerror );
-			_obj_->_dlerror = 0;
+				_allocator->free( _dlerror );
+			_dlerror = 0;
 			
 			size_t dstlen = 0 , dstsize_in_bytes = 0;
 			::booldog::result resres;
-			if( ::booldog::utils::string::mbs::insert( &resres , _obj_->_dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
+			if( ::booldog::utils::string::mbs::insert( &resres , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
 				, allocator , debuginfo ) )
-				_obj_->_allocator = allocator;
+				_allocator = allocator;
 			else
-				_obj_->_dlerror = 0;
-			_obj_->error_type = ::booldog::enums::result::error_type_dlerror;
+				_dlerror = 0;
+			error_type = ::booldog::enums::result::error_type_dlerror;
 		};
 #endif
 	};
