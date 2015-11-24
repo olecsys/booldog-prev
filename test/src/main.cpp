@@ -6286,6 +6286,8 @@ TEST_F( boo_base_loaderTest , test )
 		size_t error_string_len = 0 , error_string_size = 0;
 		::booldog::error::format( &res , error_string , error_string_len , error_string_size );
 
+		printf( "error %s\n" , error_string );
+
 		ASSERT_TRUE( res.succeeded() );
 
 		::booldog::base::module* module0 = res.module;
