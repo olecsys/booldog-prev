@@ -354,6 +354,25 @@ goto_step0_and_return:
 					res_root_dir.mbchar[ res_dir_mblen ] = 0;
 					res_root_dir.mblen = res_dir_mblen;
 					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+						, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+						, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( mbsload( res , res_root_dir.mbchar , 0 , allocator , debuginfo ) )
+						goto goto_return;
+
+					res_root_dir.mbchar[ res_dir_mblen ] = 0;
+					res_root_dir.mblen = res_dir_mblen;
+					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 						, res_root_dir.mblen , res_root_dir.mbsize , "lib" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
 					{
@@ -362,6 +381,32 @@ goto_step0_and_return:
 					}
 					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 						, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( mbsload( res , res_root_dir.mbchar , 0 , allocator , debuginfo ) )
+						goto goto_return;
+
+					res_root_dir.mbchar[ res_dir_mblen ] = 0;
+					res_root_dir.mblen = res_dir_mblen;
+					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+						, res_root_dir.mblen , res_root_dir.mbsize , "lib" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+						, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
+						, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
 					{
 						res->copy( resres );
@@ -378,6 +423,8 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
+					res_root_dir_mblen = res_name_or_path.mblen;
+
 					_lock.wlock( debuginfo );
 					char* dl_error = 0;
 					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
@@ -418,14 +465,107 @@ goto_step0_and_return:
 						res->setdlerror( dl_error , allocator , debuginfo );
 					}
 
-					if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
-						, res_root_dir.mblen , res_root_dir.mbsize , "lib" , 0
+
+					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
+						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
+					if( module_handle )
+					{
+						::booldog::module* module = 0;
+						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+						{
+							if( _modules[ index0 ]->handle() == module_handle )
+							{
+								module = _modules[ index0 ];
+								module->addref();
+								goto goto_step2_and_return;
+							}
+						}
+						module = _allocator->create< ::booldog::module >( debuginfo );
+						module->_handle = module_handle;
+	goto_step2_and_return:
+						res->module = module;
+						_lock.wunlock( debuginfo );
+						goto goto_return;
+					}
+					else
+						dl_error = dlerror();
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+					if( module_handle )
+					{
+						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
+						module->_handle = module_handle;
+						_modules.add( module , debuginfo );
+						_lock.wunlock( debuginfo );
+						res->module = module;
+						goto goto_return;
+					}
+					else
+					{
+						dl_error = dlerror();
+						res->setdlerror( dl_error , allocator , debuginfo );
+					}
+					
+					res_name_or_path.mbchar[ res_dir_mblen ] = 0;
+					res_name_or_path.mblen = res_dir_mblen;
+					if( ::booldog::utils::string::mbs::insert( &resres , 0 , res_name_or_path.mbchar 
+						, res_name_or_path.mblen , res_name_or_path.mbsize , "lib" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
 					{
 						res->copy( resres );
 						goto goto_return;
 					}
 					
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
+					if( module_handle )
+					{
+						::booldog::module* module = 0;
+						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+						{
+							if( _modules[ index0 ]->handle() == module_handle )
+							{
+								module = _modules[ index0 ];
+								module->addref();
+								goto goto_step3_and_return;
+							}
+						}
+						module = _allocator->create< ::booldog::module >( debuginfo );
+						module->_handle = module_handle;
+	goto_step3_and_return:
+						res->module = module;
+						_lock.wunlock( debuginfo );
+						goto goto_return;
+					}
+					else
+						dl_error = dlerror();
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+					if( module_handle )
+					{
+						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
+						module->_handle = module_handle;
+						_modules.add( module , debuginfo );
+						_lock.wunlock( debuginfo );
+						res->module = module;
+						goto goto_return;
+					}
+					else
+					{
+						dl_error = dlerror();
+						res->setdlerror( dl_error , allocator , debuginfo );
+					}
+
+					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
+						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
 					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOLOAD );
 					if( module_handle )
 					{
