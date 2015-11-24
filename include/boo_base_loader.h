@@ -67,7 +67,7 @@ namespace booldog
 		{
 			return _dlerror;
 		};
-		void setdlerror( char* dlerrorstr , booldog::allocator* allocator = ::booldog::_allocator 
+		void setdlerror( const char* dlerrorstr , booldog::allocator* allocator = ::booldog::_allocator 
 			, ::booldog::debug::info* debuginfo = 0 )
 		{
 			if( _dlerror )
@@ -75,8 +75,7 @@ namespace booldog
 			_dlerror = 0;
 			
 			size_t dstlen = 0 , dstsize_in_bytes = 0;
-			::booldog::result resres;
-			if( ::booldog::utils::string::mbs::insert( &resres , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
+			if( ::booldog::utils::string::mbs::insert( 0 , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
 				, allocator , debuginfo ) )
 				_allocator = allocator;
 			else
