@@ -6291,7 +6291,13 @@ TEST_F( boo_base_loaderTest , test )
 		if( h == 0 )
 			printf( "my %s\n" , dlerror() );
 		else
+		{
 			printf( "my success\n" );
+
+			char* p = 0;
+			if( dlinfo( h , RTLD_DI_ORIGIN , p ) != -1 )
+				printf( "my success %s\n" , p );
+		}
 		h = dlopen( "libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
 		if( h == 0 )
 			printf( "my %s\n" , dlerror() );
