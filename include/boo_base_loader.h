@@ -238,6 +238,9 @@ goto_step0_and_return:
 							res->copy( res_root_dir );
 							goto goto_return;
 						}
+	
+						printf( "::booldog::utils::executable::mbs::directory %s\n" , res_root_dir.mbchar );
+
 					}
 				}
 				size_t res_root_dir_mblen = 0;
@@ -293,6 +296,9 @@ goto_step0_and_return:
 						}
 						else
 							continue;
+
+						printf( "for1 %s\n" , res_root_dir.mbchar );
+
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , &::booldog::io::mbs::slash , 0
 							, 1 , allocator , debuginfo ) == false )
@@ -300,6 +306,9 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
+
+						printf( "for2 %s\n" , res_root_dir.mbchar );
+
 						size_t res_dir_mblen = res_root_dir.mblen;
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
