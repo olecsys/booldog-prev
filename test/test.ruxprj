@@ -21,7 +21,7 @@
 				[					
 				],
 				"isystem":"./../extern_sources/gtest-1.7.0/include",
-				"intermediate_directory":"./../build/$(os)/$(architecture)",
+				"intermediate_directory":"./../build/$(architecture)",
 				"rm_command":"rm -f",
 				"mk_dir_command":"mkdir -p",
 				"object_suffix":".o",
