@@ -6282,6 +6282,10 @@ TEST_F( boo_base_loaderTest , test )
 
 		loader.wcsload( &res , L"core" , load_params );
 
+		char* error_string = 0;
+		size_t error_string_len = 0 , error_string_size = 0;
+		::booldog::error::format( &res , error_string , error_string_len , error_string_size );
+
 		ASSERT_TRUE( res.succeeded() );
 
 		::booldog::base::module* module0 = res.module;
@@ -6326,12 +6330,6 @@ TEST_F( boo_base_loaderTest , test )
 		loader.unload( &resres , module1 );
 
 		ASSERT_TRUE( res.succeeded() );
-
-	//char* error_string = 0;
-	//size_t error_string_len = 0 , error_string_size = 0;
-	//::booldog::error::format( &res , error_string , error_string_len , error_string_size );
-
-	//loader.add_search_path( ::booldog::string( ".\\../../.\\test_data\\modules" ) );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );

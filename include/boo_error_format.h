@@ -26,19 +26,27 @@ namespace booldog
 				{
 					void* last_error_void = NULL;
 					FormatMessageA( FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS , NULL , pres->get_last_error , MAKELANGID( LANG_NEUTRAL , SUBLANG_DEFAULT ) , (char*)&last_error_void , 0 , NULL );
-					::booldog::result resres;
 					if( last_error_void )
 					{
-						::booldog::utils::string::mbs::insert( &resres , 0 , mbchar , mblen , mbsize_in_bytes , (char*)last_error_void 
+						::booldog::utils::string::mbs::insert( 0 , 0 , mbchar , mblen , mbsize_in_bytes , (char*)last_error_void 
 							, 0 , SIZE_MAX , allocator , debuginfo );
 						LocalFree( last_error_void );
 					}
 					else
-					{
-						::booldog::utils::string::mbs::insert( &resres , 0 , mbchar , mblen , mbsize_in_bytes , "unknown error" 
+						::booldog::utils::string::mbs::insert( 0 , 0 , mbchar , mblen , mbsize_in_bytes , "unknown error" 
 							, 0 , SIZE_MAX , allocator , debuginfo );
-					}
 				}
+			}
+#else
+			else if( error_type == ::booldog::enums::result::error_type_dlerror )
+			{
+				char* dlerrorstr = pres->dlerror();
+				if( dlerrorstr )
+					::booldog::utils::string::mbs::insert( 0 , 0 , mbchar , mblen , mbsize_in_bytes , dlerrorstr
+						, 0 , SIZE_MAX , allocator , debuginfo );
+				else
+					::booldog::utils::string::mbs::insert( 0 , 0 , mbchar , mblen , mbsize_in_bytes , "unknown error" 
+						, 0 , SIZE_MAX , allocator , debuginfo );
 			}
 #endif
 		};
