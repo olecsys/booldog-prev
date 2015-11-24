@@ -6294,7 +6294,7 @@ TEST_F( boo_base_loaderTest , test )
 		{
 			printf( "my success\n" );
 
-			char* p = 0;
+			char p[ 256 ] = {0};
 			if( dlinfo( h , RTLD_DI_ORIGIN , p ) != -1 )
 				printf( "my success %s\n" , p );
 		}
