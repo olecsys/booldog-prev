@@ -468,6 +468,13 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
+					if( ::booldog::utils::string::mbs::insert( &resres , 0 , res_name_or_path.mbchar 
+						, res_name_or_path.mblen , res_name_or_path.mbsize , "./" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
 					res_root_dir_mblen = res_name_or_path.mblen;
 
 					_lock.wlock( debuginfo );
