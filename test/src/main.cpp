@@ -6319,6 +6319,17 @@ TEST_F( boo_base_loaderTest , test )
 
 		module0 = res.module;
 
+		void* h = dlopen( "libcore" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+		h = dlopen( "libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+		h = dlopen( "./libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+
+
 		loader.mbsload( &res , "core" , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
