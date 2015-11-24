@@ -75,7 +75,7 @@ namespace booldog
 			_dlerror = 0;
 			
 			size_t dstlen = 0 , dstsize_in_bytes = 0;
-			if( ::booldog::utils::string::mbs::insert( 0 , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , (size_t)0 , (size_t)SIZE_MAX 
+			if( ::booldog::utils::string::mbs::insert( 0 , 0 , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
 				, allocator , debuginfo ) )
 				_allocator = allocator;
 			else
