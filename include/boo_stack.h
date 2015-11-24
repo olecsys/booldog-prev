@@ -163,7 +163,7 @@ namespace booldog
 						info->_eflags = info->_flags;
 					}
 				};
-				booinline ::booldog::byte* check_alloc( ::booldog::byte* begin , size_t size , size_t& total )
+				booinline ::booldog::byte* check_alloc( ::booldog::byte* begin , size_t& size , size_t& total )
 				{
 					size_t offsize = 0 , begin_size = 0;
 					from_info( begin , offsize , begin_size );
@@ -238,7 +238,8 @@ namespace booldog
 							total = offsize;
 							_avail -= total;
 
-							begin_size = offsize - begin_size;
+							size = begin_size;
+							begin_size = offsize - size;
 							if( begin_size == sizeof( ::booldog::mem::info1 ) )
 							{
 								::booldog::mem::info1* info = (::booldog::mem::info1*)begin;

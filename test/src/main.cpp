@@ -888,6 +888,8 @@ TEST_F( boo_stackTest , test )
 
 	allocator.free( ptr1 );
 
+	ptr1 = 0;
+
 	ASSERT_TRUE( allocator.begin() == begin );
 
 	ASSERT_EQ( allocator.available() , total );
@@ -968,6 +970,220 @@ TEST_F( boo_stackTest , test )
 	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
 
 	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
+
+	allocator.free( ptr0 );
+
+	ptr0 = 0;
+
+	ASSERT_TRUE( allocator.begin() == begin );
+
+	ASSERT_EQ( allocator.available() , total );
+
+
+
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 8 * 4 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 8 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 * 4 );
+		
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 * 4 );
+		
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 * 4 );		
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 * 4 );		
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 * 4 );
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 * 4 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 2 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 * 4 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 );
+
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 2 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_TRUE( allocator.begin() == begin );
+		
+		ASSERT_EQ( allocator.available() , total );
+	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 
 class boo_memTest : public ::testing::Test 
@@ -978,6 +1194,10 @@ TEST_F( boo_memTest , test )
 	::booldog::allocators::stack::simple< 4096 > allocator;
 
 	booldog::_allocator = &allocator;
+
+	size_t total = allocator.available();
+
+	char* begin = (char*)allocator.begin();
 
 	size_t dstsize = 0;
 	size_t dst_allocsize = 8;
@@ -1069,6 +1289,13 @@ TEST_F( boo_memTest , test )
 	dstsize = 7;
 
 	ASSERT_TRUE( ::memcmp( "Tesest0" , dst , dstsize ) == 0 );
+
+
+	allocator.free( dst );
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 
 class boo_stringTest : public ::testing::Test 
@@ -3521,6 +3748,10 @@ TEST_F( boo_stringTest , test )
 		
 		ASSERT_EQ( allocator.available() , total );
 	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 
 class boo_string_utilsTest : public ::testing::Test 
@@ -3865,6 +4096,10 @@ TEST_F( boo_string_utilsTest , test )
 
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "locale" ) == 0 );
 	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 
 class boo_arrayTest : public ::testing::Test 
@@ -3876,83 +4111,93 @@ TEST_F( boo_arrayTest , test )
 
 	booldog::_allocator = &allocator;
 
-	::booldog::array< const wchar_t* > wcs_array;
+	size_t total = allocator.available();
 
-	ASSERT_EQ( wcs_array.insert( 3 , L"TEST2" ) , 0 );
+	char* begin = (char*)allocator.begin();
 
-	ASSERT_EQ( wcs_array.count() , 1 );
+	{
+		::booldog::array< const wchar_t* > wcs_array;
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+		ASSERT_EQ( wcs_array.insert( 3 , L"TEST2" ) , 0 );
 
-	ASSERT_EQ( wcs_array.insert( 0 , L"TEST0" ) , 0 );
+		ASSERT_EQ( wcs_array.count() , 1 );
 
-	ASSERT_EQ( wcs_array.count() , 2 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST0" ) == 0 );
+		ASSERT_EQ( wcs_array.insert( 0 , L"TEST0" ) , 0 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST2" ) == 0 );
+		ASSERT_EQ( wcs_array.count() , 2 );
 
-	ASSERT_EQ( wcs_array.insert( 1 , L"TEST1" ) , 1 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST0" ) == 0 );
 
-	ASSERT_EQ( wcs_array.count() , 3 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST2" ) == 0 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST0" ) == 0 );
+		ASSERT_EQ( wcs_array.insert( 1 , L"TEST1" ) , 1 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST1" ) == 0 );
+		ASSERT_EQ( wcs_array.count() , 3 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 2 ] , L"TEST2" ) == 0 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST0" ) == 0 );
 
-	wcs_array.clear();
+		ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST1" ) == 0 );
 
-	ASSERT_EQ( wcs_array.count() , 0 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 2 ] , L"TEST2" ) == 0 );
 
+		wcs_array.clear();
 
-	ASSERT_EQ( wcs_array.add( L"TEST2" ) , 0 );
-
-	ASSERT_EQ( wcs_array.count() , 1 );
-
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
-
-	ASSERT_EQ( wcs_array.add( L"TEST0" ) , 1 );
-
-	ASSERT_EQ( wcs_array.count() , 2 );
-
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
-
-	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST0" ) == 0 );
-
-	ASSERT_EQ( wcs_array.add( L"TEST1" ) , 2 );
-
-	ASSERT_EQ( wcs_array.count() , 3 );
-
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
-
-	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST0" ) == 0 );
-
-	ASSERT_TRUE( wcscmp( wcs_array[ 2 ] , L"TEST1" ) == 0 );
+		ASSERT_EQ( wcs_array.count() , 0 );
 
 
-	wcs_array.remove( 1 , 4 );
+		ASSERT_EQ( wcs_array.add( L"TEST2" ) , 0 );
 
-	ASSERT_EQ( wcs_array.count() , 1 );
+		ASSERT_EQ( wcs_array.count() , 1 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+		ASSERT_EQ( wcs_array.add( L"TEST0" ) , 1 );
+
+		ASSERT_EQ( wcs_array.count() , 2 );
+
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+		ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST0" ) == 0 );
+
+		ASSERT_EQ( wcs_array.add( L"TEST1" ) , 2 );
+
+		ASSERT_EQ( wcs_array.count() , 3 );
+
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+		ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST0" ) == 0 );
+
+		ASSERT_TRUE( wcscmp( wcs_array[ 2 ] , L"TEST1" ) == 0 );
 
 
-	ASSERT_EQ( wcs_array.add( L"TEST1" ) , 1 );
+		wcs_array.remove( 1 , 4 );
 
-	ASSERT_EQ( wcs_array.count() , 2 );
+		ASSERT_EQ( wcs_array.count() , 1 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
-
-	ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST1" ) == 0 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
 
 
-	wcs_array.remove( 0 , 1 );
+		ASSERT_EQ( wcs_array.add( L"TEST1" ) , 1 );
 
-	ASSERT_EQ( wcs_array.count() , 1 );
+		ASSERT_EQ( wcs_array.count() , 2 );
 
-	ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST1" ) == 0 );
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST2" ) == 0 );
+
+		ASSERT_TRUE( wcscmp( wcs_array[ 1 ] , L"TEST1" ) == 0 );
+
+
+		wcs_array.remove( 0 , 1 );
+
+		ASSERT_EQ( wcs_array.count() , 1 );
+
+		ASSERT_TRUE( wcscmp( wcs_array[ 0 ] , L"TEST1" ) == 0 );
+	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 
 class boo_listTest : public ::testing::Test 
@@ -3964,95 +4209,106 @@ TEST_F( boo_listTest , test )
 
 	booldog::_allocator = &allocator;
 
-	::booldog::string item0( "TEST0" );
+	size_t total = allocator.available();
 
-	::booldog::string item1( "TEST1" );
+	char* begin = (char*)allocator.begin();
 
-	::booldog::string item2( "TEST2" );
+	{
+		::booldog::string item0( "TEST0" );
 
-	::booldog::list< ::booldog::string > string_array;
+		::booldog::string item1( "TEST1" );
 
-	::booldog::list< ::booldog::object > object_array;
+		::booldog::string item2( "TEST2" );
 
+		::booldog::list< ::booldog::string > string_array;
 
-	ASSERT_EQ( string_array.insert( 3 , item2 ) , 0 );
-
-	ASSERT_EQ( string_array.count() , 1 );
-
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
-
-	ASSERT_EQ( string_array.insert( 0 , item0 ) , 0 );
-
-	ASSERT_EQ( string_array.count() , 2 );
-
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST0" ) == 0 );
-
-	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST2" ) == 0 );
-
-	ASSERT_EQ( string_array.insert( 1 , item1 ) , 1 );
-
-	ASSERT_EQ( string_array.count() , 3 );
-
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST0" ) == 0 );
-
-	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST1" ) == 0 );
-
-	ASSERT_TRUE( strcmp( string_array[ 2 ].str() , "TEST2" ) == 0 );
-
-	string_array.clear();
-
-	ASSERT_EQ( string_array.count() , 0 );
+		::booldog::list< ::booldog::object > object_array;
 
 
-	ASSERT_EQ( string_array.add( item2 ) , 0 );
+		ASSERT_EQ( string_array.insert( 3 , item2 ) , 0 );
 
-	ASSERT_EQ( string_array.count() , 1 );
+		ASSERT_EQ( string_array.count() , 1 );
 
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
 
-	ASSERT_EQ( string_array.add( item0 ) , 1 );
+		ASSERT_EQ( string_array.insert( 0 , item0 ) , 0 );
 
-	ASSERT_EQ( string_array.count() , 2 );
+		ASSERT_EQ( string_array.count() , 2 );
 
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST0" ) == 0 );
 
-	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST0" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST2" ) == 0 );
 
-	ASSERT_EQ( string_array.add( item1 ) , 2 );
+		ASSERT_EQ( string_array.insert( 1 , item1 ) , 1 );
 
-	ASSERT_EQ( string_array.count() , 3 );
+		ASSERT_EQ( string_array.count() , 3 );
 
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST0" ) == 0 );
 
-	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST0" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST1" ) == 0 );
 
-	ASSERT_TRUE( strcmp( string_array[ 2 ].str() , "TEST1" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 2 ].str() , "TEST2" ) == 0 );
 
+		string_array.clear();
 
-	string_array.remove( 1 , 4 );
-
-	ASSERT_EQ( string_array.count() , 1 );
-
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+		ASSERT_EQ( string_array.count() , 0 );
 
 
-	ASSERT_EQ( string_array.add( item1 ) , 1 );
+		ASSERT_EQ( string_array.add( item2 ) , 0 );
 
-	ASSERT_EQ( string_array.count() , 2 );
+		ASSERT_EQ( string_array.count() , 1 );
 
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
 
-	ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST1" ) == 0 );
+		ASSERT_EQ( string_array.add( item0 ) , 1 );
+
+		ASSERT_EQ( string_array.count() , 2 );
+
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+
+		ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST0" ) == 0 );
+
+		ASSERT_EQ( string_array.add( item1 ) , 2 );
+
+		ASSERT_EQ( string_array.count() , 3 );
+
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+
+		ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST0" ) == 0 );
+
+		ASSERT_TRUE( strcmp( string_array[ 2 ].str() , "TEST1" ) == 0 );
 
 
-	string_array.remove( 0 , 1 );
+		string_array.remove( 1 , 4 );
 
-	ASSERT_EQ( string_array.count() , 1 );
+		ASSERT_EQ( string_array.count() , 1 );
 
-	ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST1" ) == 0 );
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
 
 
-	string_array.insert( 1 , object_array );
+		ASSERT_EQ( string_array.add( item1 ) , 1 );
+
+		ASSERT_EQ( string_array.count() , 2 );
+
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST2" ) == 0 );
+
+		ASSERT_TRUE( strcmp( string_array[ 1 ].str() , "TEST1" ) == 0 );
+
+
+		string_array.remove( 0 , 1 );
+
+		ASSERT_EQ( string_array.count() , 1 );
+
+		ASSERT_TRUE( strcmp( string_array[ 0 ].str() , "TEST1" ) == 0 );
+
+
+		string_array.insert( 1 , object_array );
+
+	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 
 
@@ -4065,6 +4321,11 @@ TEST_F( boo_assignmentTest , test )
 
 	booldog::_allocator = &allocator;
 
+	size_t total = allocator.available();
+
+	char* begin = (char*)allocator.begin();
+
+
 	::booldog::object obj;
 
 	::booldog::string str;
@@ -4076,6 +4337,11 @@ TEST_F( boo_assignmentTest , test )
 	::booldog::list< ::booldog::list< ::booldog::object > > obj_array_array;
 
 	::booldog::list< ::booldog::list< ::booldog::string > > str_array_array;
+
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 
 
@@ -4088,317 +4354,323 @@ TEST_F( boo_checkTest , test )
 
 	booldog::_allocator = &allocator;
 
-	::booldog::object obj( &allocator );
+	size_t total = allocator.available();
 
-	::booldog::string str( &allocator );
+	char* begin = (char*)allocator.begin();
 
-	::booldog::list< ::booldog::string > str_array( &allocator );
+	{
+		::booldog::object obj( &allocator );
 
-	::booldog::list< ::booldog::object > obj_array( &allocator );
+		::booldog::string str( &allocator );
 
-	::booldog::list< ::booldog::list< ::booldog::object > > obj_array_array( &allocator );
+		::booldog::list< ::booldog::string > str_array( &allocator );
 
-	::booldog::list< ::booldog::list< ::booldog::string > > str_array_array( &allocator );
+		::booldog::list< ::booldog::object > obj_array( &allocator );
 
+		::booldog::list< ::booldog::list< ::booldog::object > > obj_array_array( &allocator );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
+		::booldog::list< ::booldog::list< ::booldog::string > > str_array_array( &allocator );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::string >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::string >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str ) );
 
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( str_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str_array ) );
 
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj_array ) );
 
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj_array_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj_array_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj_array_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj_array_array ) );
 
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str_array_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str_array_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str_array_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array_array ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array_array ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( str_array_array ) );
 
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::object >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::string >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str ) );
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::string >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( str_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array ) );
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str_array ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array ) );
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj_array ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj_array_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj_array_array ) );
 
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( str_array_array ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array_array ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( str_array_array ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( str_array_array ) );
 
-	obj = str;
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( str_array_array ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::string >( obj ) );
+		obj = str;
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	obj = str_array;
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
+		obj = str_array;
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	obj = obj_array;
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
+		obj = obj_array;
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	obj = obj_array_array;
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
+		obj = obj_array_array;
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	obj = str_array_array;
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
+		obj = str_array_array;
 
-	ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::object >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::string >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::can_assign< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::object > >( obj ) );
 
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
+		ASSERT_TRUE( ::booldog::can_assign< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::object >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::string >( obj ) );
 
-	ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::string > >( obj ) );
 
-	ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
-	//obj().ref;
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::object > >( obj ) );
 
-//	booldog::string< &booldog::_heap > g( "l" );
-	//obj = get_string();
+		ASSERT_FALSE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::object > > >( obj ) );
+
+		ASSERT_TRUE( ::booldog::isclass< ::booldog::list< ::booldog::list< ::booldog::string > > >( obj ) );
+	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 class boo_io_utilsTest : public ::testing::Test 
 {
@@ -4409,975 +4681,83 @@ TEST_F( boo_io_utilsTest , test )
 
 	booldog::_allocator = &allocator;
 
-	const wchar_t* wtest = L"C:/privet\\../gui.exe\\./..\\ui.exe";
-	const char* mbtest = "C:/privet\\../gui.exe\\./..\\ui.exe";
+	size_t total = allocator.available();
 
-	const wchar_t* wtest2 = L"C:/privet\\../gui.exe\\./..\\ui";
-	const char* mbtest2 = "C:/privet\\../gui.exe\\./..\\ui";
+	char* begin = (char*)allocator.begin();
 
-	::booldog::result_wchar reswchar( ::booldog::_allocator );
+	{
+
+		const wchar_t* wtest = L"C:/privet\\../gui.exe\\./..\\ui.exe";
+		const char* mbtest = "C:/privet\\../gui.exe\\./..\\ui.exe";
+
+		const wchar_t* wtest2 = L"C:/privet\\../gui.exe\\./..\\ui";
+		const char* mbtest2 = "C:/privet\\../gui.exe\\./..\\ui";
+
+		::booldog::result_wchar reswchar( ::booldog::_allocator );
 	
-	::booldog::utils::io::path::wcs::filename( &reswchar , wtest );
+		::booldog::utils::io::path::wcs::filename( &reswchar , wtest );
 
-	ASSERT_TRUE( reswchar.succeeded() );
+		ASSERT_TRUE( reswchar.succeeded() );
 
-	ASSERT_EQ( reswchar.wsize , 7 * sizeof( wchar_t ) );
+		ASSERT_EQ( reswchar.wsize , 7 * sizeof( wchar_t ) );
 
-	ASSERT_EQ( reswchar.wlen , 6 );
+		ASSERT_EQ( reswchar.wlen , 6 );
 
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"ui.exe" ) == 0 );
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ui.exe" ) == 0 );
 
-	::booldog::utils::io::path::wcs::filename( &reswchar , wtest , 3 , 17 );
+		::booldog::utils::io::path::wcs::filename( &reswchar , wtest , 3 , 17 );
 
-	ASSERT_TRUE( reswchar.succeeded() );
+		ASSERT_TRUE( reswchar.succeeded() );
 
-	ASSERT_EQ( reswchar.wsize , 8 * sizeof( wchar_t ) );
+		ASSERT_EQ( reswchar.wsize , 8 * sizeof( wchar_t ) );
 
-	ASSERT_EQ( reswchar.wlen , 7 );
+		ASSERT_EQ( reswchar.wlen , 7 );
 
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"gui.exe" ) == 0 );
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"gui.exe" ) == 0 );
 
 
-	::booldog::utils::io::path::wcs::directory( &reswchar , wtest );
+		::booldog::utils::io::path::wcs::directory( &reswchar , wtest );
 
-	ASSERT_TRUE( reswchar.succeeded() );
+		ASSERT_TRUE( reswchar.succeeded() );
 
-	ASSERT_EQ( reswchar.wsize , 26 * sizeof( wchar_t ) );
+		ASSERT_EQ( reswchar.wsize , 26 * sizeof( wchar_t ) );
 
-	ASSERT_EQ( reswchar.wlen , 25 );
+		ASSERT_EQ( reswchar.wlen , 25 );
 
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"C:/privet\\../gui.exe\\./.." ) == 0 );
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"C:/privet\\../gui.exe\\./.." ) == 0 );
 
-	::booldog::utils::io::path::wcs::directory( &reswchar , wtest , 3 , 17 );
+		::booldog::utils::io::path::wcs::directory( &reswchar , wtest , 3 , 17 );
 
-	ASSERT_TRUE( reswchar.succeeded() );
+		ASSERT_TRUE( reswchar.succeeded() );
 
-	ASSERT_EQ( reswchar.wsize , 10 * sizeof( wchar_t ) );
+		ASSERT_EQ( reswchar.wsize , 10 * sizeof( wchar_t ) );
 
-	ASSERT_EQ( reswchar.wlen , 9 );
+		ASSERT_EQ( reswchar.wlen , 9 );
 
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"privet\\.." ) == 0 );
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"privet\\.." ) == 0 );
 
 
-	::booldog::utils::io::path::wcs::extension( &reswchar , wtest );
+		::booldog::utils::io::path::wcs::extension( &reswchar , wtest );
 
-	ASSERT_TRUE( reswchar.succeeded() );
+		ASSERT_TRUE( reswchar.succeeded() );
 
-	ASSERT_EQ( reswchar.wsize , 4 * sizeof( wchar_t ) );
+		ASSERT_EQ( reswchar.wsize , 4 * sizeof( wchar_t ) );
 
-	ASSERT_EQ( reswchar.wlen , 3 );
+		ASSERT_EQ( reswchar.wlen , 3 );
 
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"exe" ) == 0 );
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"exe" ) == 0 );
 
-	::booldog::utils::io::path::wcs::extension( &reswchar , wtest , 3 , 16 );
+		::booldog::utils::io::path::wcs::extension( &reswchar , wtest , 3 , 16 );
 
-	ASSERT_TRUE( reswchar.succeeded() );
+		ASSERT_TRUE( reswchar.succeeded() );
 
-	ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
+		ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
 
-	ASSERT_EQ( reswchar.wlen , 2 );
+		ASSERT_EQ( reswchar.wlen , 2 );
 
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"ex" ) == 0 );
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ex" ) == 0 );
 
-	::booldog::utils::io::path::wcs::extension( &reswchar , wtest2 );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 0 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-
-
-	::booldog::result_mbchar resmbchar( ::booldog::_allocator );
-	
-	::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 7 );
-
-	ASSERT_EQ( resmbchar.mblen , 6 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "ui.exe" ) == 0 );
-
-	::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest , 3 , 17 );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 8 );
-
-	ASSERT_EQ( resmbchar.mblen , 7 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "gui.exe" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 26 );
-
-	ASSERT_EQ( resmbchar.mblen , 25 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "C:/privet\\../gui.exe\\./.." ) == 0 );
-
-	::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest , 3 , 17 );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 10 );
-
-	ASSERT_EQ( resmbchar.mblen , 9 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "privet\\.." ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 4 );
-
-	ASSERT_EQ( resmbchar.mblen , 3 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "exe" ) == 0 );
-
-	::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest , 3 , 16 );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 3 );
-
-	ASSERT_EQ( resmbchar.mblen , 2 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "ex" ) == 0 );
-
-	::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest2 );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 1 );
-
-	ASSERT_EQ( resmbchar.mblen , 0 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\kill/." );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 12 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 9 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./.\\kill/." );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 16 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 9 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home\\./.\\kill/." );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 18 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 9 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/." );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 36 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 9 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/joke\\.." );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 42 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 9 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"/home/.." );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 0 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L".\\" );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 0 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"." );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 2 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 0 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./\\.\\kill/." );
-
-	ASSERT_FALSE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./.\\../kill/." );
-
-	ASSERT_FALSE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-
-
-	::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"../local" );
-
-	ASSERT_FALSE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\kill/." );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 12 );
-
-	ASSERT_EQ( resmbchar.mblen , 9 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./.\\kill/." );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 16 );
-
-	ASSERT_EQ( resmbchar.mblen , 9 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home\\./.\\kill/." );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 18 );
-
-	ASSERT_EQ( resmbchar.mblen , 9 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/." );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 36 );
-
-	ASSERT_EQ( resmbchar.mblen , 9 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/joke\\.." );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 42 );
-
-	ASSERT_EQ( resmbchar.mblen , 9 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "/home/.." );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 9 );
-
-	ASSERT_EQ( resmbchar.mblen , 0 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , ".\\" );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 3 );
-
-	ASSERT_EQ( resmbchar.mblen , 0 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "." );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 2 );
-
-	ASSERT_EQ( resmbchar.mblen , 0 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./\\.\\kill/." );
-
-	ASSERT_FALSE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./.\\../kill/." );
-
-	ASSERT_FALSE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-
-
-	::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "../local" );
-
-	ASSERT_FALSE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-
-
-	::booldog::result_bool resbool;
-
-	::booldog::utils::io::path::wcs::has_levels( &resbool , 0 );
-
-	ASSERT_FALSE( resbool.succeeded() );
-
-	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-
-
-	::booldog::utils::io::path::wcs::has_levels( &resbool , L"" );
-
-	ASSERT_FALSE( resbool.succeeded() );
-
-	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-
-
-	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local/" , 9 );
-
-	ASSERT_FALSE( resbool.succeeded() );
-
-	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-
-
-	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" );
-
-	ASSERT_TRUE( resbool.succeeded() );
-
-	ASSERT_TRUE( resbool.bres );
-
-
-	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" , 2 );
-
-	ASSERT_TRUE( resbool.succeeded() );
-
-	ASSERT_TRUE( resbool.bres );
-
-
-	::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" , 3 );
-
-	ASSERT_TRUE( resbool.succeeded() );
-
-	ASSERT_FALSE( resbool.bres );
-
-
-
-	::booldog::utils::io::path::mbs::has_levels( &resbool , 0 );
-
-	ASSERT_FALSE( resbool.succeeded() );
-
-	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-
-
-	::booldog::utils::io::path::mbs::has_levels( &resbool , "" );
-
-	ASSERT_FALSE( resbool.succeeded() );
-
-	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-
-
-	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local/" , 9 );
-
-	ASSERT_FALSE( resbool.succeeded() );
-
-	ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-	ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-
-
-	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" );
-
-	ASSERT_TRUE( resbool.succeeded() );
-
-	ASSERT_TRUE( resbool.bres );
-
-
-	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" , 2 );
-
-	ASSERT_TRUE( resbool.succeeded() );
-
-	ASSERT_TRUE( resbool.bres );
-
-
-	::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" , 3 );
-
-	ASSERT_TRUE( resbool.succeeded() );
-
-	ASSERT_FALSE( resbool.bres );
-
-
-	
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"" );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 0 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"core" );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 4 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core" );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 4 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core.dll.exe" );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 8 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 0 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" , 7 );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 4 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 8 );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 4 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
-
-
-	::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 9 );
-
-	ASSERT_TRUE( reswchar.succeeded() );
-
-	ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
-
-	ASSERT_EQ( reswchar.wlen , 8 );
-
-	ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
-
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "" );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 1 );
-
-	ASSERT_EQ( resmbchar.mblen , 0 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "core" );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 5 );
-
-	ASSERT_EQ( resmbchar.mblen , 4 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core" );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 5 );
-
-	ASSERT_EQ( resmbchar.mblen , 4 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core.dll.exe" );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 9 );
-
-	ASSERT_EQ( resmbchar.mblen , 8 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 1 );
-
-	ASSERT_EQ( resmbchar.mblen , 0 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" , 7 );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 5 );
-
-	ASSERT_EQ( resmbchar.mblen , 4 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 8 );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 5 );
-
-	ASSERT_EQ( resmbchar.mblen , 4 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
-
-
-	::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 9 );
-
-	ASSERT_TRUE( resmbchar.succeeded() );
-
-	ASSERT_EQ( resmbchar.mbsize , 9 );
-
-	ASSERT_EQ( resmbchar.mblen , 8 );
-
-	ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
-
-
-
-	{
-		::booldog::result res;
-
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::wcs::pathname_without_extension( &res , 0 , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e','.','d','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 9 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"core.d/ll" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e','.','d','l','l','.', 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 8 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"core.dll" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { '.','c','o','r','e', 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 0 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"" ) == 0 );
-	}
-
-
-	{
-		::booldog::result res;
-
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::mbs::pathname_without_extension( &res , 0 , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e','.','d','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 9 );
-
-		ASSERT_TRUE( strcmp( pathname , "core.d/ll" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e','.','d','l','l','.', 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 8 );
-
-		ASSERT_TRUE( strcmp( pathname , "core.dll" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { '.','c','o','r','e', 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 0 );
-
-		ASSERT_TRUE( strcmp( pathname , "" ) == 0 );
-	}
-
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "" , 0 , SIZE_MAX );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 1 );
-
-		ASSERT_EQ( resmbchar.mblen , 0 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core" , 0 , SIZE_MAX );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 5 );
-
-		ASSERT_EQ( resmbchar.mblen , 4 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core.dll.exe" , 0 , SIZE_MAX );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 9 );
-
-		ASSERT_EQ( resmbchar.mblen , 8 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , ".core" , 0 , SIZE_MAX );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 1 );
-
-		ASSERT_EQ( resmbchar.mblen , 0 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core." , 0 , SIZE_MAX );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 5 );
-
-		ASSERT_EQ( resmbchar.mblen , 4 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core" , 0 , SIZE_MAX );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 15 );
-
-		ASSERT_EQ( resmbchar.mblen , 14 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "/home.exe\\core" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 9 , 4 );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 5 );
-
-		ASSERT_EQ( resmbchar.mblen , 4 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "\\cor" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 1 , 6 );
-
-		ASSERT_TRUE( resmbchar.succeeded() );
-
-		ASSERT_EQ( resmbchar.mbsize , 5 );
-
-		ASSERT_EQ( resmbchar.mblen , 4 );
-
-		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home" ) == 0 );
-	}
-
-
-	{
-
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"" , 0 , SIZE_MAX );
+		::booldog::utils::io::path::wcs::extension( &reswchar , wtest2 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5386,11 +4766,426 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( reswchar.wlen , 0 );
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-	}
 
-	{
 
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core" , 0 , SIZE_MAX );
+		::booldog::result_mbchar resmbchar( ::booldog::_allocator );
+	
+		::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 7 );
+
+		ASSERT_EQ( resmbchar.mblen , 6 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ui.exe" ) == 0 );
+
+		::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest , 3 , 17 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 8 );
+
+		ASSERT_EQ( resmbchar.mblen , 7 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "gui.exe" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 26 );
+
+		ASSERT_EQ( resmbchar.mblen , 25 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "C:/privet\\../gui.exe\\./.." ) == 0 );
+
+		::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest , 3 , 17 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 10 );
+
+		ASSERT_EQ( resmbchar.mblen , 9 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "privet\\.." ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 4 );
+
+		ASSERT_EQ( resmbchar.mblen , 3 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "exe" ) == 0 );
+
+		::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest , 3 , 16 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 3 );
+
+		ASSERT_EQ( resmbchar.mblen , 2 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ex" ) == 0 );
+
+		::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest2 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 1 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\kill/." );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 12 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 9 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./.\\kill/." );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 16 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 9 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home\\./.\\kill/." );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 18 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 9 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/." );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 36 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 9 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/joke\\.." );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 42 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 9 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"/home/.." );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 0 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L".\\" );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 3 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 0 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"." );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 2 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 0 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./\\.\\kill/." );
+
+		ASSERT_FALSE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./.\\../kill/." );
+
+		ASSERT_FALSE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"../local" );
+
+		ASSERT_FALSE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\kill/." );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 12 );
+
+		ASSERT_EQ( resmbchar.mblen , 9 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./.\\kill/." );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 16 );
+
+		ASSERT_EQ( resmbchar.mblen , 9 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home\\./.\\kill/." );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 18 );
+
+		ASSERT_EQ( resmbchar.mblen , 9 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/." );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 36 );
+
+		ASSERT_EQ( resmbchar.mblen , 9 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/joke\\.." );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 42 );
+
+		ASSERT_EQ( resmbchar.mblen , 9 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "/home/.." );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 9 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , ".\\" );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 3 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "." );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 2 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./\\.\\kill/." );
+
+		ASSERT_FALSE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./.\\../kill/." );
+
+		ASSERT_FALSE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "../local" );
+
+		ASSERT_FALSE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+
+
+		::booldog::result_bool resbool;
+
+		::booldog::utils::io::path::wcs::has_levels( &resbool , 0 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::io::path::wcs::has_levels( &resbool , L"" );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local/" , 9 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_TRUE( resbool.bres );
+
+
+		::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" , 2 );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_TRUE( resbool.bres );
+
+
+		::booldog::utils::io::path::wcs::has_levels( &resbool , L"../local" , 3 );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_FALSE( resbool.bres );
+
+
+
+		::booldog::utils::io::path::mbs::has_levels( &resbool , 0 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::io::path::mbs::has_levels( &resbool , "" );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::io::path::mbs::has_levels( &resbool , "../local/" , 9 );
+
+		ASSERT_FALSE( resbool.succeeded() );
+
+		ASSERT_EQ( resbool.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+
+
+		::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_TRUE( resbool.bres );
+
+
+		::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" , 2 );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_TRUE( resbool.bres );
+
+
+		::booldog::utils::io::path::mbs::has_levels( &resbool , "../local" , 3 );
+
+		ASSERT_TRUE( resbool.succeeded() );
+
+		ASSERT_FALSE( resbool.bres );
+
+
+	
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"" );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 0 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"core" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5399,11 +5194,20 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( reswchar.wlen , 4 );
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
-	}
 
-	{
 
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core.dll.exe" , 0 , SIZE_MAX );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core" );
+
+		ASSERT_TRUE( reswchar.succeeded() );
+
+		ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+		ASSERT_EQ( reswchar.wlen , 4 );
+
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+
+
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core.dll.exe" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5412,11 +5216,9 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( reswchar.wlen , 8 );
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
-	}
 
-	{
 
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L".core" , 0 , SIZE_MAX );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5425,11 +5227,9 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( reswchar.wlen , 0 );
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
-	}
 
-	{
 
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core." , 0 , SIZE_MAX );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" , 7 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5438,24 +5238,9 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( reswchar.wlen , 4 );
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
-	}
 
-	{
 
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core" , 0 , SIZE_MAX );
-
-		ASSERT_TRUE( reswchar.succeeded() );
-
-		ASSERT_EQ( reswchar.wsize , 15 * sizeof( wchar_t ) );
-
-		ASSERT_EQ( reswchar.wlen , 14 );
-
-		ASSERT_TRUE( wcscmp( reswchar.wchar , L"/home.exe\\core" ) == 0 );
-	}
-
-	{
-
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 9 , 4 );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 8 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5463,467 +5248,965 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_EQ( reswchar.wlen , 4 );
 
-		ASSERT_TRUE( wcscmp( reswchar.wchar , L"\\cor" ) == 0 );
-	}
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
 
-	{
 
-		::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 1 , 6 );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 9 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
-		ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+		ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
 
-		ASSERT_EQ( reswchar.wlen , 4 );
+		ASSERT_EQ( reswchar.wlen , 8 );
 
-		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home" ) == 0 );
+		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
+
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "" );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 1 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "core" );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core" );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core.dll.exe" );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 9 );
+
+		ASSERT_EQ( resmbchar.mblen , 8 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 1 );
+
+		ASSERT_EQ( resmbchar.mblen , 0 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" , 7 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 8 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 5 );
+
+		ASSERT_EQ( resmbchar.mblen , 4 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+
+
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 9 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 9 );
+
+		ASSERT_EQ( resmbchar.mblen , 8 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
+
+
+
+		{
+			::booldog::result res;
+
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::wcs::pathname_without_extension( &res , 0 , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e','.','d','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 9 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"core.d/ll" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e','.','d','l','l','.', 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 8 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"core.dll" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { '.','c','o','r','e', 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 0 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"" ) == 0 );
+		}
+
+
+		{
+			::booldog::result res;
+
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::mbs::pathname_without_extension( &res , 0 , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e','.','d','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 9 );
+
+			ASSERT_TRUE( strcmp( pathname , "core.d/ll" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e','.','d','l','l','.', 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 8 );
+
+			ASSERT_TRUE( strcmp( pathname , "core.dll" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { '.','c','o','r','e', 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::pathname_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 0 );
+
+			ASSERT_TRUE( strcmp( pathname , "" ) == 0 );
+		}
+
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 1 );
+
+			ASSERT_EQ( resmbchar.mblen , 0 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 5 );
+
+			ASSERT_EQ( resmbchar.mblen , 4 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core.dll.exe" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 9 );
+
+			ASSERT_EQ( resmbchar.mblen , 8 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , ".core" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 1 );
+
+			ASSERT_EQ( resmbchar.mblen , 0 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core." , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 5 );
+
+			ASSERT_EQ( resmbchar.mblen , 4 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 15 );
+
+			ASSERT_EQ( resmbchar.mblen , 14 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "/home.exe\\core" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 9 , 4 );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 5 );
+
+			ASSERT_EQ( resmbchar.mblen , 4 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "\\cor" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 1 , 6 );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			ASSERT_EQ( resmbchar.mbsize , 5 );
+
+			ASSERT_EQ( resmbchar.mblen , 4 );
+
+			ASSERT_TRUE( strcmp( resmbchar.mbchar , "home" ) == 0 );
+		}
+
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 0 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 4 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core.dll.exe" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 9 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 8 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L".core" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 1 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 0 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core." , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 4 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core" , 0 , SIZE_MAX );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 15 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 14 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"/home.exe\\core" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 9 , 4 );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 4 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"\\cor" ) == 0 );
+		}
+
+		{
+
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 1 , 6 );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			ASSERT_EQ( reswchar.wsize , 5 * sizeof( wchar_t ) );
+
+			ASSERT_EQ( reswchar.wlen , 4 );
+
+			ASSERT_TRUE( wcscmp( reswchar.wchar , L"home" ) == 0 );
+		}
+
+
+		{
+			::booldog::result res;
+
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::wcs::directory( &res , 0 , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e','\\','d','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 6 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"core.d" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { '/','c','o','r','e','.','d','l','l','.', 0 };
+			size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 0 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"" ) == 0 );
+		}
+
+
+		{
+			::booldog::result res;
+
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::mbs::directory( &res , 0 , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e', 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e','\\','d','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 4 );
+
+			ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 6 );
+
+			ASSERT_TRUE( strcmp( pathname , "core.d" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { '/','c','o','r','e','.','d','l','l','.', 0 };
+			size_t pathnamelen = sizeof( pathname ) - 1;
+			::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 0 );
+
+			ASSERT_TRUE( strcmp( pathname , "" ) == 0 );
+		}
+
+
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'h','o','m','e','/','.','.','\\','t','e','s','t','/','.','\\','c','o','r','e','\\', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 10 );
+	#ifdef __WINDOWS__
+			ASSERT_TRUE( wcscmp( pathname , L"\\test\\core" ) == 0 );
+	#else
+			ASSERT_TRUE( wcscmp( pathname , L"/test/core" ) == 0 );
+	#endif
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'h','o','m','e','\\','.','/','\\','.','\\','k','i','l','l','/','.', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { '.','/','.','\\','.','.','/','k','i','l','l','/','.', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+		}
+
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'h','o','m','e','/','.','.','\\','t','e','s','t','/','.','\\','c','o','r','e','\\', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 10 );
+	#ifdef __WINDOWS__
+			ASSERT_TRUE( strcmp( pathname , "\\test\\core" ) == 0 );
+	#else
+			ASSERT_TRUE( strcmp( pathname , "/test/core" ) == 0 );
+	#endif
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'h','o','m','e','\\','.','/','\\','.','\\','k','i','l','l','/','.', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { '.','/','.','\\','.','.','/','k','i','l','l','/','.', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
+		}
+
+
+
+		{
+			::booldog::result res;
+
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::mbs::filename_without_extension( &res , 0 , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 5 );
+
+			ASSERT_TRUE( strcmp( pathname , "local" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { '.','.','/','b','.','l','o','c','a','l','.','e', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 7 );
+
+			ASSERT_TRUE( strcmp( pathname , "b.local" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			char pathname[] = { 'l','o','c','a','l', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize - 1;
+			::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 5 );
+
+			ASSERT_TRUE( strcmp( pathname , "local" ) == 0 );
+		}
+
+
+		{
+			::booldog::result res;
+
+			size_t pathnamelen = 0;
+			::booldog::utils::io::path::wcs::filename_without_extension( &res , 0 , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_FALSE( res.succeeded() );
+
+			ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
+
+			ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { '.','.','/','l','o','c','a','l', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 5 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"local" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { '.','.','/','b','.','l','o','c','a','l','.','e', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 7 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"b.local" ) == 0 );
+		}
+
+		{
+			::booldog::result res;
+
+			wchar_t pathname[] = { 'l','o','c','a','l', 0 };
+			size_t pathnamesize = sizeof( pathname );
+			size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
+			::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
+
+			ASSERT_TRUE( res.succeeded() );
+
+			ASSERT_EQ( pathnamelen , 5 );
+
+			ASSERT_TRUE( wcscmp( pathname , L"local" ) == 0 );
+		}
 	}
 
-
-	{
-		::booldog::result res;
-
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::wcs::directory( &res , 0 , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e','\\','d','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 6 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"core.d" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { '/','c','o','r','e','.','d','l','l','.', 0 };
-		size_t pathnamelen = sizeof( pathname ) / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 0 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"" ) == 0 );
-	}
-
-
-	{
-		::booldog::result res;
-
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::mbs::directory( &res , 0 , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e', 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e','\\','d','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 4 );
-
-		ASSERT_TRUE( strcmp( pathname , "core" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'c','o','r','e','.','d','/','l','l' , 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 6 );
-
-		ASSERT_TRUE( strcmp( pathname , "core.d" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { '/','c','o','r','e','.','d','l','l','.', 0 };
-		size_t pathnamelen = sizeof( pathname ) - 1;
-		::booldog::utils::io::path::mbs::directory( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 0 );
-
-		ASSERT_TRUE( strcmp( pathname , "" ) == 0 );
-	}
-
-
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'h','o','m','e','/','.','.','\\','t','e','s','t','/','.','\\','c','o','r','e','\\', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 10 );
-#ifdef __WINDOWS__
-		ASSERT_TRUE( wcscmp( pathname , L"\\test\\core" ) == 0 );
-#else
-		ASSERT_TRUE( wcscmp( pathname , L"/test/core" ) == 0 );
-#endif
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'h','o','m','e','\\','.','/','\\','.','\\','k','i','l','l','/','.', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { '.','/','.','\\','.','.','/','k','i','l','l','/','.', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { '.','.','/','l','o','c','a','l', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-	}
-
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'h','o','m','e','/','.','.','\\','t','e','s','t','/','.','\\','c','o','r','e','\\', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 10 );
-#ifdef __WINDOWS__
-		ASSERT_TRUE( strcmp( pathname , "\\test\\core" ) == 0 );
-#else
-		ASSERT_TRUE( strcmp( pathname , "/test/core" ) == 0 );
-#endif
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'h','o','m','e','\\','.','/','\\','.','\\','k','i','l','l','/','.', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { '.','/','.','\\','.','.','/','k','i','l','l','/','.', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { '.','.','/','l','o','c','a','l', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::normalize( &res , pathname , pathnamelen , pathnamesize );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
-	}
-
-
-
-	{
-		::booldog::result res;
-
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::mbs::filename_without_extension( &res , 0 , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { '.','.','/','l','o','c','a','l', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 5 );
-
-		ASSERT_TRUE( strcmp( pathname , "local" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { '.','.','/','b','.','l','o','c','a','l','.','e', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 7 );
-
-		ASSERT_TRUE( strcmp( pathname , "b.local" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		char pathname[] = { 'l','o','c','a','l', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize - 1;
-		::booldog::utils::io::path::mbs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 5 );
-
-		ASSERT_TRUE( strcmp( pathname , "local" ) == 0 );
-	}
-
-
-	{
-		::booldog::result res;
-
-		size_t pathnamelen = 0;
-		::booldog::utils::io::path::wcs::filename_without_extension( &res , 0 , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		ASSERT_EQ( res.get_error_type() , ::booldog::enums::result::error_type_booerr );
-
-		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { '.','.','/','l','o','c','a','l', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 5 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"local" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { '.','.','/','b','.','l','o','c','a','l','.','e', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 7 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"b.local" ) == 0 );
-	}
-
-	{
-		::booldog::result res;
-
-		wchar_t pathname[] = { 'l','o','c','a','l', 0 };
-		size_t pathnamesize = sizeof( pathname );
-		size_t pathnamelen = pathnamesize / sizeof( wchar_t ) - 1;
-		::booldog::utils::io::path::wcs::filename_without_extension( &res , pathname , pathnamelen );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		ASSERT_EQ( pathnamelen , 5 );
-
-		ASSERT_TRUE( wcscmp( pathname , L"local" ) == 0 );
-	}
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 class boo_base_loaderTest : public ::testing::Test 
 {
@@ -5933,72 +6216,93 @@ TEST_F( boo_base_loaderTest , test )
 	::booldog::allocators::stack::simple< 4096 > allocator;
 
 	booldog::_allocator = &allocator;
+
+	size_t total = allocator.available();
+
+	char* begin = (char*)allocator.begin();
 	{
-		::booldog::result_mbchar resmbchar( booldog::_allocator );
-		::booldog::utils::executable::mbs::filename< 4 >( &resmbchar );
 		{
-			::booldog::result res;
+			::booldog::result_mbchar resmbchar( booldog::_allocator );
+			::booldog::utils::executable::mbs::filename< 4 >( &resmbchar );
+			{
+				::booldog::result res;
 
-			::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
+				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
 
-			ASSERT_TRUE( res.succeeded() );
+				ASSERT_TRUE( res.succeeded() );
 
-			ASSERT_EQ( resmbchar.mblen , 12 );
+				ASSERT_EQ( resmbchar.mblen , 12 );
 
-			ASSERT_TRUE( strcmp( resmbchar.mbchar , "booldog.test" ) == 0 );
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "booldog.test" ) == 0 );
+			}
 		}
-	}
-	{
-		::booldog::result_wchar reswchar( booldog::_allocator );
-		::booldog::utils::executable::wcs::filename< 4 >( &reswchar );
 		{
-			::booldog::result res;
+			::booldog::result_wchar reswchar( booldog::_allocator );
+			::booldog::utils::executable::wcs::filename< 4 >( &reswchar );
+			{
+				::booldog::result res;
 
-			::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
+				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
 
-			ASSERT_TRUE( res.succeeded() );
+				ASSERT_TRUE( res.succeeded() );
 
-			ASSERT_EQ( reswchar.wlen , 12 );
+				ASSERT_EQ( reswchar.wlen , 12 );
 
-			ASSERT_TRUE( wcscmp( reswchar.wchar , L"booldog.test" ) == 0 );
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"booldog.test" ) == 0 );
+			}
 		}
-	}
-	::booldog::loader loader( &allocator );
+		::booldog::loader loader( &allocator );
 
-	::booldog::result_module res;
-#ifdef __x64__
-	booldog::param search_paths_params[] =
-	{
-		BOOPARAM_PCHAR( "../../test_data\\modules0/x64" ) ,
-		BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x64" ) ,
-		BOOPARAM_NONE
-	};
-#elif defined( __x86__ )
-	booldog::param search_paths_params[] =
-	{
-		BOOPARAM_PCHAR( "../../test_data\\modules0/x86" ) ,
-		BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x86" ) ,
-		BOOPARAM_NONE
-	};
-#endif
-	booldog::named_param load_params[] =
-	{
-		BOONAMED_PARAM_PPARAM( "search_paths" , search_paths_params ) ,
-		BOONAMED_PARAM_BOOL( "exedir_as_root_path" , true ) ,
-		BOONAMED_PARAM_NONE
-	};
+		::booldog::result_module res;
+	#ifdef __x64__
+		booldog::param search_paths_params[] =
+		{
+			BOOPARAM_PCHAR( "../../test_data\\modules0/x64" ) ,
+			BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x64" ) ,
+			BOOPARAM_NONE
+		};
+	#elif defined( __x86__ )
+		booldog::param search_paths_params[] =
+		{
+			BOOPARAM_PCHAR( "../../test_data\\modules0/x86" ) ,
+			BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x86" ) ,
+			BOOPARAM_NONE
+		};
+	#endif
+		booldog::named_param load_params[] =
+		{
+			BOONAMED_PARAM_PPARAM( "search_paths" , search_paths_params ) ,
+			BOONAMED_PARAM_BOOL( "exedir_as_root_path" , true ) ,
+			BOONAMED_PARAM_NONE
+		};
 
-	loader.wcsload( &res , L"core1" , load_params );
+		loader.wcsload( &res , L"core1" , load_params );
 
-	loader.wcsload( &res , L"core" , load_params );
+		ASSERT_FALSE( res.succeeded() );
 
-	loader.wcsload( &res , L"core" , 0 );
+
+		loader.wcsload( &res , L"core" , load_params );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::base::module* module0 = res.module;
+
+		loader.wcsload( &res , L"core" , 0 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::base::module* module1 = res.module;
 
 	//char* error_string = 0;
 	//size_t error_string_len = 0 , error_string_size = 0;
 	//::booldog::error::format( &res , error_string , error_string_len , error_string_size );
 
 	//loader.add_search_path( ::booldog::string( ".\\../../.\\test_data\\modules" ) );
+	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
 };
 #ifdef __LINUX__
 #include <locale.h>
