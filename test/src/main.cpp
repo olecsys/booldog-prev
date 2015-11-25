@@ -6376,7 +6376,7 @@ TEST_F( boo_base_loaderTest , test )
 
 
 
-		void* h = dlopen( "./libcore.so" , RTLD_LAZY );
+		void* h = dlopen( "libcore.so" , RTLD_LAZY );
 		if( h )
 		{
 			if( dlinfo( h , RTLD_DI_ORIGIN , p ) != -1 )
