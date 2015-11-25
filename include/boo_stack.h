@@ -56,6 +56,25 @@ namespace booldog
 						info->_eflags = info->_flags;
 					}
 				};
+				booinline void print( void )
+				{
+					void* endptr = end();
+					::booldog::byte* info = _data;
+					size_t offsize = 0 , begin_size = 0;
+					from_info( info , offsize , begin_size );
+					for( ; ; )
+					{
+						info = info + offsize;
+						if( info >= endptr )
+						{
+							_begin = info;
+							break;
+						}
+						from_info( info , offsize , begin_size );
+						if( ::booldog::utils::get_bit( info[ 1 ] , BOOLDOG_MEM_INFO_BUSY ) )
+							printf( "size=%u, total=%u\n" , (::booldog::uint32)begin_size , (::booldog::uint32)offsize );
+					}
+				};
 			private:
 				booinline void from_info( ::booldog::byte* pointer , size_t& offsize , size_t& begin_size )
 				{

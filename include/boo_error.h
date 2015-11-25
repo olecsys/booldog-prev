@@ -17,7 +17,8 @@ namespace booldog
 				booerr_type_path_has_incorrect_format , 
 				booerr_type_not_enough_top_level_folders , 
 				booerr_type_string_parameter_is_empty ,
-				booerr_type_pointer_parameter_is_null
+				booerr_type_pointer_parameter_is_null ,
+				booerr_type_module_not_found_in_the_list
 			};
 		};
 	};

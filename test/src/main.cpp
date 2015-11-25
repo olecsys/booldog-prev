@@ -6350,13 +6350,22 @@ TEST_F( boo_base_loaderTest , test )
 
 		module2 = res.module;
 
+
+		char p[ PATH_MAX ] = {0};
+		if( dlinfo( module2->handle() , RTLD_DI_ORIGIN , p ) != -1 )
+			printf( "RTLD_DI_ORIGIN=%s" , p );
+		struct link_map *map = 0;
+		if( dlinfo( module2->handle() , RTLD_DI_LINKMAP , &map ) != -1 )
+			printf( "RTLD_DI_LINKMAP=%s" , map->l_name );
+
+
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
-		
+
 	ASSERT_EQ( allocator.available() , total );
 };
 #ifdef __LINUX__

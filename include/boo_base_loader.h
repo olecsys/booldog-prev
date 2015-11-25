@@ -107,35 +107,45 @@ namespace booldog
 		booldog::array< char* > _loaded_dirs;
 #endif
 	private:
-#ifdef __UNIX__
+#ifdef __WINDOWS__
+		booinline bool get_loaded_module( ::booldog::result_module* pres , const wchar_t* res_name_or_path 
+			, ::booldog::debug::info* debuginfo )
+		{
+			::booldog::module_handle module_handle = 0;
+			if( GetModuleHandleExW( 0 , res_name_or_path , &module_handle ) )
+#else
 		booinline bool get_loaded_module( ::booldog::result_module* pres , const char* res_name_or_path 
 			, ::booldog::debug::info* debuginfo )
 		{
 			char* dl_error = 0;
 			::booldog::module_handle module_handle = dlopen( res_name_or_path , RTLD_NOLOAD | RTLD_LAZY );
 			if( module_handle )
+#endif
 			{
 				::booldog::module* module = 0;
+				_lock.wlock( debuginfo );
 				for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
 				{
 					if( _modules[ index0 ]->handle() == module_handle )
 					{
 						module = _modules[ index0 ];
 						module->addref();
-						goto goto_step0_and_return;
+						break;
 					}
 				}
-				module = _allocator->create< ::booldog::module >( debuginfo );
-				module->_handle = module_handle;
-goto_step0_and_return:
+				if( module == 0 )
+				{
+					module = _allocator->create< ::booldog::module >( debuginfo );
+					module->_handle = module_handle;
+					_modules.add( module , debuginfo );
+				}
+				_lock.wunlock( debuginfo );
+				pres->clear();
 				pres->module = module;
 				return true;
 			}
-			else
-				dl_error = dlerror();
 			return false;
 		};
-#endif
 	public:
 		loader( booldog::allocator* allocator = ::booldog::_allocator )
 		{
@@ -210,9 +220,7 @@ goto_step0_and_return:
 					res->copy( resres );
 					goto goto_return;
 				}
-				::booldog::module_handle module_handle = 0;
-				_lock.wlock( debuginfo );
-				locked = true;
+				::booldog::module_handle module_handle = 0;				
 
 				if( get_loaded_module( res , res_name_or_path.mbchar , debuginfo ) )
 					goto goto_return;
@@ -222,13 +230,26 @@ goto_step0_and_return:
 					::booldog::result_mbchar resdirmbchar( _allocator );
 					if( ::booldog::utils::io::path::mbs::directory( &resdirmbchar , res_name_or_path.mbchar , 0 , SIZE_MAX , _allocator , debuginfo ) )
 					{
-						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
-						module->_handle = module_handle;
-						_modules.add( module , debuginfo );
-						res->clear();
-						res->module = module;
+						::booldog::module* module = 0;
+						_lock.wlock( debuginfo );
+						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+						{
+							if( _modules[ index0 ]->handle() == module_handle )
+							{
+								module = _modules[ index0 ];
+								module->addref();
+								break;
+							}
+						}
+						if( module == 0 )
+						{
+							module = _allocator->create< ::booldog::module >( debuginfo );
+							module->_handle = module_handle;
+							_modules.add( module , debuginfo );
+						}
 						_lock.wunlock( debuginfo );
-						locked = false;
+						res->clear();
+						res->module = module;						
 
 						bool found = false;
 						_lock_loaded_dirs.wlock( debuginfo );
@@ -520,6 +541,7 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
+					
 					_lock_loaded_dirs.rlock( debuginfo );
 					for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
 					{
@@ -552,7 +574,7 @@ goto_step0_and_return:
 							_lock_loaded_dirs.runlock( debuginfo );
 							res->copy( resres );
 							goto goto_return;
-						}		
+						}
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -617,9 +639,6 @@ goto_step0_and_return:
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
 					res_root_dir_mblen = res_name_or_path.mblen;
-
-printf( "0. %s\n" , res_name_or_path.mbchar );
-
 					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
@@ -632,9 +651,6 @@ printf( "0. %s\n" , res_name_or_path.mbchar );
 						goto goto_loaded_module;
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
-
-printf( "1. %s\n" , res_name_or_path.mbchar );
-
 					res_name_or_path.mbchar[ res_root_dir_mblen ] = 0;
 					res_name_or_path.mblen = res_root_dir_mblen;
 					
@@ -650,9 +666,6 @@ printf( "1. %s\n" , res_name_or_path.mbchar );
 						goto goto_loaded_module;
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
-
-printf( "2. %s\n" , res_name_or_path.mbchar );
-
 					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
@@ -665,9 +678,6 @@ printf( "2. %s\n" , res_name_or_path.mbchar );
 						goto goto_loaded_module;
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
-
-printf( "3. %s\n" , res_name_or_path.mbchar );
-
 					goto goto_return;
 goto_loaded_module:
 					char p[ PATH_MAX ] = {0};
@@ -682,27 +692,34 @@ goto_loaded_module:
 							dlclose( module_handle );
 							goto goto_return;
 						}
-
-						printf( "7. %s\n" , resdirmbchar.mbchar );
-
 						if( ::booldog::utils::io::path::mbs::normalize( &resres , resdirmbchar.mbchar , resdirmbchar.mblen 
 							, resdirmbchar.mbsize ) == false )
 						{
 							res->copy( resres );
 							dlclose( module_handle );
 							goto goto_return;
+						}	
+						::booldog::module* module = 0;
+						_lock.wlock( debuginfo );
+						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+						{
+							if( _modules[ index0 ]->handle() == module_handle )
+							{
+								module = _modules[ index0 ];
+								module->addref();
+								break;
+							}
 						}
-
-						printf( "8. %s\n" , resdirmbchar.mbchar );
-							
-						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
-						module->_handle = module_handle;
-						_modules.add( module , debuginfo );
+						if( module == 0 )
+						{
+							module = _allocator->create< ::booldog::module >( debuginfo );
+							module->_handle = module_handle;
+							_modules.add( module , debuginfo );
+						}
+						_lock.wunlock( debuginfo );
 						res->clear();
 						res->module = module;
-						_lock.wunlock( debuginfo );
-						locked = false;
-
+						
 						bool found = false;
 						_lock_loaded_dirs.wlock( debuginfo );
 						for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
@@ -771,33 +788,30 @@ goto_return:
 					goto goto_return;
 				}
 				::booldog::module_handle module_handle = 0;
-				_lock.wlock( debuginfo );
-				locked = true;
-				if( GetModuleHandleExW( 0 , res_name_or_path.wchar , &module_handle ) )
+				
+				if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
+					goto goto_return;
+				module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+				if( module_handle )
 				{
 					::booldog::module* module = 0;
+					_lock.wlock( debuginfo );
 					for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
 					{
 						if( _modules[ index0 ]->handle() == module_handle )
 						{
 							module = _modules[ index0 ];
 							module->addref();
-							goto goto_step0_and_return;
+							break;
 						}
 					}
-					module = _allocator->create< ::booldog::module >( debuginfo );
-					module->_handle = module_handle;
-goto_step0_and_return:
-					res->clear();
-					res->module = module;
-					goto goto_return;
-				}
-				module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-				if( module_handle )
-				{
-					::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
-					module->_handle = module_handle;
-					_modules.add( module , debuginfo );
+					if( module == 0 )
+					{
+						module = _allocator->create< ::booldog::module >( debuginfo );
+						module->_handle = module_handle;
+						_modules.add( module , debuginfo );
+					}
+					_lock.wunlock( debuginfo );
 					res->clear();
 					res->module = module;
 					goto goto_return;
@@ -982,33 +996,30 @@ goto_step0_and_return:
 						goto goto_return;
 					}
 					::booldog::module_handle module_handle = 0;
-					_lock.wlock( debuginfo );
-					locked = true;
-					if( GetModuleHandleExW( 0 , res_name_or_path.wchar , &module_handle ) )
+					
+					if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
+						goto goto_return;
+					module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+					if( module_handle )
 					{
 						::booldog::module* module = 0;
+						_lock.wlock( debuginfo );
 						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
 						{
 							if( _modules[ index0 ]->handle() == module_handle )
 							{
 								module = _modules[ index0 ];
 								module->addref();
-								goto goto_step1_and_return;
+								break;
 							}
 						}
-						module = _allocator->create< ::booldog::module >( debuginfo );
-						module->_handle = module_handle;
-	goto_step1_and_return:
-						res->clear();
-						res->module = module;
-						goto goto_return;
-					}
-					module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-					if( module_handle )
-					{
-						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
-						module->_handle = module_handle;
-						_modules.add( module , debuginfo );
+						if( module == 0 )
+						{
+							module = _allocator->create< ::booldog::module >( debuginfo );
+							module->_handle = module_handle;
+							_modules.add( module , debuginfo );
+						}
+						_lock.wunlock( debuginfo );
 						res->clear();
 						res->module = module;
 						goto goto_return;
@@ -1023,32 +1034,29 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
-
-					if( GetModuleHandleExW( 0 , res_name_or_path.wchar , &module_handle ) )
+					if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
+						goto goto_return;
+					module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+					if( module_handle )
 					{
 						::booldog::module* module = 0;
+						_lock.wlock( debuginfo );
 						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
 						{
 							if( _modules[ index0 ]->handle() == module_handle )
 							{
 								module = _modules[ index0 ];
 								module->addref();
-								goto goto_step2_and_return;
+								break;
 							}
 						}
-						module = _allocator->create< ::booldog::module >( debuginfo );
-						module->_handle = module_handle;
-	goto_step2_and_return:
-						res->clear();
-						res->module = module;
-						goto goto_return;
-					}
-					module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-					if( module_handle )
-					{
-						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
-						module->_handle = module_handle;
-						_modules.add( module , debuginfo );
+						if( module == 0 )
+						{
+							module = _allocator->create< ::booldog::module >( debuginfo );
+							module->_handle = module_handle;
+							_modules.add( module , debuginfo );
+						}
+						_lock.wunlock( debuginfo );
 						res->clear();
 						res->module = module;
 						goto goto_return;
@@ -1076,7 +1084,28 @@ goto_return:
 			debuginfo = debuginfo;
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
-			
+			_lock.wlock( debuginfo );
+			for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+			{
+				if( _modules[ index0 ] == module )
+				{
+					::booldog::module* mod = _modules[ index0 ];
+#ifdef __WINDOWS__
+					FreeLibrary( mod->_handle );
+#else
+					dlclose( mod->_handle );
+#endif
+					if( mod->release() == 0 )
+					{						
+						_modules.remove( index0 );
+						_allocator->destroy< ::booldog::module >( mod );
+					}
+					goto goto_return;
+				}
+			}
+			res->booerr( ::booldog::enums::result::booerr_type_module_not_found_in_the_list );
+goto_return:
+			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
 	};
