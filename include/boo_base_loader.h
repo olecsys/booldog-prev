@@ -15,6 +15,7 @@
 #ifdef __UNIX__
 #include <dlfcn.h>
 #include <limits.h>
+#link.h>
 #endif
 namespace booldog
 {
