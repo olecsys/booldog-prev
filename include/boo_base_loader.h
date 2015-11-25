@@ -107,7 +107,8 @@ namespace booldog
 #endif
 	private:
 #ifdef __UNIX__
-		booinline bool get_loaded_module( ::booldog::result_module* pres , const char* res_name_or_path )
+		booinline bool get_loaded_module( ::booldog::result_module* pres , const char* res_name_or_path 
+			, ::booldog::debug::info* debuginfo )
 		{
 			char* dl_error = 0;
 			::booldog::module_handle module_handle = dlopen( res_name_or_path , RTLD_NOLOAD | RTLD_LAZY );
@@ -206,7 +207,7 @@ goto_step0_and_return:
 				_lock.wlock( debuginfo );
 				locked = true;
 
-				if( get_loaded_module( res , res_name_or_path.mbchar ) )
+				if( get_loaded_module( res , res_name_or_path.mbchar , debuginfo ) )
 					goto goto_return;
 				module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
 				if( module_handle )
@@ -542,7 +543,7 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}					
-						if( get_loaded_module( res , res_root_dir.mbchar ) )
+						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 							goto goto_return;
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
@@ -551,7 +552,7 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( get_loaded_module( res , res_root_dir.mbchar ) )
+						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 							goto goto_return;							
 						res_root_dir.mbchar[ res_root_dir_mblen ] = 0;
 						res_root_dir.mblen = res_root_dir_mblen;
@@ -570,7 +571,7 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}					
-						if( get_loaded_module( res , res_root_dir.mbchar ) )
+						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 							goto goto_return;
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
@@ -579,7 +580,7 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( get_loaded_module( res , res_root_dir.mbchar ) )
+						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 							goto goto_return;
 					}
 					_lock_loaded_dirs.runlock( debuginfo );
