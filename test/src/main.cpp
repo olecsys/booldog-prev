@@ -6377,11 +6377,15 @@ TEST_F( boo_base_loaderTest , test )
 
 
 		void* h = dlopen( "./libcore.so" , RTLD_LAZY );
-				
-		if( dlinfo( h , RTLD_DI_ORIGIN , p ) != -1 )
-			printf( "RTLD_DI_ORIGIN=%s\n" , p );
-		if( dlinfo( h , RTLD_DI_LINKMAP , &map ) != -1 )
-			printf( "RTLD_DI_LINKMAP=%s\n" , map->l_name );
+		if( h )
+		{
+			if( dlinfo( h , RTLD_DI_ORIGIN , p ) != -1 )
+				printf( "RTLD_DI_ORIGIN=%s\n" , p );
+			if( dlinfo( h , RTLD_DI_LINKMAP , &map ) != -1 )
+				printf( "RTLD_DI_LINKMAP=%s\n" , map->l_name );
+		}
+		else
+			printf( "dlerror=%s\n" , dlerror() );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
