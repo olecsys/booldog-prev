@@ -6301,15 +6301,10 @@ TEST_F( boo_base_loaderTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
-		void* h = dlopen( "librt.so" , RTLD_LAZY );
-		if( h )
-			printf( "succeeded" );
-		else
-			printf( "%s\n" , dlerror() );
 #ifdef __WINDOWS__
 		loader.wcsload( &res , L"kernel32" , 0 );
 #else
-		loader.wcsload( &res , L"pthread" , 0 );
+		loader.wcsload( &res , L"rt" , 0 );
 #endif
 
 		ASSERT_TRUE( res.succeeded() );
@@ -6348,7 +6343,7 @@ TEST_F( boo_base_loaderTest , test )
 #ifdef __WINDOWS__
 		loader.mbsload( &res , "kernel32" , 0 );
 #else
-		loader.mbsload( &res , "pthread" , 0 );
+		loader.mbsload( &res , "rt" , 0 );
 #endif
 
 		ASSERT_TRUE( res.succeeded() );
