@@ -6308,6 +6308,17 @@ TEST_F( boo_base_loaderTest , test )
 			printf( "my %s\n" , dlerror() );
 		else
 			printf( "my success\n" );
+		h = dlopen( "core.so" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+		else
+			printf( "my success\n" );
+
+		h = dlopen( "core" , RTLD_NOLOAD | RTLD_LAZY );
+		if( h == 0 )
+			printf( "my %s\n" , dlerror() );
+		else
+			printf( "my success\n" );
 
 
 		loader.wcsload( &res , L"core" , 0 );
