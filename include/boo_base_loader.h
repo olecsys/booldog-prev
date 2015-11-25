@@ -550,7 +550,7 @@ goto_step0_and_return:
 
 						printf( "1. %s\n" , res_root_dir.mbchar );
 
-						res_root_dir_mblen = res_name_or_path.mblen;
+						res_root_dir_mblen = res_root_dir.mblen;
 
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
@@ -648,6 +648,9 @@ goto_step0_and_return:
 								dlclose( module_handle );
 								goto goto_return;
 							}
+
+							printf( "7. %s\n" , resdirmbchar.mbchar );
+
 							if( ::booldog::utils::io::path::mbs::normalize( &resres , resdirmbchar.mbchar , resdirmbchar.mblen 
 								, resdirmbchar.mbsize ) == false )
 							{
@@ -655,6 +658,8 @@ goto_step0_and_return:
 								dlclose( module_handle );
 								goto goto_return;
 							}
+
+							printf( "8. %s\n" , resdirmbchar.mbchar );
 							
 							::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
 							module->_handle = module_handle;
