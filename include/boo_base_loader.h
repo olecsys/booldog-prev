@@ -535,9 +535,6 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-
-						printf( "0. %s\n" , res_root_dir.mbchar );
-					
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , &::booldog::io::mbs::slash , 0
 							, 1 , allocator , debuginfo ) == false )
@@ -546,12 +543,7 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-
-
-						printf( "1. %s\n" , res_root_dir.mbchar );
-
 						res_root_dir_mblen = res_root_dir.mblen;
-
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
 							, SIZE_MAX , allocator , debuginfo ) == false )
@@ -559,10 +551,7 @@ goto_step0_and_return:
 							_lock_loaded_dirs.runlock( debuginfo );
 							res->copy( resres );
 							goto goto_return;
-						}			
-
-						printf( "2. %s\n" , res_root_dir.mbchar );
-								
+						}		
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -576,9 +565,6 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-
-						printf( "3. %s\n" , res_root_dir.mbchar );
-
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -595,9 +581,6 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-
-						printf( "4. %s\n" , res_root_dir.mbchar );
-
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
 							, SIZE_MAX , allocator , debuginfo ) == false )
@@ -605,10 +588,7 @@ goto_step0_and_return:
 							_lock_loaded_dirs.runlock( debuginfo );
 							res->copy( resres );
 							goto goto_return;
-						}				
-
-						printf( "5. %s\n" , res_root_dir.mbchar );
-	
+						}
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -622,9 +602,6 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-
-						printf( "6. %s\n" , res_root_dir.mbchar );
-
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -635,61 +612,102 @@ goto_step0_and_return:
 
 					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
 					if( module_handle )
-					{
-						char p[ PATH_MAX ] = {0};
-						if( dlinfo( module_handle , RTLD_DI_ORIGIN , p ) != -1 )
-						{
-							::booldog::result_mbchar resdirmbchar( _allocator );
-							if( ::booldog::utils::string::mbs::insert( &resres , 0 , resdirmbchar.mbchar 
-								, resdirmbchar.mblen , resdirmbchar.mbsize , p , 0
-								, SIZE_MAX , allocator , debuginfo ) == false )
-							{
-								res->copy( resres );
-								dlclose( module_handle );
-								goto goto_return;
-							}
-
-							printf( "7. %s\n" , resdirmbchar.mbchar );
-
-							if( ::booldog::utils::io::path::mbs::normalize( &resres , resdirmbchar.mbchar , resdirmbchar.mblen 
-								, resdirmbchar.mbsize ) == false )
-							{
-								res->copy( resres );
-								dlclose( module_handle );
-								goto goto_return;
-							}
-
-							printf( "8. %s\n" , resdirmbchar.mbchar );
-							
-							::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
-							module->_handle = module_handle;
-							_modules.add( module , debuginfo );
-							res->module = module;
-							_lock.wunlock( debuginfo );
-							locked = false;
-
-							bool found = false;
-							_lock_loaded_dirs.wlock( debuginfo );
-							for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
-							{
-								if( strcmp( resdirmbchar.mbchar , _loaded_dirs[ index0 ] ) == 0 )
-								{
-									found = true;
-									break;
-								}
-							}
-							if( found == false )
-								_loaded_dirs.add( resdirmbchar.detach() );
-							_lock_loaded_dirs.wunlock( debuginfo );
-						}
-						else
-						{
-							res->setdlerror( dlerror() , allocator , debuginfo );
-							dlclose( module_handle );
-						}
-					}
+						goto goto_loaded_module;
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
+					res_root_dir_mblen = res_name_or_path.mblen;
+
+					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
+						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( module_handle )
+						goto goto_loaded_module;
+					else
+						res->setdlerror( dlerror() , allocator , debuginfo );
+
+					res_name_or_path.mbchar[ res_root_dir_mblen ] = 0;
+					res_name_or_path.mblen = res_root_dir_mblen;
+					
+					if( ::booldog::utils::string::mbs::insert( &resres , 0 , res_name_or_path.mbchar 
+						, res_name_or_path.mblen , res_name_or_path.mbsize , "lib" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( module_handle )
+						goto goto_loaded_module;
+					else
+						res->setdlerror( dlerror() , allocator , debuginfo );
+
+					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
+						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
+						, SIZE_MAX , allocator , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( module_handle )
+						goto goto_loaded_module;
+					else
+						res->setdlerror( dlerror() , allocator , debuginfo );
+					goto goto_return;
+goto_loaded_module:
+					char p[ PATH_MAX ] = {0};
+					if( dlinfo( module_handle , RTLD_DI_ORIGIN , p ) != -1 )
+					{
+						::booldog::result_mbchar resdirmbchar( _allocator );
+						if( ::booldog::utils::string::mbs::insert( &resres , 0 , resdirmbchar.mbchar 
+							, resdirmbchar.mblen , resdirmbchar.mbsize , p , 0
+							, SIZE_MAX , allocator , debuginfo ) == false )
+						{
+							res->copy( resres );
+							dlclose( module_handle );
+							goto goto_return;
+						}
+
+						printf( "7. %s\n" , resdirmbchar.mbchar );
+
+						if( ::booldog::utils::io::path::mbs::normalize( &resres , resdirmbchar.mbchar , resdirmbchar.mblen 
+							, resdirmbchar.mbsize ) == false )
+						{
+							res->copy( resres );
+							dlclose( module_handle );
+							goto goto_return;
+						}
+
+						printf( "8. %s\n" , resdirmbchar.mbchar );
+							
+						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
+						module->_handle = module_handle;
+						_modules.add( module , debuginfo );
+						res->module = module;
+						_lock.wunlock( debuginfo );
+						locked = false;
+
+						bool found = false;
+						_lock_loaded_dirs.wlock( debuginfo );
+						for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
+						{
+							if( strcmp( resdirmbchar.mbchar , _loaded_dirs[ index0 ] ) == 0 )
+							{
+								found = true;
+								break;
+							}
+						}
+						if( found == false )
+							_loaded_dirs.add( resdirmbchar.detach() );
+						_lock_loaded_dirs.wunlock( debuginfo );
+					}
+					else
+					{
+						res->setdlerror( dlerror() , allocator , debuginfo );
+						dlclose( module_handle );
+					}
 				}
 			}
 goto_return:

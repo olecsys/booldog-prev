@@ -6286,58 +6286,7 @@ TEST_F( boo_base_loaderTest , test )
 
 		::booldog::base::module* module0 = res.module;
 
-
-		void* h = dlopen( "/home/olecsys/booldog/test_data/modules1/x64/libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		else
-		{ 
-			printf( "my success\n" );
-
-			char p[ 256 ] = {0};
-			if( dlinfo( h , RTLD_DI_ORIGIN , p ) != -1 )
-				printf( "my success %s\n" , p );
-		}
-		h = dlopen( "libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		else
-			printf( "my success\n" );
-		h = dlopen( "$ORIGIN/libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		else
-			printf( "my success\n" );
-		h = dlopen( "./core.so" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		else
-			printf( "my success\n" );
-		h = dlopen( "./core" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		else
-			printf( "my success\n" );
-		h = dlopen( "core.so" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		else
-			printf( "my success\n" );
-
-		h = dlopen( "core" , RTLD_NOLOAD | RTLD_LAZY );
-		if( h == 0 )
-			printf( "my %s\n" , dlerror() );
-		else
-			printf( "my success\n" );
-
-
 		loader.wcsload( &res , L"core" , 0 );
-
-		char* error_string = 0;
-		size_t error_string_len = 0 , error_string_size = 0;
-		::booldog::error::format( &res , error_string , error_string_len , error_string_size );
-
-		printf( "error %s\n" , error_string );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -6349,6 +6298,20 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		loader.unload( &resres , module1 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+#ifdef __WINDOWS__
+		loader.wcsload( &res , L"kernel32" , 0 );
+#else
+		loader.wcsload( &res , L"pthread" , 0 );
+#endif
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::base::module* module2 = res.module;
+
+		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -6375,6 +6338,19 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		loader.unload( &resres , module1 );
+
+		ASSERT_TRUE( res.succeeded() );
+#ifdef __WINDOWS__
+		loader.mbsload( &res , "kernel32" , 0 );
+#else
+		loader.mbsload( &res , "pthread" , 0 );
+#endif
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module2 = res.module;
+
+		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
 	}
