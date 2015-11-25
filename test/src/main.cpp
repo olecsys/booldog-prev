@@ -6372,6 +6372,30 @@ TEST_F( boo_base_loaderTest , test )
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
+
+
+
+
+#ifdef __WINDOWS__
+		loader.mbsload( &res , "kernel32" , 0 );
+#else
+		loader.mbsload( &res , "./libcore.so" , 0 );
+#endif
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module2 = res.module;
+
+				
+		if( dlinfo( module2->handle() , RTLD_DI_ORIGIN , p ) != -1 )
+			printf( "RTLD_DI_ORIGIN=%s\n" , p );
+		if( dlinfo( module2->handle() , RTLD_DI_LINKMAP , &map ) != -1 )
+			printf( "RTLD_DI_LINKMAP=%s\n" , map->l_name );
+
+
+		loader.unload( &resres , module2 );
+
+		ASSERT_TRUE( res.succeeded() );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
