@@ -14,6 +14,7 @@
 #include <boo_string_utils.h>
 #ifdef __UNIX__
 #include <dlfcn.h>
+#include <limits.h>
 #endif
 namespace booldog
 {
