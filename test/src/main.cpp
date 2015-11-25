@@ -6303,7 +6303,7 @@ TEST_F( boo_base_loaderTest , test )
 			printf( "my %s\n" , dlerror() );
 		else
 			printf( "my success\n" );
-		h = dlopen( "./libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
+		h = dlopen( "$ORIGIN/libcore.so" , RTLD_NOLOAD | RTLD_LAZY );
 		if( h == 0 )
 			printf( "my %s\n" , dlerror() );
 		else
