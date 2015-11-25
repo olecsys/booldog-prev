@@ -225,6 +225,7 @@ goto_step0_and_return:
 						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
 						module->_handle = module_handle;
 						_modules.add( module , debuginfo );
+						res->clear();
 						res->module = module;
 						_lock.wunlock( debuginfo );
 						locked = false;
@@ -697,6 +698,7 @@ goto_loaded_module:
 						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
 						module->_handle = module_handle;
 						_modules.add( module , debuginfo );
+						res->clear();
 						res->module = module;
 						_lock.wunlock( debuginfo );
 						locked = false;
@@ -786,6 +788,7 @@ goto_return:
 					module = _allocator->create< ::booldog::module >( debuginfo );
 					module->_handle = module_handle;
 goto_step0_and_return:
+					res->clear();
 					res->module = module;
 					goto goto_return;
 				}
@@ -795,6 +798,7 @@ goto_step0_and_return:
 					::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
 					module->_handle = module_handle;
 					_modules.add( module , debuginfo );
+					res->clear();
 					res->module = module;
 					goto goto_return;
 				}
@@ -995,6 +999,7 @@ goto_step0_and_return:
 						module = _allocator->create< ::booldog::module >( debuginfo );
 						module->_handle = module_handle;
 	goto_step1_and_return:
+						res->clear();
 						res->module = module;
 						goto goto_return;
 					}
@@ -1004,6 +1009,7 @@ goto_step0_and_return:
 						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
 						module->_handle = module_handle;
 						_modules.add( module , debuginfo );
+						res->clear();
 						res->module = module;
 						goto goto_return;
 					}
@@ -1033,6 +1039,7 @@ goto_step0_and_return:
 						module = _allocator->create< ::booldog::module >( debuginfo );
 						module->_handle = module_handle;
 	goto_step2_and_return:
+						res->clear();
 						res->module = module;
 						goto goto_return;
 					}
@@ -1042,6 +1049,7 @@ goto_step0_and_return:
 						::booldog::module* module = _allocator->create< ::booldog::module >( debuginfo );
 						module->_handle = module_handle;
 						_modules.add( module , debuginfo );
+						res->clear();
 						res->module = module;
 						goto goto_return;
 					}
