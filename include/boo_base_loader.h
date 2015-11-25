@@ -535,6 +535,9 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
+
+						printf( "0. %s\n" , res_root_dir.mbchar );
+					
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , &::booldog::io::mbs::slash , 0
 							, 1 , allocator , debuginfo ) == false )
@@ -543,6 +546,10 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
+
+
+						printf( "1. %s\n" , res_root_dir.mbchar );
+
 						res_root_dir_mblen = res_name_or_path.mblen;
 
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
@@ -552,7 +559,10 @@ goto_step0_and_return:
 							_lock_loaded_dirs.runlock( debuginfo );
 							res->copy( resres );
 							goto goto_return;
-						}					
+						}			
+
+						printf( "2. %s\n" , res_root_dir.mbchar );
+								
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -566,6 +576,9 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
+
+						printf( "3. %s\n" , res_root_dir.mbchar );
+
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -582,6 +595,9 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
+
+						printf( "4. %s\n" , res_root_dir.mbchar );
+
 						if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
 							, SIZE_MAX , allocator , debuginfo ) == false )
@@ -589,7 +605,10 @@ goto_step0_and_return:
 							_lock_loaded_dirs.runlock( debuginfo );
 							res->copy( resres );
 							goto goto_return;
-						}					
+						}				
+
+						printf( "5. %s\n" , res_root_dir.mbchar );
+	
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
@@ -603,6 +622,9 @@ goto_step0_and_return:
 							res->copy( resres );
 							goto goto_return;
 						}
+
+						printf( "6. %s\n" , res_root_dir.mbchar );
+
 						if( get_loaded_module( res , res_root_dir.mbchar , debuginfo ) )
 						{
 							_lock_loaded_dirs.runlock( debuginfo );
