@@ -11,6 +11,9 @@
 #include <boo_string_utils.h>
 #ifdef __UNIX__
 #include <unistd.h>
+#include <dlfcn.h>
+#include <link.h>
+#include <limits.h>
 #endif
 namespace booldog
 {
@@ -21,10 +24,10 @@ namespace booldog
 			namespace mbs
 			{
 				template< size_t step >
-				bool filename( ::booldog::result_mbchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool filename( ::booldog::result_mbchar_ext* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
-					::booldog::result_mbchar locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_mbchar );
+					::booldog::result_mbchar_ext locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_mbchar_ext );
 					if( module_handle )
 					{
 #ifdef __WINDOWS__	
@@ -60,7 +63,16 @@ namespace booldog
 							}
 						}
 #else
-						//dlinfo
+						struct link_map *map = 0;
+						if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
+						{
+							::booldog::result resres;
+							if( ::booldog::utils::string::mbs::insert( &resres , 0 , res->mbchar , res->mblen , res->mbsize 
+								, map->l_name , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+								res->copy( resres );
+						}
+						else
+							res->setdlerror( dlerror() , debuginfo );
 #endif
 					}
 					else
@@ -71,10 +83,10 @@ namespace booldog
 			namespace wcs
 			{
 				template< size_t step >
-				bool filename( ::booldog::result_wchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool filename( ::booldog::result_wchar_ext* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
-					::booldog::result_wchar locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_wchar );
+					::booldog::result_wchar_ext locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_wchar_ext );
 					if( module_handle )
 					{
 #ifdef __WINDOWS__	

@@ -681,13 +681,12 @@ namespace booldog
 						res->setdlerror( dlerror() , allocator , debuginfo );
 					goto goto_return;
 goto_loaded_module:
-					char p[ PATH_MAX ] = {0};
-					if( dlinfo( module_handle , RTLD_DI_ORIGIN , p ) != -1 )
+					struct link_map *map = 0;
+					if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
 					{
 						::booldog::result_mbchar resdirmbchar( _allocator );
-						if( ::booldog::utils::string::mbs::insert( &resres , 0 , resdirmbchar.mbchar 
-							, resdirmbchar.mblen , resdirmbchar.mbsize , p , 0
-							, SIZE_MAX , allocator , debuginfo ) == false )
+						if( ::booldog::utils::io::path::mbs::directory( &resdirmbchar , map->l_name , 0 , SIZE_MAX 
+							, _allocator , debuginfo ) == false )
 						{
 							res->copy( resres );
 							dlclose( module_handle );

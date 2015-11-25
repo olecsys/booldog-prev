@@ -203,6 +203,165 @@ namespace booldog
 			_obj_->mblen = 0;
 		};
 	};
+#ifdef __WINDOWS__
+	typedef ::booldog::result_wchar result_wchar_ext;
+	typedef ::booldog::result_mbchar result_mbchar_ext;
+#else
+	class result_wchar_ext : public ::booldog::result
+	{
+	private:
+// copy and assignment not allowed
+		result_wchar_ext( const ::booldog::result_wchar_ext& )
+		{
+		};
+		result_wchar_ext( const ::booldog::result& )
+		{
+		};
+		::booldog::result_wchar_ext& operator = ( const ::booldog::result_wchar_ext& )
+		{
+			return *this;
+		};
+	public:
+		wchar_t* wchar;
+		size_t wsize;
+		size_t wlen;
+		booldog::allocator* wallocator;
+		char* _dlerror;
+		result_wchar_ext( booldog::allocator* allocator )
+ 			: wchar( 0 ) , wlen( 0 ) , wsize( 0 ) , wallocator( allocator ) , _dlerror( 0 ) , result()
+		{
+		};
+		~result_wchar_ext( void )
+		{
+			if( wchar )
+				wallocator->free( wchar );
+			if( _dlerror )
+				wallocator->free( _dlerror );
+		};
+		wchar_t* detach( void )
+		{
+			wchar_t* res = wchar;
+			wchar = 0;
+			wsize = 0;
+			wlen = 0;
+			return res;
+		};
+		virtual void clear( void ) const
+		{
+			::booldog::result_wchar_ext* _obj_ = const_cast< ::booldog::result_wchar_ext* >( this );
+			if( _obj_->_dlerror )
+				_obj_->wallocator->free( _obj_->_dlerror );
+			_obj_->_dlerror = 0;
+			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
+			if( _obj_->wchar )
+				wallocator->free( _obj_->wchar );
+			_obj_->wchar = 0;
+			_obj_->wsize = 0;
+			_obj_->wlen = 0;
+		};
+		virtual char* dlerror( void )
+		{
+			return _dlerror;
+		};
+		void setdlerror( const char* dlerrorstr , ::booldog::debug::info* debuginfo = 0 )
+		{
+			if( _dlerror )
+				wallocator->free( _dlerror );
+			_dlerror = 0;
+
+			const char* ptr = dlerrorstr;
+			for( ; ; )
+			{
+				switch( *ptr++ )
+				{
+				case 0:
+					goto goto_next;
+				}
+			}
+goto_next:
+			size_t srccharcount = ptr - dlerrorstr;
+			_dlerror = wallocator->realloc_array< char >( 0 , srccharcount , debuginfo );
+			error_type = ::booldog::enums::result::error_type_dlerror;
+		};
+	};
+	class result_mbchar_ext : public ::booldog::result
+	{
+	private:
+// copy and assignment not allowed
+		result_mbchar_ext( const ::booldog::result_mbchar_ext& )
+		{
+		};
+		result_mbchar_ext( const ::booldog::result& )
+		{
+		};
+		::booldog::result_mbchar_ext& operator = ( const ::booldog::result_mbchar_ext& )
+		{
+			return *this;
+		};
+	public:
+		char* mbchar;
+		size_t mblen;
+		size_t mbsize;
+		booldog::allocator* mballocator;
+		char* _dlerror;
+		result_mbchar_ext( booldog::allocator* allocator )
+ 			: mbchar( 0 ) , mblen( 0 ) , mbsize( 0 ) , mballocator( allocator ) , _dlerror( 0 ) , result()
+		{
+		};
+		~result_mbchar_ext( void )
+		{
+			if( mbchar )
+				mballocator->free( mbchar );
+			if( _dlerror )
+				mballocator->free( _dlerror );
+		};
+		char* detach( void )
+		{
+			char* res = mbchar;
+			mbchar = 0;
+			mbsize = 0;
+			mblen = 0;
+			return res;
+		};
+		virtual void clear( void ) const
+		{
+			::booldog::result_mbchar_ext* _obj_ = const_cast< ::booldog::result_mbchar_ext* >( this );
+			if( _obj_->_dlerror )
+				_obj_->mballocator->free( _obj_->_dlerror );
+			_obj_->_dlerror = 0;
+			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
+			if( _obj_->mbchar )
+				_obj_->mballocator->free( _obj_->mbchar );
+			_obj_->mbchar = 0;
+			_obj_->mbsize = 0;
+			_obj_->mblen = 0;
+		};
+		virtual char* dlerror( void )
+		{
+			return _dlerror;
+		};
+		void setdlerror( const char* dlerrorstr , ::booldog::debug::info* debuginfo = 0 )
+		{
+			if( _dlerror )
+				mballocator->free( _dlerror );
+			_dlerror = 0;
+
+			const char* ptr = dlerrorstr;
+			for( ; ; )
+			{
+				switch( *ptr++ )
+				{
+				case 0:
+					goto goto_next;
+				}
+			}
+goto_next:
+			size_t srccharcount = ptr - dlerrorstr;
+			_dlerror = mballocator->realloc_array< char >( 0 , srccharcount , debuginfo );
+			error_type = ::booldog::enums::result::error_type_dlerror;
+		};
+	};
+#endif
 	class result_bool : public ::booldog::result
 	{
 	private:

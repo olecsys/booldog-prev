@@ -6327,23 +6327,11 @@ TEST_F( boo_base_loaderTest , test )
 
 		module0 = res.module;
 
-		char p[ PATH_MAX ] = {0};
-		if( dlinfo( module0->handle() , RTLD_DI_ORIGIN , p ) != -1 )
-			printf( "RTLD_DI_ORIGIN=%s\n" , p );
-		struct link_map *map = 0;
-		if( dlinfo( module0->handle() , RTLD_DI_LINKMAP , &map ) != -1 )
-			printf( "RTLD_DI_LINKMAP=%s\n" , map->l_name );
-
 		loader.mbsload( &res , "core" , 0 );
 
 		ASSERT_TRUE( res.succeeded() );	
 
 		module1 = res.module;
-
-		if( dlinfo( module1->handle() , RTLD_DI_ORIGIN , p ) != -1 )
-			printf( "RTLD_DI_ORIGIN=%s\n" , p );
-		if( dlinfo( module1->handle() , RTLD_DI_LINKMAP , &map ) != -1 )
-			printf( "RTLD_DI_LINKMAP=%s\n" , map->l_name );
 
 		loader.unload( &resres , module0 );
 
@@ -6361,31 +6349,10 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		module2 = res.module;
-
-				
-		if( dlinfo( module2->handle() , RTLD_DI_ORIGIN , p ) != -1 )
-			printf( "RTLD_DI_ORIGIN=%s\n" , p );
-		if( dlinfo( module2->handle() , RTLD_DI_LINKMAP , &map ) != -1 )
-			printf( "RTLD_DI_LINKMAP=%s\n" , map->l_name );
-
-
+		
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
-
-
-
-
-		void* h = dlopen( "./librt.so" , RTLD_LAZY );
-		if( h )
-		{
-			if( dlinfo( h , RTLD_DI_ORIGIN , p ) != -1 )
-				printf( "RTLD_DI_ORIGIN=%s\n" , p );
-			if( dlinfo( h , RTLD_DI_LINKMAP , &map ) != -1 )
-				printf( "RTLD_DI_LINKMAP=%s\n" , map->l_name );
-		}
-		else
-			printf( "dlerror=%s\n" , dlerror() );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
