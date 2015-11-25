@@ -146,13 +146,13 @@ goto_step0_and_return:
 #ifdef __UNIX__
 			{ 
 				booldog::debug::info debuginfo( __FILE__ , __LINE__ );
-				_lock_loaded_dirs.wlock( debuginfo );
+				_lock_loaded_dirs.wlock( &debuginfo );
 			}
 			for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
 				_allocator->free( _loaded_dirs[ index0 ] );
 			{ 
 				booldog::debug::info debuginfo( __FILE__ , __LINE__ );
-				_lock_loaded_dirs.wunlock( debuginfo );
+				_lock_loaded_dirs.wunlock( &debuginfo );
 			}
 #endif
 		};
@@ -611,7 +611,7 @@ goto_step0_and_return:
 					}
 					_lock_loaded_dirs.runlock( debuginfo );
 
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
 					if( module_handle )
 					{
 						char p[ PATH_MAX ] = {0};
