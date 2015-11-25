@@ -6301,6 +6301,11 @@ TEST_F( boo_base_loaderTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		void* h = dlopen( "libpthread.so" , RTLD_LAZY );
+		if( h )
+			printf( "succeeded" );
+		else
+			printf( "%s\n" , dlerror() );
 #ifdef __WINDOWS__
 		loader.wcsload( &res , L"kernel32" , 0 );
 #else
