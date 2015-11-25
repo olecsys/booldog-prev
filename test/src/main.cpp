@@ -6301,7 +6301,7 @@ TEST_F( boo_base_loaderTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
-		void* h = dlopen( "libpthread.so" , RTLD_LAZY );
+		void* h = dlopen( "librt.so" , RTLD_LAZY );
 		if( h )
 			printf( "succeeded" );
 		else
