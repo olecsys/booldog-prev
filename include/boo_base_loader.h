@@ -617,6 +617,8 @@ goto_step0_and_return:
 						res->setdlerror( dlerror() , allocator , debuginfo );
 					res_root_dir_mblen = res_name_or_path.mblen;
 
+printf( "0. %s\n" , res_name_or_path.mbchar );
+
 					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
@@ -624,10 +626,13 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+printf( "1. %s\n" , res_name_or_path.mbchar );
 
 					res_name_or_path.mbchar[ res_root_dir_mblen ] = 0;
 					res_name_or_path.mblen = res_root_dir_mblen;
@@ -639,10 +644,13 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+printf( "2. %s\n" , res_name_or_path.mbchar );
 
 					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
@@ -651,10 +659,14 @@ goto_step0_and_return:
 						res->copy( resres );
 						goto goto_return;
 					}
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+printf( "3. %s\n" , res_name_or_path.mbchar );
+
 					goto goto_return;
 goto_loaded_module:
 					char p[ PATH_MAX ] = {0};
