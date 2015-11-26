@@ -125,7 +125,18 @@ namespace booldog
 #else
 						::booldog::result_mbchar resmbchar( allocator );
 						if( ::booldog::utils::module::mbs::filename< step >( &resmbchar , module_handle , allocator , debuginfo ) )
-							::booldog::utils::string::mbs::towcs( res , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo );
+						{
+							::booldog::result_wchar reswchar( allocator );
+							if( ::booldog::utils::string::mbs::towcs( &reswchar , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo ) )
+							{
+								res->wchar = reswchar.wchar;
+								res->wsize = reswchar.wsize;
+								res->wlen = reswchar.wlen;
+								reswchar.detach();
+							}
+							else
+								res->copy( reswchar );
+						}
 						else
 							res->copy( resmbchar );
 #endif
