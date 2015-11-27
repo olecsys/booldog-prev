@@ -6531,6 +6531,7 @@ TEST_F( boo_base_loaderTest , test )
 
 		module1 = res.module;	
 
+		setenv( "PATH" , "/home/olecsys/booldog/test_data/modules0/x64" , 1 );
 
 		loader.mbsload( &res , "iv54server" , load_params );
 
