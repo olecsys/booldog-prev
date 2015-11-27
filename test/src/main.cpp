@@ -6531,7 +6531,7 @@ TEST_F( boo_base_loaderTest , test )
 
 		//module1 = res.module;
 
-		loader.mbsload( &res , "iv54server" , load_params );
+		loader.mbsload( &res , "language" , load_params );
 
 		char* errorstr = 0;
 		size_t errorstrlen = 0 , errorstrsize = 0;
