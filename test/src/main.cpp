@@ -6516,9 +6516,14 @@ TEST_F( boo_base_loaderTest , test )
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
-		
+				
 #ifdef __UNIX__
 		loader.mbsload( &res , "iv54server" , load_params );
+
+		char* errorstr = 0;
+		size_t errorstrlen = 0 , errorstrsize = 0;
+		::booldog::error::format( &resres , errorstr , errorstrlen , errorstrsize );
+		printf( "error %s\n" , errorstr );
 
 		ASSERT_TRUE( res.succeeded() );
 
