@@ -117,7 +117,9 @@ goto_next:
 			this->_dlerror = allocator->realloc_array< char >( 0 , srccharcount , debuginfo );
 			if( this->_dlerror )
 			{
-				::memcpy( this->_dlerror , dlerrorstr , srccharcount - 1 );
+				srccharcount--;
+				::memcpy( this->_dlerror , dlerrorstr , srccharcount );
+				this->_dlerror[ srccharcount ] = 0;
 				this->_allocator = allocator;
 			}
 			this->error_type = ::booldog::enums::result::error_type_dlerror;

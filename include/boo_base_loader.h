@@ -239,7 +239,11 @@ namespace booldog
 					goto goto_return;
 				}
 				else
+				{
 					res->setdlerror( dlerror() , allocator , debuginfo );
+
+					printf( "%s\n" , res->dlerror() );
+				}
 			}
 			else
 			{
@@ -603,7 +607,11 @@ namespace booldog
 					if( module_handle )
 						goto goto_loaded_module;
 					else
+					{
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+						printf( "%s\n" , res->dlerror() );
+					}
 					res_root_dir_mblen = res_name_or_path.mblen;
 					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
@@ -616,7 +624,11 @@ namespace booldog
 					if( module_handle )
 						goto goto_loaded_module;
 					else
+					{
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+						printf( "%s\n" , res->dlerror() );
+					}
 					res_name_or_path.mbchar[ res_root_dir_mblen ] = 0;
 					res_name_or_path.mblen = res_root_dir_mblen;
 					
@@ -631,7 +643,11 @@ namespace booldog
 					if( module_handle )
 						goto goto_loaded_module;
 					else
+					{
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+						printf( "%s\n" , res->dlerror() );
+					}
 					if( ::booldog::utils::string::mbs::insert( &resres , res_name_or_path.mblen , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
 						, SIZE_MAX , allocator , debuginfo ) == false )
@@ -643,7 +659,11 @@ namespace booldog
 					if( module_handle )
 						goto goto_loaded_module;
 					else
+					{
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+						printf( "%s\n" , res->dlerror() );
+					}
 					goto goto_return;
 goto_loaded_module:
 					struct link_map *map = 0;
@@ -702,6 +722,9 @@ goto_loaded_module:
 					else
 					{
 						res->setdlerror( dlerror() , allocator , debuginfo );
+
+						printf( "%s\n" , res->dlerror() );
+
 						dlclose( module_handle );
 					}
 				}
