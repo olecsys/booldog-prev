@@ -291,6 +291,40 @@ goto_next:
 			_obj_->bres = false;
 		};
 	};
+	class result_pointer : public ::booldog::result
+	{
+	private:
+// copy and assignment not allowed
+		result_pointer( const ::booldog::result_pointer& )
+		{
+		};
+		result_pointer( const ::booldog::result& )
+		{
+		};
+		::booldog::result_pointer& operator = ( const ::booldog::result_pointer& )
+		{
+			return *this;
+		};
+	public:
+		void* pres;
+		result_pointer( void )
+ 			: result()
+		{
+			pres = 0;
+		};
+		virtual ~result_pointer( void )
+		{
+		};
+		virtual void clear( void ) const
+		{
+			::booldog::result_pointer* _obj_ = const_cast< ::booldog::result_pointer* >( this );
+#ifdef __UNIX__
+			_obj_->dlerrorclear();
+#endif
+			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
+			_obj_->bres = false;
+		};
+	};
 	class result_size : public ::booldog::result
 	{
 	private:

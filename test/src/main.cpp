@@ -6518,18 +6518,6 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 				
 #ifdef __UNIX__
-		//loader.mbsload( &res , "WinLinCore" , load_params );
-
-		//ASSERT_TRUE( res.succeeded() );
-
-		//module0 = res.module;
-
-
-		//loader.mbsload( &res , "core" , load_params );
-
-		//ASSERT_TRUE( res.succeeded() );
-
-		//module1 = res.module;
 
 		loader.mbsload( &res , "language" , load_params );
 
@@ -6542,25 +6530,15 @@ TEST_F( boo_base_loaderTest , test )
 
 		module2 = res.module;
 
-		void* addr0 = dlsym( module2->handle() , "core_init" );
+		::booldog::result_pointer respointer;
+		::booldog::utils::module::mbs::method( &respointer , module2->handle() , "core_init" );
 
-		printf( "core_init=%p\n" , addr0 );
+		::booldog::utils::module::mbs::method( &respointer , module2->handle() , "dll_init" );
 
-		void* addr1 = dlsym( module2->handle() , "dll_init" );
-
-		printf( "dll_init=%p\n" , addr1 );
 
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
-
-		//loader.unload( &resres , module1 );
-
-		//ASSERT_TRUE( res.succeeded() );
-
-		//loader.unload( &resres , module0 );
-
-		//ASSERT_TRUE( res.succeeded() );
 #endif
 	}
 

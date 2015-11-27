@@ -23,6 +23,27 @@ namespace booldog
 		{
 			namespace mbs
 			{
+				booinline bool method( ::booldog::result_pointer* pres , ::booldog::module_handle module_handle , const char* name , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				{
+					::booldog::result_pointer locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_pointer );
+					res->pres = (void*)dlsym( module_handle , name );
+					if( res->pres == 0 )
+#ifdef __WINDOWS__
+						res->GetLastError();
+#else
+						res->setdlerror( dlerror() , allocator , debuginfo );
+					else
+					{
+						Dl_info info;
+						if( dladdr( (void*)res->pres , &info ) != 0 && info.dli_fname && info.dli_fname[ 0 ] != 0 )
+						{
+							printf( "%s\n" , info.dli_fname );
+						}
+					}
+#endif
+					return res->succeeded();
+				};
 				template< size_t step >
 				bool pathname( ::booldog::result_mbchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
