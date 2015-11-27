@@ -322,7 +322,7 @@ goto_next:
 			_obj_->dlerrorclear();
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
-			_obj_->bres = false;
+			_obj_->pres = 0;
 		};
 	};
 	class result_size : public ::booldog::result
