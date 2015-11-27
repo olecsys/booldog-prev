@@ -6533,15 +6533,22 @@ TEST_F( boo_base_loaderTest , test )
 
 		loader.mbsload( &res , "language" , load_params );
 
-		char* errorstr = 0;
+		/*char* errorstr = 0;
 		size_t errorstrlen = 0 , errorstrsize = 0;
 		::booldog::error::format( &res , errorstr , errorstrlen , errorstrsize );
-		printf( "error %s\n" , errorstr );
+		printf( "error %s\n" , errorstr );*/
 
 		ASSERT_TRUE( res.succeeded() );
 
 		module2 = res.module;
 
+		void* addr0 = dlsym( module2->handle() , "core_init" );
+
+		printf( "core_init=%p\n" , addr0 );
+
+		void* addr1 = dlsym( module2->handle() , "dll_init" );
+
+		printf( "dll_init=%p\n" , addr1 );
 
 		loader.unload( &resres , module2 );
 
