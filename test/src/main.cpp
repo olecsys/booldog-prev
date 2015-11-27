@@ -6518,16 +6518,39 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 				
 #ifdef __UNIX__
-		loader.mbsload( &res , "iv54server" , load_params );
-
-		char* errorstr = 0;
-		size_t errorstrlen = 0 , errorstrsize = 0;
-		::booldog::error::format( &resres , errorstr , errorstrlen , errorstrsize );
-		printf( "error %s\n" , errorstr );
+		loader.mbsload( &res , "WinLinCore" , load_params );
 
 		ASSERT_TRUE( res.succeeded() );
 
 		module0 = res.module;
+
+
+		loader.mbsload( &res , "core" , load_params );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module1 = res.module;	
+
+
+		loader.mbsload( &res , "iv54server" , load_params );
+
+		char* errorstr = 0;
+		size_t errorstrlen = 0 , errorstrsize = 0;
+		::booldog::error::format( &res , errorstr , errorstrlen , errorstrsize );
+		printf( "error %s\n" , errorstr );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module2 = res.module;
+
+
+		loader.unload( &resres , module2 );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		loader.unload( &resres , module1 );
+
+		ASSERT_TRUE( res.succeeded() );
 
 		loader.unload( &resres , module0 );
 
