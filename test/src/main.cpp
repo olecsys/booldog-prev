@@ -6301,10 +6301,15 @@ TEST_F( boo_base_loaderTest , test )
 				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
 
 				ASSERT_TRUE( res.succeeded() );
-
+#ifdef __WINDOWS__
 				ASSERT_EQ( resmbchar.mblen , 4 );
 
 				ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+#else
+				ASSERT_EQ( resmbchar.mblen , 7 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "libcore" ) == 0 );
+#endif
 			}
 		}
 		{
@@ -6316,10 +6321,15 @@ TEST_F( boo_base_loaderTest , test )
 				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
 
 				ASSERT_TRUE( res.succeeded() );
-
+#ifdef __WINDOWS__
 				ASSERT_EQ( reswchar.wlen , 4 );
 
 				ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+#else
+				ASSERT_EQ( reswchar.wlen , 7 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"libcore" ) == 0 );
+#endif
 			}
 		}
 
@@ -6415,10 +6425,15 @@ TEST_F( boo_base_loaderTest , test )
 				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
 
 				ASSERT_TRUE( res.succeeded() );
-
+#ifdef __WINDOWS__
 				ASSERT_EQ( resmbchar.mblen , 4 );
 
 				ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+#else
+				ASSERT_EQ( resmbchar.mblen , 7 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "libcore" ) == 0 );
+#endif
 			}
 		}
 		{
@@ -6430,10 +6445,15 @@ TEST_F( boo_base_loaderTest , test )
 				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
 
 				ASSERT_TRUE( res.succeeded() );
-
+#ifdef __WINDOWS__
 				ASSERT_EQ( reswchar.wlen , 4 );
 
 				ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+#else
+				ASSERT_EQ( reswchar.wlen , 7 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"libcore" ) == 0 );
+#endif
 			}
 		}
 
