@@ -84,7 +84,7 @@ namespace booldog
 			, ::booldog::debug::info* debuginfo )
 		{
 			char* dl_error = 0;
-			::booldog::module_handle module_handle = dlopen( res_name_or_path , RTLD_NOLOAD | RTLD_LAZY );
+			::booldog::module_handle module_handle = dlopen( res_name_or_path , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
 			if( module_handle )
 #endif
 			{
@@ -190,7 +190,7 @@ namespace booldog
 
 				if( get_loaded_module( res , res_name_or_path.mbchar , debuginfo ) )
 					goto goto_return;
-				module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+				module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
 				if( module_handle )
 				{
 					::booldog::result_mbchar resdirmbchar( _allocator );
@@ -603,7 +603,7 @@ namespace booldog
 					}
 					_lock_loaded_dirs.runlock( debuginfo );
 
-					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
@@ -620,7 +620,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
@@ -639,7 +639,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
@@ -655,7 +655,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_LAZY );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
