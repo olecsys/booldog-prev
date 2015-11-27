@@ -6516,6 +6516,18 @@ TEST_F( boo_base_loaderTest , test )
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
+		
+#ifdef __UNIX__
+		loader.mbsload( &res , "iv54server" , load_params );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module0 = res.module;
+
+		loader.unload( &resres , module0 );
+
+		ASSERT_TRUE( res.succeeded() );
+#endif
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
