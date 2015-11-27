@@ -6518,20 +6518,18 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 				
 #ifdef __UNIX__
-		loader.mbsload( &res , "WinLinCore" , load_params );
+		//loader.mbsload( &res , "WinLinCore" , load_params );
 
-		ASSERT_TRUE( res.succeeded() );
+		//ASSERT_TRUE( res.succeeded() );
 
-		module0 = res.module;
+		//module0 = res.module;
 
 
-		loader.mbsload( &res , "core" , load_params );
+		//loader.mbsload( &res , "core" , load_params );
 
-		ASSERT_TRUE( res.succeeded() );
+		//ASSERT_TRUE( res.succeeded() );
 
-		module1 = res.module;	
-
-		setenv( "PATH" , "/home/olecsys/booldog/test_data/modules0/x64" , 1 );
+		//module1 = res.module;
 
 		loader.mbsload( &res , "iv54server" , load_params );
 
@@ -6549,13 +6547,13 @@ TEST_F( boo_base_loaderTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
-		loader.unload( &resres , module1 );
+		//loader.unload( &resres , module1 );
 
-		ASSERT_TRUE( res.succeeded() );
+		//ASSERT_TRUE( res.succeeded() );
 
-		loader.unload( &resres , module0 );
+		//loader.unload( &resres , module0 );
 
-		ASSERT_TRUE( res.succeeded() );
+		//ASSERT_TRUE( res.succeeded() );
 #endif
 	}
 

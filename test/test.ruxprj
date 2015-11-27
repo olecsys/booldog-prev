@@ -59,7 +59,7 @@
 				"compiler":"g++",
 				"compiler_flags":"-m64",			
 				"linker":"g++ -m64",
-				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--gc-sections,--strip-all"
+				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--gc-sections,--strip-all,-R,'$$ORIGIN/../../test_data/modules0/$(architecture)'"
 			},
 			"linux x86":
 			{
@@ -67,16 +67,16 @@
 				"compiler":"g++",
 				"compiler_flags":"-m32",			
 				"linker":"g++ -m32",
-				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--gc-sections,--strip-all"
+				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--gc-sections,--strip-all,-R,'$$ORIGIN/../../test_data/modules0/$(architecture)'"
 			},
 			"linux crosscompile armv6":
 			{
 				"architecture":"armv6",
 				"toolchain_dir":"/opt/raspberrypi/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian/bin/arm-linux-gnueabihf-",
 				"compiler":"$(toolchain_dir)g++",
-				"compiler_flags":"-march=armv6 -mfpu=vfp -mfloat-abi=hard -Wno-psabi",			
+				"compiler_flags":"-march=armv6 -mfpu=vfp -mfloat-abi=hard -Wno-psabi",
 				"linker":"$(toolchain_dir)g++",
-				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--strip-all"
+				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--strip-all,-R,'$$ORIGIN/../../test_data/modules0/$(architecture)'"
 			},
 			"linux crosscompile armv6 soft":
 			{
@@ -85,7 +85,7 @@
 				"compiler":"$(toolchain_dir)g++",
 				"compiler_flags":"-march=armv6 -mfpu=vfp -mfloat-abi=softfp -Wno-psabi",			
 				"linker":"$(toolchain_dir)g++",
-				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--strip-all"
+				"linker_flags":"-Wl,-E,--no-undefined,-O2,-flto,--strip-all,-R,'$$ORIGIN/../../test_data/modules0/$(architecture)'"
 			}
 		},
 		"android":
