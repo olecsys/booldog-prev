@@ -72,7 +72,7 @@ namespace booldog
 								res->copy( resres );
 						}
 						else
-							res->setdlerror( dlerror() , debuginfo );
+							res->setdlerror( dlerror() , allocator , debuginfo );
 #endif
 					}
 					else
