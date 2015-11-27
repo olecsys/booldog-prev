@@ -26,8 +26,8 @@ namespace booldog
 				template< size_t step >
 				bool pathname( ::booldog::result_mbchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
-					::booldog::result_mbchar_ext locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_mbchar_ext );
+					::booldog::result_mbchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_mbchar );
 					if( module_handle )
 					{
 #ifdef __WINDOWS__	
@@ -85,8 +85,8 @@ namespace booldog
 				template< size_t step >
 				bool pathname( ::booldog::result_wchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
-					::booldog::result_wchar_ext locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_wchar_ext );
+					::booldog::result_wchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_wchar );
 					if( module_handle )
 					{
 #ifdef __WINDOWS__	
