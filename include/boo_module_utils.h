@@ -34,10 +34,10 @@ namespace booldog
 						res->mbsize = step;
 						for( ; ; )
 						{
-							res->mbchar = res->mallocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+							res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
 							if( res->mbchar )
 							{
-								res->mblen = GetModuleFileNameW( module_handle , res->mbchar , res->mbsize );
+								res->mblen = GetModuleFileNameA( module_handle , res->mbchar , res->mbsize );
 								if( res->mblen == 0 )
 								{
 									res->GetLastError();
@@ -46,7 +46,7 @@ namespace booldog
 								else if( res->mblen != res->mbsize )
 								{
 									res->mbchar[ res->mblen ] = 0;
-									if( strncmp( res->mbchar , L"\\\\?\\" , 4 ) == 0 )
+									if( strncmp( res->mbchar , "\\\\?\\" , 4 ) == 0 )
 									{
 										::booldog::mem::remove< char >( 0 , res->mbchar , res->mbsize , 4 );
 										res->mblen -= 4;

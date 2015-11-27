@@ -6292,7 +6292,36 @@ TEST_F( boo_base_loaderTest , test )
 
 		::booldog::base::module* module1 = res.module;
 
-		//::booldog::utils::module::mbs::pathname< 4 >( 
+		{
+			::booldog::result_mbchar resmbchar( booldog::_allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module1->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
+
+				ASSERT_TRUE( res.succeeded() );
+
+				ASSERT_EQ( resmbchar.mblen , 4 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+			}
+		}
+		{
+			::booldog::result_wchar reswchar( booldog::_allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module1->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
+
+				ASSERT_TRUE( res.succeeded() );
+
+				ASSERT_EQ( reswchar.wlen , 4 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+			}
+		}
 
 
 		::booldog::result resres;
@@ -6313,6 +6342,47 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		::booldog::base::module* module2 = res.module;
+
+		{
+			::booldog::result_mbchar resmbchar( booldog::_allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module2->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
+
+				ASSERT_TRUE( res.succeeded() );
+#ifdef __WINDOWS__
+				ASSERT_EQ( resmbchar.mblen , 8 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "kernel32" ) == 0 );
+#else
+				ASSERT_EQ( resmbchar.mblen , 2 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "rt" ) == 0 );
+#endif
+			}
+		}
+		{
+			::booldog::result_wchar reswchar( booldog::_allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module2->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
+
+				ASSERT_TRUE( res.succeeded() );
+#ifdef __WINDOWS__
+				ASSERT_EQ( reswchar.wlen , 8 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"kernel32" ) == 0 );
+#else
+				ASSERT_EQ( reswchar.wlen , 2 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"rt" ) == 0 );
+#endif
+			}
+		}
 
 		loader.unload( &resres , module2 );
 
@@ -6336,6 +6406,37 @@ TEST_F( boo_base_loaderTest , test )
 
 		module1 = res.module;
 
+		{
+			::booldog::result_mbchar resmbchar( booldog::_allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module1->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
+
+				ASSERT_TRUE( res.succeeded() );
+
+				ASSERT_EQ( resmbchar.mblen , 4 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
+			}
+		}
+		{
+			::booldog::result_wchar reswchar( booldog::_allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module1->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
+
+				ASSERT_TRUE( res.succeeded() );
+
+				ASSERT_EQ( reswchar.wlen , 4 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
+			}
+		}
+
 		loader.unload( &resres , module0 );
 
 		ASSERT_TRUE( res.succeeded() );
@@ -6352,7 +6453,46 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		module2 = res.module;
-		
+		{
+			::booldog::result_mbchar resmbchar( booldog::_allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module2->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
+
+				ASSERT_TRUE( res.succeeded() );
+#ifdef __WINDOWS__
+				ASSERT_EQ( resmbchar.mblen , 8 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "kernel32" ) == 0 );
+#else
+				ASSERT_EQ( resmbchar.mblen , 2 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "rt" ) == 0 );
+#endif
+			}
+		}
+		{
+			::booldog::result_wchar reswchar( booldog::_allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module2->handle() );
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
+
+				ASSERT_TRUE( res.succeeded() );
+#ifdef __WINDOWS__
+				ASSERT_EQ( reswchar.wlen , 8 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"kernel32" ) == 0 );
+#else
+				ASSERT_EQ( reswchar.wlen , 2 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"rt" ) == 0 );
+#endif
+			}
+		}		
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
