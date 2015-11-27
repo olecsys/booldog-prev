@@ -34,57 +34,22 @@ namespace booldog
 		};
 	public:
 		::booldog::base::module* module;
-#ifdef __UNIX__
-		::booldog::allocator* _allocator;
-		char* _dlerror;
-#endif
 		result_module( void )
 		{
 			module = 0;
-#ifdef __UNIX__
-			_allocator = 0;
-			_dlerror = 0;
-#endif
 		};
-		~result_module( void )
+		virtual ~result_module( void )
 		{
-#ifdef __UNIX__
-			if( _dlerror )
-				_allocator->free( _dlerror );
-#endif
 		};
 		virtual void clear( void ) const
 		{
 			::booldog::result_module* _obj_ = const_cast< ::booldog::result_module* >( this );
 #ifdef __UNIX__
-			if( _obj_->_dlerror )
-				_obj_->_allocator->free( _obj_->_dlerror );
-			_obj_->_dlerror = 0;
+			_obj_->dlerrorclear();
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
 			_obj_->module = 0;
 		};
-#ifdef __UNIX__
-		virtual char* dlerror( void )
-		{
-			return _dlerror;
-		};
-		void setdlerror( const char* dlerrorstr , booldog::allocator* allocator = ::booldog::_allocator 
-			, ::booldog::debug::info* debuginfo = 0 )
-		{
-			if( _dlerror )
-				_allocator->free( _dlerror );
-			_dlerror = 0;
-			
-			size_t dstlen = 0 , dstsize_in_bytes = 0;
-			if( ::booldog::utils::string::mbs::insert( 0 , 0 , _dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
-				, allocator , debuginfo ) )
-				_allocator = allocator;
-			else
-				_dlerror = 0;
-			error_type = ::booldog::enums::result::error_type_dlerror;
-		};
-#endif
 	};
 	namespace base
 	{

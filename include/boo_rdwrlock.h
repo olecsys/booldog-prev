@@ -56,7 +56,7 @@ namespace booldog
 				}
 				return false;
 			};
-			void wlock( ::booldog::debug::info* debuginfo = 0 )
+			void wlock( const ::booldog::debug::info* debuginfo = 0 )
 			{
 				debuginfo = debuginfo;
 				booldog::pid_t tid = ::booldog::threading::thread_id();

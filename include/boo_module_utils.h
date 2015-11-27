@@ -24,7 +24,7 @@ namespace booldog
 			namespace mbs
 			{
 				template< size_t step >
-				bool filename( ::booldog::result_mbchar_ext* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool pathname( ::booldog::result_mbchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
 					::booldog::result_mbchar_ext locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar_ext );
@@ -83,7 +83,7 @@ namespace booldog
 			namespace wcs
 			{
 				template< size_t step >
-				bool filename( ::booldog::result_wchar_ext* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool pathname( ::booldog::result_wchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
 					::booldog::result_wchar_ext locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar_ext );
@@ -124,7 +124,7 @@ namespace booldog
 						}
 #else
 						::booldog::result_mbchar resmbchar( allocator );
-						if( ::booldog::utils::module::mbs::filename< step >( &resmbchar , module_handle , allocator , debuginfo ) )
+						if( ::booldog::utils::module::mbs::pathname< step >( &resmbchar , module_handle , allocator , debuginfo ) )
 						{
 							::booldog::result_wchar reswchar( allocator );
 							if( ::booldog::utils::string::mbs::towcs( &reswchar , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo ) )
@@ -152,7 +152,7 @@ namespace booldog
 			namespace mbs
 			{
 				template< size_t step >
-				bool filename( ::booldog::result_mbchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -235,7 +235,7 @@ namespace booldog
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
-					if( ::booldog::utils::executable::mbs::filename< step >( res , allocator , debuginfo ) )
+					if( ::booldog::utils::executable::mbs::pathname< step >( res , allocator , debuginfo ) )
 					{
 						::booldog::result locres;
 						if( ::booldog::utils::io::path::mbs::directory( &locres , res->mbchar , res->mblen ) == false )
@@ -247,7 +247,7 @@ namespace booldog
 			namespace wcs
 			{
 				template< size_t step >
-				bool filename( ::booldog::result_wchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
@@ -292,7 +292,7 @@ namespace booldog
 						res->GetLastError();
 #else
 					::booldog::result_mbchar resmbchar( allocator );
-					if( ::booldog::utils::executable::mbs::filename< step >( &resmbchar , allocator , debuginfo ) )
+					if( ::booldog::utils::executable::mbs::pathname< step >( &resmbchar , allocator , debuginfo ) )
 						::booldog::utils::string::mbs::towcs( res , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo );
 					else
 						res->copy( resmbchar );
@@ -304,7 +304,7 @@ namespace booldog
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
-					if( ::booldog::utils::executable::wcs::filename< step >( res , allocator , debuginfo ) )
+					if( ::booldog::utils::executable::wcs::pathname< step >( res , allocator , debuginfo ) )
 					{
 						::booldog::result locres;
 						if( ::booldog::utils::io::path::wcs::directory( &locres , res->wchar , res->wlen ) == false )

@@ -19,6 +19,7 @@
 #ifdef __WINDOWS__
 #define boointernal
 #define booinline __forceinline
+#define dlsym( handle , name ) GetProcAddress( handle , name )
 #elif defined( __UNIX__ )
 #ifdef __LINUX__
 #if __GNUC__ >= 4

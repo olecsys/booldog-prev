@@ -7,23 +7,16 @@
 #include <boo_interlocked.h>
 #include <boo_rdwrlock.h>
 #include <boo_result.h>
+#include <boo_module_utils.h>
 namespace booldog
 {
+	typedef int (*module_init_t)( void* p );
+	typedef int (*module_free_t)( void );
 	namespace base
 	{
 		class module
 		{
 		public:
-			virtual const ::booldog::string name( void )
-			{
-				::booldog::string s;
-				return s;
-			};
-			virtual const ::booldog::string path( void )
-			{
-				::booldog::string s;
-				return s;
-			};
 			virtual bool loaded( void )
 			{
 				return false;
@@ -47,23 +40,13 @@ namespace booldog
 		::booldog::interlocked::atomic _ref;
 		::booldog::module_handle _handle;
 		::booldog::threading::rdwrlock _lock;
-		bool _inited;
+		::booldog::uint32 _inited_ref;
 	public:
 		module( void )
 		{
-			_inited = false;
+			_inited_ref = 0;
 			_ref = 1;
 			_handle = 0;
-		};
-		virtual const ::booldog::string name( void )
-		{
-			::booldog::string s;
-			return s;
-		};
-		virtual const ::booldog::string path( void )
-		{
-			::booldog::string s;
-			return s;
 		};
 		virtual bool loaded( void )
 		{
@@ -94,34 +77,45 @@ namespace booldog
 		{
 			return ::booldog::interlocked::decrement( const_cast< ::booldog::interlocked::atomic* >( &_ref ) );
 		};
-		bool init( ::booldog::result* pres , void* initparams )
+		bool init( ::booldog::result* pres , void* initparams = 0 , booldog::debug::info* debuginfo = 0 )
 		{		
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
+			_lock.wlock( debuginfo );
+			if( _inited_ref == 0 )
 			{
-				booldog::debug::info debuginfo( __FILE__ , __LINE__ );
-				_lock.wlock( &debuginfo );
+				::booldog::module_init_t module_init = (::booldog::module_init_t)dlsym( _handle , "" );
+				
+				//Dl_info info;
+				//if( dladdr( (void*)module_init , &info ) != 0 && info.dli_fname && info.dli_fname[ 0 ] != 0 )
+				{
+					//declare_stack_variable( char , full_filename0 , 2048 );
+					//declare_stack_variable( char , filename_only0 , 1024 );
+					//declare_stack_variable( char , filename_only1 , 1024 );
+					//module()->_filename.CopyToArrayAsCurrentCodePage( full_filename0 , 2048 );
+					//rux_get_executable_filename_only( full_filename0 , filename_only0 );
+					//rux_get_executable_filename_only( info.dli_fname , filename_only1 );
+					//if( strcmp( filename_only0 , filename_only1 ) != 0 )
+					//	module()->_rux_module_init = NULL;
+				}
 			}
-			
-			{
-				booldog::debug::info debuginfo( __FILE__ , __LINE__ );
-				_lock.wunlock( &debuginfo );
-			}
+			_inited_ref++;			
+			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
-		bool free( ::booldog::result* pres )
+		bool free( ::booldog::result* pres , booldog::debug::info* debuginfo = 0 )
 		{
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
+			_lock.wlock( debuginfo );
+			if( _inited_ref )
 			{
-				booldog::debug::info debuginfo( __FILE__ , __LINE__ );
-				_lock.wlock( &debuginfo );
-			}
-
-			{
-				booldog::debug::info debuginfo( __FILE__ , __LINE__ );
-				_lock.wunlock( &debuginfo );
-			}
+				_inited_ref--;			
+				if( _inited_ref == 0 )
+				{
+				}
+			}			
+			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
 	};

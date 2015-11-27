@@ -6223,7 +6223,7 @@ TEST_F( boo_base_loaderTest , test )
 	{
 		{
 			::booldog::result_mbchar resmbchar( booldog::_allocator );
-			::booldog::utils::executable::mbs::filename< 4 >( &resmbchar );
+			::booldog::utils::executable::mbs::pathname< 4 >( &resmbchar );
 			{
 				::booldog::result res;
 
@@ -6238,7 +6238,7 @@ TEST_F( boo_base_loaderTest , test )
 		}
 		{
 			::booldog::result_wchar reswchar( booldog::_allocator );
-			::booldog::utils::executable::wcs::filename< 4 >( &reswchar );
+			::booldog::utils::executable::wcs::pathname< 4 >( &reswchar );
 			{
 				::booldog::result res;
 
@@ -6291,6 +6291,9 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 		::booldog::base::module* module1 = res.module;
+
+		//::booldog::utils::module::mbs::pathname< 4 >( 
+
 
 		::booldog::result resres;
 		loader.unload( &resres , module0 );
