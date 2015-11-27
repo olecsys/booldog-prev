@@ -6367,9 +6367,9 @@ TEST_F( boo_base_loaderTest , test )
 
 				ASSERT_TRUE( strcmp( resmbchar.mbchar , "kernel32" ) == 0 );
 #else
-				ASSERT_EQ( resmbchar.mblen , 2 );
+				ASSERT_EQ( resmbchar.mblen , 8 );
 
-				ASSERT_TRUE( strcmp( resmbchar.mbchar , "rt" ) == 0 );
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "librt.so" ) == 0 );
 #endif
 			}
 		}
@@ -6387,9 +6387,9 @@ TEST_F( boo_base_loaderTest , test )
 
 				ASSERT_TRUE( wcscmp( reswchar.wchar , L"kernel32" ) == 0 );
 #else
-				ASSERT_EQ( reswchar.wlen , 2 );
+				ASSERT_EQ( reswchar.wlen , 8 );
 
-				ASSERT_TRUE( wcscmp( reswchar.wchar , L"rt" ) == 0 );
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"librt.so" ) == 0 );
 #endif
 			}
 		}
@@ -6487,9 +6487,9 @@ TEST_F( boo_base_loaderTest , test )
 
 				ASSERT_TRUE( strcmp( resmbchar.mbchar , "kernel32" ) == 0 );
 #else
-				ASSERT_EQ( resmbchar.mblen , 2 );
+				ASSERT_EQ( resmbchar.mblen , 8 );
 
-				ASSERT_TRUE( strcmp( resmbchar.mbchar , "rt" ) == 0 );
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "librt.so" ) == 0 );
 #endif
 			}
 		}
@@ -6507,9 +6507,9 @@ TEST_F( boo_base_loaderTest , test )
 
 				ASSERT_TRUE( wcscmp( reswchar.wchar , L"kernel32" ) == 0 );
 #else
-				ASSERT_EQ( reswchar.wlen , 2 );
+				ASSERT_EQ( reswchar.wlen , 8 );
 
-				ASSERT_TRUE( wcscmp( reswchar.wchar , L"rt" ) == 0 );
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"librt.so" ) == 0 );
 #endif
 			}
 		}		
