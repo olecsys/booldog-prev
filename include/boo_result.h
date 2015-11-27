@@ -102,13 +102,24 @@ namespace booldog
 		void setdlerror( const char* dlerrorstr , booldog::allocator* allocator = ::booldog::_allocator 
 			, ::booldog::debug::info* debuginfo = 0 )
 		{
-			clear();			
-			size_t dstlen = 0 , dstsize_in_bytes = 0;
-			if( ::booldog::utils::string::mbs::insert( 0 , 0 , this->_dlerror , dstlen , dstsize_in_bytes , dlerrorstr , 0 , SIZE_MAX 
-				, allocator , debuginfo ) )
+			clear();
+			const char* ptr = dlerrorstr;
+			for( ; ; )
+			{
+				switch( *ptr++ )
+				{
+				case 0:
+					goto goto_next;
+				}
+			}
+goto_next:
+			size_t srccharcount = ptr - dlerrorstr;
+			this->_dlerror = allocator->realloc_array< char >( 0 , srccharcount , debuginfo );
+			if( this->_dlerror )
+			{
+				::memcpy( this->_dlerror , dlerrorstr , srccharcount - 1 );
 				this->_allocator = allocator;
-			else
-				this->_dlerror = 0;
+			}
 			this->error_type = ::booldog::enums::result::error_type_dlerror;
 		};
 		void dlerrorclear( void )
