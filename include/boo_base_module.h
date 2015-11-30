@@ -82,6 +82,7 @@ namespace booldog
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
 			::booldog::result_pointer respointer;
+			::booldog::module_init_t module_init = 0;
 			_lock.wlock( debuginfo );
 			if( _inited_ref == 0 )
 			{
@@ -97,7 +98,7 @@ namespace booldog
 			else
 				goto goto_success_return;
 goto_method_success_return:
-			::booldog::module_init_t module_init = (::booldog::module_init_t)respointer.pres;
+			module_init = (::booldog::module_init_t)respointer.pres;
 			module_init( initparams );
 goto_success_return:
 			_inited_ref++;
