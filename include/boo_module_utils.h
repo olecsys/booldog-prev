@@ -36,26 +36,41 @@ namespace booldog
 					else
 					{
 						Dl_info info;
-						if( dladdr( (void*)res->pres , &info ) != 0 && info.dli_fname && info.dli_fname[ 0 ] != 0 )
+						if( dladdr( (void*)res->pres , &info ) != 0 )
 						{
-							char* mbchar = 0;
-							size_t mblen = 0 , mbsize = 0;
-							::booldog::result resres;
-							if( ::booldog::utils::string::mbs::insert( &resres , 0 , mbchar , mblen , mbsize , info.dli_fname , 0 
-								, SIZE_MAX , allocator , debuginfo ) == false )
+							if( info.dli_fname && info.dli_fname[ 0 ] != 0 )
 							{
-								res->copy( resres );
-								goto goto_return;
+								::booldog::result_mbchar resmbchar( allocator );
+								::booldog::result resres;
+								if( ::booldog::utils::string::mbs::insert( &resres , 0 , resmbchar.mbchar , resmbchar.mblen 
+									, resmbchar.mbsize , info.dli_fname , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+								{
+									res->copy( resres );
+									goto goto_return;
+								}
+								if( ::booldog::utils::io::path::mbs::normalize( &resres , resmbchar.mbchar , resmbchar.mblen 
+									, resmbchar.mbsize ) == false )
+								{
+									res->copy( resres );
+									goto goto_return;
+								}
+								::booldog::result_mbchar resmbpathname( allocator );
+								if( ::booldog::utils::module::mbs::pathname< 256 >( &resmbpathname , module_handle , allocator 
+									, debuginfo ) == false )
+								{
+									res->copy( resmbpathname );
+									goto goto_return;
+								}
+								printf( "%s == %s\n" , resmbchar.mbchar , resmbpathname.mbchar );
+								if( strcmp( resmbchar.mbchar , resmbpathname.mbchar ) != 0 )
+								{
+									res->booerr( ::booldog::enums::result::booerr_type_function_not_found_in_module );
+									goto goto_return;
+								}
 							}
-							if( ::booldog::utils::io::path::mbs::normalize( &resres , mbchar , mblen , mbsize ) == false )
-							{
-								res->copy( resres );
-								goto goto_return;
-							}
-
-
-							printf( "%s\n" , mbchar );
 						}
+						else
+							res->setdlerror( dlerror() , allocator , debuginfo );
 					}
 goto_return:
 #endif
@@ -68,6 +83,7 @@ goto_return:
 					BOOINIT_RESULT( ::booldog::result_mbchar );
 					if( module_handle )
 					{
+						::booldog::result resres;
 #ifdef __WINDOWS__	
 						res->mbsize = step;
 						for( ; ; )
@@ -79,7 +95,7 @@ goto_return:
 								if( res->mblen == 0 )
 								{
 									res->GetLastError();
-									break;
+									goto goto_return;
 								}
 								else if( res->mblen != res->mbsize )
 								{
@@ -97,24 +113,35 @@ goto_return:
 							else
 							{
 								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-								break;
+								goto goto_return;
 							}
 						}
 #else
 						struct link_map *map = 0;
 						if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
 						{
-							::booldog::result resres;
 							if( ::booldog::utils::string::mbs::insert( &resres , 0 , res->mbchar , res->mblen , res->mbsize 
 								, map->l_name , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+							{
 								res->copy( resres );
+								goto goto_return;
+							}
 						}
 						else
+						{
 							res->setdlerror( dlerror() , allocator , debuginfo );
+							goto goto_return;
+						}
 #endif
+						if( ::booldog::utils::io::path::mbs::normalize( &resres , res->mbchar , res->mblen , res->mbsize ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_pointer_parameter_is_null );
+goto_return:
 					return res->succeeded();
 				};
 			};
@@ -127,6 +154,7 @@ goto_return:
 					BOOINIT_RESULT( ::booldog::result_wchar );
 					if( module_handle )
 					{
+						::booldog::result resres;
 #ifdef __WINDOWS__	
 						res->wsize = step;
 						for( ; ; )
@@ -138,7 +166,7 @@ goto_return:
 								if( res->wlen == 0 )
 								{
 									res->GetLastError();
-									break;
+									goto goto_return;
 								}
 								else if( res->wlen != res->wsize )
 								{
@@ -157,7 +185,7 @@ goto_return:
 							else
 							{
 								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-								break;
+								goto goto_return;
 							}
 						}
 #else
@@ -165,7 +193,8 @@ goto_return:
 						if( ::booldog::utils::module::mbs::pathname< step >( &resmbchar , module_handle , allocator , debuginfo ) )
 						{
 							::booldog::result_wchar reswchar( allocator );
-							if( ::booldog::utils::string::mbs::towcs( &reswchar , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo ) )
+							if( ::booldog::utils::string::mbs::towcs( &reswchar , resmbchar.mbchar , 0 , SIZE_MAX , allocator 
+								, debuginfo ) )
 							{
 								res->wchar = reswchar.wchar;
 								res->wsize = reswchar.wsize;
@@ -173,14 +202,26 @@ goto_return:
 								reswchar.detach();
 							}
 							else
+							{
 								res->copy( reswchar );
+								goto goto_return;
+							}
 						}
 						else
+						{
 							res->copy( resmbchar );
+							goto goto_return;
+						}
 #endif
+						if( ::booldog::utils::io::path::wcs::normalize( &resres , res->wchar , res->wlen , res->wsize ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_pointer_parameter_is_null );
+goto_return:
 					return res->succeeded();
 				};
 			};

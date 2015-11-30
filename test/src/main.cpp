@@ -6533,8 +6533,11 @@ TEST_F( boo_base_loaderTest , test )
 		::booldog::result_pointer respointer;
 		::booldog::utils::module::mbs::method( &respointer , module2->handle() , "core_init" );
 
+		ASSERT_FALSE( respointer.succeeded() );
+
 		::booldog::utils::module::mbs::method( &respointer , module2->handle() , "dll_init" );
 
+		ASSERT_TRUE( respointer.succeeded() );
 
 		loader.unload( &resres , module2 );
 
