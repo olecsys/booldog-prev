@@ -235,6 +235,7 @@ goto_return:
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
+					::booldog::result resres;
 #ifdef __WINDOWS__				
 					HMODULE module_handle = GetModuleHandleA( 0 );
 					if( module_handle )
@@ -310,7 +311,6 @@ goto_return:
 						}
 					}
 #endif
-					::booldog::result resres;
 					if( ::booldog::utils::io::path::mbs::normalize( &resres , res->mbchar , res->mblen , res->mbsize ) == false )
 					{
 						res->copy( resres );
@@ -340,6 +340,7 @@ goto_return:
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
+					::booldog::result resres;
 #ifdef __WINDOWS__				
 					HMODULE module_handle = GetModuleHandleW( 0 );
 					if( module_handle )
@@ -392,7 +393,6 @@ goto_return:
 					if( ::booldog::utils::string::mbs::towcs( res , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo ) == false )
 						goto goto_return;
 #endif
-					::booldog::result resres;
 					if( ::booldog::utils::io::path::wcs::normalize( &resres , res->wchar , res->wlen , res->wsize ) == false )
 					{
 						res->copy( resres );
