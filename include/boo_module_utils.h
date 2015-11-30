@@ -38,14 +38,31 @@ namespace booldog
 						Dl_info info;
 						if( dladdr( (void*)res->pres , &info ) != 0 && info.dli_fname && info.dli_fname[ 0 ] != 0 )
 						{
-							printf( "%s\n" , info.dli_fname );
+							char* mbchar = 0;
+							size_t mblen = 0 , mbsize = 0;
+							::booldog::result resres;
+							if( ::booldog::utils::string::mbs::insert( &resres , 0 , mbchar , mblen , mbsize , info.dli_fname , 0 
+								, SIZE_MAX , allocator , debuginfo ) == false )
+							{
+								res->copy( resres );
+								goto goto_return;
+							}
+							if( ::booldog::utils::io::path::mbs::normalize( &resres , mbchar , mblen , mbsize ) == false )
+							{
+								res->copy( resres );
+								goto goto_return;
+							}
+
+
+							printf( "%s\n" , mbchar );
 						}
 					}
+goto_return:
 #endif
 					return res->succeeded();
 				};
 				template< size_t step >
-				bool pathname( ::booldog::result_mbchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool pathname( ::booldog::result_mbchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -104,7 +121,7 @@ namespace booldog
 			namespace wcs
 			{
 				template< size_t step >
-				bool pathname( ::booldog::result_wchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool pathname( ::booldog::result_wchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
