@@ -223,6 +223,7 @@ char utf8_TESTil_var[] =
 #include <boo_param.h>
 #include <boo_string_utils.h>
 #include <boo_error_format.h>
+#include <boo_json.h>
 class boo_paramTest : public ::testing::Test 
 {
 };
@@ -425,181 +426,181 @@ TEST_F( boo_paramTest , test )
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test0" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_int32 );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_int32 );
 
-	ASSERT_EQ( p1[ index ].param.int32value , -32 );
+	ASSERT_EQ( p1[ index ].int32value , -32 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test1" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_bool );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_bool );
 
-	ASSERT_EQ( p1[ index ].param.boolvalue , false );
+	ASSERT_EQ( p1[ index ].boolvalue , false );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test2" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_char );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_char );
 
-	ASSERT_EQ( p1[ index ].param.charvalue , -127 );
+	ASSERT_EQ( p1[ index ].charvalue , -127 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test3" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_uchar );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_uchar );
 
-	ASSERT_EQ( p1[ index ].param.ucharvalue , 128 );
+	ASSERT_EQ( p1[ index ].ucharvalue , 128 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test4" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_short );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_short );
 
-	ASSERT_EQ( p1[ index ].param.shortvalue , -1986 );
+	ASSERT_EQ( p1[ index ].shortvalue , -1986 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test5" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_ushort );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_ushort );
 
-	ASSERT_EQ( p1[ index ].param.ushortvalue , 1986 );
+	ASSERT_EQ( p1[ index ].ushortvalue , 1986 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test6" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_int64 );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_int64 );
 
-	ASSERT_EQ( p1[ index ].param.int64value , -123456789 );
+	ASSERT_EQ( p1[ index ].int64value , -123456789 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test7" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_uint64 );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_uint64 );
 
-	ASSERT_EQ( p1[ index ].param.uint64value , 123456789 );
+	ASSERT_EQ( p1[ index ].uint64value , 123456789 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test8" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_wchar );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_wchar );
 
-	ASSERT_EQ( p1[ index ].param.wcharvalue , L'W' );
+	ASSERT_EQ( p1[ index ].wcharvalue , L'W' );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test9" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pchar );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pchar );
 
-	ASSERT_EQ( strcmp( p1[ index ].param.pcharvalue , "hello" ) , 0 );
+	ASSERT_EQ( strcmp( p1[ index ].pcharvalue , "hello" ) , 0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test10" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pwchar );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pwchar );
 
-	ASSERT_EQ( wcscmp( p1[ index ].param.pwcharvalue , L"hello" ) , 0 );
+	ASSERT_EQ( wcscmp( p1[ index ].pwcharvalue , L"hello" ) , 0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test11" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pvoid );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pvoid );
 
-	ASSERT_EQ( p1[ index ].param.pvoidvalue , &p0 );
+	ASSERT_EQ( p1[ index ].pvoidvalue , &p0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test12" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pnamed_param );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pnamed_param );
 
-	ASSERT_EQ( p1[ index ].param.pnamed_paramvalue , p1 );
+	ASSERT_EQ( p1[ index ].pnamed_paramvalue , p1 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test13" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pparam );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pparam );
 
-	ASSERT_EQ( p1[ index ].param.pparamvalue , p0 );
+	ASSERT_EQ( p1[ index ].pparamvalue , p0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test14" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pint32 );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pint32 );
 
-	ASSERT_EQ( p1[ index ].param.pint32value , &int32value );
+	ASSERT_EQ( p1[ index ].pint32value , &int32value );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test15" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_puint32 );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_puint32 );
 
-	ASSERT_EQ( p1[ index ].param.puint32value , &uint32value );
+	ASSERT_EQ( p1[ index ].puint32value , &uint32value );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test16" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pbool );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pbool );
 
-	ASSERT_EQ( p1[ index ].param.pboolvalue , &boolvalue );
+	ASSERT_EQ( p1[ index ].pboolvalue , &boolvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test17" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_puchar );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_puchar );
 
-	ASSERT_EQ( p1[ index ].param.pucharvalue , &ucharvalue );
+	ASSERT_EQ( p1[ index ].pucharvalue , &ucharvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test18" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pshort );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pshort );
 
-	ASSERT_EQ( p1[ index ].param.pshortvalue , &shortvalue );
+	ASSERT_EQ( p1[ index ].pshortvalue , &shortvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test19" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pushort );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pushort );
 
-	ASSERT_EQ( p1[ index ].param.pushortvalue , &ushortvalue );
+	ASSERT_EQ( p1[ index ].pushortvalue , &ushortvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test20" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_pint64 );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_pint64 );
 
-	ASSERT_EQ( p1[ index ].param.pint64value , &int64value );
+	ASSERT_EQ( p1[ index ].pint64value , &int64value );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p1[ index ].name , "test21" ) , 0 );
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_puint64 );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_puint64 );
 
-	ASSERT_EQ( p1[ index ].param.puint64value , &uint64value );
+	ASSERT_EQ( p1[ index ].puint64value , &uint64value );
 
 	index++;
 
-	ASSERT_EQ( p1[ index ].param.type , ::booldog::enums::param::type_none );
+	ASSERT_EQ( p1[ index ].type , ::booldog::enums::param::type_none );
 
 
 	booldog::named_param p2[] =
@@ -634,187 +635,187 @@ TEST_F( boo_paramTest , test )
 
 	index = 0;
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_not_found );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_not_found );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test0" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_int32 );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_int32 );
 
-	ASSERT_EQ( p2[ index ].param.int32value , -32 );
+	ASSERT_EQ( p2[ index ].int32value , -32 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test1" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_bool );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_bool );
 
-	ASSERT_EQ( p2[ index ].param.boolvalue , false );
+	ASSERT_EQ( p2[ index ].boolvalue , false );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test2" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_char );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_char );
 
-	ASSERT_EQ( p2[ index ].param.charvalue , -127 );
+	ASSERT_EQ( p2[ index ].charvalue , -127 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test3" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_uchar );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_uchar );
 
-	ASSERT_EQ( p2[ index ].param.ucharvalue , 128 );
+	ASSERT_EQ( p2[ index ].ucharvalue , 128 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test4" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_short );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_short );
 
-	ASSERT_EQ( p2[ index ].param.shortvalue , -1986 );
+	ASSERT_EQ( p2[ index ].shortvalue , -1986 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test5" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_ushort );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_ushort );
 
-	ASSERT_EQ( p2[ index ].param.ushortvalue , 1986 );
+	ASSERT_EQ( p2[ index ].ushortvalue , 1986 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test6" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_int64 );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_int64 );
 
-	ASSERT_EQ( p2[ index ].param.int64value , -123456789 );
+	ASSERT_EQ( p2[ index ].int64value , -123456789 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test7" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_uint64 );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_uint64 );
 
-	ASSERT_EQ( p2[ index ].param.uint64value , 123456789 );
+	ASSERT_EQ( p2[ index ].uint64value , 123456789 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test8" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_wchar );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_wchar );
 
-	ASSERT_EQ( p2[ index ].param.wcharvalue , L'W' );
+	ASSERT_EQ( p2[ index ].wcharvalue , L'W' );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test9" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pchar );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pchar );
 
-	ASSERT_EQ( strcmp( p2[ index ].param.pcharvalue , "hello" ) , 0 );
+	ASSERT_EQ( strcmp( p2[ index ].pcharvalue , "hello" ) , 0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test10" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pwchar );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pwchar );
 
-	ASSERT_EQ( wcscmp( p2[ index ].param.pwcharvalue , L"hello" ) , 0 );
+	ASSERT_EQ( wcscmp( p2[ index ].pwcharvalue , L"hello" ) , 0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test11" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pvoid );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pvoid );
 
-	ASSERT_EQ( p2[ index ].param.pvoidvalue , &p0 );
+	ASSERT_EQ( p2[ index ].pvoidvalue , &p0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test12" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pnamed_param );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pnamed_param );
 
-	ASSERT_EQ( p2[ index ].param.pnamed_paramvalue , p1 );
+	ASSERT_EQ( p2[ index ].pnamed_paramvalue , p1 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test13" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pparam );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pparam );
 
-	ASSERT_EQ( p2[ index ].param.pparamvalue , p0 );
+	ASSERT_EQ( p2[ index ].pparamvalue , p0 );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test14" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pint32 );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pint32 );
 
-	ASSERT_EQ( p2[ index ].param.pint32value , &int32value );
+	ASSERT_EQ( p2[ index ].pint32value , &int32value );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test15" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_puint32 );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_puint32 );
 
-	ASSERT_EQ( p2[ index ].param.puint32value , &uint32value );
+	ASSERT_EQ( p2[ index ].puint32value , &uint32value );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test16" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pbool );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pbool );
 
-	ASSERT_EQ( p2[ index ].param.pboolvalue , &boolvalue );
+	ASSERT_EQ( p2[ index ].pboolvalue , &boolvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test17" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_puchar );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_puchar );
 
-	ASSERT_EQ( p2[ index ].param.pucharvalue , &ucharvalue );
+	ASSERT_EQ( p2[ index ].pucharvalue , &ucharvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test18" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pshort );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pshort );
 
-	ASSERT_EQ( p2[ index ].param.pshortvalue , &shortvalue );
+	ASSERT_EQ( p2[ index ].pshortvalue , &shortvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test19" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pushort );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pushort );
 
-	ASSERT_EQ( p2[ index ].param.pushortvalue , &ushortvalue );
+	ASSERT_EQ( p2[ index ].pushortvalue , &ushortvalue );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test20" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_pint64 );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_pint64 );
 
-	ASSERT_EQ( p2[ index ].param.pint64value , &int64value );
+	ASSERT_EQ( p2[ index ].pint64value , &int64value );
 
 	index++;
 
 	ASSERT_EQ( strcmp( p2[ index ].name , "test21" ) , 0 );
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_puint64 );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_puint64 );
 
-	ASSERT_EQ( p2[ index ].param.puint64value , &uint64value );
+	ASSERT_EQ( p2[ index ].puint64value , &uint64value );
 
 	index++;
 
-	ASSERT_EQ( p2[ index ].param.type , ::booldog::enums::param::type_none );
+	ASSERT_EQ( p2[ index ].type , ::booldog::enums::param::type_none );
 
 };
 
@@ -1292,6 +1293,120 @@ TEST_F( boo_memTest , test )
 
 
 	allocator.free( dst );
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
+};
+
+class boo_jsonTest : public ::testing::Test 
+{
+};
+TEST_F( boo_jsonTest , test )
+{
+	::booldog::allocators::stack::simple< 4096 > allocator;
+
+	booldog::_allocator = &allocator;
+
+	size_t total = allocator.available();
+
+	char* begin = (char*)allocator.begin();
+	{
+		::booldog::data::json::parsed parsed( &allocator );
+
+		::booldog::data::json::result res( &parsed );
+
+		::booldog::data::json::parse< 1 >( &res , "0" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "00" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "-0" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "  0.E  " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "-0.02" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "-0.02E" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "-0.02e0" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "-0.02E-0" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , " 1986E" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , " 1986E." );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , " 1986E+" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , " 1986E-" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , " 1986E+1423" );
+
+		ASSERT_TRUE( res.succeeded() );
+		
+		::booldog::data::json::parse< 1 >( &res , "   [     ]   " );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "   {\"test0\":true,     }   " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "   {\"test0\":[    " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "   {\"test0\": \ttRue }    " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "   [\"test0\",    ]    " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "   [\"test0\",1986 ,\t  25.56   , true   , null ,  {\"1\": true  \t} , [1 , 1 , 2    ] , -21E21 , 2e-12 , 6e+56   ]    " );
+
+		ASSERT_TRUE( res.succeeded() );
+
+
+
+		::booldog::data::json::parse< 1 >( &res , "    \"test0 \\u0074\\u0065\\u0073\\u0074\\u0036\\uD834\\uDD1E\"    " );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		
+		::booldog::data::json::parse< 1 >( &res , "{\"test0\":{},\"test1\":{},\"test2\":{},\"test3\":null,\"test4\":true,\"test5\":false,\"\\u0074\\u0065\\u0073\\u0074\\u0036\\uD834\\uDD1E\":[]}" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::parse< 1 >( &res , "   \n{       \"test0\" : { \t\n\r }      \r}   \n\t" );
+
+		ASSERT_TRUE( res.succeeded() );
+	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
 		

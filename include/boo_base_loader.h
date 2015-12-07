@@ -245,18 +245,18 @@ namespace booldog
 			{
 				::booldog::result_mbchar res_root_dir( allocator );
 
-				if( settings[ 1 ].param.type != ::booldog::enums::param::type_not_found )
+				if( settings[ 1 ].type != ::booldog::enums::param::type_not_found )
 				{
 					if( ::booldog::utils::string::mbs::insert( &resres , SIZE_MAX , res_root_dir.mbchar , res_root_dir.mblen 
-						, res_root_dir.mbsize , settings[ 1 ].param.pcharvalue , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+						, res_root_dir.mbsize , settings[ 1 ].pcharvalue , 0 , SIZE_MAX , allocator , debuginfo ) == false )
 					{
 						res->copy( res_root_dir );
 						goto goto_return;							
 					}
 				}
-				else if( settings[ 2 ].param.type != ::booldog::enums::param::type_not_found )
+				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found )
 				{
-					if( ::booldog::utils::string::wcs::tombs( &res_root_dir , settings[ 2 ].param.pwcharvalue , 0 , SIZE_MAX 
+					if( ::booldog::utils::string::wcs::tombs( &res_root_dir , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX 
 						, allocator , debuginfo ) == false )
 					{
 						res->copy( resres );
@@ -265,7 +265,7 @@ namespace booldog
 				}
 				else
 				{
-					if( settings[ 3 ].param.type != ::booldog::enums::param::type_not_found && settings[ 3 ].param.boolvalue )
+					if( settings[ 3 ].type != ::booldog::enums::param::type_not_found && settings[ 3 ].boolvalue )
 					{
 						if( ::booldog::utils::executable::mbs::directory< 256 >( &res_root_dir , allocator , debuginfo ) == false )
 						{
@@ -286,9 +286,9 @@ namespace booldog
 					}
 					res_root_dir_mblen = res_root_dir.mblen;
 				}
-				if( settings[ 0 ].param.type != ::booldog::enums::param::type_not_found )
+				if( settings[ 0 ].type != ::booldog::enums::param::type_not_found )
 				{
-					for( size_t index = 0 ; settings[ 0 ].param.pparamvalue[ index ].type != ::booldog::enums::param::type_none ; index++ )
+					for( size_t index = 0 ; settings[ 0 ].pparamvalue[ index ].type != ::booldog::enums::param::type_none ; index++ )
 					{
 						if( res_root_dir.mbchar )
 						{
@@ -305,20 +305,20 @@ namespace booldog
 								goto goto_return;
 							}
 						}
-						if( settings[ 0 ].param.pparamvalue[ index ].type == ::booldog::enums::param::type_pchar )
+						if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pchar )
 						{
 							if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
-								, res_root_dir.mblen , res_root_dir.mbsize , settings[ 0 ].param.pparamvalue[ index ].pcharvalue , 0
+								, res_root_dir.mblen , res_root_dir.mbsize , settings[ 0 ].pparamvalue[ index ].pcharvalue , 0
 								, SIZE_MAX , allocator , debuginfo ) == false )
 							{
 								res->copy( resres );
 								goto goto_return;
 							}
 						}
-						else if( settings[ 0 ].param.pparamvalue[ index ].type == ::booldog::enums::param::type_pwchar )
+						else if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pwchar )
 						{
 							if( ::booldog::utils::string::wcs::insert( &resres , res_root_dir.mblen , res_root_dir.mbchar 
-								, res_root_dir.mblen , res_root_dir.mbsize , settings[ 0 ].param.pparamvalue[ index ].pwcharvalue , 0
+								, res_root_dir.mblen , res_root_dir.mbsize , settings[ 0 ].pparamvalue[ index ].pwcharvalue , 0
 								, SIZE_MAX , allocator , debuginfo ) == false )
 							{
 								res->copy( resres );
@@ -788,19 +788,19 @@ goto_return:
 			{
 				::booldog::result_wchar res_root_dir( allocator );
 
-				if( settings[ 1 ].param.type != ::booldog::enums::param::type_not_found )
+				if( settings[ 1 ].type != ::booldog::enums::param::type_not_found )
 				{
-					if( ::booldog::utils::string::mbs::towcs( &res_root_dir , settings[ 1 ].param.pcharvalue , 0 , SIZE_MAX 
+					if( ::booldog::utils::string::mbs::towcs( &res_root_dir , settings[ 1 ].pcharvalue , 0 , SIZE_MAX 
 						, allocator , debuginfo ) == false )
 					{
 						res->copy( res_root_dir );
 						goto goto_return;							
 					}
 				}
-				else if( settings[ 2 ].param.type != ::booldog::enums::param::type_not_found )
+				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found )
 				{
 					if( ::booldog::utils::string::wcs::insert( &resres , SIZE_MAX , res_root_dir.wchar , res_root_dir.wlen 
-						, res_root_dir.wsize , settings[ 2 ].param.pwcharvalue , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+						, res_root_dir.wsize , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX , allocator , debuginfo ) == false )
 					{
 						res->copy( resres );
 						goto goto_return;							
@@ -808,7 +808,7 @@ goto_return:
 				}
 				else
 				{
-					if( settings[ 3 ].param.type != ::booldog::enums::param::type_not_found && settings[ 3 ].param.boolvalue )
+					if( settings[ 3 ].type != ::booldog::enums::param::type_not_found && settings[ 3 ].boolvalue )
 					{
 						if( ::booldog::utils::executable::wcs::directory< 256 >( &res_root_dir , allocator , debuginfo ) == false )
 						{
@@ -829,9 +829,9 @@ goto_return:
 					}
 					res_root_dir_wlen = res_root_dir.wlen;
 				}
-				if( settings[ 0 ].param.type != ::booldog::enums::param::type_not_found )
+				if( settings[ 0 ].type != ::booldog::enums::param::type_not_found )
 				{
-					for( size_t index = 0 ; settings[ 0 ].param.pparamvalue[ index ].type != ::booldog::enums::param::type_none ; index++ )
+					for( size_t index = 0 ; settings[ 0 ].pparamvalue[ index ].type != ::booldog::enums::param::type_none ; index++ )
 					{
 						if( res_root_dir.wchar )
 						{
@@ -848,20 +848,20 @@ goto_return:
 								goto goto_return;
 							}
 						}
-						if( settings[ 0 ].param.pparamvalue[ index ].type == ::booldog::enums::param::type_pchar )
+						if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pchar )
 						{
 							if( ::booldog::utils::string::mbs::insert( &resres , res_root_dir.wlen , res_root_dir.wchar 
-								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].param.pparamvalue[ index ].pcharvalue , 0
+								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].pparamvalue[ index ].pcharvalue , 0
 								, SIZE_MAX , allocator , debuginfo ) == false )
 							{
 								res->copy( resres );
 								goto goto_return;
 							}
 						}
-						else if( settings[ 0 ].param.pparamvalue[ index ].type == ::booldog::enums::param::type_pwchar )
+						else if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pwchar )
 						{
 							if( ::booldog::utils::string::wcs::insert( &resres , res_root_dir.wlen , res_root_dir.wchar 
-								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].param.pparamvalue[ index ].pwcharvalue , 0
+								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].pparamvalue[ index ].pwcharvalue , 0
 								, SIZE_MAX , allocator , debuginfo ) == false )
 							{
 								res->copy( resres );
@@ -1028,8 +1028,6 @@ goto_return:
 					}
 					else
 						res->GetLastError();
-					
-					
 				}
 			}
 goto_return:

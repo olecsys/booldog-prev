@@ -29,6 +29,7 @@
     <ClInclude Include="..\include\boo_if.h" />
     <ClInclude Include="..\include\boo_interlocked.h" />
     <ClInclude Include="..\include\boo_io_utils.h" />
+    <ClInclude Include="..\include\boo_json.h" />
     <ClInclude Include="..\include\boo_list.h" />
     <ClInclude Include="..\include\boo_mem.h" />
     <ClInclude Include="..\include\boo_module_utils.h" />

@@ -192,153 +192,154 @@ namespace booldog
 		};
 	} param;
 
-	typedef struct named_param
+	typedef struct named_param : public booldog::param
 	{
 		const char* name;
-		booldog::param param;
 		::booldog::uint64 hash;
 		named_param( const char* pname = 0 , ::booldog::enums::param::type ptype = ::booldog::enums::param::type_none )
-			: param()
+			: ::booldog::param()
 		{
-			memset( &param , 0 , sizeof( param ) );
-			param.type = ptype;
+			void* zero = (void*)&type;
+			size_t size = sizeof( named_param ) - ( (char*)zero - (char*)this );
+			::memset( zero , 0 , size );
+			type = ptype;
 			name = pname;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::int32 value )		
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::uint32 value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , bool value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , char value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::byte value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , short value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , unsigned short value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::int64 value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::uint64 value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , wchar_t value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , const char* value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , const wchar_t* value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , void* value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::named_param* value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::param* value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::pint32 value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::puint32 value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::pbool value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::puchar value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::pshort value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::pushort value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::pint64 value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::puint64 value )
-			: param( value )
+			: ::booldog::param( value )
 		{
 			this->name = name;
 			hash = 0;
@@ -363,19 +364,21 @@ namespace booldog
 			{
 				if( dst )
 				{
-					for( ::booldog::named_param* pdst = (::booldog::named_param*)dst ; pdst && pdst->param.type != ::booldog::enums::param::type_none 
+					for( ::booldog::named_param* pdst = (::booldog::named_param*)dst ; pdst && pdst->type != ::booldog::enums::param::type_none 
 						; ++pdst )
 					{
-						for( ::booldog::named_param* psrc = (::booldog::named_param*)src ; psrc && psrc->param.type != ::booldog::enums::param::type_none 
+						for( ::booldog::named_param* psrc = (::booldog::named_param*)src ; psrc && psrc->type != ::booldog::enums::param::type_none 
 							; ++psrc )
 						{
-							if( pdst->param.type == psrc->param.type && pdst->name_hash() == psrc->name_hash() )
+							if( pdst->type == psrc->type && pdst->name_hash() == psrc->name_hash() )
 							{
-								::memcpy( &pdst->param , &psrc->param , sizeof( psrc->param ) );
+								void* zero = (void*)&pdst->type;
+								size_t size = sizeof( ::booldog::named_param ) - ( (char*)zero - (char*)pdst );
+								::memcpy( zero , &psrc->type , size );
 								goto goto_found;
 							}
 						}
-						pdst->param.type = ::booldog::enums::param::type_not_found;
+						pdst->type = ::booldog::enums::param::type_not_found;
 		goto_found:
 						;
 					}

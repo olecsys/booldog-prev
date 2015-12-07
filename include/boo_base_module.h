@@ -21,9 +21,13 @@ namespace booldog
 			{
 				return false;
 			};
-			virtual void* method( const char* name )
+			virtual bool method( ::booldog::result_pointer* pres , const char* name 
+				, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 			{
+				pres = pres;
 				name = name;
+				allocator = allocator;
+				debuginfo = debuginfo;
 				return 0;
 			};
 			virtual ::booldog::module_handle handle( void )
@@ -52,10 +56,13 @@ namespace booldog
 		{
 			return _handle != 0;
 		};
-		virtual void* method( const char* name )
+		virtual bool method( ::booldog::result_pointer* pres , const char* name , booldog::allocator* allocator = ::booldog::_allocator
+			, ::booldog::debug::info* debuginfo = 0 )
 		{
-			name = name;
-			return 0;
+			::booldog::result_pointer locres;
+			BOOINIT_RESULT( ::booldog::result_pointer );
+			::booldog::utils::module::mbs::method( res , _handle , name , allocator , debuginfo );
+			return res->succeeded();
 		};
 		virtual ::booldog::module_handle handle( void )
 		{
@@ -92,17 +99,13 @@ namespace booldog
 					goto goto_method_success_return;
 				if( ::booldog::utils::module::mbs::method( &respointer , _handle , "dll_init" , allocator , debuginfo ) )
 					goto goto_method_success_return;
-				res->copy( respointer );
-				goto goto_return;
 			}
-			else
-				goto goto_success_return;
+			goto goto_return;
 goto_method_success_return:
 			module_init = (::booldog::module_init_t)respointer.pres;
 			module_init( initparams );
-goto_success_return:
-			_inited_ref++;
 goto_return:
+			_inited_ref++;
 			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};

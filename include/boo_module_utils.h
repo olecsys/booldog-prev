@@ -93,6 +93,8 @@ goto_return:
 				};
 				booinline bool method( ::booldog::result_pointer* pres , ::booldog::module_handle module_handle , const char* name , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
 				{
+					allocator = allocator;
+					debuginfo = debuginfo;
 					::booldog::result_pointer locres;
 					BOOINIT_RESULT( ::booldog::result_pointer );
 					res->pres = (void*)dlsym( module_handle , name );

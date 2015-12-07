@@ -19,7 +19,30 @@ namespace booldog
 				booerr_type_string_parameter_is_empty ,
 				booerr_type_pointer_parameter_is_null ,
 				booerr_type_module_not_found_in_the_list ,
-				booerr_type_function_not_found_in_module
+				booerr_type_function_not_found_in_module ,
+				booerr_type_json_expecting_string_in_object_name , 
+				booerr_type_json_expecting_name_separator ,
+				booerr_type_json_expecting_value_separator ,
+				booerr_type_json_expecting_end_of_string ,
+				booerr_type_json_unexpected_symbol ,
+				booerr_type_json_unexpected_end_of_string ,
+				booerr_type_json_unexpected_value_separator ,
+				booerr_type_json_expecting_null ,
+				booerr_type_json_expecting_true ,
+				booerr_type_json_expecting_false ,
+				booerr_type_json_unexpected_escaped_symbol ,
+				booerr_type_json_expecting_hex_symbol ,
+				booerr_type_json_cannot_convert_from_utf16_to_utf8 ,
+				booerr_type_json_expecting_decimal_point_or_exponent_part_in_number ,
+				booerr_type_json_unexpected_minus_in_number ,
+				booerr_type_json_expecting_digit_after_minus ,
+				booerr_type_json_unexpected_second_decimal_point_in_number ,
+				booerr_type_json_expecting_digit_after_decimal_point ,
+				booerr_type_json_unexpected_decimal_point_in_number ,
+				booerr_type_json_unexpected_second_exponent_part_symbol_in_number ,
+				booerr_type_json_expecting_digit_after_exponent_part_symbol ,
+				booerr_type_json_unexpected_plus_in_number ,
+				booerr_type_json_not_utf8_symbol
 			};
 		};
 	};
