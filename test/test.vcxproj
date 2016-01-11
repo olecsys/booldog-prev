@@ -32,13 +32,14 @@
     <ClInclude Include="..\include\boo_json.h" />
     <ClInclude Include="..\include\boo_list.h" />
     <ClInclude Include="..\include\boo_mem.h" />
+    <ClInclude Include="..\include\boo_mem_cluster.h" />
     <ClInclude Include="..\include\boo_module_utils.h" />
     <ClInclude Include="..\include\boo_object.h" />
     <ClInclude Include="..\include\boo_param.h" />
     <ClInclude Include="..\include\boo_platform.h" />
     <ClInclude Include="..\include\boo_rdwrlock.h" />
     <ClInclude Include="..\include\boo_result.h" />
-    <ClInclude Include="..\include\boo_stack.h" />
+    <ClInclude Include="..\include\boo_stack_allocator.h" />
     <ClInclude Include="..\include\boo_string.h" />
     <ClInclude Include="..\include\boo_string_enums.h" />
     <ClInclude Include="..\include\boo_string_utils.h" />

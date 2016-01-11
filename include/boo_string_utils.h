@@ -19,7 +19,7 @@ namespace booldog
 		{
 			namespace mbs
 			{
-				bool towcs( ::booldog::result_wchar* pres , const char* mbchar , size_t charindex = 0 , size_t charcount = SIZE_MAX , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool towcs( ::booldog::result_wchar* pres , booldog::allocator* allocator , const char* mbchar , size_t charindex = 0 , size_t charcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
@@ -184,9 +184,9 @@ goto_return:
 #endif
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , size_t dstcharindex , char*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , char*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const char* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
-					, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
@@ -234,9 +234,9 @@ goto_next:
 						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 					return res->succeeded();
 				}
-				bool insert( ::booldog::result* pres , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const char* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
-					, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
@@ -347,7 +347,8 @@ goto_return:
 			};
 			namespace wcs
 			{
-				bool tombs( ::booldog::result_mbchar* pres , const wchar_t* wchar , size_t charindex = 0 , size_t charcount = SIZE_MAX , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				bool tombs( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const wchar_t* wchar 
+					, size_t charindex = 0 , size_t charcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -493,9 +494,9 @@ goto_return:
 #endif
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
-					, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
@@ -545,9 +546,9 @@ goto_next:
 						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , size_t dstcharindex , char*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , char*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
-					, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );

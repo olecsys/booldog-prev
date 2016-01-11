@@ -24,7 +24,7 @@ namespace booldog
 			namespace mbs
 			{
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_mbchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator , ::booldog::module_handle module_handle , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -76,7 +76,7 @@ namespace booldog
 						}
 						else
 						{
-							res->setdlerror( dlerror() , allocator , debuginfo );
+							res->setdlerror( allocator , dlerror() , debuginfo );
 							goto goto_return;
 						}
 #endif
@@ -91,7 +91,7 @@ namespace booldog
 goto_return:
 					return res->succeeded();
 				};
-				booinline bool method( ::booldog::result_pointer* pres , ::booldog::module_handle module_handle , const char* name , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool method( ::booldog::result_pointer* pres , booldog::allocator* allocator , ::booldog::module_handle module_handle , const char* name , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					allocator = allocator;
 					debuginfo = debuginfo;
@@ -102,7 +102,7 @@ goto_return:
 #ifdef __WINDOWS__
 						res->GetLastError();
 #else
-						res->setdlerror( dlerror() , allocator , debuginfo );
+						res->setdlerror( allocator , dlerror() , debuginfo );
 					else
 					{
 						Dl_info info;
@@ -139,7 +139,7 @@ goto_return:
 							}
 						}
 						else
-							res->setdlerror( dlerror() , allocator , debuginfo );
+							res->setdlerror( allocator , dlerror() , debuginfo );
 					}
 goto_return:
 #endif
@@ -149,7 +149,7 @@ goto_return:
 			namespace wcs
 			{
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_wchar* pres , ::booldog::module_handle module_handle , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator , ::booldog::module_handle module_handle , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
@@ -232,7 +232,7 @@ goto_return:
 			namespace mbs
 			{
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -321,7 +321,7 @@ goto_return:
 					return res->succeeded();
 				};
 				template< size_t step >
-				booinline bool directory( ::booldog::result_mbchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool directory( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -337,7 +337,7 @@ goto_return:
 			namespace wcs
 			{
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
@@ -403,7 +403,7 @@ goto_return:
 					return res->succeeded();
 				};
 				template< size_t step >
-				booinline bool directory( ::booldog::result_wchar* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+				booinline bool directory( ::booldog::result_wchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );

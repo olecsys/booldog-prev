@@ -214,7 +214,7 @@ char utf8_TESTil_var[] =
 #include <boo_check.h>
 #include <boo_string.h>
 #include <boo_list.h>
-#include <boo_stack.h>
+#include <boo_stack_allocator.h>
 #include <boo_mem.h>
 #include <boo_base_loader.h>
 #include <boo_module_utils.h>
@@ -825,7 +825,7 @@ class boo_stackTest : public ::testing::Test
 };
 TEST_F( boo_stackTest , test )
 {
-	::booldog::allocators::stack::simple< boo_stackTestAllocatorSize > allocator;
+	::booldog::allocators::stack< boo_stackTestAllocatorSize > allocator;
 
 	size_t total = allocator.available();
 
@@ -1192,9 +1192,7 @@ class boo_memTest : public ::testing::Test
 };
 TEST_F( boo_memTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
@@ -1304,108 +1302,1800 @@ class boo_jsonTest : public ::testing::Test
 };
 TEST_F( boo_jsonTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
 	{
-		::booldog::data::json::parsed parsed( &allocator );
+		::booldog::data::json::serializator serializator( &allocator );
 
-		::booldog::data::json::result res( &parsed );
+		::booldog::data::json::result res( &serializator );
 
-		::booldog::data::json::parse< 1 >( &res , "0" );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , "00" );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , "-0" );
+		::booldog::data::json::parse< 1 >( &res , &allocator , "0" );
 
 		ASSERT_TRUE( res.succeeded() );
 
-		::booldog::data::json::parse< 1 >( &res , "  0.E  " );
+		::booldog::data::json::object root = (*res.serializator);
 
-		ASSERT_FALSE( res.succeeded() );
+		const char* json = root.json;
 
-		::booldog::data::json::parse< 1 >( &res , "-0.02" );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , "-0.02E" );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , "-0.02e0" );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , "-0.02E-0" );
-
-		ASSERT_TRUE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , " 1986E" );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , " 1986E." );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , " 1986E+" );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , " 1986E-" );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , " 1986E+1423" );
-
-		ASSERT_TRUE( res.succeeded() );
+		ASSERT_TRUE( strcmp( json , "0" ) == 0 );
 		
-		::booldog::data::json::parse< 1 >( &res , "   [     ]   " );
+		ASSERT_TRUE( root.isnumber() );
+
+		::booldog::uint64 valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		::booldog::uint32 valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		::booldog::int64 valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		::booldog::int32 valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		float valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		const char* valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		bool valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "0" ) == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "00" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "-0" );
 
 		ASSERT_TRUE( res.succeeded() );
 
-		::booldog::data::json::parse< 1 >( &res , "   {\"test0\":true,     }   " );
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0" ) == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "  0.E  " );
 
 		ASSERT_FALSE( res.succeeded() );
 
-		::booldog::data::json::parse< 1 >( &res , "   {\"test0\":[    " );
+		root = (*res.serializator);
 
-		ASSERT_FALSE( res.succeeded() );
+		json = root.json;
 
-		::booldog::data::json::parse< 1 >( &res , "   {\"test0\": \ttRue }    " );
+		ASSERT_TRUE( json == 0 );
 
-		ASSERT_FALSE( res.succeeded() );
 
-		::booldog::data::json::parse< 1 >( &res , "   [\"test0\",    ]    " );
-
-		ASSERT_FALSE( res.succeeded() );
-
-		::booldog::data::json::parse< 1 >( &res , "   [\"test0\",1986 ,\t  25.56   , true   , null ,  {\"1\": true  \t} , [1 , 1 , 2    ] , -21E21 , 2e-12 , 6e+56   ]    " );
+		::booldog::data::json::parse< 1 >( &res , &allocator , "-0.02" );
 
 		ASSERT_TRUE( res.succeeded() );
 
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , -0.02f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02" ) == 0 );
 
 
-		::booldog::data::json::parse< 1 >( &res , "    \"test0 \\u0074\\u0065\\u0073\\u0074\\u0036\\uD834\\uDD1E\"    " );
+		::booldog::data::json::parse< 1 >( &res , &allocator , "-0.02E" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "-0.02e0" );
 
 		ASSERT_TRUE( res.succeeded() );
 
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02e0" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , -0.02f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02e0" ) == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "-0.02E-3" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02E-3" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( ::booldog::utils::round( valuefloat , 5 ) , -0.00002f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02E-3" ) == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , " 1986E" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , " 1986E." );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , " 1986E+" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , " 1986E-" );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , " 19.86E+3" );
+
+		ASSERT_TRUE( res.succeeded() );
+				
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "19.86E+3" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
 		
-		::booldog::data::json::parse< 1 >( &res , "{\"test0\":{},\"test1\":{},\"test2\":{},\"test3\":null,\"test4\":true,\"test5\":false,\"\\u0074\\u0065\\u0073\\u0074\\u0036\\uD834\\uDD1E\":[]}" );
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 19860 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 19860 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 19860 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 19860 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 19860.f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "19.86E+3" ) == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "   [     ]   " );
 
 		ASSERT_TRUE( res.succeeded() );
 
-		::booldog::data::json::parse< 1 >( &res , "   \n{       \"test0\" : { \t\n\r }      \r}   \n\t" );
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[]" ) == 0 );
+
+		ASSERT_TRUE( root.isarray() );
+
+		ASSERT_EQ( root.count() , 0 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[]" ) == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "   {\"test0\":true,     }   " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "   {\"test0\":[    " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "   {\"test0\": \ttRue }    " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "   [\"test0\",    ]    " );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "   [\"test0\",1986 ,\t  25.56   , true   , null ,  {\"1\": true  \t} , [1 , 1 , 2    ] , -21E5 , 2e-1 , 6e+4   ]    " );
 
 		ASSERT_TRUE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[\"test0\",1986,25.56,true,null,{\"1\":true},[1,1,2],-21E5,2e-1,6e+4]" ) == 0 );
+
+		ASSERT_TRUE( root.isarray() );
+
+		ASSERT_EQ( root.count() , 10 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+		
+
+		::booldog::data::json::object node = root[ 0 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "\"test0\"" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isstring() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( strcmp( valuestring , "test0" ) == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 1 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "1986" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 1986 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 1986 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 1986 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 1986 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 1986.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 2 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "25.56" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 25 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 25 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 25 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 25 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( ::booldog::utils::round( valuefloat , 2 ) , 25.56f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 3 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "true" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_TRUE( valuebool );
+
+
+		node = root[ 4 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "null" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnull() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 5 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "{\"1\":true}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 1 );
+		
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = node( "1" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "true" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "1" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_TRUE( valuebool );
+
+
+		node = root[ 6 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "[1,1,2]" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isarray() );
+
+		ASSERT_EQ( node.count() , 3 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+		
+
+		node = root[ 6 ][ 0 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "1" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 1 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 1 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 1 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 1 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 1.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 6 ][ 1 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "1" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 1 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 1 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 1 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 1 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 1.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 6 ][ 2 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "2" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 2 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 2 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 2 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 2 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 2.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 7 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "-21E5" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , -2100000 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , -2100000 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , -2100000.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 8 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "2e-1" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+		
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0.2f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 9 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "6e+4" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 60000 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 60000 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 60000 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 60000 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 60000.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 10 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[\"test0\",1986,25.56,true,null,{\"1\":true},[1,1,2],-21E5,2e-1,6e+4]" ) == 0 );
+
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "    \"test0 \\t\\n \\u0074\\u0065\\u0073\\u0074\\u0036\\uD834\\uDD1E \\\" \\b \\n\"    " );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "\"test0 \\t\\n test6\xf0\x9d\x84\x9e \\\" \\b \\n\"" ) == 0 );
+
+		ASSERT_TRUE( root.isstring() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( strcmp( valuestring , "test0 \t\n test6\xf0\x9d\x84\x9e \" \b \n" ) == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "\"test0 \\t\\n test6\xf0\x9d\x84\x9e \\\" \\b \\n\"" ) == 0 );
+		
+		
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{\"test0\":{},\"test1\":{},\"test2\":{},\"test3\":null,\"test4\":true,\"test5\":false,\"\\u0074\\u0065\\u0073\\u0074\\u0036\\n\\b\\f\":\"example \\u0065 \\b \\n \\f\\n \\\"\",\"\\u0074\\u0065\\u0073\\u0074\\u0036\\uD834\\uDD1E\":25167.678e+4}" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0\":{},\"test1\":{},\"test2\":{},\"test3\":null,\"test4\":true,\"test5\":false,\"test6\\n\\b\\f\":\"example \x65 \\b \\n \\f\\n \\\"\",\"test6\xf0\x9d\x84\x9e\":25167.678e+4}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_EQ( root.count() , 8 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test0" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test0" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test1" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test1" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test2" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test2" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test3" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "null" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnull() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test3" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test4" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "true" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test4" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_TRUE( valuebool );
+
+
+		node = root( "test5" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "false" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test5" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test6\n\b\f" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "\"example \x65 \\b \\n \\f\\n \\\"\"" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isstring() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test6\n\b\f" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( strcmp( valuestring , "example \x65 \b \n \f\n \"" ) == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+		
+
+		node = root( "test6\xf0\x9d\x84\x9e" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "25167.678e+4" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 251676780 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 251676780 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 251676780 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 251676780 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 251676780.f );
+
+		ASSERT_TRUE( strcmp( node.name() , "test6\xf0\x9d\x84\x9e" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 251676780 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 251676780 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 251676780 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 251676780 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 251676780.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test6\n \f" );
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+		node = root( "test6777" );
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+		node = root( "test" );
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0\":{},\"test1\":{},\"test2\":{},\"test3\":null,\"test4\":true,\"test5\":false,\"test6\\n\\b\\f\":\"example \x65 \\b \\n \\f\\n \\\"\",\"test6\xf0\x9d\x84\x9e\":25167.678e+4}" ) == 0 );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "   \n{       \"test0\" : { \t\n\r }      \r}   \n\t" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0\":{}}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_EQ( root.count() , 1 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test0" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test0" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
@@ -1418,20 +3108,19 @@ class boo_stringTest : public ::testing::Test
 };
 TEST_F( boo_stringTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
 
-	::booldog::_allocator = &allocator;
 #ifdef BOOLDOG_STRING_TEST
 	for( ::booldog::string_step = 1 ; ::booldog::string_step < 25 ; ::booldog::string_step++ )
 	{
 
 #endif
 		{
-			::booldog::string string( (const char*)0 );
+			::booldog::string string( &allocator , (const char*)0 );
 
 			ASSERT_TRUE( strcmp( string.str() , "" ) == 0 );
 
@@ -1441,7 +3130,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "" );
+			::booldog::string string( &allocator , "" );
 
 			ASSERT_TRUE( strcmp( string.str() , "" ) == 0 );
 
@@ -1451,7 +3140,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1461,7 +3150,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" , 0 , 4 );
+			::booldog::string string( &allocator , "TEST" , 0 , 4 );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1471,7 +3160,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "Hello, TEST" , 7 );
+			::booldog::string string( &allocator , "Hello, TEST" , 7 );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1481,7 +3170,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "Hello, TEST, it's our first meeting" , 7 , 4 );
+			::booldog::string string( &allocator , "Hello, TEST, it's our first meeting" , 7 , 4 );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1491,7 +3180,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1501,7 +3190,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 3 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 3 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_il_var ) == 0 );
 
@@ -1511,7 +3200,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , 6 , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , 6 , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1521,7 +3210,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , 3 , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , 3 , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_Apr_var ) == 0 );
 
@@ -1532,7 +3221,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf16_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+			::booldog::string string( &allocator , utf16_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF16 );
 		
 			ASSERT_EQ( string.length() , 6 );
 
@@ -1542,7 +3231,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf16_April_var , 6 , SIZE_MAX , ::booldog::enums::string::UTF16 );
+			::booldog::string string( &allocator , utf16_April_var , 6 , SIZE_MAX , ::booldog::enums::string::UTF16 );
 		
 			ASSERT_EQ( string.length() , 3 );
 
@@ -1552,7 +3241,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf16_April_var , 0 , 12 , ::booldog::enums::string::UTF16 );
+			::booldog::string string( &allocator , utf16_April_var , 0 , 12 , ::booldog::enums::string::UTF16 );
 		
 			ASSERT_EQ( string.length() , 6 );
 
@@ -1562,7 +3251,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf16_April_var , 0 , 6 , ::booldog::enums::string::UTF16 );
+			::booldog::string string( &allocator , utf16_April_var , 0 , 6 , ::booldog::enums::string::UTF16 );
 		
 			ASSERT_EQ( string.length() , 3 );
 
@@ -1573,7 +3262,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf32_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+			::booldog::string string( &allocator , utf32_April_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF32 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1583,7 +3272,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf32_April_var , 12 , SIZE_MAX , ::booldog::enums::string::UTF32 );
+			::booldog::string string( &allocator , utf32_April_var , 12 , SIZE_MAX , ::booldog::enums::string::UTF32 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_il_var ) == 0 );
 
@@ -1593,7 +3282,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf32_April_var , 0 , 24 , ::booldog::enums::string::UTF32 );
+			::booldog::string string( &allocator , utf32_April_var , 0 , 24 , ::booldog::enums::string::UTF32 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1603,7 +3292,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf32_April_var , 0 , 12 , ::booldog::enums::string::UTF32 );
+			::booldog::string string( &allocator , utf32_April_var , 0 , 12 , ::booldog::enums::string::UTF32 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_Apr_var ) == 0 );
 
@@ -1618,7 +3307,7 @@ TEST_F( boo_stringTest , test )
 		else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
 			wchar_test = (wchar_t*)utf32_April_var;
 		{
-			::booldog::string string( wchar_test , 0 , SIZE_MAX );
+			::booldog::string string( &allocator , wchar_test , 0 , SIZE_MAX );
 		
 			ASSERT_EQ( string.length() , 6 );
 
@@ -1628,7 +3317,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( wchar_test , 3 , SIZE_MAX );
+			::booldog::string string( &allocator , wchar_test , 3 , SIZE_MAX );
 		
 			ASSERT_EQ( string.length() , 3 );
 
@@ -1638,7 +3327,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( wchar_test , 0 , 6 );
+			::booldog::string string( &allocator , wchar_test , 0 , 6 );
 		
 			ASSERT_EQ( string.length() , 6 );
 
@@ -1648,7 +3337,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( wchar_test , 0 , 3 );
+			::booldog::string string( &allocator , wchar_test , 0 , 3 );
 		
 			ASSERT_EQ( string.length() , 3 );
 
@@ -1660,7 +3349,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1678,7 +3367,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1696,7 +3385,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1714,7 +3403,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1733,7 +3422,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1751,7 +3440,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1769,7 +3458,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1787,7 +3476,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1806,7 +3495,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1824,7 +3513,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1842,7 +3531,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1860,7 +3549,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( "TEST" );
+			::booldog::string string( &allocator , "TEST" );
 
 			ASSERT_TRUE( strcmp( string.str() , "TEST" ) == 0 );
 
@@ -1880,7 +3569,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1898,7 +3587,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1916,7 +3605,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1934,7 +3623,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1953,7 +3642,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1971,7 +3660,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -1989,7 +3678,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2007,7 +3696,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2026,7 +3715,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2044,7 +3733,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2062,7 +3751,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2080,7 +3769,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2104,7 +3793,7 @@ TEST_F( boo_stringTest , test )
 		else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
 			wchar_test = (wchar_t*)utf32_il_var;
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2126,7 +3815,7 @@ TEST_F( boo_stringTest , test )
 		else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
 			wchar_test = (wchar_t*)utf32_April_var;
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2144,7 +3833,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
+			::booldog::string string( &allocator , cp1251_April_var , 0 , SIZE_MAX , ::booldog::enums::string::CP1251 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_April_var ) == 0 );
 
@@ -2164,7 +3853,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2183,7 +3872,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2202,7 +3891,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2221,7 +3910,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2240,7 +3929,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2259,7 +3948,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2278,7 +3967,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2297,7 +3986,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2316,7 +4005,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2335,7 +4024,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2354,7 +4043,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2373,7 +4062,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2392,7 +4081,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2411,7 +4100,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2430,7 +4119,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2449,7 +4138,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2469,7 +4158,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2488,7 +4177,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2507,7 +4196,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2526,7 +4215,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2545,7 +4234,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2564,7 +4253,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2583,7 +4272,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2602,7 +4291,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2621,7 +4310,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2640,7 +4329,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2659,7 +4348,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2678,7 +4367,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2697,7 +4386,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2716,7 +4405,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2735,7 +4424,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2754,7 +4443,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2774,7 +4463,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2793,7 +4482,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2812,7 +4501,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2831,7 +4520,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2850,7 +4539,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2869,7 +4558,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2888,7 +4577,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2907,7 +4596,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2926,7 +4615,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2945,7 +4634,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2964,7 +4653,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -2983,7 +4672,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3002,7 +4691,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3021,7 +4710,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3040,7 +4729,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3059,7 +4748,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3079,7 +4768,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3098,7 +4787,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3117,7 +4806,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3136,7 +4825,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3155,7 +4844,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3174,7 +4863,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3193,7 +4882,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3212,7 +4901,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3231,7 +4920,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3250,7 +4939,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3269,7 +4958,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3288,7 +4977,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3307,7 +4996,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3326,7 +5015,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3345,7 +5034,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3364,7 +5053,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3384,7 +5073,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3403,7 +5092,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3422,7 +5111,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3441,7 +5130,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3460,7 +5149,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3479,7 +5168,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3498,7 +5187,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3517,7 +5206,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3536,7 +5225,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3555,7 +5244,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3574,7 +5263,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3593,7 +5282,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3612,7 +5301,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3631,7 +5320,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3650,7 +5339,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3669,7 +5358,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3689,7 +5378,7 @@ TEST_F( boo_stringTest , test )
 
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3708,7 +5397,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3727,7 +5416,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3746,7 +5435,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3765,7 +5454,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3784,7 +5473,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3803,7 +5492,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3822,7 +5511,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3841,7 +5530,7 @@ TEST_F( boo_stringTest , test )
 		}
 
 		{
-			::booldog::string string( utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
+			::booldog::string string( &allocator , utf8_AprilAprilApril_var , 0 , SIZE_MAX , ::booldog::enums::string::UTF8 );
 		
 			ASSERT_TRUE( strcmp( string.str() , utf8_AprilAprilApril_var ) == 0 );
 
@@ -3849,8 +5538,8 @@ TEST_F( boo_stringTest , test )
 
 			ASSERT_EQ( string.bytes() , 37 );
 
-			::booldog::string res;
-			res = string.substring( 12 );
+			::booldog::string res( &allocator );
+			res = string.substring( &allocator , 12 );
 
 			ASSERT_TRUE( strcmp( res.str() , utf8_April_var ) == 0 );
 
@@ -3874,13 +5563,11 @@ class boo_string_utilsTest : public ::testing::Test
 };
 TEST_F( boo_string_utilsTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
-
-	booldog::_allocator = &allocator;
 
 	{
 		::booldog::result_bool resbool;
@@ -3889,7 +5576,7 @@ TEST_F( boo_string_utilsTest , test )
 		size_t wcsdstlen = 0;
 		size_t wcsdstsize = 0;
 
-		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , 0 );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , 0 );
 
 		ASSERT_FALSE( resbool.succeeded() );
 
@@ -3898,7 +5585,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"" );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"" );
 
 		ASSERT_FALSE( resbool.succeeded() );
 
@@ -3907,7 +5594,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" , 3 );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" , 3 );
 
 		ASSERT_FALSE( resbool.succeeded() );
 
@@ -3916,7 +5603,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" );
 
 		ASSERT_TRUE( resbool.succeeded() );
 
@@ -3927,7 +5614,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( wcsdst , L"lib" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , 3 , wcsdst , wcsdstlen , wcsdstsize , L"re" );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , 3 , wcsdst , wcsdstlen , wcsdstsize , L"re" );
 
 		ASSERT_TRUE( resbool.succeeded() );
 
@@ -3938,7 +5625,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( wcsdst , L"libre" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , 3 , wcsdst , wcsdstlen , wcsdstsize , L"libcore.so" , 3 , 2 );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , 3 , wcsdst , wcsdstlen , wcsdstsize , L"libcore.so" , 3 , 2 );
 
 		ASSERT_TRUE( resbool.succeeded() );
 
@@ -3963,7 +5650,7 @@ TEST_F( boo_string_utilsTest , test )
 		size_t mbsdstlen = 0;
 		size_t mbsdstsize = 0;
 
-		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -3972,7 +5659,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
+		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -3981,7 +5668,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -3990,7 +5677,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
+		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4001,7 +5688,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "lib" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
+		::booldog::utils::string::mbs::insert( &res , &allocator , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4012,7 +5699,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "libre" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4033,7 +5720,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_wchar reswchar( &allocator );
 
-		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 0 , SIZE_MAX );
+		::booldog::utils::string::mbs::towcs( &reswchar , &allocator , "locale" , 0 , SIZE_MAX );
 		
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4047,7 +5734,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_wchar reswchar( &allocator );
 
-		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 3 , SIZE_MAX );
+		::booldog::utils::string::mbs::towcs( &reswchar , &allocator , "locale" , 3 , SIZE_MAX );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4061,7 +5748,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_wchar reswchar( &allocator );
 
-		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 3 , 2 );
+		::booldog::utils::string::mbs::towcs( &reswchar , &allocator , "locale" , 3 , 2 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4075,7 +5762,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_wchar reswchar( &allocator );
 
-		::booldog::utils::string::mbs::towcs( &reswchar , "locale" , 3 , 2 );
+		::booldog::utils::string::mbs::towcs( &reswchar , &allocator , "locale" , 3 , 2 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4087,7 +5774,7 @@ TEST_F( boo_string_utilsTest , test )
 
 		::booldog::result res;
 
-		::booldog::utils::string::mbs::insert( &res , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "e" , 0 , SIZE_MAX );
+		::booldog::utils::string::mbs::insert( &res , &allocator , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "e" , 0 , SIZE_MAX );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4098,7 +5785,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ale" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , 0 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 0 , 2 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , 0 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 0 , 2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4109,7 +5796,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"loale" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 2 , 1 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 2 , 1 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4125,7 +5812,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 0 , SIZE_MAX );
+		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 0 , SIZE_MAX );
 		
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4139,7 +5826,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 3 , SIZE_MAX );
+		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , SIZE_MAX );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4153,7 +5840,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 3 , 2 );
+		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , 2 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4167,7 +5854,7 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , L"locale" , 3 , 2 );
+		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , 2 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4179,7 +5866,7 @@ TEST_F( boo_string_utilsTest , test )
 
 		::booldog::result res;
 
-		::booldog::utils::string::wcs::insert( &res , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"e" , 0 , SIZE_MAX );
+		::booldog::utils::string::wcs::insert( &res , &allocator , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"e" , 0 , SIZE_MAX );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4190,7 +5877,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ale" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &res , 0 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 0 , 2 );
+		::booldog::utils::string::wcs::insert( &res , &allocator , 0 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 0 , 2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4201,7 +5888,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "loale" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &res , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 2 , 1 );
+		::booldog::utils::string::wcs::insert( &res , &allocator , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 2 , 1 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -4222,16 +5909,14 @@ class boo_arrayTest : public ::testing::Test
 };
 TEST_F( boo_arrayTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
 
 	{
-		::booldog::array< const wchar_t* > wcs_array;
+		::booldog::array< const wchar_t* > wcs_array( &allocator );
 
 		ASSERT_EQ( wcs_array.insert( 3 , L"TEST2" ) , 0 );
 
@@ -4320,24 +6005,22 @@ class boo_listTest : public ::testing::Test
 };
 TEST_F( boo_listTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
 
 	{
-		::booldog::string item0( "TEST0" );
+		::booldog::string item0( &allocator , "TEST0" );
 
-		::booldog::string item1( "TEST1" );
+		::booldog::string item1( &allocator , "TEST1" );
 
-		::booldog::string item2( "TEST2" );
+		::booldog::string item2( &allocator , "TEST2" );
 
-		::booldog::list< ::booldog::string > string_array;
+		::booldog::list< ::booldog::string > string_array( &allocator );
 
-		::booldog::list< ::booldog::object > object_array;
+		::booldog::list< ::booldog::object > object_array( &allocator );
 
 
 		ASSERT_EQ( string_array.insert( 3 , item2 ) , 0 );
@@ -4432,26 +6115,24 @@ class boo_assignmentTest : public ::testing::Test
 };
 TEST_F( boo_assignmentTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
 
 
-	::booldog::object obj;
+	::booldog::object obj( &allocator );
 
-	::booldog::string str;
+	::booldog::string str( &allocator );
 
-	::booldog::list< ::booldog::string > str_array;
+	::booldog::list< ::booldog::string > str_array( &allocator );
 
-	::booldog::list< ::booldog::object > obj_array;
+	::booldog::list< ::booldog::object > obj_array( &allocator );
 
-	::booldog::list< ::booldog::list< ::booldog::object > > obj_array_array;
+	::booldog::list< ::booldog::list< ::booldog::object > > obj_array_array( &allocator );
 
-	::booldog::list< ::booldog::list< ::booldog::string > > str_array_array;
+	::booldog::list< ::booldog::list< ::booldog::string > > str_array_array( &allocator );
 
 
 	ASSERT_TRUE( allocator.begin() == begin );
@@ -4465,9 +6146,7 @@ class boo_checkTest : public ::testing::Test
 };
 TEST_F( boo_checkTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
@@ -4792,9 +6471,7 @@ class boo_io_utilsTest : public ::testing::Test
 };
 TEST_F( boo_io_utilsTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
+	::booldog::allocators::stack< 4096 > allocator;
 
 	size_t total = allocator.available();
 
@@ -4808,9 +6485,9 @@ TEST_F( boo_io_utilsTest , test )
 		const wchar_t* wtest2 = L"C:/privet\\../gui.exe\\./..\\ui";
 		const char* mbtest2 = "C:/privet\\../gui.exe\\./..\\ui";
 
-		::booldog::result_wchar reswchar( ::booldog::_allocator );
+		::booldog::result_wchar reswchar( &allocator );
 	
-		::booldog::utils::io::path::wcs::filename( &reswchar , wtest );
+		::booldog::utils::io::path::wcs::filename( &reswchar , &allocator , wtest );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4820,7 +6497,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ui.exe" ) == 0 );
 
-		::booldog::utils::io::path::wcs::filename( &reswchar , wtest , 3 , 17 );
+		::booldog::utils::io::path::wcs::filename( &reswchar , &allocator , wtest , 3 , 17 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4831,7 +6508,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"gui.exe" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::directory( &reswchar , wtest );
+		::booldog::utils::io::path::wcs::directory( &reswchar , &allocator , wtest );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4841,7 +6518,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"C:/privet\\../gui.exe\\./.." ) == 0 );
 
-		::booldog::utils::io::path::wcs::directory( &reswchar , wtest , 3 , 17 );
+		::booldog::utils::io::path::wcs::directory( &reswchar , &allocator , wtest , 3 , 17 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4852,7 +6529,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"privet\\.." ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::extension( &reswchar , wtest );
+		::booldog::utils::io::path::wcs::extension( &reswchar , &allocator , wtest );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4862,7 +6539,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"exe" ) == 0 );
 
-		::booldog::utils::io::path::wcs::extension( &reswchar , wtest , 3 , 16 );
+		::booldog::utils::io::path::wcs::extension( &reswchar , &allocator , wtest , 3 , 16 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4872,7 +6549,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ex" ) == 0 );
 
-		::booldog::utils::io::path::wcs::extension( &reswchar , wtest2 );
+		::booldog::utils::io::path::wcs::extension( &reswchar , &allocator , wtest2 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4883,9 +6560,9 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
 
 
-		::booldog::result_mbchar resmbchar( ::booldog::_allocator );
+		::booldog::result_mbchar resmbchar( &allocator );
 	
-		::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest );
+		::booldog::utils::io::path::mbs::filename( &resmbchar , &allocator , mbtest );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4895,7 +6572,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ui.exe" ) == 0 );
 
-		::booldog::utils::io::path::mbs::filename( &resmbchar , mbtest , 3 , 17 );
+		::booldog::utils::io::path::mbs::filename( &resmbchar , &allocator , mbtest , 3 , 17 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4906,7 +6583,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "gui.exe" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest );
+		::booldog::utils::io::path::mbs::directory( &resmbchar , &allocator , mbtest );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4916,7 +6593,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "C:/privet\\../gui.exe\\./.." ) == 0 );
 
-		::booldog::utils::io::path::mbs::directory( &resmbchar , mbtest , 3 , 17 );
+		::booldog::utils::io::path::mbs::directory( &resmbchar , &allocator , mbtest , 3 , 17 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4927,7 +6604,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "privet\\.." ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest );
+		::booldog::utils::io::path::mbs::extension( &resmbchar , &allocator , mbtest );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4937,7 +6614,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "exe" ) == 0 );
 
-		::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest , 3 , 16 );
+		::booldog::utils::io::path::mbs::extension( &resmbchar , &allocator , mbtest , 3 , 16 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4947,7 +6624,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ex" ) == 0 );
 
-		::booldog::utils::io::path::mbs::extension( &resmbchar , mbtest2 );
+		::booldog::utils::io::path::mbs::extension( &resmbchar , &allocator , mbtest2 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -4958,7 +6635,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\kill/." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"home\\kill/." );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4969,7 +6646,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./.\\kill/." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"home\\./.\\kill/." );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4980,7 +6657,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home\\./.\\kill/." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"./home\\./.\\kill/." );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -4991,7 +6668,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"./home/try\\explain\\./.\\../..\\kill/." );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5002,7 +6679,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./home/try\\explain\\./.\\../..\\kill/joke\\.." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"./home/try\\explain\\./.\\../..\\kill/joke\\.." );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5013,7 +6690,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"/home/.." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"/home/.." );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5024,7 +6701,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L".\\" );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L".\\" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5035,7 +6712,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"." );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5046,7 +6723,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"home\\./\\.\\kill/." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"home\\./\\.\\kill/." );
 
 		ASSERT_FALSE( reswchar.succeeded() );
 
@@ -5055,7 +6732,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"./.\\../kill/." );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"./.\\../kill/." );
 
 		ASSERT_FALSE( reswchar.succeeded() );
 
@@ -5064,7 +6741,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( reswchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
 
 
-		::booldog::utils::io::path::wcs::toabsolute( &reswchar , L"../local" );
+		::booldog::utils::io::path::wcs::toabsolute( &reswchar , &allocator , L"../local" );
 
 		ASSERT_FALSE( reswchar.succeeded() );
 
@@ -5074,7 +6751,7 @@ TEST_F( boo_io_utilsTest , test )
 
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\kill/." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "home\\kill/." );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5085,7 +6762,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./.\\kill/." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "home\\./.\\kill/." );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5096,7 +6773,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home\\./.\\kill/." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "./home\\./.\\kill/." );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5107,7 +6784,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "./home/try\\explain\\./.\\../..\\kill/." );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5118,7 +6795,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./home/try\\explain\\./.\\../..\\kill/joke\\.." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "./home/try\\explain\\./.\\../..\\kill/joke\\.." );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5129,7 +6806,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "home\\kill" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "/home/.." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "/home/.." );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5140,7 +6817,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , ".\\" );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , ".\\" );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5151,7 +6828,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "." );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5162,7 +6839,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "home\\./\\.\\kill/." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "home\\./\\.\\kill/." );
 
 		ASSERT_FALSE( resmbchar.succeeded() );
 
@@ -5171,7 +6848,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_path_has_incorrect_format );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "./.\\../kill/." );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "./.\\../kill/." );
 
 		ASSERT_FALSE( resmbchar.succeeded() );
 
@@ -5180,7 +6857,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_EQ( resmbchar.booerror , ::booldog::enums::result::booerr_type_not_enough_top_level_folders );
 
 
-		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , "../local" );
+		::booldog::utils::io::path::mbs::toabsolute( &resmbchar , &allocator , "../local" );
 
 		ASSERT_FALSE( resmbchar.succeeded() );
 
@@ -5289,7 +6966,7 @@ TEST_F( boo_io_utilsTest , test )
 
 
 	
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"" );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5300,7 +6977,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"core" );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"core" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5311,7 +6988,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core" );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"\\home/core" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5322,7 +6999,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/core.dll.exe" );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"\\home/core.dll.exe" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5333,7 +7010,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core.dll" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"\\home/.core" );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5344,7 +7021,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core" , 7 );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"\\home/.core" , 7 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5355,7 +7032,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 8 );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"\\home/.core.dll.exe" , 7 , 8 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5366,7 +7043,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"core" ) == 0 );
 
 
-		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , L"\\home/.core.dll.exe" , 7 , 9 );
+		::booldog::utils::io::path::wcs::filename_without_extension( &reswchar , &allocator , L"\\home/.core.dll.exe" , 7 , 9 );
 
 		ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5378,7 +7055,7 @@ TEST_F( boo_io_utilsTest , test )
 
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "" );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "" );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5389,7 +7066,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "core" );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "core" );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5400,7 +7077,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core" );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "\\home/core" );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5411,7 +7088,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/core.dll.exe" );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "\\home/core.dll.exe" );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5422,7 +7099,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core.dll" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "\\home/.core" );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5433,7 +7110,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core" , 7 );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "\\home/.core" , 7 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5444,7 +7121,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 8 );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "\\home/.core.dll.exe" , 7 , 8 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5455,7 +7132,7 @@ TEST_F( boo_io_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "core" ) == 0 );
 
 
-		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , "\\home/.core.dll.exe" , 7 , 9 );
+		::booldog::utils::io::path::mbs::filename_without_extension( &resmbchar , &allocator , "\\home/.core.dll.exe" , 7 , 9 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5665,7 +7342,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , "" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5678,7 +7355,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , "core" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5691,7 +7368,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core.dll.exe" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , "core.dll.exe" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5704,7 +7381,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , ".core" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , ".core" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5717,7 +7394,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "core." , 0 , SIZE_MAX );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , "core." , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5730,7 +7407,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , "/home.exe\\core" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5743,7 +7420,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 9 , 4 );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , "/home.exe\\core.dll" , 9 , 4 );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5756,7 +7433,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , "/home.exe\\core.dll" , 1 , 6 );
+			::booldog::utils::io::path::mbs::pathname_without_extension( &resmbchar , &allocator , "/home.exe\\core.dll" , 1 , 6 );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -5770,7 +7447,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L"" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5783,7 +7460,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L"core" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5796,7 +7473,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core.dll.exe" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L"core.dll.exe" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5809,7 +7486,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L".core" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L".core" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5822,7 +7499,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"core." , 0 , SIZE_MAX );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L"core." , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5835,7 +7512,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core" , 0 , SIZE_MAX );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L"/home.exe\\core" , 0 , SIZE_MAX );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5848,7 +7525,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 9 , 4 );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L"/home.exe\\core.dll" , 9 , 4 );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -5861,7 +7538,7 @@ TEST_F( boo_io_utilsTest , test )
 
 		{
 
-			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , L"/home.exe\\core.dll" , 1 , 6 );
+			::booldog::utils::io::path::wcs::pathname_without_extension( &reswchar , &allocator , L"/home.exe\\core.dll" , 1 , 6 );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 
@@ -6328,17 +8005,15 @@ class boo_base_loaderTest : public ::testing::Test
 };
 TEST_F( boo_base_loaderTest , test )
 {
-	::booldog::allocators::stack::simple< 4096 > allocator;
-
-	booldog::_allocator = &allocator;
-
+	::booldog::allocators::stack< 4096 > allocator;
+	
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
 	{
 		{
-			::booldog::result_mbchar resmbchar( booldog::_allocator );
-			::booldog::utils::executable::mbs::pathname< 4 >( &resmbchar );
+			::booldog::result_mbchar resmbchar( &allocator );
+			::booldog::utils::executable::mbs::pathname< 4 >( &resmbchar , &allocator );
 			{
 				::booldog::result res;
 
@@ -6352,8 +8027,8 @@ TEST_F( boo_base_loaderTest , test )
 			}
 		}
 		{
-			::booldog::result_wchar reswchar( booldog::_allocator );
-			::booldog::utils::executable::wcs::pathname< 4 >( &reswchar );
+			::booldog::result_wchar reswchar( &allocator );
+			::booldog::utils::executable::wcs::pathname< 4 >( &reswchar , &allocator );
 			{
 				::booldog::result res;
 
@@ -6391,25 +8066,25 @@ TEST_F( boo_base_loaderTest , test )
 			BOONAMED_PARAM_NONE
 		};
 
-		loader.wcsload( &res , L"core1" , load_params );
+		loader.wcsload( &res , &allocator , L"core1" , load_params );
 
 		ASSERT_FALSE( res.succeeded() );
 
-		loader.wcsload( &res , L"core" , load_params );
+		loader.wcsload( &res , &allocator , L"core" , load_params );
 		
 		ASSERT_TRUE( res.succeeded() );
 
 		::booldog::base::module* module0 = res.module;
 
-		loader.wcsload( &res , L"core" , 0 );
+		loader.wcsload( &res , &allocator , L"core" , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 
 		::booldog::base::module* module1 = res.module;
 
 		{
-			::booldog::result_mbchar resmbchar( booldog::_allocator );
-			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module1->handle() );
+			::booldog::result_mbchar resmbchar( &allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , &allocator , module1->handle() );
 			{
 				::booldog::result res;
 
@@ -6428,8 +8103,8 @@ TEST_F( boo_base_loaderTest , test )
 			}
 		}
 		{
-			::booldog::result_wchar reswchar( booldog::_allocator );
-			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module1->handle() );
+			::booldog::result_wchar reswchar( &allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , &allocator , module1->handle() );
 			{
 				::booldog::result res;
 
@@ -6459,9 +8134,9 @@ TEST_F( boo_base_loaderTest , test )
 		ASSERT_TRUE( res.succeeded() );
 
 #ifdef __WINDOWS__
-		loader.wcsload( &res , L"kernel32" , 0 );
+		loader.wcsload( &res , &allocator , L"kernel32" , 0 );
 #else
-		loader.wcsload( &res , L"rt" , 0 );
+		loader.wcsload( &res , &allocator , L"rt" , 0 );
 #endif
 
 		ASSERT_TRUE( res.succeeded() );
@@ -6469,8 +8144,8 @@ TEST_F( boo_base_loaderTest , test )
 		::booldog::base::module* module2 = res.module;
 
 		{
-			::booldog::result_mbchar resmbchar( booldog::_allocator );
-			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module2->handle() );
+			::booldog::result_mbchar resmbchar( &allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , &allocator , module2->handle() );
 			{
 				::booldog::result res;
 
@@ -6489,8 +8164,8 @@ TEST_F( boo_base_loaderTest , test )
 			}
 		}
 		{
-			::booldog::result_wchar reswchar( booldog::_allocator );
-			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module2->handle() );
+			::booldog::result_wchar reswchar( &allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , &allocator , module2->handle() );
 			{
 				::booldog::result res;
 
@@ -6515,25 +8190,25 @@ TEST_F( boo_base_loaderTest , test )
 
 
 
-		loader.mbsload( &res , "core1" , load_params );
+		loader.mbsload( &res , &allocator , "core1" , load_params );
 
 		ASSERT_FALSE( res.succeeded() );
 
-		loader.mbsload( &res , "core" , load_params );
+		loader.mbsload( &res , &allocator , "core" , load_params );
 
 		ASSERT_TRUE( res.succeeded() );
 
 		module0 = res.module;
 
-		loader.mbsload( &res , "core" , 0 );
+		loader.mbsload( &res , &allocator , "core" , 0 );
 
 		ASSERT_TRUE( res.succeeded() );	
 
 		module1 = res.module;
 
 		{
-			::booldog::result_mbchar resmbchar( booldog::_allocator );
-			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module1->handle() );
+			::booldog::result_mbchar resmbchar( &allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , &allocator , module1->handle() );
 			{
 				::booldog::result res;
 
@@ -6552,8 +8227,8 @@ TEST_F( boo_base_loaderTest , test )
 			}
 		}
 		{
-			::booldog::result_wchar reswchar( booldog::_allocator );
-			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module1->handle() );
+			::booldog::result_wchar reswchar( &allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , &allocator , module1->handle() );
 			{
 				::booldog::result res;
 
@@ -6580,17 +8255,17 @@ TEST_F( boo_base_loaderTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 #ifdef __WINDOWS__
-		loader.mbsload( &res , "kernel32" , 0 );
+		loader.mbsload( &res , &allocator , "kernel32" , 0 );
 #else
-		loader.mbsload( &res , "rt" , 0 );
+		loader.mbsload( &res , &allocator , "rt" , 0 );
 #endif
 
 		ASSERT_TRUE( res.succeeded() );
 
 		module2 = res.module;
 		{
-			::booldog::result_mbchar resmbchar( booldog::_allocator );
-			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , module2->handle() );
+			::booldog::result_mbchar resmbchar( &allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , &allocator , module2->handle() );
 			{
 				::booldog::result res;
 
@@ -6609,8 +8284,8 @@ TEST_F( boo_base_loaderTest , test )
 			}
 		}
 		{
-			::booldog::result_wchar reswchar( booldog::_allocator );
-			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , module2->handle() );
+			::booldog::result_wchar reswchar( &allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , &allocator , module2->handle() );
 			{
 				::booldog::result res;
 

@@ -19,13 +19,13 @@ namespace booldog
 		::booldog::interlocked::atomic _ref;
 		booldog::allocator* _allocator;
 		object* _obj;
-		object( booldog::allocator* allocator = ::booldog::_allocator )
+		object( booldog::allocator* allocator )
 		{
 			_ref = 1;
 			_allocator = allocator;
 			_obj = 0;
 		};
-		object( ::booldog::object& obj , booldog::allocator* allocator = ::booldog::_allocator )
+		object( booldog::allocator* allocator , ::booldog::object& obj )
 		{
 			_ref = 1;
 			_allocator = allocator;

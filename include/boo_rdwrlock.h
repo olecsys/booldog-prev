@@ -25,7 +25,7 @@ namespace booldog
 			~rdwrlock( void )
 			{
 			};
-			void rlock( ::booldog::debug::info* debuginfo = 0 )
+			void rlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{				
 				debuginfo = debuginfo;
 				if( booldog::interlocked::increment( &_writer_readers ) >= WRITER_BIT )
@@ -45,7 +45,7 @@ namespace booldog
 					}
 				}
 			};
-			bool try_wlock( ::booldog::debug::info* debuginfo = 0 )
+			bool try_wlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
 				if( booldog::interlocked::compare_exchange( &_writer_readers , WRITER_BIT , 0 ) == 0 )
@@ -56,7 +56,7 @@ namespace booldog
 				}
 				return false;
 			};
-			void wlock( const ::booldog::debug::info* debuginfo = 0 )
+			void wlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
 				booldog::pid_t tid = ::booldog::threading::thread_id();
@@ -78,12 +78,12 @@ namespace booldog
 				booldog::interlocked::increment( &_writer_recursion );
 				_writer_thread = tid;
 			};
-			void runlock( ::booldog::debug::info* debuginfo = 0 )
+			void runlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
 				booldog::interlocked::decrement( &_writer_readers );
 			};
-			void wunlock( ::booldog::debug::info* debuginfo = 0 )
+			void wunlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
 				if( _writer_thread == ::booldog::threading::thread_id() )

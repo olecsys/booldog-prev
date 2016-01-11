@@ -16,18 +16,25 @@
 #define booend_struct_pack( bytes ) __attribute__( ( packed , aligned( 1 ) ) );
 #endif
 
+#ifdef __cplusplus
+#define booexternc extern "C"
+#endif
 #ifdef __WINDOWS__
+#define booexport booexternc __declspec(dllexport)
 #define boointernal
 #define booinline __forceinline
 #define dlsym( handle , name ) GetProcAddress( handle , name )
 #elif defined( __UNIX__ )
 #ifdef __LINUX__
 #if __GNUC__ >= 4
+#define booexport booexternc __attribute__ ((visibility ("default")))
 #define boointernal  __attribute__ ((visibility ("hidden")))
 #else
+#define booexport booexternc __declspec( dllexport )
 #define boointernal
 #endif
 #elif defined( __SOLARIS__ )
+#define booexport booexternc __symbolic
 #define boointernal __hidden
 #endif
 #define booinline inline

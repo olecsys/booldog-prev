@@ -17,10 +17,13 @@ namespace booldog
 				error_type_errno ,
 #ifdef __WINDOWS__
 				error_type_GetLastError , 
+				error_type_HRESULT_error ,
 #else
 				error_type_dlerror ,
+				error_type_pthread ,
 #endif
-				error_type_booerr
+				error_type_booerr , 
+				error_type_OpenGL
 			};
 		};
 	};
@@ -42,14 +45,17 @@ namespace booldog
 			int errno_err;
 #ifdef __WINDOWS__
 			::booldog::uint32 get_last_error;
+			HRESULT hr;
 #else
 			struct
 			{
 				::booldog::allocator* _allocator;
 				char* _dlerror;
 			};
+			int pthreaderror;
 #endif	
 			::booldog::uint32 booerror;
+			unsigned int openglerror;
 		};
 		result( void )
 		{
@@ -81,7 +87,19 @@ namespace booldog
 			this->error_type = ::booldog::enums::result::error_type_errno;
 			this->errno_err = error;
 		};
+		void glGetError( unsigned int glerror )
+		{
+			clear();
+			this->error_type = ::booldog::enums::result::error_type_OpenGL;
+			this->openglerror = glerror;
+		};
 #ifdef __WINDOWS__
+		void setHRESULT( HRESULT hresult )
+		{
+			clear();
+			this->error_type = ::booldog::enums::result::error_type_HRESULT_error;
+			this->hr = hresult;
+		};
 		void GetLastError( void )
 		{
 			clear();
@@ -95,12 +113,18 @@ namespace booldog
 			this->get_last_error = get_last_error;
 		};
 #else
+		void setpthreaderror( int pthreaderror )
+		{
+			clear();
+			this->error_type = ::booldog::enums::result::error_type_pthread;
+			this->pthreaderror = get_last_error;
+		};
 		char* dlerror( void )
 		{
 			return _dlerror;
 		};
-		void setdlerror( const char* dlerrorstr , booldog::allocator* allocator = ::booldog::_allocator 
-			, ::booldog::debug::info* debuginfo = 0 )
+		void setdlerror( booldog::allocator* allocator , const char* dlerrorstr
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			clear();
 			const char* ptr = dlerrorstr;

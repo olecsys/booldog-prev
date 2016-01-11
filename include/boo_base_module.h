@@ -21,8 +21,8 @@ namespace booldog
 			{
 				return false;
 			};
-			virtual bool method( ::booldog::result_pointer* pres , const char* name 
-				, booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+			virtual bool method( ::booldog::result_pointer* pres , booldog::allocator* allocator , const char* name 
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				pres = pres;
 				name = name;
@@ -31,6 +31,14 @@ namespace booldog
 				return 0;
 			};
 			virtual ::booldog::module_handle handle( void )
+			{
+				return 0;
+			};
+			virtual void udata( void* userdata )
+			{
+				userdata = userdata;
+			};
+			virtual void* udata( void )
 			{
 				return 0;
 			};
@@ -56,23 +64,23 @@ namespace booldog
 		{
 			return _handle != 0;
 		};
-		virtual bool method( ::booldog::result_pointer* pres , const char* name , booldog::allocator* allocator = ::booldog::_allocator
-			, ::booldog::debug::info* debuginfo = 0 )
+		virtual bool method( ::booldog::result_pointer* pres , booldog::allocator* allocator , const char* name
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			::booldog::result_pointer locres;
 			BOOINIT_RESULT( ::booldog::result_pointer );
-			::booldog::utils::module::mbs::method( res , _handle , name , allocator , debuginfo );
+			::booldog::utils::module::mbs::method( res , allocator , _handle , name , debuginfo );
 			return res->succeeded();
 		};
 		virtual ::booldog::module_handle handle( void )
 		{
 			return _handle;
 		};
-		void lock( booldog::debug::info* debuginfo = 0 )
+		void lock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			_lock.wlock( debuginfo );
 		};
-		void unlock( booldog::debug::info* debuginfo = 0 )
+		void unlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			_lock.wunlock( debuginfo );
 		};
@@ -84,7 +92,7 @@ namespace booldog
 		{
 			return ::booldog::interlocked::decrement( const_cast< ::booldog::interlocked::atomic* >( &_ref ) );
 		};
-		bool init( ::booldog::result* pres , void* initparams = 0 , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+		bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{		
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
@@ -93,11 +101,11 @@ namespace booldog
 			_lock.wlock( debuginfo );
 			if( _inited_ref == 0 )
 			{
-				if( ::booldog::utils::module::mbs::method( &respointer , _handle , "core_init" , allocator , debuginfo ) )
+				if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "core_init" , debuginfo ) )
 					goto goto_method_success_return;
-				if( ::booldog::utils::module::mbs::method( &respointer , _handle , "rux_module_init" , allocator , debuginfo ) )
+				if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "rux_module_init" , debuginfo ) )
 					goto goto_method_success_return;
-				if( ::booldog::utils::module::mbs::method( &respointer , _handle , "dll_init" , allocator , debuginfo ) )
+				if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "dll_init" , debuginfo ) )
 					goto goto_method_success_return;
 			}
 			goto goto_return;
@@ -109,7 +117,7 @@ goto_return:
 			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
-		bool free( ::booldog::result* pres , booldog::allocator* allocator = ::booldog::_allocator , ::booldog::debug::info* debuginfo = 0 )
+		bool free( ::booldog::result* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
@@ -120,11 +128,11 @@ goto_return:
 				if( _inited_ref == 0 )
 				{
 					::booldog::result_pointer respointer;
-					if( ::booldog::utils::module::mbs::method( &respointer , _handle , "core_free" , allocator , debuginfo ) )
+					if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "core_free" , debuginfo ) )
 						goto goto_method_success_return;
-					if( ::booldog::utils::module::mbs::method( &respointer , _handle , "rux_module_free" , allocator , debuginfo ) )
+					if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "rux_module_free" , debuginfo ) )
 						goto goto_method_success_return;
-					if( ::booldog::utils::module::mbs::method( &respointer , _handle , "dll_free" , allocator , debuginfo ) )
+					if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "dll_free" , debuginfo ) )
 						goto goto_method_success_return;
 					res->copy( respointer );
 					goto goto_return;

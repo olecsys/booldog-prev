@@ -18,7 +18,7 @@ namespace booldog
 		size_t _size;
 		size_t _count;
 	public:
-		array( booldog::allocator* allocator = ::booldog::_allocator )
+		array( booldog::allocator* allocator )
 			: _array( 0 ) , _size( 0 ) , _count( 0 ) , _allocator( allocator )
 		{
 		};
@@ -39,11 +39,11 @@ namespace booldog
 		{
 			_count = 0;
 		};
-		void remove( size_t index , ::booldog::debug::info* debuginfo = 0 )
+		void remove( size_t index , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			remove( index , 1 , debuginfo );
 		};
-		void remove( size_t index , size_t items_count , ::booldog::debug::info* debuginfo = 0 )
+		void remove( size_t index , size_t items_count , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			debuginfo = debuginfo;
 			if( index < _count )
@@ -54,19 +54,19 @@ namespace booldog
 				_count -= items_count;
 			}
 		};
-		size_t add( const T& item , ::booldog::debug::info* debuginfo = 0 )
+		size_t add( const T& item , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			return insert( SIZE_MAX , const_cast< T* >( &item ) , 1 , debuginfo );
 		};
-		size_t add( T* items , size_t items_count , ::booldog::debug::info* debuginfo = 0 )
+		size_t add( T* items , size_t items_count , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			return insert( SIZE_MAX , items , items_count , debuginfo );
 		};
-		size_t insert( size_t index , const T& item , ::booldog::debug::info* debuginfo = 0 )
+		size_t insert( size_t index , const T& item , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			return insert( index , const_cast< T* >( &item ) , 1 , debuginfo );
 		};
-		size_t insert( size_t index , T* items , size_t items_count , ::booldog::debug::info* debuginfo = 0 )
+		size_t insert( size_t index , T* items , size_t items_count , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			if( items && items_count )
 			{

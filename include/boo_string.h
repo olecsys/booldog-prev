@@ -9,6 +9,7 @@
 #include <boo_utf16.h>
 #include <boo_cp1251.h>
 #include <boo_mem.h>
+#include <boo_if.h>
 namespace booldog
 {
 #ifdef BOOLDOG_STRING_TEST
@@ -32,7 +33,7 @@ namespace booldog
 		size_t _utf8length;
 		size_t _bytes;
 	public:
-		string( booldog::allocator* allocator = ::booldog::_allocator )
+		string( booldog::allocator* allocator )
 			: ::booldog::object( allocator )
 		{
 			_utf8str = 0;
@@ -40,7 +41,7 @@ namespace booldog
 			_utf8length = 0;
 			_bytes = 0;
 		};
-		string( const char* string , size_t byteindex = 0 , size_t bytes = SIZE_MAX , ::booldog::enums::string::code_page code_page = ::booldog::global::string::default_code_page , booldog::allocator* allocator = ::booldog::_allocator )
+		string( booldog::allocator* allocator , const char* string , size_t byteindex = 0 , size_t bytes = SIZE_MAX , ::booldog::enums::string::code_page code_page = ::booldog::global::string::default_code_page )
 			: ::booldog::object( allocator )
 		{
 			_utf8str = 0;
@@ -49,7 +50,7 @@ namespace booldog
 			_utf8length = 0;
 			insert( SIZE_MAX , string , byteindex , bytes , code_page );
 		};
-		string( const wchar_t* string , size_t wordindex = 0 , size_t words = SIZE_MAX , booldog::allocator* allocator = ::booldog::_allocator )
+		string( booldog::allocator* allocator , const wchar_t* string , size_t wordindex = 0 , size_t words = SIZE_MAX )
 			: ::booldog::object( allocator )
 		{
 			_utf8str = 0;
@@ -103,6 +104,12 @@ namespace booldog
 			object->operator =( obj );
 			return *this;
 		};
+		string( const ::booldog::string& obj )
+			: ::booldog::object( obj._allocator )
+		{
+			::booldog::object* object = this;
+			object->operator =( obj );
+		};
 		void clear( void )
 		{
 			::booldog::string* _this = &operator()();
@@ -124,7 +131,7 @@ namespace booldog
 			else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
 				insert( charindex , (char*)string , 4 * wordindex ,  words == SIZE_MAX ? SIZE_MAX : 4 * words , ::booldog::enums::string::UTF32 );
 		};
-		::booldog::string substring( size_t charindex , size_t charcount = SIZE_MAX , booldog::allocator* allocator = ::booldog::_allocator )
+		::booldog::string substring( booldog::allocator* allocator , size_t charindex , size_t charcount = SIZE_MAX )
 		{
 			::booldog::string res( allocator );
 			::booldog::string* _this = &operator()();
@@ -161,7 +168,7 @@ namespace booldog
 		void replace( size_t startcharindex , const char* oldstring , const char* newstring , size_t max_replace_count = SIZE_MAX 
 			, size_t oldbyteindex = 0 , size_t oldbytes = SIZE_MAX , size_t oldlength = SIZE_MAX , ::booldog::enums::string::code_page oldcode_page = ::booldog::global::string::default_code_page 
 			, size_t newbyteindex = 0 , size_t newbytes = SIZE_MAX , size_t newlength = SIZE_MAX , ::booldog::enums::string::code_page newcode_page = ::booldog::global::string::default_code_page 
-			, bool oldcheck_utf8 = true , bool newcheck_utf8 = true , ::booldog::debug::info* debuginfo = 0 )
+			, bool oldcheck_utf8 = true , bool newcheck_utf8 = true , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			if( oldstring )
 			{
@@ -305,7 +312,7 @@ goto_new_not_utf8:
 		};
 		void insert( size_t charindex , const char* string , size_t byteindex = 0 , size_t bytes = SIZE_MAX
 			, ::booldog::enums::string::code_page code_page = ::booldog::global::string::default_code_page 
-			, bool check_utf8 = true , ::booldog::debug::info* debuginfo = 0 )
+			, bool check_utf8 = true , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			::booldog::string* _this = &operator()();
 			size_t oldutf8length = _this->_utf8length;

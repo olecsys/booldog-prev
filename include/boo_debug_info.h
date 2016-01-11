@@ -16,7 +16,12 @@ namespace booldog
 				this->file = file;
 				this->line = line;
 			};
+			const ::booldog::debug::info& operator = ( const ::booldog::debug::info& ) const
+			{
+				return *this;
+			};
 		};
+#define debuginfo_macros ::booldog::debug::info( __FILE__ , __LINE__ )
 	};
 };
 #endif
