@@ -20,9 +20,7 @@ namespace booldog
 	namespace utils
 	{
 		namespace module
-		{
-			booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator 
-				, void* address , const ::booldog::debug::info& debuginfo = debuginfo_macros );
+		{			
 			booinline bool free( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::module_handle handle
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
