@@ -22,28 +22,7 @@ namespace booldog
 		namespace module
 		{
 			booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator 
-				, void* address , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-			{
-				::booldog::result locres;
-				BOOINIT_RESULT( ::booldog::result );
-				::booldog::module_handle module_handle = 0;
-#ifdef __WINDOWS__
-				if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
-					, &module_handle ) == 0 )
-					res->GetLastError();
-#else
-				::booldog::result_mbchar resmbchar( allocator );
-				if( ::booldog::utils::module::mbs::pathname_from_address< 64 >( &resmbchar , allocator , address , debuginfo ) )
-				{
-					module_handle = dlopen( resmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
-					if( module_handle == 0 )
-						res->setdlerror( allocator , dlerror() , debuginfo );
-				}
-				else
-					res->copy( resmbchar );
-#endif
-				return module_handle;
-			};
+				, void* address , const ::booldog::debug::info& debuginfo = debuginfo_macros );
 			booinline bool free( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::module_handle handle
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
@@ -355,7 +334,7 @@ goto_return:
 #else
 						::booldog::result_mbchar resmbchar( allocator );
 						if( ::booldog::utils::module::mbs::pathname_from_address< step >( &resmbchar , allocator , address , debuginfo ) )
-							::booldog::utils::string::mbs::towcs( &res , allocator , resmbchar.mbchar , 0 , SIZE_MAX , debuginfo );
+							::booldog::utils::string::mbs::towcs( res , allocator , resmbchar.mbchar , 0 , SIZE_MAX , debuginfo );
 						else
 						{
 							res->copy( resmbchar );
@@ -368,6 +347,29 @@ goto_return:
 goto_return:
 					return res->succeeded();
 				};
+			};
+			booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator 
+				, void* address , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT( ::booldog::result );
+				::booldog::module_handle module_handle = 0;
+#ifdef __WINDOWS__
+				if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
+					, &module_handle ) == 0 )
+					res->GetLastError();
+#else
+				::booldog::result_mbchar resmbchar( allocator );
+				if( ::booldog::utils::module::mbs::pathname_from_address< 64 >( &resmbchar , allocator , address , debuginfo ) )
+				{
+					module_handle = dlopen( resmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
+					if( module_handle == 0 )
+						res->setdlerror( allocator , dlerror() , debuginfo );
+				}
+				else
+					res->copy( resmbchar );
+#endif
+				return module_handle;
 			};
 		};
 		namespace executable
