@@ -3139,6 +3139,7 @@ goto_go_away_from_ws0:
 					case '8':
 					case '9':
 						{
+							const char* number_string_begin = 0;
 							begin = ptr;
 							for( ; ; )
 							{
@@ -3177,7 +3178,7 @@ goto_go_away_from_ws0:
 								}
 							}
 goto_float_parse:
-							const char* number_string_begin = ptr;
+							number_string_begin = ptr;
 							for( ; ; )
 							{
 								switch( *++ptr )

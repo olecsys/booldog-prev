@@ -8855,7 +8855,7 @@ TEST_F( boo_base_loaderTest , test )
 				
 #ifdef __UNIX__
 
-		loader.mbsload( &res , "language" , load_params );
+		loader.mbsload( &res , &allocator , "language" , load_params );
 
 		/*char* errorstr = 0;
 		size_t errorstrlen = 0 , errorstrsize = 0;
@@ -8867,11 +8867,11 @@ TEST_F( boo_base_loaderTest , test )
 		module2 = res.module;
 
 		::booldog::result_pointer respointer;
-		::booldog::utils::module::mbs::method( &respointer , module2->handle() , "core_init" );
+		::booldog::utils::module::mbs::method( &respointer , &allocator , module2->handle() , "core_init" );
 
 		ASSERT_FALSE( respointer.succeeded() );
 
-		::booldog::utils::module::mbs::method( &respointer , module2->handle() , "dll_init" );
+		::booldog::utils::module::mbs::method( &respointer , &allocator , module2->handle() , "dll_init" );
 
 		ASSERT_TRUE( respointer.succeeded() );
 

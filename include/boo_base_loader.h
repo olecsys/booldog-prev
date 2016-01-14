@@ -435,7 +435,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( res , res_root_dir.mbchar , 0 , allocator , debuginfo ) )
+					if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
 						goto goto_return;
 
 					res_root_dir.mbchar[ res_dir_mblen ] = 0;
