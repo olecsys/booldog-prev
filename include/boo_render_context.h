@@ -3,7 +3,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_fps_counter.h>
+#include <boo_types.h>
 namespace booldog
 {
 	namespace rendering
@@ -14,9 +14,10 @@ namespace booldog
 	{
 		namespace typedefs
 		{
-			typedef void (*oncontextresize)( ::booldog::rendering::context* ctx , int width , int height );
-			typedef void (*oncontextrender)( ::booldog::rendering::context* ctx );
-			typedef void (*oncontextbeforedestroy)( ::booldog::rendering::context* ctx );
+			typedef void (*oncontextresize)( void* udata , void* ctx , int width , int height );
+			typedef void (*oncontextrender)( void* udata , void* ctx );
+			typedef void (*oncontextcreated)( void* udata , void* ctx );
+			typedef void (*oncontextbeforedestroy)( void* udata , void* ctx );
 		};
 	};
 	namespace rendering
@@ -24,11 +25,11 @@ namespace booldog
 		class context
 		{
 		protected:
-			::booldog::counters::fps* _fps;
 			void* _udata;
 			::booldog::events::typedefs::oncontextresize _oncontextresize;
 			::booldog::events::typedefs::oncontextrender _oncontextrender;
 			::booldog::events::typedefs::oncontextbeforedestroy _oncontextbeforedestroy;
+			::booldog::events::typedefs::oncontextcreated _oncontextcreated;
 		public:
 			void* udata( void )
 			{
@@ -38,8 +39,9 @@ namespace booldog
 			{
 				_udata = pudata;
 			};
-			context( void )
-				: _udata( 0 ) , _fps( 0 ) , _oncontextresize( 0 ) , _oncontextrender( 0 ) , _oncontextbeforedestroy( 0 )
+			context( ::booldog::events::typedefs::oncontextcreated poncontextcreated )
+				: _udata( 0 ) /*, _fps( 0 )*/ , _oncontextresize( 0 ) , _oncontextrender( 0 ) , _oncontextbeforedestroy( 0 ) 
+				, _oncontextcreated( poncontextcreated )
 			{
 			};
 			virtual void before_resize( void ) = 0;
@@ -63,7 +65,7 @@ namespace booldog
 			{
 				_oncontextbeforedestroy = poncontextbeforedestroy;
 			};
-			void fps( ::booldog::counters::fps* pfps )
+			/*void fps( ::booldog::counters::fps* pfps )
 			{
 				_fps = pfps;
 			};
@@ -79,7 +81,7 @@ namespace booldog
 					else
 						_fps->increment();
 				}
-			};
+			};*/
 		};
 	};
 };

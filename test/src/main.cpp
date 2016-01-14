@@ -215,6 +215,8 @@ char utf8_TESTil_var[] =
 #include <boo_string.h>
 #include <boo_list.h>
 #include <boo_stack_allocator.h>
+#include <boo_heap_allocator.h>
+#include <boo_mixed_allocator.h>
 #include <boo_mem.h>
 #include <boo_base_loader.h>
 #include <boo_module_utils.h>
@@ -224,6 +226,7 @@ char utf8_TESTil_var[] =
 #include <boo_string_utils.h>
 #include <boo_error_format.h>
 #include <boo_json.h>
+#include <boo_io_file.h>
 class boo_paramTest : public ::testing::Test 
 {
 };
@@ -1186,6 +1189,549 @@ TEST_F( boo_stackTest , test )
 		
 	ASSERT_EQ( allocator.available() , total );
 };
+
+
+class boo_allocators_heapTest : public ::testing::Test 
+{
+};
+TEST_F( boo_allocators_heapTest , test )
+{
+	::booldog::allocators::easy::heap allocator;
+
+	void* ptr0 = allocator.alloc( boo_stackTestAllocatorSize );
+
+	size_t ptr0_mswi = ::booldog::mem::info::memory_size_with_info( boo_stackTestAllocatorSize );
+	size_t ptr0_mis = ::booldog::mem::info::memory_info_size( boo_stackTestAllocatorSize );
+	
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+	size_t ptr1_mswi = ::booldog::mem::info::memory_size_with_info( 17 );
+	size_t ptr1_mis = ::booldog::mem::info::memory_info_size( 17 );
+
+	void* ptr1 = allocator.alloc( 17 );
+
+	ASSERT_FALSE( ptr1 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi + ptr1_mswi );
+
+	allocator.free( ptr0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr1_mswi );
+
+	allocator.free( ptr1 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+
+
+	ptr0 = allocator.alloc( 23 );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 23 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 23 );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+
+	ptr1 = allocator.alloc( 17 );
+
+	ptr1_mswi = ::booldog::mem::info::memory_size_with_info( 17 );
+	ptr1_mis = ::booldog::mem::info::memory_info_size( 17 );
+
+	ASSERT_FALSE( ptr1 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi + ptr1_mswi );
+
+
+	allocator.free( ptr0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr1_mswi );
+
+	allocator.free( ptr1 );
+
+	ptr1 = 0;
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+
+
+	ptr0 = allocator.alloc( 45 );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 45 );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+	allocator.free( ptr0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+
+
+	ptr0 = 0;
+
+	ptr0 = allocator.realloc( ptr0 , 45 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 45 );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+	ptr0 = allocator.realloc( ptr0 , 45 );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+
+	ptr0 = allocator.realloc( ptr0 , 50 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 50 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 50 );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+
+	ptr0 = allocator.realloc( ptr0 , 45 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 45 );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+	allocator.free( ptr0 );
+
+	ptr0 = 0;
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+
+
+	ptr0 = allocator.realloc_array< wchar_t >( (wchar_t*)ptr0 , 11 );
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 11 * sizeof( wchar_t ) );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( 11 * sizeof( wchar_t ) );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , ptr0_mswi );
+
+	allocator.free( ptr0 );
+
+	ptr0 = 0;
+
+	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+
+
+
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 8 * 4 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 8 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 * 4 );
+		
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 * 4 );
+		
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 * 4 );		
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 * 4 );		
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 * 4 );
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 * 4 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 2 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 * 4 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+
+	{
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 3 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 4 );
+
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 3 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 6 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		ptr1 = allocator.realloc_array< char >( (char*)ptr1 , 2 * 4 );
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 7 );
+
+		allocator.free( ptr1 );
+
+		ptr1 = 0;
+
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
+			
+	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+};
+
+
+class boo_allocators_mixedTest : public ::testing::Test 
+{
+};
+TEST_F( boo_allocators_mixedTest , test )
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::mixed< 32 > mixed( &heap , ::booldog::threading::thread_id() );
+
+	size_t total = mixed.stack.available();
+
+	char* begin = (char*)mixed.stack.begin();
+
+	size_t size = 17;
+
+	void* ptr0 = mixed.alloc( size );
+
+	size_t ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	size_t ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
+
+	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
+
+	ASSERT_EQ( mixed.stack.available() , total - ptr0_mswi );
+
+
+	size = 1475;
+
+	void* ptr2 = mixed.alloc( size );
+
+	size_t ptr2_mswi = ::booldog::mem::info::memory_size_with_info( size );
+
+	ASSERT_FALSE( ptr2 == 0 );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+
+
+	size = 4;
+
+	void* ptr1 = mixed.alloc( size );
+
+	size_t ptr1_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	size_t ptr1_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi + ptr1_mswi );
+
+	ASSERT_TRUE( ptr1 == ( begin + ptr1_mis + ptr0_mswi ) );
+
+	ASSERT_EQ( mixed.stack.available() , total - ptr0_mswi - ptr1_mswi );
+	
+
+	mixed.free( ptr1 );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
+
+	ASSERT_EQ( mixed.stack.available() , total - ptr0_mswi );
+
+
+	mixed.free( ptr0 );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+
+
+	mixed.free( ptr2 );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+	
+
+	ptr0 = 0;
+
+	size = 17;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
+
+	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
+
+	ASSERT_EQ( mixed.stack.available() , total - ptr0_mswi );
+
+
+	size = 11;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
+
+	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
+
+	ASSERT_EQ( mixed.stack.available() , total - ptr0_mswi );
+
+
+	size = 26;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
+
+	ASSERT_TRUE( ptr0 == ( begin + ptr0_mis ) );
+
+	ASSERT_EQ( mixed.stack.available() , total - ptr0_mswi );
+
+
+	size = 0;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_TRUE( ptr0 == 0 );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+
+
+	size = 176;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr0_mswi );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+
+
+	size = 17;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr0_mswi );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+
+
+	size = 298;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr0_mswi );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_FALSE( ptr0 == 0 );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+
+
+	size = 0;
+
+	ptr0 = mixed.realloc( ptr0 , size );
+
+	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
+	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_TRUE( ptr0 == 0 );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+
+
+
+
+	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+
+	ASSERT_TRUE( mixed.stack.begin() == begin );
+
+	ASSERT_EQ( mixed.stack.available() , total );
+};
+
 
 class boo_memTest : public ::testing::Test 
 {
@@ -5576,7 +6122,7 @@ TEST_F( boo_string_utilsTest , test )
 		size_t wcsdstlen = 0;
 		size_t wcsdstsize = 0;
 
-		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , 0 );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , true , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , 0 );
 
 		ASSERT_FALSE( resbool.succeeded() );
 
@@ -5585,7 +6131,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"" );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , true , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"" );
 
 		ASSERT_FALSE( resbool.succeeded() );
 
@@ -5594,7 +6140,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" , 3 );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , true , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" , 3 );
 
 		ASSERT_FALSE( resbool.succeeded() );
 
@@ -5603,7 +6149,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( resbool.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , &allocator , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , true , SIZE_MAX , wcsdst , wcsdstlen , wcsdstsize , L"lib" );
 
 		ASSERT_TRUE( resbool.succeeded() );
 
@@ -5614,7 +6160,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( wcsdst , L"lib" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , &allocator , 3 , wcsdst , wcsdstlen , wcsdstsize , L"re" );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , true , 3 , wcsdst , wcsdstlen , wcsdstsize , L"re" );
 
 		ASSERT_TRUE( resbool.succeeded() );
 
@@ -5625,7 +6171,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( wcsdst , L"libre" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &resbool , &allocator , 3 , wcsdst , wcsdstlen , wcsdstsize , L"libcore.so" , 3 , 2 );
+		::booldog::utils::string::wcs::insert( &resbool , &allocator , true , 3 , wcsdst , wcsdstlen , wcsdstsize , L"libcore.so" , 3 , 2 );
 
 		ASSERT_TRUE( resbool.succeeded() );
 
@@ -5650,7 +6196,7 @@ TEST_F( boo_string_utilsTest , test )
 		size_t mbsdstlen = 0;
 		size_t mbsdstsize = 0;
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -5659,7 +6205,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -5668,7 +6214,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -5677,7 +6223,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5688,7 +6234,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "lib" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5699,7 +6245,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "libre" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5774,7 +6320,7 @@ TEST_F( boo_string_utilsTest , test )
 
 		::booldog::result res;
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "e" , 0 , SIZE_MAX );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "e" , 0 , SIZE_MAX );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5785,7 +6331,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"ale" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , 0 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 0 , 2 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , 0 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 0 , 2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5796,7 +6342,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( wcscmp( reswchar.wchar , L"loale" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 2 , 1 );
+		::booldog::utils::string::mbs::insert( &res , &allocator , true , 2 , reswchar.wchar , reswchar.wlen , reswchar.wsize , "locale" , 2 , 1 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5866,7 +6412,7 @@ TEST_F( boo_string_utilsTest , test )
 
 		::booldog::result res;
 
-		::booldog::utils::string::wcs::insert( &res , &allocator , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"e" , 0 , SIZE_MAX );
+		::booldog::utils::string::wcs::insert( &res , &allocator , true , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"e" , 0 , SIZE_MAX );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5877,7 +6423,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ale" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &res , &allocator , 0 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 0 , 2 );
+		::booldog::utils::string::wcs::insert( &res , &allocator , true , 0 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 0 , 2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -5888,7 +6434,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "loale" ) == 0 );
 
 
-		::booldog::utils::string::wcs::insert( &res , &allocator , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 2 , 1 );
+		::booldog::utils::string::wcs::insert( &res , &allocator , true , 2 , resmbchar.mbchar , resmbchar.mblen , resmbchar.mbsize , L"locale" , 2 , 1 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -8338,6 +8884,68 @@ TEST_F( boo_base_loaderTest , test )
 	ASSERT_TRUE( allocator.begin() == begin );
 
 	ASSERT_EQ( allocator.available() , total );
+};
+class boo_io_fileTest : public ::testing::Test 
+{
+};
+TEST_F( boo_io_fileTest , test )
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::mixed< 16 * 1024 > allocator( &heap , ::booldog::threading::thread_id() );
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+	{
+		::booldog::result_buffer resbuf( &allocator );
+		::booldog::result_file res;
+
+		booldog::param search_paths_params[] =
+		{
+			BOOPARAM_PCHAR( "../../test_data\\modules0/x86" ) ,
+			BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x86" ) ,
+			BOOPARAM_PCHAR( "../../test_data\\json" ) ,
+			BOOPARAM_NONE
+		};
+		booldog::named_param load_params[] =
+		{
+			BOONAMED_PARAM_PPARAM( "search_paths" , search_paths_params ) ,
+			BOONAMED_PARAM_BOOL( "exedir_as_root_path" , true ) ,
+			BOONAMED_PARAM_NONE
+		};
+		::booldog::io::file::mbsopen( &res , &allocator , "core1" , ::booldog::enums::io::file_mode_read , load_params );
+
+		ASSERT_FALSE( res.succeeded() );
+
+		::booldog::io::file::mbsopen( &res , &allocator , "core.dll" , ::booldog::enums::io::file_mode_read , load_params );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		res.file->close( &res );
+
+		ASSERT_TRUE( res.succeeded() );
+
+
+		::booldog::io::file::mbsopen( &res , &allocator , "json_test2.txt" , ::booldog::enums::io::file_mode_read , load_params );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		res.file->readall< 16 * 1024 >( &resbuf , &allocator , debuginfo_macros );
+
+		ASSERT_TRUE( resbuf.succeeded() );
+
+		ASSERT_TRUE( resbuf.buf[ 0 ] == '[' );
+
+		res.file->close( &res );
+
+		ASSERT_TRUE( res.succeeded() );
+	}
+
+	ASSERT_TRUE( allocator.stack.begin() == begin );
+
+	ASSERT_EQ( allocator.stack.available() , total );
+
+	ASSERT_EQ( allocator.heap->size_of_allocated_memory() , 0 );
 };
 #ifdef __LINUX__
 #include <locale.h>

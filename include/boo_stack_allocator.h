@@ -4,6 +4,7 @@
 #include <config.h>
 #endif
 #include <boo_mem_cluster.h>
+#include <boo_threading_utils.h>
 namespace booldog
 {
 	namespace allocators
@@ -11,11 +12,12 @@ namespace booldog
 		template< size_t s >
 		class stack : public ::booldog::allocator
 		{
+			::booldog::pid_t _owner_thread_id;
 			::booldog::byte _data[ s + sizeof( ::booldog::mem::info4 ) ];
 			::booldog::mem::cluster _cluster;
 		public:
-			stack( void )
-				: _cluster( _data , s + sizeof( ::booldog::mem::info4 ) )
+			stack( ::booldog::pid_t owner_thread_id = 0 )
+				: _owner_thread_id( owner_thread_id ) , _cluster( _data , s + sizeof( ::booldog::mem::info4 ) )
 			{
 			};
 			booinline void print( void )
@@ -37,7 +39,10 @@ namespace booldog
 			};
 			virtual void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
-				return _cluster.alloc( size , debuginfo );
+				if( _owner_thread_id == 0 || _owner_thread_id == ::booldog::threading::thread_id() )
+					return _cluster.alloc( size , debuginfo );
+				else
+					return 0;
 			};
 			virtual void free( void* pointer )
 			{
@@ -45,7 +50,10 @@ namespace booldog
 			};
 			virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
-				return _cluster.realloc( pointer , size , debuginfo );
+				if( _owner_thread_id == 0 || _owner_thread_id == ::booldog::threading::thread_id() )
+					return _cluster.realloc( pointer , size , debuginfo );
+				else
+					return 0;
 			};
 		};
 	};

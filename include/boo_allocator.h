@@ -111,5 +111,10 @@ namespace booldog
 			this->free( object );
 		};
 	};
+	class heap_allocator : public ::booldog::allocator
+	{
+	public:
+		virtual size_t size_of_allocated_memory( void ) = 0;
+	};
 };
 #endif

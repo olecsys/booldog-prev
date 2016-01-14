@@ -83,7 +83,7 @@ namespace booldog
 		booinline void set_bit( ::booldog::uint8* bytes , size_t bit_index )
 		{
 			size_t byte_index = bit_index / 8;
-			bit_index -= byte_index * 8; 
+			bit_index -= byte_index * 8;
 			::booldog::utils::set_bit( bytes[ byte_index ] , (::booldog::byte)bit_index );
 		};
 	};

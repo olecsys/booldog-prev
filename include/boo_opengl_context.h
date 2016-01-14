@@ -497,8 +497,10 @@ namespace booldog
 				}
 			};
 			context( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::base::loader* ploader , HWND hwnd 
-				, bool multithreaded , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-				: ::booldog::rendering::context() , _allocator( allocator ) , _loader( ploader ) , _opengl( 0 ) , _ctx( 0 ) , _hdc( 0 ) 
+				, ::booldog::events::typedefs::oncontextcreated poncontextcreated , bool multithreaded 
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				: ::booldog::rendering::context( poncontextcreated ) , _allocator( allocator ) , _loader( ploader ) , _opengl( 0 ) 
+					, _ctx( 0 ) , _hdc( 0 ) 
 					, _hwnd( 0 ) , _max_texture_size( 0 ) , _renderer( 0 )
 #ifdef __WINDOWS__
 					, booctor_null_macro( SwapBuffers )

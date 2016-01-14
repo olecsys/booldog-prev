@@ -1,5 +1,5 @@
-#ifndef BOO_OPENGL_APPLICATION_H
-#define BOO_OPENGL_APPLICATION_H
+#ifndef BOO_UI_APPLICATION_H
+#define BOO_UI_APPLICATION_H
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -7,7 +7,7 @@
 #include <boo_threading_utils.h>
 #include <boo_array.h>
 #include <boo_rdwrlock.h>
-#include <boo_opengl_window.h>
+#include <boo_ui_window.h>
 namespace booldog
 {
 	namespace typedefs
@@ -23,7 +23,7 @@ namespace booldog
 		typedef BOOL (WINAPI *InvalidateRect)( HWND hWnd , const RECT* lpRect , BOOL bErase );
 		typedef BOOL (WINAPI *ValidateRect)( HWND hWnd , const RECT* lpRect );
 	};
-	namespace opengl
+	namespace ui
 	{
 		class application;
 	};
@@ -31,13 +31,13 @@ namespace booldog
 	{
 		namespace typedefs
 		{
-			typedef void (*onstarted)( ::booldog::opengl::application* app );
+			typedef void (*onstarted)( ::booldog::ui::application* app );
 		};
 	};
 };
 namespace booldog
 {
-	namespace opengl
+	namespace ui
 	{
 		namespace dispatch
 		{
@@ -53,9 +53,9 @@ namespace booldog
 		class application : public ::booldog::application
 		{
 			booldog::threading::rdwrlock _lock_dispatches;
-			booldog::array< ::booldog::opengl::dispatch::data* > _dispatches;
+			booldog::array< ::booldog::ui::dispatch::data* > _dispatches;
 			booldog::threading::rdwrlock _lock_windows;
-			booldog::array< ::booldog::opengl::window* > _windows;
+			booldog::array< ::booldog::ui::window* > _windows;
 			bool _quit;
 			::booldog::pid_t _loop_tid;
 			::booldog::events::typedefs::onstarted _onstarted;
@@ -83,13 +83,13 @@ namespace booldog
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
 
-				::booldog::opengl::application* app = (::booldog::opengl::application*)::booldog::_application;
+				::booldog::ui::application* app = (::booldog::ui::application*)::booldog::_application;
 
 				if( app->_loop_tid == ::booldog::threading::thread_id() )
 					return pdispatch( pres , pdispatchparam );
 				if( wait )
 				{
-					::booldog::opengl::dispatch::data data;
+					::booldog::ui::dispatch::data data;
 					data.pdispatch = pdispatch;
 					data.pdispatchparam = pdispatchparam;
 					data.wait = wait;
@@ -105,7 +105,7 @@ namespace booldog
 				}
 				else
 				{
-					::booldog::opengl::dispatch::data* data = app->allocator()->create< ::booldog::opengl::dispatch::data >( debuginfo );
+					::booldog::ui::dispatch::data* data = app->allocator()->create< ::booldog::ui::dispatch::data >( debuginfo );
 					if( data == 0 )
 					{
 						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
@@ -123,14 +123,17 @@ namespace booldog
 				}
 				return res->succeeded();
 			};
-			::booldog::opengl::window* create( ::booldog::result* pres , int left , int top , int width , int height
+			void destroy( ::booldog::ui::window* wnd )
+			{
+			};
+			::booldog::ui::window* create( ::booldog::result* pres , int left , int top , int width , int height
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
 				::booldog::allocator* pallocator = allocator();
-				::booldog::opengl::window* window = pallocator->create< ::booldog::opengl::window >( pallocator , loader() , left , top 
-					, width , height , ::booldog::opengl::application::dispatch , ::booldog::opengl::application::stickcount , debuginfo );
+				::booldog::ui::window* window = pallocator->create< ::booldog::ui::window >( pallocator , loader() , left , top 
+					, width , height , ::booldog::ui::application::dispatch , debuginfo );
 				if( window == 0 )
 				{
 					res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
@@ -144,14 +147,14 @@ namespace booldog
 				}
 				return window;
 			};
-			::booldog::opengl::window* find( HWND hwnd , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			::booldog::ui::window* find( HWND hwnd , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				_lock_windows.rlock( debuginfo );
 				for( size_t index0 = 0 ; index0 < _windows.count() ; index0++ )
 				{
 					if( _windows[ index0 ]->_hwnd == hwnd )
 					{
-						::booldog::opengl::window* wnd = _windows[ index0 ];
+						::booldog::ui::window* wnd = _windows[ index0 ];
 						_lock_windows.runlock( debuginfo );
 						return wnd;
 					}	
@@ -161,10 +164,10 @@ namespace booldog
 			}
 			static LRESULT CALLBACK WndProc( HWND hwnd , UINT msg , WPARAM wparam , LPARAM lparam )
 			{
-				::booldog::opengl::application* app = (::booldog::opengl::application*)::booldog::_application;
+				::booldog::ui::application* app = (::booldog::ui::application*)::booldog::_application;
 				if( hwnd )
 				{
-					::booldog::opengl::window* wnd = app->find( hwnd , debuginfo_macros );
+					::booldog::ui::window* wnd = app->find( hwnd , debuginfo_macros );
 					if( wnd )
 					{
 						switch( msg )
@@ -222,7 +225,7 @@ namespace booldog
 							}
 						case WM_PAINT:
 							{
-								wnd->raise_onrender();
+								wnd->raise_onpaint();
 								app->_pValidateRect( hwnd , 0 );
 								return 0;
 							}
@@ -317,7 +320,7 @@ namespace booldog
 							if( pGetClassInfoA( hmod , "boo_opengl_window" , &wnd_class ) == false )
 							{
 								wnd_class.style = CS_DBLCLKS  | CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-								wnd_class.lpfnWndProc = (WNDPROC)::booldog::opengl::application::WndProc;
+								wnd_class.lpfnWndProc = (WNDPROC)::booldog::ui::application::WndProc;
 								wnd_class.cbClsExtra = 0;
 								wnd_class.cbWndExtra = 0;
 								wnd_class.hInstance = hmod;
@@ -348,14 +351,14 @@ namespace booldog
 							if( _windows.count() )
 							{
 								for( size_t index0 = 0 ; index0 < _windows.count() ; index0++ )
-									_windows[ index0 ]->raise_onrender();
+									_windows[ index0 ]->raise_onpaint();
 							}
 							_lock_windows.runlock( debuginfo );
 
 							_lock_dispatches.wlock( debuginfo );
 							if( _dispatches.count() )
 							{
-								::booldog::opengl::dispatch::data* data = 0;
+								::booldog::ui::dispatch::data* data = 0;
 								for( ; ; )
 								{
 									data = _dispatches[ 0 ];
@@ -364,7 +367,7 @@ namespace booldog
 									data->pdispatch( data->pres , data->pdispatchparam );
 									data->executed = true;
 									if( data->wait == false )
-										pallocator->destroy< ::booldog::opengl::dispatch::data >( data );
+										pallocator->destroy< ::booldog::ui::dispatch::data >( data );
 									_lock_dispatches.wlock( debuginfo );
 									if( _dispatches.count() == 0 )
 										break;

@@ -67,8 +67,8 @@ namespace booldog
 						struct link_map *map = 0;
 						if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
 						{
-							if( ::booldog::utils::string::mbs::insert( &resres , 0 , res->mbchar , res->mblen , res->mbsize 
-								, map->l_name , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+							if( ::booldog::utils::string::mbs::insert( &resres , allocator , true , 0 , res->mbchar , res->mblen , res->mbsize 
+								, map->l_name , 0 , SIZE_MAX , debuginfo ) == false )
 							{
 								res->copy( resres );
 								goto goto_return;
@@ -112,8 +112,8 @@ goto_return:
 							{
 								::booldog::result_mbchar resmbchar( allocator );
 								::booldog::result resres;
-								if( ::booldog::utils::string::mbs::insert( &resres , 0 , resmbchar.mbchar , resmbchar.mblen 
-									, resmbchar.mbsize , info.dli_fname , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+								if( ::booldog::utils::string::mbs::insert( &resres , allocator , true , 0 , resmbchar.mbchar , resmbchar.mblen 
+									, resmbchar.mbsize , info.dli_fname , 0 , SIZE_MAX , debuginfo ) == false )
 								{
 									res->copy( resres );
 									goto goto_return;
@@ -125,7 +125,7 @@ goto_return:
 									goto goto_return;
 								}
 								::booldog::result_mbchar resmbpathname( allocator );
-								if( ::booldog::utils::module::mbs::pathname< 256 >( &resmbpathname , module_handle , allocator 
+								if( ::booldog::utils::module::mbs::pathname< 256 >( &resmbpathname , allocator , module_handle 
 									, debuginfo ) == false )
 								{
 									res->copy( resmbpathname );
@@ -191,10 +191,10 @@ goto_return:
 						}
 #else
 						::booldog::result_mbchar resmbchar( allocator );
-						if( ::booldog::utils::module::mbs::pathname< step >( &resmbchar , module_handle , allocator , debuginfo ) )
+						if( ::booldog::utils::module::mbs::pathname< step >( &resmbchar , allocator , module_handle , debuginfo ) )
 						{
 							::booldog::result_wchar reswchar( allocator );
-							if( ::booldog::utils::string::mbs::towcs( &reswchar , resmbchar.mbchar , 0 , SIZE_MAX , allocator 
+							if( ::booldog::utils::string::mbs::towcs( &reswchar , allocator , resmbchar.mbchar , 0 , SIZE_MAX 
 								, debuginfo ) )
 							{
 								res->wchar = reswchar.wchar;
@@ -391,7 +391,7 @@ goto_return:
 						res->copy( resmbchar );
 						goto goto_return;
 					}
-					if( ::booldog::utils::string::mbs::towcs( res , resmbchar.mbchar , 0 , SIZE_MAX , allocator , debuginfo ) == false )
+					if( ::booldog::utils::string::mbs::towcs( res , allocator , resmbchar.mbchar , 0 , SIZE_MAX , debuginfo ) == false )
 						goto goto_return;
 #endif
 					if( ::booldog::utils::io::path::wcs::normalize( &resres , res->wchar , res->wlen , res->wsize ) == false )

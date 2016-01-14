@@ -8,6 +8,7 @@ namespace booldog
 {
 	namespace mem
 	{
+#define BOOLDOG_MEM_INFO_HEAP 2
 #define BOOLDOG_MEM_INFO_BUSY 3
 #define BOOLDOG_MEM_INFO_USE_INFO1 4
 #define BOOLDOG_MEM_INFO_USE_INFO2 5

@@ -282,6 +282,52 @@ goto_next:
 			_obj_->mblen = 0;
 		};
 	};
+	class result_buffer : public ::booldog::result
+	{
+	private:
+// copy and assignment not allowed
+		result_buffer( const ::booldog::result_buffer& )
+		{
+		};
+		result_buffer( const ::booldog::result& )
+		{
+		};
+		::booldog::result_buffer& operator = ( const ::booldog::result_buffer& )
+		{
+			return *this;
+		};
+	public:
+		unsigned char* buf;
+		size_t bufdatasize;
+		size_t bufsize;
+		booldog::allocator* allocator;
+		result_buffer( booldog::allocator* pallocator )
+ 			: buf( 0 ) , bufsize( 0 ) , bufdatasize( 0 ) , allocator( pallocator ) , result()
+		{
+		};
+		virtual ~result_buffer( void )
+		{
+			if( buf )
+				allocator->free( buf );
+		};
+		unsigned char* detach( void )
+		{
+			unsigned char* res = buf;
+			buf = 0;
+			bufsize = 0;
+			bufdatasize = 0;
+			return res;
+		};
+		virtual void clear( void ) const
+		{
+			::booldog::result_buffer* _obj_ = const_cast< ::booldog::result_buffer* >( this );
+#ifdef __UNIX__
+			_obj_->dlerrorclear();
+#endif
+			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
+			_obj_->bufdatasize = 0;
+		};
+	};
 	class result_bool : public ::booldog::result
 	{
 	private:

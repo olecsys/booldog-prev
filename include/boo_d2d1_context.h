@@ -208,6 +208,10 @@ goto_unload0:
 				if( _D3D11 )
 					_loader->unload( 0 , _D3D11 , debuginfo_macros );
 			};
+			::booldog::allocator* allocator( void )
+			{
+				return _allocator;
+			};
 		};
 #define booctor_null_macro( FUNC ) _##FUNC( 0 )
 		class context : public ::booldog::rendering::context
@@ -224,9 +228,10 @@ goto_unload0:
 			int _resize_width;
 			int _resize_height;
 		public:
-			context( ::booldog::result* pres , HWND hwnd , bool multithreaded , ::booldog::D2d1::factory* pfactory 
+			context( ::booldog::result* pres , HWND hwnd , ::booldog::events::typedefs::oncontextcreated poncontextcreated
+				, bool multithreaded , ::booldog::D2d1::factory* pfactory 
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
-				: ::booldog::rendering::context() , _factory( pfactory ) , _hwnd_render_target( 0 ) , _hwnd( hwnd )
+				: ::booldog::rendering::context( poncontextcreated ) , _factory( pfactory ) , _hwnd_render_target( 0 ) , _hwnd( hwnd )
 					, _D2d1device_ctx( 0 ) , _dxgi_swap_chain1( 0 ) , _multithreaded( multithreaded ) , _thread( 0 )
 					, _render_thread_id( 0 ) , _resize_width( INT32_MAX ) , _resize_height( INT32_MAX )
 			{
@@ -239,6 +244,10 @@ goto_unload0:
 			~context( void )
 			{
 				destroy();
+			};
+			::booldog::D2d1::factory* factory( void )
+			{
+				return _factory;
 			};
 			bool create( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
@@ -369,10 +378,11 @@ goto_found:
 									IDXGIFactory2* dxgi_factory2 = 0;
 									IDXGISurface* dxgi_surface = 0;
 
-									hr = dxgi_adapter->GetParent( IID_PPV_ARGS( &dxgi_factory2 ) );
-									if( FAILED( hr ) )
-										goto goto_release0;
-													
+									FLOAT dpi_x = 0 , dpi_y = 0;
+									_factory->_D2d1factory1->GetDesktopDpi( &dpi_x , &dpi_y );									
+									D2D1_BITMAP_PROPERTIES1 d2d1_bitmap_properties = D2D1::BitmapProperties1( 
+										D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW 
+										, D2D1::PixelFormat( DXGI_FORMAT_B8G8R8A8_UNORM , D2D1_ALPHA_MODE_IGNORE ) , dpi_x , dpi_y );
 									DXGI_SWAP_CHAIN_DESC1 dxgi_swap_chain_desc1 = {0};
 									dxgi_swap_chain_desc1.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 									dxgi_swap_chain_desc1.SampleDesc.Count = 1;
@@ -390,7 +400,12 @@ goto_found:
 									swapChainDesc.BufferCount = 2;
 									swapChainDesc.Scaling = DXGI_SCALING_NONE;
 									swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
-									swapChainDesc.Flags = 0;*/						
+									swapChainDesc.Flags = 0;*/				
+
+									hr = dxgi_adapter->GetParent( IID_PPV_ARGS( &dxgi_factory2 ) );
+									if( FAILED( hr ) )
+										goto goto_release0;
+											
 									hr = dxgi_factory2->CreateSwapChainForHwnd( d3d11device , _hwnd , &dxgi_swap_chain_desc1 , 0 , 0
 										, &_dxgi_swap_chain1 );
 									if( FAILED( hr ) )
@@ -407,13 +422,7 @@ goto_found:
 									
 									hr = _dxgi_swap_chain1->GetBuffer( 0 , IID_PPV_ARGS( &dxgi_surface ) );
 									if( FAILED( hr ) )
-										goto goto_release0;
-								
-									FLOAT dpi_x = 0 , dpi_y = 0;
-									_factory->_D2d1factory1->GetDesktopDpi( &dpi_x , &dpi_y );
-									D2D1_BITMAP_PROPERTIES1 d2d1_bitmap_properties = D2D1::BitmapProperties1( 
-										D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW 
-										, D2D1::PixelFormat( DXGI_FORMAT_B8G8R8A8_UNORM , D2D1_ALPHA_MODE_IGNORE ) , dpi_x , dpi_y );
+										goto goto_release0;									
 
 									hr = _D2d1device_ctx->CreateBitmapFromDxgiSurface( dxgi_surface , &d2d1_bitmap_properties 
 										, &D2d1bitmap1 );
@@ -468,7 +477,7 @@ goto_unload:
 			void destroy( void )
 			{
 				if( _oncontextbeforedestroy )
-					_oncontextbeforedestroy( this );
+					_oncontextbeforedestroy( _udata , this );
 				if( _dxgi_swap_chain1 )
 				{
 					_dxgi_swap_chain1->Release();
@@ -500,7 +509,7 @@ goto_unload:
 							destroy();
 					}
 					if( _oncontextresize )
-						_oncontextresize( this , width , height );
+						_oncontextresize( _udata , this , width , height );
 				}
 				else
 				{
@@ -518,32 +527,72 @@ goto_unload:
 			{
 				::booldog::D2d1::context* ctx = (::booldog::D2d1::context*)thr->udata();
 				ctx->_render_thread_id = ::booldog::threading::thread_id();
-				if( ctx->_fps )
+				while( thr->pending_in_stop() == false )
 				{
-					while( thr->pending_in_stop() == false )
+					if( ctx->_resize_width != INT32_MAX )
 					{
-						if( ctx->_resize_width != INT32_MAX )
-						{
-							ctx->resize( ctx->_resize_width , ctx->_resize_height );
-							ctx->_resize_width = ctx->_resize_height = INT32_MAX;
-						}						
-						ctx->_oncontextrender( ctx );					
-						ctx->fps();
-						::booldog::threading::sleep( 1 );
-					}					
-				}
-				else
-				{
-					while( thr->pending_in_stop() == false )
-					{
-						if( ctx->_resize_width != INT32_MAX )
-						{
-							ctx->resize( ctx->_resize_width , ctx->_resize_height );
-							ctx->_resize_width = ctx->_resize_height = INT32_MAX;
-						}
-						ctx->_oncontextrender( ctx );					
-						::booldog::threading::sleep( 1 );
+						ctx->resize( ctx->_resize_width , ctx->_resize_height );
+						ctx->_resize_width = ctx->_resize_height = INT32_MAX;
 					}
+
+					::booldog::result res;
+					ctx->create( &res );
+					if( ctx->_hwnd_render_target )
+					{
+						ctx->_hwnd_render_target->BeginDraw();
+
+						ctx->_hwnd_render_target->Clear( D2D1::ColorF( D2D1::ColorF::Yellow ) );
+
+						ctx->_oncontextrender( ctx->_udata , ctx );
+
+						HRESULT hr = ctx->_hwnd_render_target->EndDraw();
+
+						if( hr == D2DERR_RECREATE_TARGET )
+							ctx->destroy();
+					}
+					else if( ctx->_dxgi_swap_chain1 )
+					{
+						//GLfloat image_left = 0 , image_top = 0 , image_width = rgbawidth , image_height = rgbaheight;
+						//GLfloat left = 10 , top = 10 , width = 1000 , height = 800 , zindex = 0;
+
+						/*ID2D1Bitmap1* d2d1bitmap = (ID2D1Bitmap1*)ctx->udata();
+						if( d2d1bitmap == 0 )
+						{
+							D2D1_SIZE_U  size = { rgbawidth, rgbaheight };
+							D2D1_BITMAP_PROPERTIES1 properties = {{ DXGI_FORMAT_R8G8B8A8_UNORM, D2D1_ALPHA_MODE_PREMULTIPLIED }, 96, 96, D2D1_BITMAP_OPTIONS_TARGET, 0 };
+							HRESULT hr = D2d1ctx->_D2d1device_ctx->CreateBitmap( size , 0 , 0 , properties , &d2d1bitmap );
+							if( SUCCEEDED( hr ) )
+							{
+								ctx->udata( d2d1bitmap );
+								__d2d1bitmap = d2d1bitmap;
+							}
+						//}
+						//if( d2d1bitmap )
+						//{
+							//D2D1_RECT_U rect = { 0 , 0 , rgbawidth , rgbaheight };
+				
+							d2d1bitmap->CopyFromMemory( 0 , rgba , 4 * rgbawidth );
+						}*/
+
+						ctx->_D2d1device_ctx->BeginDraw();
+
+						ctx->_D2d1device_ctx->Clear( D2D1::ColorF( D2D1::ColorF::Yellow ) );
+
+						ctx->_oncontextrender( ctx->_udata , ctx );
+
+						/*if( d2d1bitmap )
+						{
+							D2D1_RECT_F rectf = { left , top , width , height };
+							D2d1ctx->_D2d1device_ctx->DrawBitmap( d2d1bitmap , &rectf );
+						}*/
+
+						ctx->_D2d1device_ctx->EndDraw();
+
+						HRESULT hr = ctx->_dxgi_swap_chain1->Present( 1 , 0 );
+						if( FAILED( hr ) && hr != DXGI_STATUS_OCCLUDED )
+							ctx->destroy();
+					}
+					::booldog::threading::sleep( 1 );
 				}
 			};
 			virtual void oncontextrender( ::booldog::events::typedefs::oncontextrender poncontextrender )
@@ -559,6 +608,65 @@ goto_unload:
 					}
 				}
 			};
+		};
+		static booinline void* create_factory( void* allocator , void* loader )
+		{
+		   ::booldog::allocator* pallocator = (::booldog::allocator*)allocator;
+		   ::booldog::base::loader* ploader = (::booldog::base::loader*)loader;
+
+		   ::booldog::result res;
+			::booldog::D2d1::factory* factory = pallocator->create< ::booldog::D2d1::factory >( &res , pallocator , ploader	
+				, debuginfo_macros , debuginfo_macros );
+			if( res.succeeded() == false && factory )
+			{
+				pallocator->destroy( factory );
+				factory = 0;
+			}
+			return factory;
+		};
+		static booinline void destroy_factory( void* factory )
+		{
+			::booldog::D2d1::factory* pfactory = (::booldog::D2d1::factory*)factory;
+			::booldog::allocator* pallocator = pfactory->allocator();
+			pallocator->destroy( pfactory );
+		};
+		static booinline void* create_context( HWND hwnd , void* udata , void* factory
+			, ::booldog::events::typedefs::oncontextcreated poncontextcreated
+			, ::booldog::events::typedefs::oncontextresize poncontextresize
+			, ::booldog::events::typedefs::oncontextrender poncontextrender 
+			, ::booldog::events::typedefs::oncontextbeforedestroy poncontextbeforedestroy )
+		{
+			::booldog::D2d1::factory* pfactory = (::booldog::D2d1::factory*)factory;
+			::booldog::allocator* pallocator = pfactory->allocator();
+			bool is_multithreaded = true;
+			::booldog::result res;
+			::booldog::D2d1::context* pctx = pallocator->create< ::booldog::D2d1::context >( 
+				&res , hwnd , poncontextcreated , is_multithreaded , pfactory , debuginfo_macros , debuginfo_macros );
+			if( res.succeeded() )
+			{
+				pctx->udata( udata );
+				pctx->oncontextbeforedestroy( poncontextbeforedestroy );
+				pctx->oncontextresize( poncontextresize );
+				if( is_multithreaded )
+					pctx->oncontextrender( poncontextrender );
+			}
+			else if( pctx )
+			{
+				pallocator->destroy( pctx );
+				pctx = 0;
+			}
+			return pctx;
+		};
+		static void raise_onwindowresize( void* ctx , int width , int height )
+		{
+			::booldog::D2d1::context* pctx = (::booldog::D2d1::context*)ctx;
+			pctx->raise_onwindowresize( width , height );
+		};
+		static void destroy_context( void* ctx )
+		{
+			::booldog::D2d1::context* pctx = (::booldog::D2d1::context*)ctx;
+			::booldog::allocator* pallocator = pctx->factory()->allocator();
+			pallocator->destroy( pctx );
 		};
 	};
 };

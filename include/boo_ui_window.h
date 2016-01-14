@@ -1,12 +1,12 @@
-#ifndef BOO_OPENGL_WINDOW_H
-#define BOO_OPENGL_WINDOW_H
+#ifndef BOO_UI_WINDOW_H
+#define BOO_UI_WINDOW_H
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 #include <boo_render_context.h>
 namespace booldog
 {
-	namespace opengl
+	namespace ui
 	{
 		class window;
 	};
@@ -18,53 +18,53 @@ namespace booldog
 		typedef bool (*dispatch)( ::booldog::result* pres , void* param );
 		typedef bool (*dispatch_execute)( ::booldog::result* pres , ::booldog::typedefs::dispatch pdispatch , void* pdispatchparam 
 			, bool wait , const ::booldog::debug::info& debuginfo );
+		typedef BOOL (WINAPI *IsWindowVisible)( HWND hWnd );
 	};
 	namespace events
 	{
 		namespace typedefs
 		{
-			typedef void (*onwindowhided)( ::booldog::opengl::window* ctx );
-			typedef void (*onwindowshown)( ::booldog::opengl::window* ctx );
-			typedef void (*onwindowresize)( ::booldog::opengl::window* ctx , int width , int height );
-			typedef void (*onwindowrender)( ::booldog::rendering::context* ctx );
+			typedef void (*onwindowhided)( ::booldog::ui::window* wnd );
+			typedef void (*onwindowshown)( ::booldog::ui::window* wnd );
+			typedef void (*onwindowresize)( ::booldog::ui::window* wnd , int width , int height );
+			typedef void (*onwindowpaint)( ::booldog::ui::window* wnd );
 		};
 	};
 };
 namespace booldog
 {
-	namespace opengl
+	namespace ui
 	{
 		class application;
 		class window
 		{
-			friend class ::booldog::opengl::application;
+			friend class ::booldog::ui::application;
 			void* _udata;
-			::booldog::counters::fps _fps;
-			::booldog::uint32 _rendertickcount;
 			int _left;
 			int _top;
 			int _width;
 			int _height;
 			::booldog::typedefs::dispatch_execute _dispatch_execute;
-			::booldog::typedefs::tickcount _tickcount;
-			::booldog::events::typedefs::onwindowrender _onwindowrender;
+			::booldog::events::typedefs::onwindowpaint _onwindowpaint;
 			::booldog::events::typedefs::onwindowresize _onwindowresize;
 			::booldog::events::typedefs::onwindowhided _onwindowhided;
 			::booldog::events::typedefs::onwindowshown _onwindowshown;
 		public:
 #ifdef __WINDOWS__
 			HWND _hwnd;
+			HWND hwnd( void )
+			{
+				return _hwnd;
+			};
 #else
 #endif
 			booldog::allocator* _allocator;
 			::booldog::base::loader* _loader;
-			::booldog::rendering::context* _ctx;
 			window( booldog::allocator* allocator , ::booldog::base::loader* ploader , int left , int top , int width , int height 
-				, ::booldog::typedefs::dispatch_execute pdispatch_execute , ::booldog::typedefs::tickcount ptickcount )
-				: _allocator( allocator ) , _loader( ploader ) , _ctx( 0 ) , _left( left ) , _top( top ) , _width( width ) 
-					, _height( height )	, _hwnd( 0 ) , _dispatch_execute( pdispatch_execute ) , _tickcount( ptickcount ) 
-					, _onwindowrender( 0 ) , _rendertickcount( 0 ) , _fps( ptickcount ) , _onwindowresize( 0 ) , _onwindowhided( 0 )
-					, _onwindowshown( 0 ) , _udata( 0 )
+				, ::booldog::typedefs::dispatch_execute pdispatch_execute )
+				: _allocator( allocator ) , _loader( ploader ) , _left( left ) , _top( top ) , _width( width ) 
+					, _height( height )	, _hwnd( 0 ) , _dispatch_execute( pdispatch_execute ) , _onwindowpaint( 0 )
+					, _onwindowresize( 0 ) , _onwindowhided( 0 ) , _onwindowshown( 0 ) , _udata( 0 )
 			{
 			};
 			void* udata( void )
@@ -75,10 +75,6 @@ namespace booldog
 			{
 				_udata = pudata;
 			};
-			::booldog::counters::fps* fpscounter( void )
-			{
-				return &_fps;
-			};
 			void raise_onresize( int width , int height )
 			{
 				if( _width != width 
@@ -86,8 +82,8 @@ namespace booldog
 				{
 					_width = width;
 					_height = height;
-					if( _ctx )
-						_ctx->raise_onwindowresize( width , height );
+					//if( _ctx )
+					//	_ctx->raise_onwindowresize( width , height );
 					if( _onwindowresize )
 						_onwindowresize( this , width , height );
 					/*if( window->_both_size_and_move_msg == 1 )
@@ -109,25 +105,10 @@ namespace booldog
 				if( _onwindowhided )
 					_onwindowhided( this );
 			};
-			void raise_onrender( void )
+			void raise_onpaint( void )
 			{
-				if( _onwindowrender )
-				{
-					if( _tickcount )
-					{
-						::booldog::uint32 now = _tickcount();
-						if( _rendertickcount > now )
-							_rendertickcount = now;
-						if( now - _rendertickcount >= 20 )
-						{
-							_onwindowrender( _ctx );
-							_rendertickcount = now;
-							_ctx->fps();
-						}
-					}
-					else
-						_onwindowrender( _ctx );
-				}
+				if( _onwindowpaint )
+					_onwindowpaint( this );
 			};
 			void onwindowshown( ::booldog::events::typedefs::onwindowshown ponwindowshown )
 			{
@@ -141,9 +122,9 @@ namespace booldog
 			{
 				_onwindowresize = ponwindowresize;
 			};
-			void onwindowrender( ::booldog::events::typedefs::onwindowrender ponwindowrender )
+			void onwindowpaint( ::booldog::events::typedefs::onwindowpaint ponwindowpaint )
 			{
-				_onwindowrender = ponwindowrender;
+				_onwindowpaint = ponwindowpaint;
 			};
 			int width( void )
 			{
@@ -158,7 +139,7 @@ namespace booldog
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
 				
-				::booldog::opengl::window* wnd = (::booldog::opengl::window*)param;
+				::booldog::ui::window* wnd = (::booldog::ui::window*)param;
 				if( wnd->_hwnd == 0 )
 				{
 					::booldog::result_module resmod;
@@ -200,11 +181,30 @@ namespace booldog
 				}
 				return res->succeeded();
 			};
+			bool visible( void )
+			{
+				bool res = false;
+				if( _hwnd )
+				{
+					::booldog::result_module resmod;
+					if( _loader->mbsload( &resmod , _allocator , "User32" , 0 , debuginfo_macros ) )
+					{	
+						::booldog::result_pointer resptr;
+						if( resmod.module->method( &resptr , _allocator , "IsWindowVisible" , debuginfo_macros ) == false )
+							goto goto_unload;
+						::booldog::typedefs::IsWindowVisible pIsWindowVisible = (::booldog::typedefs::IsWindowVisible)resptr.pres;
+						res = pIsWindowVisible( _hwnd ) ? true : false;
+goto_unload:
+						_loader->unload( 0 , resmod.module , debuginfo_macros );
+					}
+				}
+				return res;
+			};
 			bool show( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
-				if( _dispatch_execute( res , ::booldog::opengl::window::create , this , true , debuginfo ) )
+				if( _dispatch_execute( res , ::booldog::ui::window::create , this , true , debuginfo ) )
 				{
 					::booldog::result_module resmod;
 					if( _loader->mbsload( &resmod , _allocator , "User32" , 0 , debuginfo ) )

@@ -184,7 +184,7 @@ goto_return:
 #endif
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , char*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , char*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const char* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -228,13 +228,33 @@ goto_next:
 								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 						}
 						else
-							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						{
+							if( isempty_src_error )
+								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+							else if( dst == 0 )
+							{
+								dstsize_in_bytes = 1;
+								dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
+								dstlen = 0;
+								dst[ dstlen ] = 0;
+							}
+						}
 					}
 					else
-						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					{
+						if( isempty_src_error )
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						else if( dst == 0 )
+						{
+							dstsize_in_bytes = 1;
+							dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
+							dstlen = 0;
+							dst[ dstlen ] = 0;
+						}
+					}
 					return res->succeeded();
 				}
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const char* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -335,10 +355,32 @@ goto_next:
 #endif
 						}
 						else
-							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						{
+							if( isempty_src_error )
+								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+							else if( dst == 0 )
+							{
+								dstsize_in_bytes = 1;
+								dst = allocator->realloc_array< wchar_t >( dst , dstsize_in_bytes , debuginfo );
+								dstlen = 0;
+								dstsize_in_bytes *= sizeof( wchar_t );
+								dst[ dstlen ] = 0;
+							}
+						}
 					}
 					else
-						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					{
+						if( isempty_src_error )
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						else if( dst == 0 )
+						{
+							dstsize_in_bytes = 1;
+							dst = allocator->realloc_array< wchar_t >( dst , dstsize_in_bytes , debuginfo );
+							dstlen = 0;
+							dstsize_in_bytes *= sizeof( wchar_t );
+							dst[ dstlen ] = 0;
+						}
+					}
 #ifndef __WINDOWS__
 goto_return:
 #endif
@@ -494,7 +536,7 @@ goto_return:
 #endif
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -540,13 +582,35 @@ goto_next:
 								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 						}
 						else
-							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						{
+							if( isempty_src_error )
+								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+							else if( dst == 0 )
+							{
+								dstsize_in_bytes = 1;
+								dst = allocator->realloc_array< wchar_t >( dst , dstsize_in_bytes , debuginfo );
+								dstlen = 0;
+								dstsize_in_bytes *= sizeof( wchar_t );
+								dst[ dstlen ] = 0;
+							}
+						}
 					}
 					else
-						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					{
+						if( isempty_src_error )
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						else if( dst == 0 )
+						{
+							dstsize_in_bytes = 1;
+							dst = allocator->realloc_array< wchar_t >( dst , dstsize_in_bytes , debuginfo );
+							dstlen = 0;
+							dstsize_in_bytes *= sizeof( wchar_t );
+							dst[ dstlen ] = 0;
+						}
+					}
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex , char*& dst , size_t& dstlen 
+				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , char*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -645,10 +709,30 @@ goto_next:
 #endif
 						}
 						else
-							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						{
+							if( isempty_src_error )
+								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+							else if( dst == 0 )
+							{
+								dstsize_in_bytes = 1;
+								dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
+								dstlen = 0;
+								dst[ dstlen ] = 0;
+							}
+						}
 					}
 					else
-						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					{
+						if( isempty_src_error )
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						else if( dst == 0 )
+						{
+							dstsize_in_bytes = 1;
+							dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
+							dstlen = 0;
+							dst[ dstlen ] = 0;
+						}
+					}
 #ifndef __WINDOWS__
 goto_return:
 #endif

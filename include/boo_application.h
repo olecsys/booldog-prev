@@ -109,7 +109,7 @@ goto_next:
 		application( booldog::allocator* allocator , booldog::base::loader* loader )
 			: _loader( loader ) , data( allocator ) , _udata( 0 )
 #ifdef __WINDOWS__
-				, _winmm( 0 ) , _timeGetTime( 0 )
+			, _winmm( 0 ) , _timeGetTime( 0 )
 #else
 #endif
 		{
@@ -121,7 +121,7 @@ goto_next:
 				::booldog::result_pointer resptr;
 				if( reswinmm.module->method( &resptr , data._allocator , "timeGetTime" , debuginfo_macros ) )
 					_timeGetTime = (::booldog::typedefs::timeGetTime)resptr.pres;
-			}	
+			}
 #else
 #endif
 		};

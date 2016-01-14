@@ -42,6 +42,23 @@ namespace booldog
 			{
 				return 0;
 			};
+			virtual bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0 
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				pres = pres;
+				allocator = allocator;
+				initparams = initparams;
+				debuginfo = debuginfo;
+				return false;
+			};
+			virtual bool free( ::booldog::result* pres , booldog::allocator* allocator 
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				pres = pres;
+				allocator = allocator;
+				debuginfo = debuginfo;
+				return false;
+			};
 		};
 	};
 	class loader;
@@ -92,7 +109,7 @@ namespace booldog
 		{
 			return ::booldog::interlocked::decrement( const_cast< ::booldog::interlocked::atomic* >( &_ref ) );
 		};
-		bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{		
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
@@ -117,7 +134,7 @@ goto_return:
 			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
-		bool free( ::booldog::result* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual bool free( ::booldog::result* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
