@@ -21,10 +21,64 @@ namespace booldog
 	{
 		namespace module
 		{
+			booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator 
+				, void* address , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT( ::booldog::result );
+				::booldog::module_handle module_handle = 0;
+#ifdef __WINDOWS__
+				if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
+					, &module_handle ) == 0 )
+					res->GetLastError();
+#else
+				::booldog::result_mbchar* resmbchar( allocator );
+				if( ::booldog::utils::module::mbs::pathname< 64 >( resmbchar , allocator , address , debuginfo ) )
+				{
+					module_handle = dlopen( moduresmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
+					if( module_handle == 0 )
+						res->setdlerror( allocator , dlerror() , debuginfo );
+				}
+				else
+					res->copy( resmbchar );
+#endif
+				return module_handle;
+			};
+			booinline bool free( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::module_handle handle
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT( ::booldog::result );
+#ifdef __WINDOWS__
+				if( FreeLibrary( handle ) == 0 )
+					res->GetLastError();
+#else
+				if( dlclose( handle ) != 0 )
+					res->setdlerror( allocator , dlerror() , debuginfo );
+#endif
+				return res->succeeded();
+			};
 			namespace mbs
 			{
+				booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator 
+					, const char* modulename , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+#ifdef __WINDOWS__
+					::booldog::module_handle module_handle = 0;
+					if( GetModuleHandleExA( 0 , modulename , &module_handle ) == 0 )
+						res->GetLastError();
+#else
+					::booldog::module_handle module_handle = dlopen( modulename , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
+					if( module_handle == 0 )
+						res->setdlerror( allocator , dlerror() , debuginfo );
+#endif
+					return module_handle;
+				};
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator , ::booldog::module_handle module_handle , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator 
+					, ::booldog::module_handle module_handle , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -91,6 +145,53 @@ namespace booldog
 goto_return:
 					return res->succeeded();
 				};
+				template< size_t step >
+				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator , void* address 
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result_mbchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_mbchar );
+					if( address )
+					{
+#ifdef __WINDOWS__
+						HMODULE hmodule = 0;
+						if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
+							, &hmodule ) != 0 )
+						{
+							::booldog::utils::module::mbs::pathname< step >( res , allocator , hmodule , debuginfo );
+							FreeLibrary( hmodule );
+						}
+						else
+						{
+							res->GetLastError();
+							goto goto_return;
+						}
+#else
+						Dl_info info;
+						if( dladdr( address , &info ) != 0 )
+						{
+							::booldog::result resres;
+							if( ::booldog::utils::string::mbs::insert( &resres , allocator , true , 0 , res->mbchar , res->mblen
+								, res->mbsize , info.dli_fname , 0 , SIZE_MAX , debuginfo ) == false )
+							{
+								res->copy( resres );
+								goto goto_return;
+							}
+							if( ::booldog::utils::io::path::mbs::normalize( &resres , res->mbchar , res->mblen , res->mbsize ) == false )
+							{
+								res->copy( resres );
+								goto goto_return;
+							}
+						}
+						else
+							res->setdlerror( allocator , dlerror() , debuginfo );
+#endif
+					}
+					else
+						res->booerr( ::booldog::enums::result::booerr_type_pointer_parameter_is_null );
+goto_return:
+					return res->succeeded();
+				};
 				booinline bool method( ::booldog::result_pointer* pres , booldog::allocator* allocator , ::booldog::module_handle module_handle , const char* name , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					allocator = allocator;
@@ -148,8 +249,27 @@ goto_return:
 			};
 			namespace wcs
 			{
+				booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator , const wchar_t* modulename 
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+					::booldog::module_handle module_handle = 0;
+#ifdef __WINDOWS__
+					if( GetModuleHandleExW( 0 , modulename , &module_handle ) == 0 )
+						res->GetLastError();
+#else
+					::booldog::result_mbchar resmbchar( allocator );
+					if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , modulename , 0 , SIZE_MAX , debuginfo ) )
+						module_handle = ::booldog::utils::module::mbs::handle( res , allocator , resmbchar.mbchar , debuginfo );
+					else
+						res->copy( resmbchar );
+#endif
+					return module_handle;
+				};
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator , ::booldog::module_handle module_handle , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator 
+					, ::booldog::module_handle module_handle , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
@@ -189,36 +309,59 @@ goto_return:
 								goto goto_return;
 							}
 						}
+						if( ::booldog::utils::io::path::wcs::normalize( &resres , res->wchar , res->wlen , res->wsize ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
 #else
 						::booldog::result_mbchar resmbchar( allocator );
 						if( ::booldog::utils::module::mbs::pathname< step >( &resmbchar , allocator , module_handle , debuginfo ) )
-						{
-							::booldog::result_wchar reswchar( allocator );
-							if( ::booldog::utils::string::mbs::towcs( &reswchar , allocator , resmbchar.mbchar , 0 , SIZE_MAX 
-								, debuginfo ) )
-							{
-								res->wchar = reswchar.wchar;
-								res->wsize = reswchar.wsize;
-								res->wlen = reswchar.wlen;
-								reswchar.detach();
-							}
-							else
-							{
-								res->copy( reswchar );
-								goto goto_return;
-							}
-						}
+							::booldog::utils::string::mbs::towcs( res , allocator , resmbchar.mbchar , 0 , SIZE_MAX , debuginfo );
 						else
 						{
 							res->copy( resmbchar );
 							goto goto_return;
 						}
 #endif
-						if( ::booldog::utils::io::path::wcs::normalize( &resres , res->wchar , res->wlen , res->wsize ) == false )
+					}
+					else
+						res->booerr( ::booldog::enums::result::booerr_type_pointer_parameter_is_null );
+goto_return:
+					return res->succeeded();
+				};
+
+				template< size_t step >
+				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator , void* address 
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result_wchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_wchar );
+					if( address )
+					{
+#ifdef __WINDOWS__
+						HMODULE hmodule = 0;
+						if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
+							, &hmodule ) != 0 )
 						{
-							res->copy( resres );
+							::booldog::utils::module::wcs::pathname< step >( res , allocator , hmodule , debuginfo );
+							FreeLibrary( hmodule );
+						}
+						else
+						{
+							res->GetLastError();
 							goto goto_return;
 						}
+#else
+						::booldog::result_mbchar resmbchar( allocator );
+						if( ::booldog::utils::module::mbs::pathname< step >( &resmbchar , allocator , address , debuginfo ) )
+							::booldog::utils::string::mbs::towcs( &res , allocator , resmbchar.mbchar , 0 , SIZE_MAX , debuginfo );
+						else
+						{
+							res->copy( resmbchar );
+							goto goto_return;
+						}
+#endif
 					}
 					else
 						res->booerr( ::booldog::enums::result::booerr_type_pointer_parameter_is_null );

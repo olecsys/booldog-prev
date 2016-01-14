@@ -8852,8 +8852,14 @@ TEST_F( boo_base_loaderTest , test )
 		loader.unload( &resres , module2 );
 
 		ASSERT_TRUE( res.succeeded() );
-				
-#ifdef __UNIX__
+		
+
+		loader.mbsload( &res , &allocator , "core" , load_params );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		module0 = res.module;
+
 
 		loader.mbsload( &res , &allocator , "language" , load_params );
 
@@ -8875,10 +8881,77 @@ TEST_F( boo_base_loaderTest , test )
 
 		ASSERT_TRUE( respointer.succeeded() );
 
+		
+		::booldog::module_handle modhandle = ::booldog::utils::module::handle( &resres , &allocator , respointer.pres , 
+			debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_TRUE( modhandle != 0 );
+
+		ASSERT_TRUE( modhandle == module2->handle() );
+
+		::booldog::utils::module::free( &resres , &allocator , modhandle , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		{
+			::booldog::result_mbchar resmbchar( &allocator );
+			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , &allocator , respointer.pres , debuginfo_macros );
+
+			ASSERT_TRUE( resmbchar.succeeded() );
+
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::mbs::filename_without_extension( &res , resmbchar.mbchar , resmbchar.mblen );
+
+				ASSERT_TRUE( res.succeeded() );
+#ifdef __WINDOWS__
+				ASSERT_EQ( resmbchar.mblen , 8 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "language" ) == 0 );
+#else
+				ASSERT_EQ( resmbchar.mblen , 11 );
+
+				ASSERT_TRUE( strcmp( resmbchar.mbchar , "liblanguage" ) == 0 );
+#endif
+			}
+		}
+
+		{
+			::booldog::result_wchar reswchar( &allocator );
+			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , &allocator , respointer.pres , debuginfo_macros );
+
+			ASSERT_TRUE( reswchar.succeeded() );
+
+			{
+				::booldog::result res;
+
+				::booldog::utils::io::path::wcs::filename_without_extension( &res , reswchar.wchar , reswchar.wlen );
+
+				ASSERT_TRUE( res.succeeded() );
+#ifdef __WINDOWS__
+				ASSERT_EQ( reswchar.wlen , 8 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"language" ) == 0 );
+#else
+				ASSERT_EQ( reswchar.wlen , 11 );
+
+				ASSERT_TRUE( wcscmp( reswchar.wchar , L"liblanguage" ) == 0 );
+#endif
+			}
+		}
+		
+
 		loader.unload( &resres , module2 );
 
-		ASSERT_TRUE( res.succeeded() );
-#endif
+		ASSERT_TRUE( resres.succeeded() );
+
+
+		loader.unload( &resres , module0 );
+
+		ASSERT_TRUE( resres.succeeded() );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
