@@ -345,7 +345,7 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( res , res_root_dir.mbchar , 0 , allocator , debuginfo ) )
+						if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
 							goto goto_return;
 
 						res_root_dir.mbchar[ res_dir_mblen ] = 0;
@@ -1038,7 +1038,7 @@ goto_return:
 				_lock.wunlock( debuginfo );
 #else
 			::booldog::result_mbchar resmbchar( allocator );
-			if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , name_or_path , 0 , SIZE_MAX , allocator , debuginfo ) )
+			if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , name_or_path , 0 , SIZE_MAX , debuginfo ) )
 				mbsload( res , allocator , resmbchar.mbchar , named_params , debuginfo );
 			else
 				res->copy( resmbchar );

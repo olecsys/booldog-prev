@@ -117,7 +117,7 @@ namespace booldog
 		{
 			clear();
 			this->error_type = ::booldog::enums::result::error_type_pthread;
-			this->pthreaderror = get_last_error;
+			this->pthreaderror = pthreaderror;
 		};
 		char* dlerror( void )
 		{

@@ -389,7 +389,7 @@ namespace booldog
 #ifdef __WINDOWS__
 				if( _close( _file ) == -1 )
 #else
-				if( close( _file ) == -1 )
+				if( ::close( _file ) == -1 )
 #endif
 					res->seterrno();
 				_allocator->destroy( this );
