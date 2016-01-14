@@ -126,8 +126,9 @@ namespace booldog
 				::booldog::object* new_obj = (::booldog::object*)_obj_->_allocator->alloc( size );
 				::memcpy( new_obj , _obj_ , size );
 				
-				void* zero = (void*)&_obj_->_ref;
-				size -= (char*)zero - (char*)_obj_;
+				char* zero = (char*)&_obj_->_ref;
+				zero += sizeof( _obj_->_ref );
+				size -= zero - (char*)_obj_;
 				::memset( zero , 0 , size );
 
 				new_obj->_ref = 1;
@@ -171,8 +172,9 @@ namespace booldog
 						::booldog::object* new_obj = (::booldog::object*)new_allocator->alloc( size );
 						::memcpy( new_obj , _obj_ , size );
 
-						void* zero = (void*)&_obj_->_ref;
-						size -= (char*)zero - (char*)_obj_;
+						char* zero = (char*)&_obj_->_ref;
+						zero += sizeof( _obj_->_ref );
+						size -= zero - (char*)_obj_;
 						::memset( zero , 0 , size );
 
 						new_obj->_ref = 1;

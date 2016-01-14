@@ -33,30 +33,30 @@ namespace booldog
 		size_t _utf8length;
 		size_t _bytes;
 	public:
-		string( booldog::allocator* allocator )
-			: ::booldog::object( allocator )
+		::booldog::string& operator =( const ::booldog::object& obj )
 		{
-			_utf8str = 0;
-			_size = 0;
-			_utf8length = 0;
-			_bytes = 0;
+			::booldog::object* object = this;
+			object->operator =( obj );
+			return *this;
+		};
+		string( const ::booldog::string& obj )
+			: ::booldog::object( obj._allocator ) , _utf8str( 0 ) , _size( 0 ) , _utf8length( 0 ) , _bytes( 0 )
+		{
+			::booldog::object* object = this;
+			object->operator =( obj );
+		};
+		string( booldog::allocator* allocator )
+			: ::booldog::object( allocator ) , _utf8str( 0 ) , _size( 0 ) , _utf8length( 0 ) , _bytes( 0 )
+		{
 		};
 		string( booldog::allocator* allocator , const char* string , size_t byteindex = 0 , size_t bytes = SIZE_MAX , ::booldog::enums::string::code_page code_page = ::booldog::global::string::default_code_page )
-			: ::booldog::object( allocator )
+			: ::booldog::object( allocator ) , _utf8str( 0 ) , _size( 0 ) , _utf8length( 0 ) , _bytes( 0 )
 		{
-			_utf8str = 0;
-			_size = 0;
-			_bytes = 0;
-			_utf8length = 0;
 			insert( SIZE_MAX , string , byteindex , bytes , code_page );
 		};
 		string( booldog::allocator* allocator , const wchar_t* string , size_t wordindex = 0 , size_t words = SIZE_MAX )
-			: ::booldog::object( allocator )
+			: ::booldog::object( allocator ) , _utf8str( 0 ) , _size( 0 ) , _utf8length( 0 ) , _bytes( 0 )
 		{
-			_utf8str = 0;
-			_size = 0;
-			_bytes = 0;
-			_utf8length = 0;
 			if( ::booldog::compile::If< sizeof( wchar_t ) == 2 >::test() )
 				append( (char*)string , 2 * wordindex , words == SIZE_MAX ? SIZE_MAX : 2 * words , ::booldog::enums::string::UTF16 );
 			else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
@@ -97,18 +97,6 @@ namespace booldog
 		virtual size_t type_size( void ) const
 		{
 			return sizeof( *this );
-		};
-		::booldog::string& operator =( const ::booldog::object& obj )
-		{
-			::booldog::object* object = this;
-			object->operator =( obj );
-			return *this;
-		};
-		string( const ::booldog::string& obj )
-			: ::booldog::object( obj._allocator )
-		{
-			::booldog::object* object = this;
-			object->operator =( obj );
 		};
 		void clear( void )
 		{

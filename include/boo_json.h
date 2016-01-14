@@ -446,10 +446,10 @@ goto_return:
 					realfloatpart = (float)res_float_part;
 					realfloatpart *= pow( 10.f , res_float_part_count );
 				}
-				realres = (::booldog::int32)( realres + realfloatpart );
+				if( realfloatpart != 0 )
+					realres = (::booldog::int32)( realres + realfloatpart );
 				if( negative )
 					realres *= -1;
-
 				return realres;
 			};
 			object_value::operator float() const
@@ -596,10 +596,10 @@ goto_return:
 					realfloatpart = (float)res_float_part;
 					realfloatpart *= pow( 10.f , res_float_part_count );
 				}
-				realres += realfloatpart;
+				if( realfloatpart != 0 )
+					realres += realfloatpart;
 				if( negative )
 					realres *= -1;
-
 				return realres;
 			};
 			object_value::operator ::booldog::uint32() const
@@ -742,8 +742,8 @@ goto_return:
 					realfloatpart = (float)res_float_part;
 					realfloatpart *= pow( 10.f , res_float_part_count );
 				}
-				realres = (::booldog::uint32)( realres + realfloatpart );
-
+				if( realfloatpart != 0 )
+					realres = (::booldog::uint32)( realres + realfloatpart );
 				return realres;
 			};
 			object_value::operator ::booldog::uint64() const
@@ -886,8 +886,8 @@ goto_return:
 					realfloatpart = (float)res_float_part;
 					realfloatpart *= pow( 10.f , res_float_part_count );
 				}
-				realres = (::booldog::uint64)( realres + realfloatpart );
-
+				if( realfloatpart != 0 )
+					realres = (::booldog::uint64)( realres + realfloatpart );
 				return realres;
 			};
 			object_value::operator ::booldog::int64() const
@@ -1035,10 +1035,10 @@ goto_return:
 					realfloatpart = (float)res_float_part;
 					realfloatpart *= pow( 10.f , res_float_part_count );
 				}
-				realres = (::booldog::int64)( realres + realfloatpart );
+				if( realfloatpart != 0 )
+					realres = (::booldog::int64)( realres + realfloatpart );
 				if( negative )
 					realres *= -1;
-
 				return realres;
 			};
 			const char* node::json( ::booldog::data::json::serializator* parentserializator , const ::booldog::debug::info& debuginfo ) const
