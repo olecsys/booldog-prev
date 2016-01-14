@@ -8897,7 +8897,7 @@ TEST_F( boo_base_loaderTest , test )
 
 		{
 			::booldog::result_mbchar resmbchar( &allocator );
-			::booldog::utils::module::mbs::pathname< 4 >( &resmbchar , &allocator , respointer.pres , debuginfo_macros );
+			::booldog::utils::module::mbs::pathname_from_address< 4 >( &resmbchar , &allocator , respointer.pres , debuginfo_macros );
 
 			ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -8921,7 +8921,7 @@ TEST_F( boo_base_loaderTest , test )
 
 		{
 			::booldog::result_wchar reswchar( &allocator );
-			::booldog::utils::module::wcs::pathname< 4 >( &reswchar , &allocator , respointer.pres , debuginfo_macros );
+			::booldog::utils::module::wcs::pathname_from_address< 4 >( &reswchar , &allocator , respointer.pres , debuginfo_macros );
 
 			ASSERT_TRUE( reswchar.succeeded() );
 

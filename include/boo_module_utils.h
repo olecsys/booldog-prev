@@ -32,10 +32,10 @@ namespace booldog
 					, &module_handle ) == 0 )
 					res->GetLastError();
 #else
-				::booldog::result_mbchar* resmbchar( allocator );
-				if( ::booldog::utils::module::mbs::pathname< 64 >( resmbchar , allocator , address , debuginfo ) )
+				::booldog::result_mbchar resmbchar( allocator );
+				if( ::booldog::utils::module::mbs::pathname_from_address< 64 >( &resmbchar , allocator , address , debuginfo ) )
 				{
-					module_handle = dlopen( moduresmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
+					module_handle = dlopen( resmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
 					if( module_handle == 0 )
 						res->setdlerror( allocator , dlerror() , debuginfo );
 				}
@@ -146,7 +146,7 @@ goto_return:
 					return res->succeeded();
 				};
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator , void* address 
+				booinline bool pathname_from_address( ::booldog::result_mbchar* pres , booldog::allocator* allocator , void* address 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_mbchar locres( allocator );
@@ -332,7 +332,7 @@ goto_return:
 				};
 
 				template< size_t step >
-				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator , void* address 
+				booinline bool pathname_from_address( ::booldog::result_wchar* pres , booldog::allocator* allocator , void* address 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_wchar locres( allocator );
@@ -354,7 +354,7 @@ goto_return:
 						}
 #else
 						::booldog::result_mbchar resmbchar( allocator );
-						if( ::booldog::utils::module::mbs::pathname< step >( &resmbchar , allocator , address , debuginfo ) )
+						if( ::booldog::utils::module::mbs::pathname_from_address< step >( &resmbchar , allocator , address , debuginfo ) )
 							::booldog::utils::string::mbs::towcs( &res , allocator , resmbchar.mbchar , 0 , SIZE_MAX , debuginfo );
 						else
 						{
