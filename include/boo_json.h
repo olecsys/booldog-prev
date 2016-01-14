@@ -2331,7 +2331,7 @@ goto_next0:
 					::booldog::data::json::node* node = 0 , * curnode = 0 , * parentnode = 0;
 					
 					ptr = res->serializator->json;		
-					const char* begin = 0 , * name_begin = 0;
+					const char* begin = 0 , * name_begin = 0 , * number_string_begin = 0;
 					::booldog::uint64 name_hash = 0;
 goto_value_parse:
 					begin = ptr;
@@ -3139,7 +3139,6 @@ goto_go_away_from_ws0:
 					case '8':
 					case '9':
 						{
-							const char* number_string_begin = 0;
 							begin = ptr;
 							for( ; ; )
 							{
