@@ -3,7 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_opengl_texture.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_opengl_texture.h)
 namespace booldog
 {
 	namespace opengl

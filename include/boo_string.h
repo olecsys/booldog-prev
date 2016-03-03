@@ -3,13 +3,16 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_object.h>
-#include <boo_utf8.h>
-#include <boo_utf32.h>
-#include <boo_utf16.h>
-#include <boo_cp1251.h>
-#include <boo_mem.h>
-#include <boo_if.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_object.h)
+#include BOOLDOG_HEADER(boo_utf8.h)
+#include BOOLDOG_HEADER(boo_utf32.h)
+#include BOOLDOG_HEADER(boo_utf16.h)
+#include BOOLDOG_HEADER(boo_cp1251.h)
+#include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_if.h)
 namespace booldog
 {
 #ifdef BOOLDOG_STRING_TEST

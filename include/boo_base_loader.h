@@ -3,15 +3,19 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_base_module.h>
-#include <boo_array.h>
-#include <boo_result.h>
-#include <boo_param.h>
-#include <boo_stack_allocator.h>
-#include <boo_rdwrlock.h>
-#include <boo_io_utils.h>
-#include <boo_module_utils.h>
-#include <boo_string_utils.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_base_module.h)
+#include BOOLDOG_HEADER(boo_array.h)
+#include BOOLDOG_HEADER(boo_result.h)
+#include BOOLDOG_HEADER(boo_param.h)
+#include BOOLDOG_HEADER(boo_stack_allocator.h)
+#include BOOLDOG_HEADER(boo_rdwrlock.h)
+#include BOOLDOG_HEADER(boo_io_utils.h)
+#include BOOLDOG_HEADER(boo_executable_utils.h)
+#include BOOLDOG_HEADER(boo_string_utils.h)
+
 #ifdef __UNIX__
 #include <dlfcn.h>
 #include <link.h>
@@ -19,6 +23,13 @@
 #endif
 namespace booldog
 {
+	namespace events
+	{
+		namespace typedefs
+		{
+			typedef void (*onbeforeunload)( void* udata , ::booldog::base::module* module );
+		};
+	};
 	class result_module : public ::booldog::result
 	{
 	private:
@@ -56,10 +67,13 @@ namespace booldog
 		class loader
 		{
 		public:
-			virtual bool utf8load( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path , ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
-			virtual bool mbsload( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path , ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
-			virtual bool wcsload( ::booldog::result_module* pres , booldog::allocator* allocator , const wchar_t* name_or_path , ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
-			virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
+			virtual bool mbsload( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
+				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
+			virtual bool wcsload( ::booldog::result_module* pres , booldog::allocator* allocator , const wchar_t* name_or_path 
+				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
+			virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module 
+				, ::booldog::events::typedefs::onbeforeunload ponbeforeunload , void* udata 
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
 			virtual booldog::allocator* allocator( void ) = 0;
 		};
 	};
@@ -79,14 +93,25 @@ namespace booldog
 		{
 			::booldog::module_handle module_handle = 0;
 			if( GetModuleHandleExW( 0 , res_name_or_path , &module_handle ) )
+			{
+				if( GetModuleHandle( 0 ) == module_handle )
+				{
+					FreeLibrary( module_handle );
+					module_handle = 0;
+				}
+			}
 #else
 		booinline bool get_loaded_module( ::booldog::result_module* pres , const char* res_name_or_path 
 			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			char* dl_error = 0;
-			::booldog::module_handle module_handle = dlopen( res_name_or_path , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
-			if( module_handle )
+#ifndef __ANDROID__
+			::booldog::module_handle module_handle = dlopen( res_name_or_path , RTLD_NOLOAD | RTLD_NOW );
+#else
+			::booldog::module_handle module_handle = 0;
 #endif
+#endif
+			if( module_handle )
 			{
 				::booldog::module* module = 0;
 				_lock.wlock( debuginfo );
@@ -133,14 +158,6 @@ namespace booldog
 		virtual booldog::allocator* allocator( void )
 		{
 			return _allocator;
-		};
-		virtual bool utf8load( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
-			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-		{
-			::booldog::result_module locres;
-			BOOINIT_RESULT( ::booldog::result_module );
-			
-			return res->succeeded();
 		};
 		virtual bool mbsload( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
 			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
@@ -192,7 +209,7 @@ namespace booldog
 
 				if( get_loaded_module( res , res_name_or_path.mbchar , debuginfo ) )
 					goto goto_return;
-				module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
+				module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 				if( module_handle )
 				{
 					::booldog::result_mbchar resdirmbchar( _allocator );
@@ -386,22 +403,6 @@ namespace booldog
 						if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
 							goto goto_return;
 
-						res_root_dir.mbchar[ res_dir_mblen ] = 0;
-						res_root_dir.mblen = res_dir_mblen;
-						if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
-							, res_root_dir.mblen , res_root_dir.mbsize , "lib" , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
-							, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
 						if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
 							, SIZE_MAX , debuginfo ) == false )
@@ -476,22 +477,6 @@ namespace booldog
 					if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
 						goto goto_return;
 
-					res_root_dir.mbchar[ res_dir_mblen ] = 0;
-					res_root_dir.mblen = res_dir_mblen;
-					if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
-						, res_root_dir.mblen , res_root_dir.mbsize , "lib" , 0
-						, SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
-						, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
-						, SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
 					if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 						, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
 						, SIZE_MAX , debuginfo ) == false )
@@ -602,7 +587,7 @@ namespace booldog
 					}
 					_lock_loaded_dirs.runlock( debuginfo );
 
-					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
+					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
@@ -615,7 +600,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
@@ -630,7 +615,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
@@ -642,13 +627,14 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW | RTLD_GLOBAL );
+					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
 						res->setdlerror( allocator , dlerror() , debuginfo );
 					goto goto_return;
 goto_loaded_module:
+#ifndef __ANDROID__
 					struct link_map *map = 0;
 					if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
 					{
@@ -707,6 +693,9 @@ goto_loaded_module:
 						res->setdlerror( allocator , dlerror() , debuginfo );
 						dlclose( module_handle );
 					}
+#else
+					;
+#endif
 				}
 			}
 goto_return:
@@ -891,6 +880,16 @@ goto_return:
 						if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
 							goto goto_return;
 
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+							goto goto_return;
+
 						res_root_dir.wchar[ res_dir_wlen ] = 0;
 						res_root_dir.wlen = res_dir_wlen;
 						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
@@ -902,6 +901,16 @@ goto_return:
 						}
 						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
 							, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+							goto goto_return;
+
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
 							, SIZE_MAX , debuginfo ) == false )
 						{
 							res->copy( resres );
@@ -936,6 +945,16 @@ goto_return:
 					if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
 						goto goto_return;
 
+					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+						, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+						, SIZE_MAX , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						goto goto_return;
+
 					res_root_dir.wchar[ res_dir_wlen ] = 0;
 					res_root_dir.wlen = res_dir_wlen;
 					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
@@ -947,6 +966,16 @@ goto_return:
 					}
 					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
 						, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
+						, SIZE_MAX , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						goto goto_return;
+
+					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+						, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
 						, SIZE_MAX , debuginfo ) == false )
 					{
 						res->copy( resres );
@@ -968,43 +997,62 @@ goto_return:
 					if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
 						goto goto_return;
 					module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-					if( module_handle )
-					{
-						::booldog::module* module = 0;
-						_lock.wlock( debuginfo );
-						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
-						{
-							if( _modules[ index0 ]->handle() == module_handle )
-							{
-								module = _modules[ index0 ];
-								module->addref();
-								break;
-							}
-						}
-						if( module == 0 )
-						{
-							module = _allocator->create< ::booldog::module >( debuginfo );
-							module->_handle = module_handle;
-							_modules.add( module , debuginfo );
-						}
-						_lock.wunlock( debuginfo );
-						res->clear();
-						res->module = module;
-						goto goto_return;
-					}
-					else
+					if( module_handle == 0 )
 						res->GetLastError();
 
-					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-						, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
-						, SIZE_MAX , debuginfo ) == false )
+					if( module_handle == 0 )
 					{
-						res->copy( resres );
-						goto goto_return;
+						size_t res_root_dir_prev = res_root_dir.wlen;
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
+							goto goto_return;
+						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+						if( module_handle == 0 )
+						{
+							res->GetLastError();
+							res_root_dir.wchar[ res_root_dir_prev ] = 0;
+							res_root_dir.wlen = res_root_dir_prev;
+						}
 					}
-					if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
-						goto goto_return;
-					module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+
+					if( module_handle == 0 )
+					{
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , 0 , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
+							goto goto_return;
+						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+						if( module_handle == 0 )
+							res->GetLastError();
+					}
+					
+					if( module_handle == 0 )
+					{
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
+							goto goto_return;
+						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+						if( module_handle == 0 )
+							res->GetLastError();
+					}
+										
 					if( module_handle )
 					{
 						::booldog::module* module = 0;
@@ -1029,8 +1077,6 @@ goto_return:
 						res->module = module;
 						goto goto_return;
 					}
-					else
-						res->GetLastError();
 				}
 			}
 goto_return:
@@ -1045,7 +1091,9 @@ goto_return:
 #endif
 			return res->succeeded();
 		};
-		virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module 
+			, ::booldog::events::typedefs::onbeforeunload ponbeforeunload , void* udata 
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			debuginfo = debuginfo;
 			::booldog::result locres;
@@ -1056,16 +1104,24 @@ goto_return:
 				if( _modules[ index0 ] == module )
 				{
 					::booldog::module* mod = _modules[ index0 ];
-#ifdef __WINDOWS__
-					FreeLibrary( mod->_handle );
-#else
-					dlclose( mod->_handle );
-#endif
 					if( mod->release() == 0 )
-					{						
+					{	
+						if( ponbeforeunload )
+							ponbeforeunload( udata , mod );
+#ifdef __WINDOWS__
+						FreeLibrary( mod->_handle );
+#else
+						dlclose( mod->_handle );
+#endif
 						_modules.remove( index0 );
 						_allocator->destroy< ::booldog::module >( mod );
 					}
+					else
+#ifdef __WINDOWS__
+						FreeLibrary( mod->_handle );
+#else
+						dlclose( mod->_handle );
+#endif
 					goto goto_return;
 				}
 			}

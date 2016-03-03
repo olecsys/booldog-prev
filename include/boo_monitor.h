@@ -3,7 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_base_loader.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_base_loader.h)
 namespace booldog
 {
 	namespace typedefs
@@ -78,7 +81,7 @@ namespace booldog
 					}
 goto_unload:
 					if( resmodUser32.module )
-						ploader->unload( 0 , resmodUser32.module , debuginfo );
+						ploader->unload( 0 , resmodUser32.module , 0 , 0 , debuginfo );
 				}
 				else
 					res->copy( resmodUser32 );

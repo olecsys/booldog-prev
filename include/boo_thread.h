@@ -3,9 +3,14 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_threading_utils.h>
-#include <boo_result.h>
-#include <boo_error.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_interlocked.h)
+#include BOOLDOG_HEADER(boo_threading_utils.h)
+#include BOOLDOG_HEADER(boo_result.h)
+#include BOOLDOG_HEADER(boo_error.h)
+
 #ifdef __WINDOWS__
 #include <process.h>
 #else
@@ -116,8 +121,6 @@ namespace booldog
 						goto goto_destroy;
 					}
 #else
-					if( stack_size < PTHREAD_STACK_MIN )
-						stack_size = PTHREAD_STACK_MIN;
 					pthread_attr_t pthread_attr;		
 					int result = pthread_attr_init( &pthread_attr );		
 					if( result != 0 )
@@ -139,7 +142,7 @@ namespace booldog
 						pthread_attr_destroy( &pthread_attr );
 						goto goto_destroy;
 					}
-					result = pthread_create( &_handle , &pthread_attr , func , (void*)thr );
+					result = pthread_create( &thr->_handle , &pthread_attr , func , (void*)thr );
 					if( result != 0 )
 					{
 						res->setpthreaderror( result );

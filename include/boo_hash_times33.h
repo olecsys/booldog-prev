@@ -3,7 +3,11 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_types.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_types.h)
+
 #include <stdarg.h>
 namespace booldog
 {
@@ -31,7 +35,7 @@ namespace booldog
 #endif
 		namespace times33
 		{
-			::booldog::uint64 calculate( const char* data , size_t data_len )
+			booinline ::booldog::uint64 calculate( const char* data , size_t data_len )
 			{
 				::booldog::uint64 hash = 0;
 				const ::booldog::byte* begin = (const ::booldog::byte*)data;
@@ -49,7 +53,7 @@ namespace booldog
 				}
 				return hash;
 			};
-			::booldog::uint64 calculate( size_t count , va_list ap )
+			booinline ::booldog::uint64 calculate( size_t count , va_list ap )
 			{
 				::booldog::uint64 hash = 0;
 				const ::booldog::byte* ptr = 0;
@@ -61,7 +65,7 @@ namespace booldog
 				}
 				return hash;
 			};
-			::booldog::uint64 calculate( size_t count , ... )
+			booinline ::booldog::uint64 calculate( size_t count , ... )
 			{
 				va_list ap;
 				va_start( ap , count );

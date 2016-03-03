@@ -3,9 +3,12 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_ui_application.h>
-#include <boo_ui_controls_control.h>
-#include <boo_fps_counter.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_ui_application.h)
+#include BOOLDOG_HEADER(boo_ui_controls_control.h)
+#include BOOLDOG_HEADER(boo_fps_counter.h)
 namespace booldog
 {
 	namespace ui

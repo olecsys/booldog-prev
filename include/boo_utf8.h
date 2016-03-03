@@ -3,15 +3,20 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_utf8_consts.h>
-#include <boo_utf32.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_utf8_consts.h)
+#include BOOLDOG_HEADER(boo_utf32.h)
 namespace booldog
 {
 	namespace utf8
 	{
+#ifndef validate_character_check_without_length_macros
 #define validate_character_check_without_length_macros( ptr ) ptr++;\
 	if( !( ( *ptr >> 6 ) == 0x2 ) )\
 		return ::booldog::enums::string::conversion_result_sourceIllegal
+#endif
 		booinline bool validate_character( const ::booldog::byte*& ptr )
 		{
 			if( *ptr <= 0x7f )

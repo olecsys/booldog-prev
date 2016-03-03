@@ -3,12 +3,15 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_allocator.h>
-#include <boo_mem.h>
-#include <boo_if.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_allocator.h)
+#include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_if.h)
+#include BOOLDOG_HEADER(boo_utils.h)
 
 #include <stdio.h>
-#include <boo_utils.h>
 namespace booldog
 {
 	namespace mem
@@ -396,7 +399,7 @@ namespace booldog
 			{
 				return &_data[ _data_size ];
 			};
-			virtual void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
 				if( _avail > 0 )
@@ -457,7 +460,7 @@ namespace booldog
 				}
 				return 0;
 			};
-			virtual void free( void* pointer )
+			void free( void* pointer )
 			{
 				size_t offsize = 0 , begin_size = 0;
 				::booldog::byte* ptr = from_pointer( pointer , offsize , begin_size );
@@ -471,7 +474,16 @@ namespace booldog
 				else
 					throw int();
 			};
-			virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			size_t getsize( void* pointer )
+			{
+				if( pointer == 0 )
+					return 0;
+				size_t offsize = 0 , size = 0;
+				from_pointer( pointer , offsize , size );
+				return size;
+			};
+			void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				if( size == 0 )
 				{
@@ -589,7 +601,14 @@ namespace booldog
 						void* new_pointer = this->alloc( size , debuginfo );
 						if( new_pointer )
 							::memcpy( new_pointer , pointer , begin_size );
-						this->free( pointer );
+						if( new_pointer == 0 )
+						{
+							oldpointer = pointer;
+							if( free_if_cannot_alloc )
+								this->free( pointer );
+						}
+						else
+							this->free( pointer );
 						return new_pointer;
 					}
 					else
@@ -674,9 +693,14 @@ namespace booldog
 								from_info( info , info_offsize , info_begin_size );
 							}
 						}
-						return this->realloc( begin + new_offset , size , debuginfo );
+						return this->tryrealloc( begin + new_offset , size , free_if_cannot_alloc , oldpointer , debuginfo );
 					}
 				}
+			};
+			void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				void* oldpointer = 0;
+				return tryrealloc( pointer , size , true , oldpointer , debuginfo );
 			};
 		};
 	};

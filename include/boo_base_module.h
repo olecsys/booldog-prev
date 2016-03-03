@@ -3,13 +3,27 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_string.h>
-#include <boo_interlocked.h>
-#include <boo_rdwrlock.h>
-#include <boo_result.h>
-#include <boo_module_utils.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_string.h)
+#include BOOLDOG_HEADER(boo_interlocked.h)
+#include BOOLDOG_HEADER(boo_rdwrlock.h)
+#include BOOLDOG_HEADER(boo_result.h)
+#include BOOLDOG_HEADER(boo_module_utils.h)
 namespace booldog
 {
+	namespace base
+	{
+		class module;
+	};
+	namespace events
+	{
+		namespace typedefs
+		{
+			typedef void (*onbeforefree)( void* udata , ::booldog::base::module* module );
+		};
+	};
 	typedef int (*module_init_t)( void* p );
 	typedef int (*module_free_t)( void );
 	namespace base
@@ -51,12 +65,18 @@ namespace booldog
 				debuginfo = debuginfo;
 				return false;
 			};
-			virtual bool free( ::booldog::result* pres , booldog::allocator* allocator 
-				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			virtual bool free( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::events::typedefs::onbeforefree ponbeforefree 
+				, void* udata , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
+				ponbeforefree = ponbeforefree;
+				udata = udata;
 				pres = pres;
 				allocator = allocator;
 				debuginfo = debuginfo;
+				return false;
+			};
+			virtual bool inited( void )
+			{
 				return false;
 			};
 		};
@@ -70,12 +90,22 @@ namespace booldog
 		::booldog::module_handle _handle;
 		::booldog::threading::rdwrlock _lock;
 		::booldog::uint32 _inited_ref;
+		void* _udata;
 	public:
 		module( void )
+			: _udata( 0 )
 		{
 			_inited_ref = 0;
 			_ref = 1;
 			_handle = 0;
+		};
+		virtual void udata( void* pudata )
+		{
+			_udata = pudata;
+		};
+		virtual void* udata( void )
+		{
+			return _udata;
 		};
 		virtual bool loaded( void )
 		{
@@ -109,6 +139,14 @@ namespace booldog
 		{
 			return ::booldog::interlocked::decrement( const_cast< ::booldog::interlocked::atomic* >( &_ref ) );
 		};
+		virtual bool inited( void )
+		{
+			bool res = false;
+			_lock.rlock( debuginfo_macros );
+			res = _inited_ref > 0;
+			_lock.runlock( debuginfo_macros );
+			return res;
+		};
 		virtual bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{		
 			::booldog::result locres;
@@ -134,7 +172,8 @@ goto_return:
 			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
-		virtual bool free( ::booldog::result* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual bool free( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::events::typedefs::onbeforefree ponbeforefree 
+			, void* udata, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
@@ -144,6 +183,8 @@ goto_return:
 				_inited_ref--;			
 				if( _inited_ref == 0 )
 				{
+					if( ponbeforefree )
+						ponbeforefree( udata , this );
 					::booldog::result_pointer respointer;
 					if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "core_free" , debuginfo ) )
 						goto goto_method_success_return;

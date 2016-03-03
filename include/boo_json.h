@@ -3,11 +3,16 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_param.h>
-#include <boo_allocator.h>
-#include <boo_utf16.h>
-#include <boo_utf8.h>
-#include <boo_utils.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_param.h)
+#include BOOLDOG_HEADER(boo_allocator.h)
+#include BOOLDOG_HEADER(boo_utf16.h)
+#include BOOLDOG_HEADER(boo_utf8.h)
+#include BOOLDOG_HEADER(boo_utils.h)
+#include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_result.h)
 
 #include <math.h>
 namespace booldog
@@ -46,7 +51,7 @@ namespace booldog
 			struct object_json
 			{
 				::booldog::data::json::node* node;
-				operator const char*() const;
+				booinline operator const char*() const;
 			}
 			booend_struct_pack( 1 );
 
@@ -54,14 +59,14 @@ namespace booldog
 			struct object_value
 			{
 				::booldog::data::json::node* node;
-				operator float() const;
-				operator const char*() const;
-				operator ::booldog::int32() const;
-				operator ::booldog::int64() const;
-				operator ::booldog::uint32() const;
-				operator ::booldog::uint64() const;
-				operator bool() const;
-				const char* name( void ) const;
+				booinline operator float() const;
+				booinline operator const char*() const;
+				booinline operator ::booldog::int32() const;
+				booinline operator ::booldog::int64() const;
+				booinline operator ::booldog::uint32() const;
+				booinline operator ::booldog::uint64() const;
+				booinline operator bool() const;
+				booinline const char* name( void ) const;
 			}
 			booend_struct_pack( 1 );
 
@@ -80,8 +85,8 @@ namespace booldog
 				char* valueend;
 				::booldog::data::json::node* next;
 				::booldog::data::json::node* child;
-				const char* name( void ) const;
-				void offset( int diff , char* valueend )
+				booinline const char* name( void ) const;
+				booinline void offset( int diff , char* valueend )
 				{
 					::booldog::data::json::node* pnext = child;
 					for( ; ; )
@@ -100,7 +105,7 @@ namespace booldog
 						pnext = pnext->next;
 					}
 				};
-				void offset( char* oldjsonstr , char* jsonstr )
+				booinline void offset( char* oldjsonstr , char* jsonstr )
 				{
 					::booldog::data::json::node* pnext = child;
 					for( ; ; )
@@ -116,7 +121,7 @@ namespace booldog
 						pnext = pnext->next;
 					}
 				};
-				const char* json( ::booldog::data::json::serializator* parentserializator , const ::booldog::debug::info& debuginfo = debuginfo_macros ) const;
+				booinline const char* json( ::booldog::data::json::serializator* parentserializator , const ::booldog::debug::info& debuginfo = debuginfo_macros ) const;
 			}
 			booend_struct_pack( 1 );
 
@@ -135,42 +140,42 @@ namespace booldog
 				{
 					json.node = srcnode;
 				};
-				::booldog::data::json::object operator[]( size_t index );
-				::booldog::data::json::object operator()( const char* utf8name );
-				const char* name( void ) const
+				booinline ::booldog::data::json::object operator[]( size_t index );
+				booinline ::booldog::data::json::object operator()( const char* utf8name );
+				booinline const char* name( void ) const
 				{
 					return value.name();
 				};
-				bool exists( void )
+				booinline bool exists( void )
 				{
 					return json.node != 0;
 				};
-				bool isstring( void )
+				booinline bool isstring( void )
 				{
 					return json.node && json.node->type == ::booldog::enums::data::json::string;
 				};
-				bool isnumber( void )
+				booinline bool isnumber( void )
 				{
 					return json.node && json.node->type == ::booldog::enums::data::json::number;
 				};
-				bool isnull( void )
+				booinline bool isnull( void )
 				{
 					return json.node && json.node->type == ::booldog::enums::data::json::null;
 				};
-				bool isboolean( void )
+				booinline bool isboolean( void )
 				{
 					return json.node && ( json.node->type == ::booldog::enums::data::json::boolean_true
 						|| json.node->type == ::booldog::enums::data::json::boolean_false );
 				};
-				bool isobject( void )
+				booinline bool isobject( void )
 				{
 					return json.node && json.node->type == ::booldog::enums::data::json::object;
 				};
-				bool isarray( void )
+				booinline bool isarray( void )
 				{
 					return json.node && json.node->type == ::booldog::enums::data::json::array;
 				};
-				size_t count( void )
+				booinline size_t count( void )
 				{
 					if( json.node && ( json.node->type == ::booldog::enums::data::json::array
 						|| json.node->type == ::booldog::enums::data::json::object ) )

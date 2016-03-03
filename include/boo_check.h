@@ -3,7 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_object.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_object.h)
 namespace booldog
 {
 	template< class booclass >

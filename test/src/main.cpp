@@ -209,24 +209,29 @@ char utf8_TESTil_var[] =
 };
 
 #define BOOLDOG_STRING_TEST
-#include <boo_object.h>
-#include <boo_if.h>
-#include <boo_check.h>
-#include <boo_string.h>
-#include <boo_list.h>
-#include <boo_stack_allocator.h>
-#include <boo_heap_allocator.h>
-#include <boo_mixed_allocator.h>
-#include <boo_mem.h>
-#include <boo_base_loader.h>
-#include <boo_module_utils.h>
-#include <boo_io_utils.h>
-#include <boo_array.h>
-#include <boo_param.h>
-#include <boo_string_utils.h>
-#include <boo_error_format.h>
-#include <boo_json.h>
-#include <boo_io_file.h>
+
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_object.h)
+#include BOOLDOG_HEADER(boo_if.h)
+#include BOOLDOG_HEADER(boo_check.h)
+#include BOOLDOG_HEADER(boo_string.h)
+#include BOOLDOG_HEADER(boo_list.h)
+#include BOOLDOG_HEADER(boo_stack_allocator.h)
+#include BOOLDOG_HEADER(boo_heap_allocator.h)
+#include BOOLDOG_HEADER(boo_mixed_allocator.h)
+#include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_base_loader.h)
+#include BOOLDOG_HEADER(boo_module_utils.h)
+#include BOOLDOG_HEADER(boo_executable_utils.h)
+#include BOOLDOG_HEADER(boo_io_utils.h)
+#include BOOLDOG_HEADER(boo_array.h)
+#include BOOLDOG_HEADER(boo_param.h)
+#include BOOLDOG_HEADER(boo_string_utils.h)
+#include BOOLDOG_HEADER(boo_error_format.h)
+#include BOOLDOG_HEADER(boo_json.h)
+#include BOOLDOG_HEADER(boo_io_file.h)
 class boo_paramTest : public ::testing::Test 
 {
 };
@@ -1506,6 +1511,62 @@ TEST_F( boo_allocators_heapTest , test )
 
 		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
 	}
+
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 563 );
+
+		int checker = 1986;
+		::memcpy( &((char*)ptr0)[ 233 - sizeof( int ) ] , &checker , sizeof( int ) ); 
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 233 );
+
+		ASSERT_EQ( ::memcmp( &((char*)ptr0)[ 233 - sizeof( int ) ] , &checker , sizeof( int ) ) , 0 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 563 );
+
+		::memcpy( &((char*)ptr0)[ 254 - sizeof( int ) ] , &checker , sizeof( int ) ); 
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 254 );
+
+		ASSERT_EQ( ::memcmp( &((char*)ptr0)[ 254 - sizeof( int ) ] , &checker , sizeof( int ) ) , 0 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 70000 );
+
+		::memcpy( &((char*)ptr0)[ 233 - sizeof( int ) ] , &checker , sizeof( int ) ); 
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 233 );
+
+		ASSERT_EQ( ::memcmp( &((char*)ptr0)[ 233 - sizeof( int ) ] , &checker , sizeof( int ) ) , 0 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 70000 );
+
+		::memcpy( &((char*)ptr0)[ 254 - sizeof( int ) ] , &checker , sizeof( int ) ); 
+
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 254 );
+
+		ASSERT_EQ( ::memcmp( &((char*)ptr0)[ 254 - sizeof( int ) ] , &checker , sizeof( int ) ) , 0 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+
+		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
+	}
 			
 	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
 };
@@ -1517,7 +1578,7 @@ class boo_allocators_mixedTest : public ::testing::Test
 TEST_F( boo_allocators_mixedTest , test )
 {
 	::booldog::allocators::easy::heap heap;
-	::booldog::allocators::mixed< 32 > mixed( &heap , ::booldog::threading::thread_id() );
+	::booldog::allocators::mixed< 32 > mixed( &heap , ::booldog::threading::threadid() );
 
 	size_t total = mixed.stack.available();
 
@@ -1530,7 +1591,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	size_t ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	size_t ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
 
@@ -1547,7 +1608,7 @@ TEST_F( boo_allocators_mixedTest , test )
 
 	ASSERT_FALSE( ptr2 == 0 );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , ptr2_mswi );
 
 
 	size = 4;
@@ -1557,7 +1618,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	size_t ptr1_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	size_t ptr1_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , ptr2_mswi );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi + ptr1_mswi );
 
@@ -1568,7 +1629,7 @@ TEST_F( boo_allocators_mixedTest , test )
 
 	mixed.free( ptr1 );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , ptr2_mswi );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
 
@@ -1577,7 +1638,7 @@ TEST_F( boo_allocators_mixedTest , test )
 
 	mixed.free( ptr0 );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr2_mswi );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , ptr2_mswi );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -1586,7 +1647,7 @@ TEST_F( boo_allocators_mixedTest , test )
 
 	mixed.free( ptr2 );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -1602,7 +1663,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
 
@@ -1618,7 +1679,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
 
@@ -1634,7 +1695,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin + ptr0_mswi );
 
@@ -1650,7 +1711,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -1666,7 +1727,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr0_mswi );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , ptr0_mswi );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -1682,7 +1743,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr0_mswi );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , ptr0_mswi );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -1698,7 +1759,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , ptr0_mswi );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , ptr0_mswi );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -1714,7 +1775,7 @@ TEST_F( boo_allocators_mixedTest , test )
 	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( size );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( size );
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -1725,7 +1786,7 @@ TEST_F( boo_allocators_mixedTest , test )
 
 
 
-	ASSERT_EQ( mixed.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( mixed.holder.heap->size_of_allocated_memory() , 0 );
 
 	ASSERT_TRUE( mixed.stack.begin() == begin );
 
@@ -6372,6 +6433,20 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
+		::booldog::utils::string::wcs::toutf8< 1 >( &resmbchar , &allocator , L"locale" , 0 , SIZE_MAX );
+		
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 7 );
+
+		ASSERT_EQ( resmbchar.mblen , 6 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "locale" ) == 0 );
+	}
+
+	{
+		::booldog::result_mbchar resmbchar( &allocator );
+
 		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , SIZE_MAX );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
@@ -6386,7 +6461,35 @@ TEST_F( boo_string_utilsTest , test )
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
+		::booldog::utils::string::wcs::toutf8< 1 >( &resmbchar , &allocator , L"locale" , 3 , SIZE_MAX );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 4 );
+
+		ASSERT_EQ( resmbchar.mblen , 3 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "ale" ) == 0 );
+	}
+
+	{
+		::booldog::result_mbchar resmbchar( &allocator );
+
 		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , 2 );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mbsize , 3 );
+
+		ASSERT_EQ( resmbchar.mblen , 2 );
+
+		ASSERT_TRUE( strcmp( resmbchar.mbchar , "al" ) == 0 );
+	}
+
+	{
+		::booldog::result_mbchar resmbchar( &allocator );
+
+		::booldog::utils::string::wcs::toutf8< 1 >( &resmbchar , &allocator , L"locale" , 3 , 2 );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -6443,6 +6546,224 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( resmbchar.mblen , 6 );
 
 		ASSERT_TRUE( strcmp( resmbchar.mbchar , "locale" ) == 0 );
+	}
+
+	{
+		::booldog::result_size ressize;
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "lib" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 89 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "lib898" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , SIZE_MAX );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 0 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , ".so" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 105 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 1 , SIZE_MAX , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 12 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 1 , 15 , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 12 );
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 1 , 14 , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , SIZE_MAX );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "rtmp.so" , 1 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , SIZE_MAX );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "rtmp.so" , 4 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 105 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "rtmp.so" , 5 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 106 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "rtmp.so" , 4 , 3 , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 105 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "rtmp.so" , 4 , 2 , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 105 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "rtmp.so" , 4 , 1 , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 86 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "rtmphome.so" , 4 , 4 , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 61 );
+
+
+		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "video-se" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 72 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "/lib" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 97 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 13 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , ".so" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 105 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 13 , SIZE_MAX , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 0 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , 13 , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 0 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , 16 , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 13 );
+		
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 13 , 3 , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 0 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 13 , 2 , "7f6" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , SIZE_MAX );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "7f6" , 1 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 14 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "7f600" , 1 , 2 , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 14 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "7f600" , 1 , 1 , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 14 );
+
+
+		::booldog::utils::string::mbs::lastindexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so" , 0 , SIZE_MAX , "video-se" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( ressize.succeeded() );
+
+		ASSERT_EQ( ressize.sres , 72 );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );
@@ -8671,11 +8992,11 @@ TEST_F( boo_base_loaderTest , test )
 
 
 		::booldog::result resres;
-		loader.unload( &resres , module0 );
+		loader.unload( &resres , module0 , 0 , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 
-		loader.unload( &resres , module1 );
+		loader.unload( &resres , module1 , 0 , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -8730,7 +9051,7 @@ TEST_F( boo_base_loaderTest , test )
 			}
 		}
 
-		loader.unload( &resres , module2 );
+		loader.unload( &resres , module2 , 0 , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -8793,11 +9114,11 @@ TEST_F( boo_base_loaderTest , test )
 			}
 		}
 
-		loader.unload( &resres , module0 );
+		loader.unload( &resres , module0 , 0 , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 
-		loader.unload( &resres , module1 );
+		loader.unload( &resres , module1 , 0 , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 #ifdef __WINDOWS__
@@ -8849,7 +9170,7 @@ TEST_F( boo_base_loaderTest , test )
 #endif
 			}
 		}		
-		loader.unload( &resres , module2 );
+		loader.unload( &resres , module2 , 0 , 0 );
 
 		ASSERT_TRUE( res.succeeded() );
 		
@@ -8944,12 +9265,12 @@ TEST_F( boo_base_loaderTest , test )
 		}
 		
 
-		loader.unload( &resres , module2 );
+		loader.unload( &resres , module2 , 0 , 0 );
 
 		ASSERT_TRUE( resres.succeeded() );
 
 
-		loader.unload( &resres , module0 );
+		loader.unload( &resres , module0 , 0 , 0 );
 
 		ASSERT_TRUE( resres.succeeded() );
 	}
@@ -8964,13 +9285,13 @@ class boo_io_fileTest : public ::testing::Test
 TEST_F( boo_io_fileTest , test )
 {
 	::booldog::allocators::easy::heap heap;
-	::booldog::allocators::mixed< 16 * 1024 > allocator( &heap , ::booldog::threading::thread_id() );
+	::booldog::allocators::mixed< 16 * 1024 > allocator( &heap , ::booldog::threading::threadid() );
 	
 	size_t total = allocator.stack.available();
 
 	char* begin = (char*)allocator.stack.begin();
 	{
-		::booldog::result_buffer resbuf( &allocator );
+		::booldog::result_buffer resbuf00( &allocator );
 		::booldog::result_file res;
 
 		booldog::param search_paths_params[] =
@@ -8978,6 +9299,7 @@ TEST_F( boo_io_fileTest , test )
 			BOOPARAM_PCHAR( "../../test_data\\modules0/x86" ) ,
 			BOOPARAM_PWCHAR( L"..\\../test_data\\modules1\\x86" ) ,
 			BOOPARAM_PCHAR( "../../test_data\\json" ) ,
+			BOOPARAM_PCHAR( "../../test_data" ) ,
 			BOOPARAM_NONE
 		};
 		booldog::named_param load_params[] =
@@ -9003,22 +9325,97 @@ TEST_F( boo_io_fileTest , test )
 		
 		ASSERT_TRUE( res.succeeded() );
 
-		res.file->readall< 16 * 1024 >( &resbuf , &allocator , debuginfo_macros );
+		res.file->readall< 16 * 1024 >( &resbuf00 , &allocator , debuginfo_macros );
 
-		ASSERT_TRUE( resbuf.succeeded() );
+		ASSERT_TRUE( resbuf00.succeeded() );
 
-		ASSERT_TRUE( resbuf.buf[ 0 ] == '[' );
+		ASSERT_TRUE( resbuf00.buf[ 0 ] == '[' );
 
 		res.file->close( &res );
 
 		ASSERT_TRUE( res.succeeded() );
+
+
+		::booldog::io::file::mbsopen( &res , &allocator , "maps" , ::booldog::enums::io::file_mode_read , load_params );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+
+		ASSERT_TRUE( resbuf00.succeeded() );
+
+		ASSERT_EQ( strcmp( (char*)resbuf00.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0" ) , 0 );
+
+		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+
+		ASSERT_TRUE( resbuf00.succeeded() );
+
+		ASSERT_EQ( strcmp( (char*)resbuf00.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0" ) , 0 );
+
+		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+
+		ASSERT_TRUE( resbuf00.succeeded() );
+
+		ASSERT_EQ( strcmp( (char*)resbuf00.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+			"[heap]" ) , 0 );
+
+		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+
+		ASSERT_TRUE( resbuf00.succeeded() );
+
+		ASSERT_EQ( strcmp( (char*)resbuf00.buf , "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 " ) , 0 );
+				
+		res.file->close( &res );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		{
+			::booldog::result_buffer resbuf1( &allocator );
+
+			::booldog::io::file::mbsopen( &res , &allocator , "maps" , ::booldog::enums::io::file_mode_read , load_params );
+		
+			ASSERT_TRUE( res.succeeded() );
+
+			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+
+			ASSERT_TRUE( resbuf1.succeeded() );
+
+			ASSERT_EQ( strcmp( (char*)resbuf1.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0" ) , 0 );
+
+			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+
+			ASSERT_TRUE( resbuf1.succeeded() );
+
+			ASSERT_EQ( strcmp( (char*)resbuf1.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0" ) , 0 );
+
+			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+
+			ASSERT_TRUE( resbuf1.succeeded() );
+
+			ASSERT_EQ( strcmp( (char*)resbuf1.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+				"[heap]" ) , 0 );
+
+			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+
+			ASSERT_TRUE( resbuf1.succeeded() );
+
+			ASSERT_EQ( strcmp( (char*)resbuf1.buf , "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 " ) , 0 );
+				
+			res.file->close( &res );
+
+			ASSERT_TRUE( res.succeeded() );
+		}
 	}
 
 	ASSERT_TRUE( allocator.stack.begin() == begin );
 
 	ASSERT_EQ( allocator.stack.available() , total );
 
-	ASSERT_EQ( allocator.heap->size_of_allocated_memory() , 0 );
+	ASSERT_EQ( allocator.holder.heap->size_of_allocated_memory() , 0 );
 };
 #ifdef __LINUX__
 #include <locale.h>

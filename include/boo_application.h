@@ -3,7 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_base_loader.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_base_loader.h)
 namespace booldog
 {
 	namespace typedefs
@@ -129,7 +132,7 @@ goto_next:
 		{
 #ifdef __WINDOWS__
 			if( _winmm )
-				_loader->unload( 0 , _winmm , debuginfo_macros );
+				_loader->unload( 0 , _winmm , 0 , 0 , debuginfo_macros );
 #else
 #endif
 		};

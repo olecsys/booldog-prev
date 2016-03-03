@@ -3,8 +3,12 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_base_loader.h>
-#include <boo_render_context.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_base_loader.h)
+#include BOOLDOG_HEADER(boo_render_context.h)
+
 #include <GL/gl.h>
 #ifndef WINAPI
 #define WINAPI
@@ -1005,9 +1009,9 @@ namespace booldog
 goto_unload:
 #ifdef __WINDOWS__
 					if( resmodUser32.module )
-						_loader->unload( 0 , resmodUser32.module , debuginfo );
+						_loader->unload( 0 , resmodUser32.module , 0 , 0 , debuginfo );
 					if( resmodGdi32.module )
-						ploader->unload( 0 , resmodGdi32.module , debuginfo );
+						ploader->unload( 0 , resmodGdi32.module , 0 , 0 , debuginfo );
 #endif
 				}
 				else
@@ -1026,11 +1030,11 @@ goto_unload:
 							::booldog::typedefs::ReleaseDC pReleaseDC = (::booldog::typedefs::ReleaseDC)resptr.pres;					
 							pReleaseDC( _hwnd , _hdc );
 						}
-						_loader->unload( 0 , resmodUser32.module , debuginfo_macros );
+						_loader->unload( 0 , resmodUser32.module , 0 , 0 , debuginfo_macros );
 					}
 				}
 				if( _opengl )
-					_loader->unload( 0 , _opengl , debuginfo_macros );
+					_loader->unload( 0 , _opengl , 0 , 0 , debuginfo_macros );
 			};
 			bool swap_buffers( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{

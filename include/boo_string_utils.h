@@ -3,14 +3,26 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_result.h>
-#include <boo_allocator.h>
-#include <boo_mem.h>
-#include <boo_error.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_result.h)
+#include BOOLDOG_HEADER(boo_allocator.h)
+#include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_error.h)
+#include BOOLDOG_HEADER(boo_utf16.h)
+#include BOOLDOG_HEADER(boo_utf32.h)
+#include BOOLDOG_HEADER(boo_if.h)
+
 #ifdef __UNIX__
+#ifndef _LARGEFILE64_SOURCE 
+#define _LARGEFILE64_SOURCE 
+#endif
 #include <unistd.h>
 #include <wchar.h>
 #endif
+#include <stdio.h>
+#include <stdarg.h>
 namespace booldog
 {	
 	namespace utils
@@ -19,7 +31,55 @@ namespace booldog
 		{
 			namespace mbs
 			{
-				bool towcs( ::booldog::result_wchar* pres , booldog::allocator* allocator , const char* mbchar , size_t charindex = 0 , size_t charcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				booinline int vscprintf( const char* format , va_list pargs )
+				{
+#ifdef __WINDOWS__
+					return ::_vscprintf( format , pargs );
+#else
+					va_list argcopy;
+					va_copy( argcopy , pargs ); 
+					int retval = ::vsnprintf( NULL , 0 , format , argcopy ); 
+					va_end( argcopy );
+					return retval;
+#endif
+				};
+				booinline bool sprintf( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator , const char* format
+					, va_list pargs , const ::booldog::debug::info& debuginfo )
+				{
+					::booldog::result_mbchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_mbchar );
+					size_t size = ::booldog::utils::string::mbs::vscprintf( format , pargs ) + 1;
+					if( size > res->mbsize )
+					{
+						res->mbsize = size;
+						res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+					}
+					if( res->mbchar )
+					{
+#ifdef __WINDOWS__
+						vsprintf_s( res->mbchar , res->mbsize , format , pargs );
+#else
+						vsnprintf( res->mbchar , res->mbsize , format , pargs );
+#endif
+						res->mblen = res->mbsize - 1;
+						res->mbchar[ res->mblen ] = 0;
+					}
+					else
+						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+					return res->succeeded();
+				};
+				booinline bool sprintf( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator
+					, const ::booldog::debug::info& debuginfo , const char* format , ... )
+				{
+					::booldog::result_mbchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_mbchar );
+					va_list ap;
+					va_start( ap , format );
+					::booldog::utils::string::mbs::sprintf( res , allocator , format , ap , debuginfo );
+					va_end( ap );
+					return res->succeeded();
+				};
+				booinline bool towcs( ::booldog::result_wchar* pres , booldog::allocator* allocator , const char* mbchar , size_t charindex = 0 , size_t charcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_wchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_wchar );
@@ -184,7 +244,280 @@ goto_return:
 #endif
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , char*& dst , size_t& dstlen 
+				booinline bool lastindexof( ::booldog::result_size* pres , bool isempty_src_error , const char* src 
+					, size_t srccharindex , size_t srccharcount	, const char* target , size_t targetcharindex 
+					, size_t targetcharcount , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					debuginfo = debuginfo;
+					::booldog::result_size locres;
+					BOOINIT_RESULT( ::booldog::result_size );
+					if( src )
+					{
+						const char* srcbegin = &src[ srccharindex ];
+						if( *srcbegin != 0 )
+						{
+							const char* srcbegin = &src[ srccharindex ];
+							const char* ptr = srcbegin;
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case 0:
+									ptr--;
+									goto goto_next0;
+								}
+								if( (size_t)( ptr - srcbegin ) >= srccharcount )
+									break;
+							}
+		goto_next0:
+							srccharcount = ptr - srcbegin;
+
+							const char* targetbegin = &target[ targetcharindex ];
+							ptr = targetbegin;
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case 0:
+									ptr--;
+									goto goto_next1;
+								}
+								if( (size_t)( ptr - targetbegin ) >= targetcharcount )
+									break;
+							}
+		goto_next1:
+							targetcharcount = ptr - targetbegin;
+							if( targetcharcount <= srccharcount )
+							{
+								ptr = &srcbegin[ srccharcount - targetcharcount ];
+								if( targetcharcount == sizeof( char ) )
+								{
+									char targetval = targetbegin[ 0 ];
+									while( ptr >= srcbegin )
+									{
+										if( *ptr == targetval )
+										{
+											res->sres = ptr - srcbegin;
+											break;
+										}
+										ptr--;
+									}
+								}
+								else if( targetcharcount == sizeof( ::booldog::uint16 ) )
+								{
+									::booldog::uint16 targetval = *(::booldog::uint16*)targetbegin;
+									while( ptr >= srcbegin )
+									{
+										if( *(::booldog::uint16*)ptr == targetval )
+										{
+											res->sres = ptr - srcbegin;
+											break;
+										}
+										ptr--;
+									}
+								}
+								else if( targetcharcount == sizeof( ::booldog::uint32 ) )
+								{
+									::booldog::uint32 targetval = *(::booldog::uint32*)targetbegin;
+									while( ptr >= srcbegin )
+									{
+										if( *(::booldog::uint32*)ptr == targetval )
+										{
+											res->sres = ptr - srcbegin;
+											break;
+										}
+										ptr--;
+									}
+								}
+								else if( targetcharcount == sizeof( ::booldog::uint64 ) )
+								{
+									::booldog::uint64 targetval = *(::booldog::uint64*)targetbegin;
+									while( ptr >= srcbegin )
+									{
+										if( *(::booldog::uint64*)ptr == targetval )
+										{
+											res->sres = ptr - srcbegin;
+											break;
+										}
+										ptr--;
+									}
+								}
+								else
+								{
+									while( ptr >= srcbegin )
+									{
+										if( ::memcmp( ptr-- , targetbegin , targetcharcount ) == 0 )
+										{
+											res->sres = ptr - srcbegin + 1;
+											break;
+										}
+									}
+								}
+							}
+						}
+						else
+						{
+							if( isempty_src_error )
+								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						}
+					}
+					else
+					{
+						if( isempty_src_error )
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					}
+					return res->succeeded();
+				};
+				booinline bool indexof( ::booldog::result_size* pres , bool isempty_src_error , const char* src 
+					, size_t srccharindex , size_t srccharcount	, const char* target , size_t targetcharindex 
+					, size_t targetcharcount , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					debuginfo = debuginfo;
+					::booldog::result_size locres;
+					BOOINIT_RESULT( ::booldog::result_size );
+					if( src )
+					{
+						const char* srcbegin = &src[ srccharindex ];
+						if( *srcbegin != 0 )
+						{
+							const char* srcbegin = &src[ srccharindex ];
+							const char* ptr = srcbegin;
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case 0:
+									ptr--;
+									goto goto_next0;
+								}
+								if( (size_t)( ptr - srcbegin ) >= srccharcount )
+									break;
+							}
+		goto_next0:
+							srccharcount = ptr - srcbegin;
+
+							const char* targetbegin = &target[ targetcharindex ];
+							ptr = targetbegin;
+							for( ; ; )
+							{
+								switch( *ptr++ )
+								{
+								case 0:
+									ptr--;
+									goto goto_next1;
+								}
+								if( (size_t)( ptr - targetbegin ) >= targetcharcount )
+									break;
+							}
+		goto_next1:
+							targetcharcount = ptr - targetbegin;							
+							if( targetcharcount == sizeof( char ) )
+							{
+								char targetval = targetbegin[ 0 ];
+								size_t index = 0;
+								while( srccharcount - index >= targetcharcount )
+								{
+									if( srcbegin[ index++ ] == targetval )
+									{
+										res->sres = index - 1;
+										break;
+									}
+								}
+							}
+							else if( targetcharcount == sizeof( ::booldog::uint16 ) )
+							{
+								::booldog::uint16 targetval = *(::booldog::uint16*)targetbegin;
+								size_t index = 0;
+								while( srccharcount - index >= targetcharcount )
+								{
+									if( *(::booldog::uint16*)( &srcbegin[ index++ ] ) == targetval )
+									{
+										res->sres = index - 1;
+										break;
+									}
+								}
+							}
+							else if( targetcharcount == sizeof( ::booldog::uint32 ) )
+							{
+								::booldog::uint32 targetval = *(::booldog::uint32*)targetbegin;
+								size_t index = 0;
+								while( srccharcount - index >= targetcharcount )
+								{
+									if( *(::booldog::uint32*)( &srcbegin[ index++ ] ) == targetval )
+									{
+										res->sres = index - 1;
+										break;
+									}
+								}
+							}
+							else if( targetcharcount == sizeof( ::booldog::uint64 ) )
+							{
+								::booldog::uint64 targetval = *(::booldog::uint64*)targetbegin;
+								size_t index = 0;
+								while( srccharcount - index >= targetcharcount )
+								{
+									if( *(::booldog::uint64*)( &srcbegin[ index++ ] ) == targetval )
+									{
+										res->sres = index - 1;
+										break;
+									}
+								}
+							}
+							else
+							{
+								size_t index = 0;
+								while( srccharcount - index >= targetcharcount )
+								{
+									if( ::memcmp( &srcbegin[ index++ ] , targetbegin , targetcharcount ) == 0 )
+									{
+										res->sres = index - 1;
+										break;
+									}
+								}
+							}
+						}
+						else
+						{
+							if( isempty_src_error )
+								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						}
+					}
+					else
+					{
+						if( isempty_src_error )
+							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+					}
+					return res->succeeded();
+				};
+				booinline void replace( size_t dstbyteindex , char* dst , size_t dstlen , char oldchar
+					, char newchar )
+				{
+					char* ptr = &dst[ dstlen ];
+					if( dstbyteindex == 0 )
+					{
+						for( ; ; )
+						{
+							if( *ptr-- == oldchar )
+								ptr[ 1 ] = newchar;
+							if( dst > ptr )
+								break;
+						}
+					}
+					else
+					{
+						char* begin = &dst[ dstbyteindex ];
+						for( ; ; )
+						{
+							if( begin > ptr )
+								break;
+							if( *ptr-- == oldchar )
+								ptr[ 1 ] = newchar;
+							if( dst > ptr )
+								break;
+						}
+					}
+				};
+				booinline bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , char*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const char* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -254,7 +587,7 @@ goto_next:
 					}
 					return res->succeeded();
 				}
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
+				booinline bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const char* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -389,7 +722,37 @@ goto_return:
 			};
 			namespace wcs
 			{
-				bool tombs( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const wchar_t* wchar 
+				template< size_t step >
+				booinline bool toutf8( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const wchar_t* wcs
+					, size_t charindex = 0 , size_t charcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					const wchar_t* begin = &wcs[ charindex ];
+					const wchar_t* ptr = begin;
+					for( ; ; )
+					{
+						switch( *ptr++ )
+						{
+						case 0:
+							ptr--;
+							goto goto_next;
+						}
+						if( (size_t)( ptr - begin ) >= charcount )
+							break;
+					}
+goto_next:
+					charcount = ptr - begin;
+					size_t srcbyteindex = charindex * sizeof( wchar_t );
+					if( ::booldog::compile::If< sizeof( wchar_t ) == 2 >::test() )
+						return ::booldog::utf16::toutf8< step >( pres , allocator , (const char*)wcs , srcbyteindex , sizeof( wchar_t ) 
+						* ( charindex + charcount ) , debuginfo );
+					else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
+						return ::booldog::utf32::toutf8< step >( pres , allocator , (const char*)wcs , srcbyteindex , sizeof( wchar_t ) 
+						* (	charindex + charcount ) , debuginfo );
+					if( pres )
+						pres->booerr( ::booldog::enums::result::booerr_type_unknown_wchar_t_size );
+					return false;
+				};
+				booinline bool tombs( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const wchar_t* wchar 
 					, size_t charindex = 0 , size_t charcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					::booldog::result_mbchar locres( allocator );
@@ -536,7 +899,7 @@ goto_return:
 #endif
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
+				booinline bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , wchar_t*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -610,7 +973,7 @@ goto_next:
 					}
 					return res->succeeded();
 				};
-				bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , char*& dst , size_t& dstlen 
+				booinline bool insert( ::booldog::result* pres , booldog::allocator* allocator , bool isempty_src_error , size_t dstcharindex , char*& dst , size_t& dstlen 
 					, size_t& dstsize_in_bytes , const wchar_t* src , size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{

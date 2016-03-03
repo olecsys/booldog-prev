@@ -3,9 +3,12 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_interlocked.h>
-#include <boo_threading_utils.h>
-#include <boo_debug_info.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_interlocked.h)
+#include BOOLDOG_HEADER(boo_threading_utils.h)
+#include BOOLDOG_HEADER(boo_debug_info.h)
 namespace booldog
 {
 	namespace threading
@@ -30,7 +33,7 @@ namespace booldog
 				debuginfo = debuginfo;
 				if( booldog::interlocked::increment( &_writer_readers ) >= WRITER_BIT )
 				{
-					if( _writer_thread != ::booldog::threading::thread_id() )
+					if( _writer_thread != ::booldog::threading::threadid() )
 					{
 						booldog::byte tries = 0;
 						while( booldog::interlocked::compare_exchange( &_writer_readers , 0 , 0 ) >= WRITER_BIT )
@@ -51,7 +54,7 @@ namespace booldog
 				if( booldog::interlocked::compare_exchange( &_writer_readers , WRITER_BIT , 0 ) == 0 )
 				{
 					booldog::interlocked::increment( &_writer_recursion );
-					_writer_thread = ::booldog::threading::thread_id();
+					_writer_thread = ::booldog::threading::threadid();
 					return true;
 				}
 				return false;
@@ -59,7 +62,7 @@ namespace booldog
 			void wlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
-				booldog::pid_t tid = ::booldog::threading::thread_id();
+				booldog::pid_t tid = ::booldog::threading::threadid();
 				booldog::byte tries = 0;
 				while( booldog::interlocked::compare_exchange( &_writer_readers , WRITER_BIT , 0 ) != 0 )
 				{
@@ -86,7 +89,7 @@ namespace booldog
 			void wunlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
-				if( _writer_thread == ::booldog::threading::thread_id() )
+				if( _writer_thread == ::booldog::threading::threadid() )
 				{
 					if( booldog::interlocked::decrement( &_writer_recursion ) == 0 )
 					{

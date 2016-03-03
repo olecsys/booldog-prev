@@ -3,7 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_types.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_types.h)
 namespace booldog
 {
 	namespace enums
@@ -42,7 +45,11 @@ namespace booldog
 				booerr_type_json_unexpected_second_exponent_part_symbol_in_number ,
 				booerr_type_json_expecting_digit_after_exponent_part_symbol ,
 				booerr_type_json_unexpected_plus_in_number ,
-				booerr_type_json_not_utf8_symbol
+				booerr_type_json_not_utf8_symbol , 
+				booerr_type_conversion_result_source_illegal ,
+				booerr_type_conversion_result_source_exhausted ,
+				booerr_type_unknown_wchar_t_size ,
+				booerr_type_handle_is_executable
 			};
 		};
 	};

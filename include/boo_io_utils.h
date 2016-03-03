@@ -3,10 +3,13 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_result.h>
-#include <boo_allocator.h>
-#include <boo_mem.h>
-#include <boo_error.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_result.h)
+#include BOOLDOG_HEADER(boo_allocator.h)
+#include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_error.h)
 namespace booldog
 {	
 	namespace utils
@@ -197,7 +200,7 @@ goto_return:
 						}
 						return res->succeeded();
 					};
-					bool toabsolute( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
+					booinline bool toabsolute( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
 						, size_t charindex = 0 , size_t charcount = SIZE_MAX , const char* root = 0 , size_t rootcharindex = 0 
 						, size_t rootcharcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
@@ -529,7 +532,7 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 						return res->succeeded();
 					};
-					bool extension( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
+					booinline bool extension( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
 						, size_t charindex = 0 , size_t charcount = SIZE_MAX 
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
@@ -586,7 +589,7 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );					
 						return res->succeeded();
 					};
-					bool filename( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
+					booinline bool filename( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
 						, size_t charindex = 0 , size_t charcount = SIZE_MAX 
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
@@ -625,7 +628,7 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );					
 						return res->succeeded();
 					};
-					bool directory( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
+					booinline bool directory( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
 						, size_t charindex = 0 , size_t charcount = SIZE_MAX 
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
@@ -1080,7 +1083,7 @@ goto_return:
 	goto_next:
 						return res->succeeded();
 					};
-					bool toabsolute( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path , size_t charindex = 0 , size_t charcount = SIZE_MAX 
+					booinline bool toabsolute( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path , size_t charindex = 0 , size_t charcount = SIZE_MAX 
 						, const wchar_t* root = 0 , size_t rootcharindex = 0 , size_t rootcharcount = SIZE_MAX 
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
@@ -1124,7 +1127,7 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 						return res->succeeded();
 					};
-					bool filename( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path 
+					booinline bool filename( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path 
 						, size_t charindex = 0 , size_t charcount = SIZE_MAX 
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
@@ -1223,7 +1226,7 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );					
 						return res->succeeded();
 					};
-					bool extension( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path 
+					booinline bool extension( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path 
 						, size_t charindex = 0 , size_t charcount = SIZE_MAX 
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
@@ -1281,7 +1284,7 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );					
 						return res->succeeded();
 					};
-					bool directory( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path 
+					booinline bool directory( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path 
 						, size_t charindex = 0 , size_t charcount = SIZE_MAX
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{

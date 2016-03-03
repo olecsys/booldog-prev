@@ -3,7 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_platform.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_platform.h)
 
 #ifdef __WINDOWS__
 #define boobegin_struct_pack( bytes ) __pragma( pack( push ) )\
@@ -83,12 +86,25 @@ namespace booldog
 #define llu "%llu"
 #endif
 #ifdef __WINDOWS__
+#ifdef BOOLDOG_NETWORK
 #include <WinSock2.h>
+#endif
 #include <windows.h>
 #endif
+#ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
+#endif
+#ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
+#endif
 #include <stdint.h>
+#ifndef SIZE_MAX
+#ifdef __SIZE_MAX__
+#define SIZE_MAX __SIZE_MAX__
+#else
+#define SIZE_MAX ((size_t) - 1)
+#endif
+#endif
 namespace booldog
 {
 	namespace io

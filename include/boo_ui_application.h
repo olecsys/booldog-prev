@@ -3,11 +3,14 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_application.h>
-#include <boo_threading_utils.h>
-#include <boo_array.h>
-#include <boo_rdwrlock.h>
-#include <boo_ui_window.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_application.h)
+#include BOOLDOG_HEADER(boo_threading_utils.h)
+#include BOOLDOG_HEADER(boo_array.h)
+#include BOOLDOG_HEADER(boo_rdwrlock.h)
+#include BOOLDOG_HEADER(boo_ui_window.h)
 namespace booldog
 {
 	namespace typedefs
@@ -85,7 +88,7 @@ namespace booldog
 
 				::booldog::ui::application* app = (::booldog::ui::application*)::booldog::_application;
 
-				if( app->_loop_tid == ::booldog::threading::thread_id() )
+				if( app->_loop_tid == ::booldog::threading::threadid() )
 					return pdispatch( pres , pdispatchparam );
 				if( wait )
 				{
@@ -333,7 +336,7 @@ namespace booldog
 							}
 						}
 
-						_loop_tid = ::booldog::threading::thread_id();
+						_loop_tid = ::booldog::threading::threadid();
 						_quit = false;
 						{
 							MSG msg;				
@@ -389,8 +392,8 @@ namespace booldog
 					else
 						res->copy( resmodGdi32 );
 goto_unload:
-					_loader->unload( 0 , resmodGdi32.module , debuginfo );
-					_loader->unload( 0 , resmodUser32.module , debuginfo );
+					_loader->unload( 0 , resmodGdi32.module , 0 , 0 , debuginfo );
+					_loader->unload( 0 , resmodUser32.module , 0 , 0 , debuginfo );
 				}
 				else
 					res->copy( resmodUser32 );

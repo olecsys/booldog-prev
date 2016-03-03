@@ -3,8 +3,11 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_object.h>
-#include <boo_mem.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_object.h)
+#include BOOLDOG_HEADER(boo_mem.h)
 namespace booldog
 {
 #define BOOLDOG_ARRAY_STEP 32
@@ -61,6 +64,10 @@ namespace booldog
 		size_t add( T* items , size_t items_count , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			return insert( SIZE_MAX , items , items_count , debuginfo );
+		};
+		size_t add( const ::booldog::array< T >& array , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		{	
+			return insert( SIZE_MAX , array._array , array._count , debuginfo );
 		};
 		size_t insert( size_t index , const T& item , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{

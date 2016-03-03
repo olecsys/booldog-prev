@@ -3,8 +3,28 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_allocator.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_allocator.h)
+#ifdef __UNIX__
+#include <string.h>
+#endif
 #include <errno.h>
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS
+#endif
+#ifndef __STDC_CONSTANT_MACROS
+#define __STDC_CONSTANT_MACROS
+#endif
+#include <stdint.h>
+#ifndef SIZE_MAX
+#ifdef __SIZE_MAX__
+#define SIZE_MAX __SIZE_MAX__
+#else
+#define SIZE_MAX ((size_t) - 1)
+#endif
+#endif
 namespace booldog
 {
 	namespace enums
@@ -121,13 +141,18 @@ namespace booldog
 		};
 		char* dlerror( void )
 		{
-			return _dlerror;
+			if( this->error_type == ::booldog::enums::result::error_type_dlerror )
+				return _dlerror;
+			return 0;
 		};
 		void setdlerror( booldog::allocator* allocator , const char* dlerrorstr
 			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			clear();
-			const char* ptr = dlerrorstr;
+			const char* ptr = "unknown dl error";
+			if( dlerrorstr )
+				ptr = dlerrorstr;
+			const char* begin = ptr;
 			for( ; ; )
 			{
 				switch( *ptr++ )
@@ -137,12 +162,12 @@ namespace booldog
 				}
 			}
 goto_next:
-			size_t srccharcount = ptr - dlerrorstr;
+			size_t srccharcount = ptr - begin;
 			this->_dlerror = allocator->realloc_array< char >( 0 , srccharcount , debuginfo );
 			if( this->_dlerror )
 			{
 				srccharcount--;
-				::memcpy( this->_dlerror , dlerrorstr , srccharcount );
+				::memcpy( this->_dlerror , begin , srccharcount );
 				this->_dlerror[ srccharcount ] = 0;
 				this->_allocator = allocator;
 			}
@@ -154,7 +179,6 @@ goto_next:
 			{
 				if( this->_dlerror )
 					this->_allocator->free( this->_dlerror );
-				this->_dlerror = 0;
 			}
 		};
 #endif
@@ -172,6 +196,10 @@ goto_next:
 			void* zero = (void*)&this->error_type;
 			size -= (char*)zero - (char*)this;
 			::memcpy( zero , &_obj_->error_type , size );
+#ifdef __UNIX__
+			if( _obj_->error_type == ::booldog::enums::result::error_type_dlerror )
+				_obj_->_dlerror = 0;
+#endif
 		};
 		virtual void clear( void ) const
 		{
@@ -226,9 +254,7 @@ goto_next:
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
 			if( _obj_->wchar )
-				wallocator->free( _obj_->wchar );
-			_obj_->wchar = 0;
-			_obj_->wsize = 0;
+				_obj_->wchar[ 0 ] = 0;
 			_obj_->wlen = 0;
 		};
 	};
@@ -276,9 +302,7 @@ goto_next:
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
 			if( _obj_->mbchar )
-				_obj_->mballocator->free( _obj_->mbchar );
-			_obj_->mbchar = 0;
-			_obj_->mbsize = 0;
+				_obj_->mbchar[ 0 ] = 0;
 			_obj_->mblen = 0;
 		};
 	};
@@ -426,6 +450,39 @@ goto_next:
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
 			_obj_->sres = SIZE_MAX;
+		};
+	};
+	class result_int64 : public ::booldog::result
+	{
+	private:
+// copy and assignment not allowed
+		result_int64( const ::booldog::result_int64& )
+		{
+		};
+		result_int64( const ::booldog::result& )
+		{
+		};
+		::booldog::result_int64& operator = ( const ::booldog::result_int64& )
+		{
+			return *this;
+		};
+	public:
+		::booldog::int64 int64res;
+		result_int64( void )
+ 			: result()
+		{
+		};
+		virtual ~result_int64( void )
+		{
+		};
+		virtual void clear( void ) const
+		{
+			::booldog::result_int64* _obj_ = const_cast< ::booldog::result_int64* >( this );
+#ifdef __UNIX__
+			_obj_->dlerrorclear();
+#endif
+			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
+			_obj_->int64res = INT64_MAX;
 		};
 	};
 #define BOOINIT_RESULT( booclass ) booclass* res = 0;\

@@ -15,40 +15,59 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\boo_allocator.h" />
+    <ClInclude Include="..\include\boo_application.h" />
     <ClInclude Include="..\include\boo_array.h" />
     <ClInclude Include="..\include\boo_base_loader.h" />
     <ClInclude Include="..\include\boo_base_module.h" />
     <ClInclude Include="..\include\boo_check.h" />
     <ClInclude Include="..\include\boo_cp1251.h" />
     <ClInclude Include="..\include\boo_cp1251_consts.h" />
+    <ClInclude Include="..\include\boo_d2d1_context.h" />
     <ClInclude Include="..\include\boo_debug_info.h" />
     <ClInclude Include="..\include\boo_error.h" />
     <ClInclude Include="..\include\boo_error_format.h" />
-    <ClInclude Include="..\include\boo_executable.h" />
+    <ClInclude Include="..\include\boo_executable_utils.h" />
+    <ClInclude Include="..\include\boo_fps_counter.h" />
     <ClInclude Include="..\include\boo_hash_times33.h" />
     <ClInclude Include="..\include\boo_heap_allocator.h" />
+    <ClInclude Include="..\include\boo_holder_allocator.h" />
     <ClInclude Include="..\include\boo_if.h" />
     <ClInclude Include="..\include\boo_interlocked.h" />
+    <ClInclude Include="..\include\boo_io_directory.h" />
     <ClInclude Include="..\include\boo_io_file.h" />
     <ClInclude Include="..\include\boo_io_utils.h" />
     <ClInclude Include="..\include\boo_json.h" />
     <ClInclude Include="..\include\boo_list.h" />
+    <ClInclude Include="..\include\boo_math_utils.h" />
+    <ClInclude Include="..\include\boo_media_enums.h" />
     <ClInclude Include="..\include\boo_mem.h" />
     <ClInclude Include="..\include\boo_mem_cluster.h" />
     <ClInclude Include="..\include\boo_mixed_allocator.h" />
     <ClInclude Include="..\include\boo_module_utils.h" />
+    <ClInclude Include="..\include\boo_monitor.h" />
     <ClInclude Include="..\include\boo_object.h" />
+    <ClInclude Include="..\include\boo_opengl_buffer.h" />
+    <ClInclude Include="..\include\boo_opengl_context.h" />
+    <ClInclude Include="..\include\boo_opengl_framebuffer.h" />
+    <ClInclude Include="..\include\boo_opengl_texture.h" />
     <ClInclude Include="..\include\boo_param.h" />
     <ClInclude Include="..\include\boo_platform.h" />
     <ClInclude Include="..\include\boo_rdwrlock.h" />
+    <ClInclude Include="..\include\boo_render_context.h" />
     <ClInclude Include="..\include\boo_result.h" />
     <ClInclude Include="..\include\boo_stack_allocator.h" />
     <ClInclude Include="..\include\boo_string.h" />
     <ClInclude Include="..\include\boo_string_enums.h" />
     <ClInclude Include="..\include\boo_string_utils.h" />
+    <ClInclude Include="..\include\boo_thread.h" />
     <ClInclude Include="..\include\boo_threading_utils.h" />
     <ClInclude Include="..\include\boo_types.h" />
+    <ClInclude Include="..\include\boo_ui_application.h" />
+    <ClInclude Include="..\include\boo_ui_controls_control.h" />
+    <ClInclude Include="..\include\boo_ui_controls_group.h" />
     <ClInclude Include="..\include\boo_ui_controls_render.h" />
+    <ClInclude Include="..\include\boo_ui_controls_window.h" />
+    <ClInclude Include="..\include\boo_ui_window.h" />
     <ClInclude Include="..\include\boo_utf16.h" />
     <ClInclude Include="..\include\boo_utf16_consts.h" />
     <ClInclude Include="..\include\boo_utf32.h" />
@@ -120,7 +139,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <OutputFile>$(ProjectDir)..\build\$(Platform)\booldog.test.exe</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)..\extern_lib\windows\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>yajl_s.lib;gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>yajl_s.lib;gtest.lib;Kernel32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,7 +166,7 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gtest.lib;Kernel32.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)..\build\$(Platform)\booldog.test.exe</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)..\extern_lib\windows\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>

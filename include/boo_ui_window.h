@@ -3,7 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_render_context.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_render_context.h)
 namespace booldog
 {
 	namespace ui
@@ -174,7 +177,7 @@ namespace booldog
 						else
 							res->GetLastError();
 	goto_unload:
-						wnd->_loader->unload( 0 , resmod.module , debuginfo_macros );
+						wnd->_loader->unload( 0 , resmod.module , 0 , 0 , debuginfo_macros );
 					}
 					else
 						res->copy( resmod );
@@ -195,7 +198,7 @@ namespace booldog
 						::booldog::typedefs::IsWindowVisible pIsWindowVisible = (::booldog::typedefs::IsWindowVisible)resptr.pres;
 						res = pIsWindowVisible( _hwnd ) ? true : false;
 goto_unload:
-						_loader->unload( 0 , resmod.module , debuginfo_macros );
+						_loader->unload( 0 , resmod.module , 0 , 0 , debuginfo_macros );
 					}
 				}
 				return res;
@@ -218,7 +221,7 @@ goto_unload:
 						::booldog::typedefs::ShowWindow pShowWindow = (::booldog::typedefs::ShowWindow)resptr.pres;
 						pShowWindow( _hwnd , SW_SHOWNOACTIVATE );
 	goto_unload:
-						_loader->unload( 0 , resmod.module , debuginfo );
+						_loader->unload( 0 , resmod.module , 0 , 0 , debuginfo );
 					}
 					else
 						res->copy( resmod );

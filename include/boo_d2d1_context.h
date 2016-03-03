@@ -3,10 +3,14 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_base_loader.h>
-#include <boo_render_context.h>
-#include <boo_math_utils.h>
-#include <boo_thread.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_base_loader.h)
+#include BOOLDOG_HEADER(boo_render_context.h)
+#include BOOLDOG_HEADER(boo_math_utils.h)
+#include BOOLDOG_HEADER(boo_thread.h)
+
 #ifdef __WINDOWS__
 #include <D3D11.h>
 //#include <DXGI.h>
@@ -204,9 +208,9 @@ goto_unload0:
 				for( size_t index0 = 0 ; index0 < _dxgi_adapters.count() ; index0++ )
 					_dxgi_adapters[ index0 ]->Release();
 				if( _D2d1 )
-					_loader->unload( 0 , _D2d1 , debuginfo_macros );
+					_loader->unload( 0 , _D2d1 , 0 , 0 , debuginfo_macros );
 				if( _D3D11 )
-					_loader->unload( 0 , _D3D11 , debuginfo_macros );
+					_loader->unload( 0 , _D3D11 , 0 , 0 , debuginfo_macros );
 			};
 			::booldog::allocator* allocator( void )
 			{
@@ -470,7 +474,7 @@ goto_next:
 						res->copy( resmodUser32 );
 goto_unload:
 					if( resmodUser32.module )
-						_factory->_loader->unload( 0 , resmodUser32.module , debuginfo_macros );
+						_factory->_loader->unload( 0 , resmodUser32.module , 0 , 0 , debuginfo_macros );
 				}
 				return res->succeeded();
 			};
@@ -496,7 +500,7 @@ goto_unload:
 			};
 			virtual void resize( int width , int height )
 			{
-				if( _render_thread_id == 0 || _render_thread_id == ::booldog::threading::thread_id() )
+				if( _render_thread_id == 0 || _render_thread_id == ::booldog::threading::threadid() )
 				{
 					if( _hwnd_render_target )
 					{
@@ -526,7 +530,7 @@ goto_unload:
 			static void onrenderprocedure( ::booldog::threading::thread* thr )
 			{
 				::booldog::D2d1::context* ctx = (::booldog::D2d1::context*)thr->udata();
-				ctx->_render_thread_id = ::booldog::threading::thread_id();
+				ctx->_render_thread_id = ::booldog::threading::threadid();
 				while( thr->pending_in_stop() == false )
 				{
 					if( ctx->_resize_width != INT32_MAX )

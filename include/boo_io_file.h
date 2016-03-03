@@ -3,9 +3,14 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_io_utils.h>
-#include <boo_param.h>
-#include <boo_string_utils.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_io_utils.h)
+#include BOOLDOG_HEADER(boo_param.h)
+#include BOOLDOG_HEADER(boo_string_utils.h)
+#include BOOLDOG_HEADER(boo_executable_utils.h)
+
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -13,6 +18,9 @@
 #include <io.h>
 #include <share.h>
 #else
+#ifndef _LARGEFILE64_SOURCE 
+#define _LARGEFILE64_SOURCE 
+#endif
 #include <unistd.h>
 #endif
 namespace booldog
@@ -46,6 +54,12 @@ namespace booldog
 				file_mode_write = 4 ,
 				file_mode_create = 8 ,
 				file_mode_truncate = 16
+			};
+			enum file_position_origin
+			{
+				file_position_origin_begin = SEEK_SET ,
+				file_position_origin_curpos = SEEK_CUR ,
+				file_position_origin_end = SEEK_END
 			};
 		};
 	};
@@ -381,6 +395,24 @@ namespace booldog
 				}
 				return res->succeeded();
 			};
+			static bool mbsopen( ::booldog::result_file* pres , booldog::allocator* allocator , const char* name_or_path 
+				, int file_mode	, const char* search_path , bool exedir_as_root_path 
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				debuginfo = debuginfo;
+				booldog::param search_paths_params[] =
+				{
+					BOOPARAM_PCHAR( search_path ) ,
+					BOOPARAM_NONE
+				};
+				booldog::named_param load_params[] =
+				{
+					BOONAMED_PARAM_PPARAM( "search_paths" , search_paths_params ) ,
+					BOONAMED_PARAM_BOOL( "exedir_as_root_path" , exedir_as_root_path ) ,
+					BOONAMED_PARAM_NONE
+				};
+				return ::booldog::io::file::mbsopen( pres , allocator , name_or_path , file_mode , load_params );
+			};
 			bool close( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
@@ -395,6 +427,134 @@ namespace booldog
 				_allocator->destroy( this );
 				return res->succeeded();
 			};
+			bool read( ::booldog::result_buffer* pres , booldog::allocator* allocator
+				, size_t portionsize , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				::booldog::result_buffer locres( allocator );
+				BOOINIT_RESULT( ::booldog::result_buffer );
+#ifdef __WINDOWS__
+				int readres = 0;
+#else
+				ssize_t readres = 0;
+#endif
+				if( res->bufsize < portionsize )
+				{
+					res->bufsize = portionsize;
+					res->buf = res->allocator->realloc_array< unsigned char >( res->buf , res->bufsize , debuginfo );
+					if( res->buf == 0 )
+					{
+						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+						goto goto_return;
+					}
+				}
+#ifdef __WINDOWS__
+				readres = _read( _file , res->buf , (unsigned int)portionsize );
+#else
+				readres = ::read( _file , res->buf , portionsize );
+#endif
+				if( readres == -1 )
+				{
+					res->seterrno();
+					goto goto_return;
+				}
+				res->bufdatasize = readres;
+goto_return:
+				return res->succeeded();
+			};
+			bool position( ::booldog::result_int64* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				debuginfo = debuginfo;
+				::booldog::result_int64 locres;
+				BOOINIT_RESULT( ::booldog::result_int64 );
+#ifdef __WINDOWS__
+				res->int64res = _telli64( _file ); 
+				if( res->int64res == -1 )
+#else
+				off64_t pos = lseek64( _file , 0 , SEEK_CUR );
+				if( pos != (off64_t)-1 )
+					res->int64res = pos;
+				else
+#endif
+					res->seterrno();
+				return res->succeeded();
+			};
+			bool position( ::booldog::result* pres , ::booldog::int64 offset , ::booldog::enums::io::file_position_origin origin
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				debuginfo = debuginfo;
+				::booldog::result locres;
+				BOOINIT_RESULT( ::booldog::result );
+
+#ifdef __WINDOWS__
+				if( _lseeki64( _file , offset , origin ) == -1 )
+#else
+				if( lseek64( _file , (off64_t)offset , origin ) == (off64_t)-1 )
+#endif
+					res->seterrno();
+				return res->succeeded();
+			};
+			template< size_t step >
+			bool readline( ::booldog::result_buffer* pres , booldog::allocator* allocator
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				::booldog::result_buffer locres( allocator );
+				BOOINIT_RESULT( ::booldog::result_buffer );
+				::booldog::result_size resindexof;
+#ifdef __WINDOWS__
+				int readres = 0;
+#else
+				ssize_t readres = 0;
+#endif
+				for( ; ; )
+				{
+					if( res->bufsize == res->bufdatasize )
+					{
+						res->bufsize += step;
+						res->buf = res->allocator->realloc_array< unsigned char >( res->buf , res->bufsize , debuginfo );
+						if( res->buf == 0 )
+						{
+							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+							break;
+						}
+					}
+					size_t offset = res->bufdatasize;
+#ifdef __WINDOWS__
+					readres = _read( _file , &res->buf[ offset ] , (unsigned int)( res->bufsize - offset ) );
+#else
+					readres = ::read( _file , &res->buf[ offset ] , res->bufsize - offset );
+#endif
+					if( readres == -1 )
+					{
+						res->seterrno();
+						break;
+					}
+					if( readres == 0 )
+						break;
+					res->bufdatasize += readres;
+					::booldog::utils::string::mbs::indexof( &resindexof , false , (char*)res->buf
+						, offset , res->bufdatasize - offset , "\n" , 0 , 1 , debuginfo );
+					if( resindexof.sres != SIZE_MAX )
+					{
+						offset += resindexof.sres;
+						if( res->bufdatasize != offset )
+						{
+							::booldog::result resres;
+							if( position( &resres , -1 * (::booldog::int64)( res->bufdatasize - offset - 1 )
+								, ::booldog::enums::io::file_position_origin_curpos , debuginfo ) == false )
+							{
+								res->copy( resres );
+								break;
+							}
+						}
+
+						res->bufdatasize = offset;
+						res->buf[ res->bufdatasize ] = 0;
+						break;
+					}
+				}
+				return res->succeeded();
+			};
+
 			template< size_t step >
 			bool readall( ::booldog::result_buffer* pres , booldog::allocator* allocator
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
@@ -414,30 +574,14 @@ namespace booldog
 						res->buf = res->allocator->realloc_array< unsigned char >( res->buf , res->bufsize , debuginfo );
 						if( res->buf == 0 )
 						{
-							res->buf = res->allocator->realloc_array< unsigned char >( res->buf , res->bufsize , debuginfo );
-							if( res->buf )
-							{
-#ifdef __WINDOWS__
-								if( _lseek( _file , 0 , SEEK_SET ) == -1 )
-#else
-								if( lseek( _file , 0 , SEEK_SET ) == (off_t)-1 )
-#endif								
-								{
-									res->seterrno();
-									break;
-								}
-							}
-							else
-							{
-								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-								break;
-							}
+							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+							break;
 						}
 					}
 #ifdef __WINDOWS__
 					readres = _read( _file , &res->buf[ res->bufdatasize ] , (unsigned int)( res->bufsize - res->bufdatasize ) );
 #else
-					readres = read( _file , &res->buf[ res->bufdatasize ] , res->bufsize - res->bufdatasize );
+					readres = ::read( _file , &res->buf[ res->bufdatasize ] , res->bufsize - res->bufdatasize );
 #endif
 					if( readres == -1 )
 					{

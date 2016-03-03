@@ -46,9 +46,7 @@
 				[
 					"gtest",
 					"pthread",
-					"dl",
-					"m",
-					"rt"
+					"dl"
 				],
 				"output_file":"$(intermediate_directory)/$(project_name)",
 				"makefile":"../projects/$(os)/$(architecture)/$(project_name)/Makefile"				

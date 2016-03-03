@@ -5,12 +5,16 @@
 #endif
 #include <new>
 #include <stddef.h>
-#include <boo_debug_info.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_debug_info.h)
 namespace booldog
 {
 	class allocator
 	{
 	public:
+		virtual size_t getsize( void* pointer ) = 0;
 		virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
 		virtual void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
 		virtual void free( void* pointer ) = 0;
@@ -115,6 +119,12 @@ namespace booldog
 	{
 	public:
 		virtual size_t size_of_allocated_memory( void ) = 0;
+	};
+	class stack_allocator : public ::booldog::allocator
+	{
+	public:
+		virtual void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
 	};
 };
 #endif

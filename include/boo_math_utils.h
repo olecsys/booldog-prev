@@ -3,8 +3,11 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_result.h>
-#include <boo_utils.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_result.h)
+#include BOOLDOG_HEADER(boo_utils.h)
 namespace booldog
 {	
 	namespace utils

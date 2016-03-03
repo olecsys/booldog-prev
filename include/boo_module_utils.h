@@ -3,17 +3,28 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include <boo_result.h>
-#include <boo_allocator.h>
-#include <boo_mem.h>
-#include <boo_error.h>
-#include <boo_io_utils.h>
-#include <boo_string_utils.h>
+#ifndef BOOLDOG_HEADER
+#define BOOLDOG_HEADER( header ) <header>
+#endif
+#include BOOLDOG_HEADER(boo_result.h)
+#include BOOLDOG_HEADER(boo_allocator.h)
+#include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_error.h)
+#include BOOLDOG_HEADER(boo_io_utils.h)
+#include BOOLDOG_HEADER(boo_string_utils.h)
+
 #ifdef __UNIX__
+#ifndef _LARGEFILE64_SOURCE 
+#define _LARGEFILE64_SOURCE 
+#endif
 #include <unistd.h>
+
 #include <dlfcn.h>
 #include <link.h>
 #include <limits.h>
+#endif
+#ifdef __ANDROID__
+#include BOOLDOG_HEADER(boo_io_file.h)
 #endif
 namespace booldog
 {
@@ -24,9 +35,11 @@ namespace booldog
 			booinline bool free( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::module_handle handle
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
+				debuginfo = debuginfo;
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
 #ifdef __WINDOWS__
+				allocator = allocator;
 				if( FreeLibrary( handle ) == 0 )
 					res->GetLastError();
 #else
@@ -40,14 +53,20 @@ namespace booldog
 				booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator 
 					, const char* modulename , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
+					debuginfo = debuginfo;
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
 #ifdef __WINDOWS__
+					allocator = allocator;
 					::booldog::module_handle module_handle = 0;
 					if( GetModuleHandleExA( 0 , modulename , &module_handle ) == 0 )
 						res->GetLastError();
 #else
-					::booldog::module_handle module_handle = dlopen( modulename , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
+#ifndef __ANDROID__
+					::booldog::module_handle module_handle = dlopen( modulename , RTLD_NOLOAD | RTLD_NOW );
+#else
+					::booldog::module_handle module_handle = 0;
+#endif
 					if( module_handle == 0 )
 						res->setdlerror( allocator , dlerror() , debuginfo );
 #endif
@@ -63,7 +82,8 @@ namespace booldog
 					{
 						::booldog::result resres;
 #ifdef __WINDOWS__	
-						res->mbsize = step;
+						if( res->mbsize < step )
+							res->mbsize = step;
 						for( ; ; )
 						{
 							res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
@@ -95,6 +115,8 @@ namespace booldog
 							}
 						}
 #else
+#ifdef __ANDROID__
+#else
 						struct link_map *map = 0;
 						if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
 						{
@@ -110,6 +132,7 @@ namespace booldog
 							res->setdlerror( allocator , dlerror() , debuginfo );
 							goto goto_return;
 						}
+#endif
 #endif
 						if( ::booldog::utils::io::path::mbs::normalize( &resres , res->mbchar , res->mblen , res->mbsize ) == false )
 						{
@@ -135,7 +158,10 @@ goto_return:
 						if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
 							, &hmodule ) != 0 )
 						{
-							::booldog::utils::module::mbs::pathname< step >( res , allocator , hmodule , debuginfo );
+							if( GetModuleHandle( 0 ) == hmodule )
+								res->booerr( ::booldog::enums::result::booerr_type_handle_is_executable );
+							else
+								::booldog::utils::module::mbs::pathname< step >( res , allocator , hmodule , debuginfo );
 							FreeLibrary( hmodule );
 						}
 						else
@@ -229,12 +255,23 @@ goto_return:
 				booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator , const wchar_t* modulename 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
+					debuginfo = debuginfo;
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
 					::booldog::module_handle module_handle = 0;
 #ifdef __WINDOWS__
+					allocator = allocator;
 					if( GetModuleHandleExW( 0 , modulename , &module_handle ) == 0 )
 						res->GetLastError();
+					else
+					{
+						if( GetModuleHandle( 0 ) == module_handle )
+						{
+							res->booerr( ::booldog::enums::result::booerr_type_handle_is_executable );
+							FreeLibrary( module_handle );
+							module_handle = 0;
+						}
+					}
 #else
 					::booldog::result_mbchar resmbchar( allocator );
 					if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , modulename , 0 , SIZE_MAX , debuginfo ) )
@@ -254,7 +291,8 @@ goto_return:
 					{
 						::booldog::result resres;
 #ifdef __WINDOWS__	
-						res->wsize = step;
+						if( res->wsize < step )
+							res->wsize = step;
 						for( ; ; )
 						{
 							res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
@@ -321,7 +359,10 @@ goto_return:
 						if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
 							, &hmodule ) != 0 )
 						{
-							::booldog::utils::module::wcs::pathname< step >( res , allocator , hmodule , debuginfo );
+							if( GetModuleHandle( 0 ) == hmodule )
+								res->booerr( ::booldog::enums::result::booerr_type_handle_is_executable );
+							else
+								::booldog::utils::module::wcs::pathname< step >( res , allocator , hmodule , debuginfo );
 							FreeLibrary( hmodule );
 						}
 						else
@@ -349,18 +390,31 @@ goto_return:
 			booinline ::booldog::module_handle handle( ::booldog::result* pres , booldog::allocator* allocator 
 				, void* address , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
+				debuginfo = debuginfo;
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
 				::booldog::module_handle module_handle = 0;
 #ifdef __WINDOWS__
+				allocator = allocator;
 				if( GetModuleHandleExW( GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS , reinterpret_cast< LPCWSTR >( address ) 
 					, &module_handle ) == 0 )
 					res->GetLastError();
+				else
+				{
+					if( GetModuleHandle( 0 ) == module_handle )
+					{
+						res->booerr( ::booldog::enums::result::booerr_type_handle_is_executable );
+						FreeLibrary( module_handle );
+						module_handle = 0;
+					}
+				}
 #else
 				::booldog::result_mbchar resmbchar( allocator );
 				if( ::booldog::utils::module::mbs::pathname_from_address< 64 >( &resmbchar , allocator , address , debuginfo ) )
 				{
-					module_handle = dlopen( resmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW | RTLD_GLOBAL );
+#ifndef __ANDROID__
+					module_handle = dlopen( resmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW );
+#endif
 					if( module_handle == 0 )
 						res->setdlerror( allocator , dlerror() , debuginfo );
 				}
@@ -368,196 +422,6 @@ goto_return:
 					res->copy( resmbchar );
 #endif
 				return module_handle;
-			};
-		};
-		namespace executable
-		{
-			namespace mbs
-			{
-				template< size_t step >
-				booinline bool pathname( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-				{
-					::booldog::result_mbchar locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_mbchar );
-					::booldog::result resres;
-#ifdef __WINDOWS__
-					HMODULE module_handle = GetModuleHandleA( 0 );
-					if( module_handle )
-					{
-						res->mbsize = step;
-						for( ; ; )
-						{
-							res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
-							if( res->mbchar )
-							{
-								res->mblen = GetModuleFileNameA( module_handle , res->mbchar , (DWORD)res->mbsize );
-								if( res->mblen == 0 )
-								{
-									res->GetLastError();
-									goto goto_return;
-								}
-								else if( res->mblen != res->mbsize )
-								{
-									res->mbchar[ res->mblen ] = 0;
-									if( strncmp( res->mbchar , "\\\\?\\" , 4 ) == 0 )
-									{
-										::booldog::mem::remove< char >( 0 , res->mbchar , res->mbsize , 4 );
-										res->mblen -= 4;
-									}
-									break;
-								}
-								else
-									res->mbsize += step;
-							}
-							else
-							{
-								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-								goto goto_return;
-							}
-						}
-					}
-					else
-					{
-						res->GetLastError();
-						goto goto_return;
-					}
-#else				
-#ifdef __SOLARIS__
-					char* path[ 64 ] = {0};
-					snprintf( path , 64 , "/proc/%ld/path/a.out" , getpid() );
-#elif defined( __LINUX__ )
-					const char* path = "/proc/self/exe";
-#endif
-					res->mbsize = step;
-					for( ; ; )
-					{
-						res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
-						if( res->mbchar )
-						{
-							res->mblen = readlink( path , res->mbchar , res->mbsize );
-							if( res->mblen == (size_t)-1 )
-							{
-								res->seterrno();
-								goto goto_return;
-							}
-							else if( res->mblen != res->mbsize )
-							{
-								res->mbchar[ res->mblen ] = 0;
-								break;
-							}
-							else
-								res->mbsize += step;
-						}
-						else
-						{
-							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-							goto goto_return;
-						}
-					}
-#endif
-					if( ::booldog::utils::io::path::mbs::normalize( &resres , res->mbchar , res->mblen , res->mbsize ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-goto_return:
-					return res->succeeded();
-				};
-				template< size_t step >
-				booinline bool directory( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-				{
-					::booldog::result_mbchar locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_mbchar );
-					if( ::booldog::utils::executable::mbs::pathname< step >( res , allocator , debuginfo ) )
-					{
-						::booldog::result locres;
-						if( ::booldog::utils::io::path::mbs::directory( &locres , res->mbchar , res->mblen ) == false )
-							res->copy( locres );
-					}
-					return res->succeeded();
-				};
-			};
-			namespace wcs
-			{
-				template< size_t step >
-				booinline bool pathname( ::booldog::result_wchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-				{
-					::booldog::result_wchar locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_wchar );
-					::booldog::result resres;
-#ifdef __WINDOWS__				
-					HMODULE module_handle = GetModuleHandleW( 0 );
-					if( module_handle )
-					{
-						res->wsize = step;
-						for( ; ; )
-						{
-							res->wchar = res->wallocator->realloc_array< wchar_t >( res->wchar , res->wsize , debuginfo );
-							if( res->wchar )
-							{
-								res->wlen = GetModuleFileNameW( module_handle , res->wchar , (DWORD)res->wsize );
-								if( res->wlen == 0 )
-								{
-									res->GetLastError();
-									goto goto_return;
-								}
-								else if( res->wlen != res->wsize )
-								{
-									res->wchar[ res->wlen ] = 0;
-									if( wcsncmp( res->wchar , L"\\\\?\\" , 4 ) == 0 )
-									{
-										::booldog::mem::remove< wchar_t >( 0 , res->wchar , res->wsize , 4 );
-										res->wlen -= 4;
-									}
-									res->wsize *= sizeof( wchar_t );
-									break;
-								}
-								else
-									res->wsize += step;
-							}
-							else
-							{
-								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-								goto goto_return;
-							}
-						}
-					}
-					else
-					{
-						res->GetLastError();
-						goto goto_return;
-					}
-#else
-					::booldog::result_mbchar resmbchar( allocator );
-					if( ::booldog::utils::executable::mbs::pathname< step >( &resmbchar , allocator , debuginfo ) == false )
-					{
-						res->copy( resmbchar );
-						goto goto_return;
-					}
-					if( ::booldog::utils::string::mbs::towcs( res , allocator , resmbchar.mbchar , 0 , SIZE_MAX , debuginfo ) == false )
-						goto goto_return;
-#endif
-					if( ::booldog::utils::io::path::wcs::normalize( &resres , res->wchar , res->wlen , res->wsize ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-goto_return:
-					return res->succeeded();
-				};
-				template< size_t step >
-				booinline bool directory( ::booldog::result_wchar* pres , booldog::allocator* allocator , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-				{
-					::booldog::result_wchar locres( allocator );
-					BOOINIT_RESULT( ::booldog::result_wchar );
-					if( ::booldog::utils::executable::wcs::pathname< step >( res , allocator , debuginfo ) )
-					{
-						::booldog::result locres;
-						if( ::booldog::utils::io::path::wcs::directory( &locres , res->wchar , res->wlen ) == false )
-							res->copy( locres );
-					}
-					return res->succeeded();
-				};
 			};
 		};
 	};
