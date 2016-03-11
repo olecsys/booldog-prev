@@ -18,46 +18,41 @@ namespace booldog
 #define BOOLDOG_MEM_INFO_USE_INFO2 5
 #define BOOLDOG_MEM_INFO_USE_INFO3 6
 #define BOOLDOG_MEM_INFO_USE_INFO4 7
-		boobegin_struct_pack( 1 )
 		struct info1
 		{
 			::booldog::byte _check;
 			::booldog::byte _flags;
 			::booldog::byte _size;
 			::booldog::byte _eflags;
-		}
-		booend_struct_pack( 1 )
-		boobegin_struct_pack( 1 )
+		};
 		struct info2
 		{
 			::booldog::byte _check;
 			::booldog::byte _flags;
 			::booldog::ushort _size;
 			::booldog::byte _eflags;
-		}
-		booend_struct_pack( 1 )
-		boobegin_struct_pack( 1 )
+		};
 		struct info3
 		{
 			::booldog::byte _check;
 			::booldog::byte _flags;
 			::booldog::uint32 _size;
 			::booldog::byte _eflags;
-		}
-		booend_struct_pack( 1 )
-		boobegin_struct_pack( 1 )
+		};
 		struct info4
 		{
 			::booldog::byte _check;
 			::booldog::byte _flags;
 			::booldog::uint64 _size;
 			::booldog::byte _eflags;
-		}
-		booend_struct_pack( 1 )
+		};
 		namespace info
 		{
 			booinline size_t memory_size_with_info( size_t size )
 			{
+				if( size % 4 )
+					size = 4 * ( size / 4 ) + 4;
+
 				if( size < 0xff )
 					size += sizeof( ::booldog::mem::info1 );
 				else if( size < 0xffff )

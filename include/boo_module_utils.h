@@ -25,6 +25,7 @@
 #endif
 #ifdef __ANDROID__
 #include BOOLDOG_HEADER(boo_io_file.h)
+#include BOOLDOG_HEADER(boo_io_utils.h)
 #endif
 namespace booldog
 {
@@ -62,13 +63,67 @@ namespace booldog
 					if( GetModuleHandleExA( 0 , modulename , &module_handle ) == 0 )
 						res->GetLastError();
 #else
-#ifndef __ANDROID__
-					::booldog::module_handle module_handle = dlopen( modulename , RTLD_NOLOAD | RTLD_NOW );
-#else
+#ifdef __ANDROID__
 					::booldog::module_handle module_handle = 0;
-#endif
+					::booldog::result_file resfile;
+					::booldog::result_mbchar mbchar( allocator );
+					::booldog::result_mbchar mbchardir( allocator ) , mbchardirenum( allocator );
+					if( ::booldog::utils::io::path::mbs::directory( &mbchardir , allocator , modulename , 0 , SIZE_MAX 
+						, debuginfo ) )
+					{
+						res->copy( mbchardir );
+						goto goto_return;
+					}
+					
+					::booldog::utils::string::mbs::sprintf( &mbchar , allocator , debuginfo , "/proc/%u/maps" 
+						, (::booldog::uint32)getpid() );
+					
+					if( ::booldog::io::file::mbsopen( &resfile , allocator , mbchar.mbchar 
+						, ::booldog::enums::io::RDONLY , 0 , false , debuginfo ) )
+					{
+						::booldog::result_size index;
+						::booldog::result_buffer buffer( allocator );
+						while( resfile.file->readline< 64 >( &buffer , allocator , debuginfo ) )
+						{
+							if( buffer.bufdatasize == 0 )
+								break;
+							::booldog::utils::string::mbs::indexof( &index , false , (char*)buffer.buf
+								, 0 , buffer.bufdatasize , modulename , 0 , SIZE_MAX , debuginfo );
+							if( index.sres != SIZE_MAX )
+							{
+								::booldog::result_size index0;
+								::booldog::utils::string::mbs::indexof( &index0 , false , (char*)buffer.buf
+									, 0 , buffer.bufdatasize , "/" , 0 , 1 , debuginfo );
+								if( index.sres >= index0.sres && index0.sres != SIZE_MAX )
+								{
+									if( ::booldog::utils::io::path::mbs::directory( &mbchardirenum , allocator 
+										, (char*)&buffer.buf[ index0.sres ] , 0 , SIZE_MAX , debuginfo ) )
+									{
+										res->copy( mbchardirenum );
+										break;
+									}
+									module_handle = dlopen( (char*)&buffer.buf[ index0.sres ]
+										, RTLD_NOW );
+									if( module_handle )
+									{
+										res->clear();
+										break;
+									}
+									else
+										res->setdlerror( allocator , dlerror() , debuginfo );
+								}
+							}
+						}
+						resfile.file->close( 0 , debuginfo );
+					}
+					else
+						res->copy( resfile );
+goto_return:
+#else
+					::booldog::module_handle module_handle = dlopen( modulename , RTLD_NOLOAD | RTLD_NOW );
 					if( module_handle == 0 )
 						res->setdlerror( allocator , dlerror() , debuginfo );
+#endif
 #endif
 					return module_handle;
 				};
@@ -116,6 +171,56 @@ namespace booldog
 						}
 #else
 #ifdef __ANDROID__
+						//goto goto_return;
+						::booldog::result_mbchar mbchar( res->mballocator );
+						::booldog::utils::string::mbs::sprintf( &mbchar , res->mballocator , debuginfo , "/proc/%u/maps" 
+							, (::booldog::uint32)getpid() );
+						::booldog::result_file resfile;
+						if( ::booldog::io::file::mbsopen( &resfile , res->mballocator , mbchar.mbchar 
+							, ::booldog::enums::io::RDONLY , 0 , false , debuginfo ) )
+						{
+							::booldog::result_size index;
+							::booldog::result_buffer buffer( res->mballocator );
+							while( resfile.file->readline< 64 >( &buffer , res->mballocator , debuginfo ) )
+							{
+								if( buffer.bufdatasize == 0 )
+									break;
+								::booldog::utils::string::mbs::indexof( &index , false , (char*)buffer.buf
+									, 0 , buffer.bufdatasize , "/" , 0 , 1 , debuginfo );
+								if( index.sres != SIZE_MAX )
+								{
+									::booldog::module_handle findmodule_handle = dlopen( (char*)&buffer.buf[ index.sres ]
+										, RTLD_NOW );
+									if( findmodule_handle )
+									{
+										if( module_handle == findmodule_handle )
+										{
+											res->clear();
+											if( res->mbchar )
+												res->mballocator->free( res->mbchar );
+
+											res->mblen = buffer.bufdatasize - index.sres;
+											res->mbsize = buffer.bufsize;
+											res->mbchar = (char*)buffer.detach();
+											
+											::booldog::mem::remove< char >( 0 , res->mbchar , res->mbsize , index.sres );
+											
+											dlclose( findmodule_handle );
+											break;
+										}
+										dlclose( findmodule_handle );
+									}
+									else
+										res->setdlerror( res->mballocator , dlerror() , debuginfo );
+								}
+							}
+							resfile.file->close( 0 , debuginfo );
+						}
+						else
+						{
+							res->copy( resfile );
+							goto goto_return;
+						}
 #else
 						struct link_map *map = 0;
 						if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
@@ -411,13 +516,7 @@ goto_return:
 #else
 				::booldog::result_mbchar resmbchar( allocator );
 				if( ::booldog::utils::module::mbs::pathname_from_address< 64 >( &resmbchar , allocator , address , debuginfo ) )
-				{
-#ifndef __ANDROID__
-					module_handle = dlopen( resmbchar.mbchar , RTLD_NOLOAD | RTLD_NOW );
-#endif
-					if( module_handle == 0 )
-						res->setdlerror( allocator , dlerror() , debuginfo );
-				}
+					module_handle = ::booldog::utils::module::mbs::handle( res , allocator , resmbchar.mbchar , debuginfo );
 				else
 					res->copy( resmbchar );
 #endif

@@ -20,6 +20,7 @@
 #include <dlfcn.h>
 #include <link.h>
 #include <limits.h>
+#include BOOLDOG_HEADER(boo_module_utils.h)
 #endif
 namespace booldog
 {
@@ -81,7 +82,7 @@ namespace booldog
 	{
 		booldog::allocator* _allocator;
 		booldog::threading::rdwrlock _lock;
-		booldog::array< booldog::module* > _modules;
+		booldog::module* _modules_begin;
 #ifdef __UNIX__
 		booldog::threading::rdwrlock _lock_loaded_dirs;
 		booldog::array< char* > _loaded_dirs;
@@ -105,31 +106,43 @@ namespace booldog
 			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			char* dl_error = 0;
-#ifndef __ANDROID__
-			::booldog::module_handle module_handle = dlopen( res_name_or_path , RTLD_NOLOAD | RTLD_NOW );
-#else
-			::booldog::module_handle module_handle = 0;
-#endif
+			::booldog::module_handle module_handle = ::booldog::utils::module::mbs::handle( 0 , _allocator 
+				, res_name_or_path , debuginfo );
 #endif
 			if( module_handle )
 			{
 				::booldog::module* module = 0;
+
+
 				_lock.wlock( debuginfo );
-				for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+				::booldog::module* module_next = _modules_begin , * module_free = 0;
+				for( ; ; )
 				{
-					if( _modules[ index0 ]->handle() == module_handle )
+					if( module_next == 0 )
+						break;
+					if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
+						module_free = module_next;
+					else if( module_next->handle() == module_handle )
 					{
-						module = _modules[ index0 ];
-						module->addref();
+						module = module_next;
 						break;
 					}
+					module_next = module_next->_prev;
 				}
 				if( module == 0 )
 				{
-					module = _allocator->create< ::booldog::module >( debuginfo );
+					if( module_free )
+						module = module_free;
+					else
+					{
+						module = _allocator->create< ::booldog::module >( debuginfo );
+
+						module->_prev = _modules_begin;
+						_modules_begin = module;
+					}
 					module->_handle = module_handle;
-					_modules.add( module , debuginfo );
 				}
+				module->addref();
 				_lock.wunlock( debuginfo );
 				pres->clear();
 				pres->module = module;
@@ -139,7 +152,7 @@ namespace booldog
 		};
 	public:
 		loader( booldog::allocator* allocator )
-			: _modules( allocator )
+			: _modules_begin( 0 )
 #ifdef __UNIX__
 			, _loaded_dirs( allocator )
 #endif
@@ -148,6 +161,17 @@ namespace booldog
 		};
 		~loader( void )
 		{
+			_lock.wlock( debuginfo_macros );
+			::booldog::module* module_next = _modules_begin;
+			for( ; ; )
+			{
+				if( module_next == 0 )
+					break;
+				::booldog::module* prev = module_next->_prev;
+				_allocator->destroy( module_next );
+				module_next = prev;
+			}
+			_lock.wunlock( debuginfo_macros );
 #ifdef __UNIX__
 			_lock_loaded_dirs.wlock( debuginfo_macros );
 			for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
@@ -217,22 +241,36 @@ namespace booldog
 						, debuginfo ) )
 					{
 						::booldog::module* module = 0;
+
 						_lock.wlock( debuginfo );
-						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+						::booldog::module* module_next = _modules_begin , * module_free = 0;
+						for( ; ; )
 						{
-							if( _modules[ index0 ]->handle() == module_handle )
+							if( module_next == 0 )
+								break;
+							if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
+								module_free = module_next;
+							else if( module_next->handle() == module_handle )
 							{
-								module = _modules[ index0 ];
-								module->addref();
+								module = module_next;
 								break;
 							}
+							module_next = module_next->_prev;
 						}
 						if( module == 0 )
 						{
-							module = _allocator->create< ::booldog::module >( debuginfo );
+							if( module_free )
+								module = module_free;
+							else
+							{
+								module = _allocator->create< ::booldog::module >( debuginfo );
+
+								module->_prev = _modules_begin;
+								_modules_begin = module;
+							}
 							module->_handle = module_handle;
-							_modules.add( module , debuginfo );
 						}
+						module->addref();
 						_lock.wunlock( debuginfo );
 						res->clear();
 						res->module = module;						
@@ -633,69 +671,77 @@ namespace booldog
 					else
 						res->setdlerror( allocator , dlerror() , debuginfo );
 					goto goto_return;
-goto_loaded_module:
-#ifndef __ANDROID__
-					struct link_map *map = 0;
-					if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
+goto_loaded_module:	
+					::booldog::result_mbchar resdirmbchar( _allocator );
+					if( ::booldog::utils::module::mbs::pathname< 64 >( &resdirmbchar , _allocator , module_handle
+						, debuginfo ) == false )
 					{
-						::booldog::result_mbchar resdirmbchar( _allocator );
-						if( ::booldog::utils::io::path::mbs::directory( &resdirmbchar , _allocator , map->l_name , 0 , SIZE_MAX 
-							, debuginfo ) == false )
+						res->copy( resdirmbchar );
+						dlclose( module_handle );
+						goto goto_return;
+					}
+					if( ::booldog::utils::io::path::mbs::directory( &resres , resdirmbchar.mbchar 
+						, resdirmbchar.mblen ) == false )
+					{
+						res->copy( resres );
+						dlclose( module_handle );
+						goto goto_return;
+					}
+					if( ::booldog::utils::io::path::mbs::normalize( &resres , resdirmbchar.mbchar , resdirmbchar.mblen 
+						, resdirmbchar.mbsize ) == false )
+					{
+						res->copy( resres );
+						dlclose( module_handle );
+						goto goto_return;
+					}	
+					::booldog::module* module = 0;
+
+					_lock.wlock( debuginfo );
+					::booldog::module* module_next = _modules_begin , * module_free = 0;
+					for( ; ; )
+					{
+						if( module_next == 0 )
+							break;
+						if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
+							module_free = module_next;
+						else if( module_next->handle() == module_handle )
 						{
-							res->copy( resres );
-							dlclose( module_handle );
-							goto goto_return;
+							module = module_next;
+							break;
 						}
-						if( ::booldog::utils::io::path::mbs::normalize( &resres , resdirmbchar.mbchar , resdirmbchar.mblen 
-							, resdirmbchar.mbsize ) == false )
-						{
-							res->copy( resres );
-							dlclose( module_handle );
-							goto goto_return;
-						}	
-						::booldog::module* module = 0;
-						_lock.wlock( debuginfo );
-						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
-						{
-							if( _modules[ index0 ]->handle() == module_handle )
-							{
-								module = _modules[ index0 ];
-								module->addref();
-								break;
-							}
-						}
-						if( module == 0 )
+						module_next = module_next->_prev;
+					}
+					if( module == 0 )
+					{
+						if( module_free )
+							module = module_free;
+						else
 						{
 							module = _allocator->create< ::booldog::module >( debuginfo );
-							module->_handle = module_handle;
-							_modules.add( module , debuginfo );
+
+							module->_prev = _modules_begin;
+							_modules_begin = module;
 						}
-						_lock.wunlock( debuginfo );
-						res->clear();
-						res->module = module;
+						module->_handle = module_handle;
+					}
+					module->addref();
+					_lock.wunlock( debuginfo );
+					res->clear();
+					res->module = module;
 						
-						bool found = false;
-						_lock_loaded_dirs.wlock( debuginfo );
-						for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
-						{
-							if( strcmp( resdirmbchar.mbchar , _loaded_dirs[ index0 ] ) == 0 )
-							{
-								found = true;
-								break;
-							}
-						}
-						if( found == false )
-							_loaded_dirs.add( resdirmbchar.detach() );
-						_lock_loaded_dirs.wunlock( debuginfo );
-					}
-					else
+					bool found = false;
+					_lock_loaded_dirs.wlock( debuginfo );
+					for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
 					{
-						res->setdlerror( allocator , dlerror() , debuginfo );
-						dlclose( module_handle );
+						if( strcmp( resdirmbchar.mbchar , _loaded_dirs[ index0 ] ) == 0 )
+						{
+							found = true;
+							break;
+						}
 					}
-#else
-					;
-#endif
+					if( found == false )
+						_loaded_dirs.add( resdirmbchar.detach() );
+					_lock_loaded_dirs.wunlock( debuginfo );
 				}
 			}
 goto_return:
@@ -752,22 +798,36 @@ goto_return:
 				if( module_handle )
 				{
 					::booldog::module* module = 0;
+
 					_lock.wlock( debuginfo );
-					for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+					::booldog::module* module_next = _modules_begin , * module_free = 0;
+					for( ; ; )
 					{
-						if( _modules[ index0 ]->handle() == module_handle )
+						if( module_next == 0 )
+							break;
+						if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
+							module_free = module_next;
+						else if( module_next->handle() == module_handle )
 						{
-							module = _modules[ index0 ];
-							module->addref();
+							module = module_next;
 							break;
 						}
+						module_next = module_next->_prev;
 					}
 					if( module == 0 )
 					{
-						module = _allocator->create< ::booldog::module >( debuginfo );
+						if( module_free )
+							module = module_free;
+						else
+						{
+							module = _allocator->create< ::booldog::module >( debuginfo );
+
+							module->_prev = _modules_begin;
+							_modules_begin = module;
+						}
 						module->_handle = module_handle;
-						_modules.add( module , debuginfo );
 					}
+					module->addref();
 					_lock.wunlock( debuginfo );
 					res->clear();
 					res->module = module;
@@ -1056,22 +1116,37 @@ goto_return:
 					if( module_handle )
 					{
 						::booldog::module* module = 0;
+
+
 						_lock.wlock( debuginfo );
-						for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+						::booldog::module* module_next = _modules_begin , * module_free = 0;
+						for( ; ; )
 						{
-							if( _modules[ index0 ]->handle() == module_handle )
+							if( module_next == 0 )
+								break;
+							if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
+								module_free = module_next;
+							else if( module_next->handle() == module_handle )
 							{
-								module = _modules[ index0 ];
-								module->addref();
+								module = module_next;
 								break;
 							}
+							module_next = module_next->_prev;
 						}
 						if( module == 0 )
 						{
-							module = _allocator->create< ::booldog::module >( debuginfo );
+							if( module_free )
+								module = module_free;
+							else
+							{
+								module = _allocator->create< ::booldog::module >( debuginfo );
+
+								module->_prev = _modules_begin;
+								_modules_begin = module;
+							}
 							module->_handle = module_handle;
-							_modules.add( module , debuginfo );
 						}
+						module->addref();
 						_lock.wunlock( debuginfo );
 						res->clear();
 						res->module = module;
@@ -1098,12 +1173,18 @@ goto_return:
 			debuginfo = debuginfo;
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
+
+
 			_lock.wlock( debuginfo );
-			for( size_t index0 = 0 ; index0 < _modules.count() ; index0++ )
+			::booldog::module* module_next = _modules_begin;
+			for( ; ; )
 			{
-				if( _modules[ index0 ] == module )
+				if( module_next == 0 )
+					break;
+				if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) > 0 
+					&& module_next == module )
 				{
-					::booldog::module* mod = _modules[ index0 ];
+					::booldog::module* mod = module_next;
 					if( mod->release() == 0 )
 					{	
 						if( ponbeforeunload )
@@ -1113,8 +1194,6 @@ goto_return:
 #else
 						dlclose( mod->_handle );
 #endif
-						_modules.remove( index0 );
-						_allocator->destroy< ::booldog::module >( mod );
 					}
 					else
 #ifdef __WINDOWS__
@@ -1124,6 +1203,7 @@ goto_return:
 #endif
 					goto goto_return;
 				}
+				module_next = module_next->_prev;
 			}
 			res->booerr( ::booldog::enums::result::booerr_type_module_not_found_in_the_list );
 goto_return:

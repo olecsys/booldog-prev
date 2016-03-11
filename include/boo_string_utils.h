@@ -61,7 +61,7 @@ namespace booldog
 #else
 						vsnprintf( res->mbchar , res->mbsize , format , pargs );
 #endif
-						res->mblen = res->mbsize - 1;
+						res->mblen = size - 1;
 						res->mbchar[ res->mblen ] = 0;
 					}
 					else

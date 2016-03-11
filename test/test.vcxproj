@@ -19,6 +19,7 @@
     <ClInclude Include="..\include\boo_array.h" />
     <ClInclude Include="..\include\boo_base_loader.h" />
     <ClInclude Include="..\include\boo_base_module.h" />
+    <ClInclude Include="..\include\boo_bits_utils.h" />
     <ClInclude Include="..\include\boo_check.h" />
     <ClInclude Include="..\include\boo_cp1251.h" />
     <ClInclude Include="..\include\boo_cp1251_consts.h" />

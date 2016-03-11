@@ -8,6 +8,7 @@
 #endif
 #include BOOLDOG_HEADER(boo_mem_cluster.h)
 #include BOOLDOG_HEADER(boo_interlocked.h)
+#include BOOLDOG_HEADER(boo_bits_utils.h)
 namespace booldog
 {
 	namespace allocators
@@ -79,6 +80,9 @@ namespace booldog
 				void* palloc( void* pointer , size_t pointertotal , size_t pointersize , size_t size
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
+					if( size % 4 )
+						size = 4 * ( size / 4 ) + 4;
+
 					debuginfo = debuginfo;
 					size_t pointerinfosize = pointertotal - pointersize;
 
@@ -123,41 +127,33 @@ namespace booldog
 						{
 							::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 							info->_size = (::booldog::byte)size;
-							info->_flags = 0;
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_HEAP );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO1 );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
-							info->_eflags = info->_flags;
+							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO1 , BOOLDOG_MEM_INFO_BUSY >::value;
+							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
 						else if( begin_size == sizeof( ::booldog::mem::info2 ) )
 						{
 							::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
 							info->_size = (::booldog::ushort)size;
-							info->_flags = 0;
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_HEAP );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO2 );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
-							info->_eflags = info->_flags;
+							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO2 , BOOLDOG_MEM_INFO_BUSY >::value;
+							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
 						else if( begin_size == sizeof( ::booldog::mem::info3 ) )
 						{
 							::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
 							info->_size = (::booldog::uint32)size;
-							info->_flags = 0;
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_HEAP );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO3 );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
-							info->_eflags = info->_flags;
+							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO3 , BOOLDOG_MEM_INFO_BUSY >::value;
+							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
 						else if( begin_size == sizeof( ::booldog::mem::info4 ) )
 						{
 							::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
 							info->_size = size;
-							info->_flags = 0;
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_HEAP );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_USE_INFO4 );
-							::booldog::utils::set_bit( info->_flags , BOOLDOG_MEM_INFO_BUSY );
-							info->_eflags = info->_flags;
+							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO4 , BOOLDOG_MEM_INFO_BUSY >::value;
+							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
 						return begin + begin_size;
 					}
@@ -201,6 +197,10 @@ namespace booldog
 					}
 					if( pointer == 0 )
 						return palloc( 0 , 0 , 0 , size , debuginfo );
+
+					if( size % 4 )
+						size = 4 * ( size / 4 ) + 4;
+
 					size_t offsize = 0 , begin_size = 0;
 					from_pointer( pointer , offsize , begin_size );
 					if( begin_size == size )

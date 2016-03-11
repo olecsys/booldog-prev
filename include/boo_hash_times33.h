@@ -19,7 +19,10 @@ namespace booldog
 #pragma warning( push )
 #pragma warning( disable: 4307 )
 #endif
-			template< const char n0 = 0 , const char n1 = 0 , const char n2 = 0 , const char n3 = 0 , const char n4 = 0 , const char n5 = 0 , const char n6 = 0 , const char n7 = 0 , const char n8 = 0 , const char n9 = 0 , const char n10 = 0 , const char n11 = 0 , const char n12 = 0 , const char n13 = 0 , const char n14 = 0 , const char n15 = 0 , const char n16 = 0 , const char n17 = 0 , const char n18 = 0 , const char n19 = 0 >
+			template< const char n0 = 0 , const char n1 = 0 , const char n2 = 0 , const char n3 = 0 , const char n4 = 0 
+				, const char n5 = 0 , const char n6 = 0 , const char n7 = 0 , const char n8 = 0 , const char n9 = 0 
+				, const char n10 = 0 , const char n11 = 0 , const char n12 = 0 , const char n13 = 0 , const char n14 = 0 
+				, const char n15 = 0 , const char n16 = 0 , const char n17 = 0 , const char n18 = 0 , const char n19 = 0 >
 			struct times33
 			{
 				template< const char k , ::booldog::uint64 hash = 0 >

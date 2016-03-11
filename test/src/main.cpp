@@ -232,6 +232,30 @@ char utf8_TESTil_var[] =
 #include BOOLDOG_HEADER(boo_error_format.h)
 #include BOOLDOG_HEADER(boo_json.h)
 #include BOOLDOG_HEADER(boo_io_file.h)
+#include BOOLDOG_HEADER(boo_bits_utils.h)
+
+
+class boo_bits_utilsTest : public ::testing::Test 
+{
+};
+TEST_F( boo_bits_utilsTest , test )
+{
+	::booldog::byte res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_HEAP 
+		, BOOLDOG_MEM_INFO_USE_INFO1 , BOOLDOG_MEM_INFO_BUSY >::value;
+	ASSERT_EQ( res , 0x1c );
+
+	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_HEAP 
+		, BOOLDOG_MEM_INFO_USE_INFO3 , BOOLDOG_MEM_INFO_BUSY >::value;
+	ASSERT_EQ( res , 0x4c );
+		
+	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_USE_INFO1 >::value;
+	ASSERT_EQ( res , 0x10 );
+		
+	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_USE_INFO2 >::value;
+	ASSERT_EQ( res , 0x20 );
+};
+
+
 class boo_paramTest : public ::testing::Test 
 {
 };
@@ -952,7 +976,7 @@ TEST_F( boo_stackTest , test )
 	ASSERT_EQ( allocator.available() , total - ptr0_mswi );
 
 	ptr0 = allocator.realloc( ptr0 , 45 );
-	ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
+	//ptr0_mswi = ::booldog::mem::info::memory_size_with_info( 45 );
 	ptr0_mis = ::booldog::mem::info::memory_info_size( 45 );
 
 	ASSERT_TRUE( allocator.begin() == begin + ptr0_mswi );

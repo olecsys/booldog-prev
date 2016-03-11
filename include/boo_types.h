@@ -16,7 +16,7 @@
 	__pragma( pack( pop ) )
 #else
 #define boobegin_struct_pack( bytes )
-#define booend_struct_pack( bytes ) __attribute__( ( packed , aligned( 1 ) ) );
+#define booend_struct_pack( bytes ) __attribute__( ( packed , aligned( bytes ) ) );
 #endif
 
 #ifdef __cplusplus

@@ -91,12 +91,14 @@ namespace booldog
 		::booldog::threading::rdwrlock _lock;
 		::booldog::uint32 _inited_ref;
 		void* _udata;
+
+		::booldog::module* _prev;
 	public:
 		module( void )
-			: _udata( 0 )
+			: _udata( 0 ) , _prev( 0 )
 		{
 			_inited_ref = 0;
-			_ref = 1;
+			_ref = 0;
 			_handle = 0;
 		};
 		virtual void udata( void* pudata )
