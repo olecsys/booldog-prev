@@ -6201,27 +6201,27 @@ TEST_F( boo_time_utilsTest , test )
 
 	char* begin = (char*)allocator.begin();
 	{
-		ASSERT_EQ( ::booldog::utils::time::unix::day_of_month( 1458128777336000 ) , 16 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::day_of_month( 1458128777336000 ) , 16 );
 
-		ASSERT_EQ( ::booldog::utils::time::unix::month( 1458128777336000 ) , 3 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::month( 1458128777336000 ) , 3 );
 
-		ASSERT_EQ( ::booldog::utils::time::unix::year( 1458128777336000 ) , 2016 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::year( 1458128777336000 ) , 2016 );
 
-		ASSERT_EQ( ::booldog::utils::time::unix::hour( 1458128777336000 ) , 11 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::hour( 1458128777336000 ) , 11 );
 
-		ASSERT_EQ( ::booldog::utils::time::unix::minute( 1458128777336000 ) , 46 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::minute( 1458128777336000 ) , 46 );
 
-		ASSERT_EQ( ::booldog::utils::time::unix::second( 1458128777336000 ) , 17 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::second( 1458128777336000 ) , 17 );
 
-		ASSERT_EQ( ::booldog::utils::time::unix::millisecond( 1458128777336000 ) , 336 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::millisecond( 1458128777336000 ) , 336 );
 
-		::booldog::uint64 local = ::booldog::utils::time::unix::tolocal( 1458128777336000 );
+		::booldog::uint64 local = ::booldog::utils::time::unix0::tolocal( 1458128777336000 );
 
-		ASSERT_EQ( ::booldog::utils::time::unix::toutc( local ) , 1458128777336000 );
+		ASSERT_EQ( ::booldog::utils::time::unix0::toutc( local ) , 1458128777336000 );
 
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::time::unix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 , 1458128777336000 , debuginfo_macros );
+		::booldog::utils::time::unix0::mbs::tostring< 16 >( &resmbchar , &allocator , 0 , 1458128777336000 , debuginfo_macros );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
 
@@ -6230,7 +6230,7 @@ TEST_F( boo_time_utilsTest , test )
 		ASSERT_EQ( strcmp( resmbchar.mbchar , "11:46:17 16.03.2016" ) , 0 );
 
 
-		::booldog::utils::time::unix::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %Y%" , 1458128777336000
+		::booldog::utils::time::unix0::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %Y%" , 1458128777336000
 			, debuginfo_macros );
 
 		ASSERT_TRUE( resmbchar.succeeded() );
@@ -6240,7 +6240,7 @@ TEST_F( boo_time_utilsTest , test )
 		ASSERT_EQ( strcmp( resmbchar.mbchar , "Gt%y 2016%" ) , 0 );
 
 
-		::booldog::utils::time::unix::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %MS%" , 1458128777336000
+		::booldog::utils::time::unix0::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %MS%" , 1458128777336000
 			, debuginfo_macros );
 
 		ASSERT_TRUE( resmbchar.succeeded() );

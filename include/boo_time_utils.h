@@ -138,19 +138,19 @@ namespace booldog
 				booinline ::booldog::uint32 month( ::booldog::uint64 time )
 				{
 					::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
-					::booldog::utils::time::unix::date( time , year , month , day_of_month );
+					::booldog::utils::time::unix0::date( time , year , month , day_of_month );
 					return month;
 				};
 				booinline ::booldog::uint32 day_of_month( ::booldog::uint64 time )
 				{
 					::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
-					::booldog::utils::time::unix::date( time , year , month , day_of_month );
+					::booldog::utils::time::unix0::date( time , year , month , day_of_month );
 					return day_of_month;
 				};
 				booinline ::booldog::uint32 year( ::booldog::uint64 time )
 				{
 					::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
-					::booldog::utils::time::unix::date( time , year , month , day_of_month );
+					::booldog::utils::time::unix0::date( time , year , month , day_of_month );
 					return year;
 				};
 				booinline void time( ::booldog::uint64 time , ::booldog::uint32& hour , ::booldog::uint32& minute
@@ -171,25 +171,25 @@ namespace booldog
 				booinline ::booldog::uint32 hour( ::booldog::uint64 time )
 				{
 					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
-					::booldog::utils::time::unix::time( time , hour , minute , second , millisecond );
+					::booldog::utils::time::unix0::time( time , hour , minute , second , millisecond );
 					return hour;
 				};
 				booinline ::booldog::uint32 minute( ::booldog::uint64 time )
 				{
 					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
-					::booldog::utils::time::unix::time( time , hour , minute , second , millisecond );
+					::booldog::utils::time::unix0::time( time , hour , minute , second , millisecond );
 					return minute;
 				};
 				booinline ::booldog::uint32 second( ::booldog::uint64 time )
 				{
 					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
-					::booldog::utils::time::unix::time( time , hour , minute , second , millisecond );
+					::booldog::utils::time::unix0::time( time , hour , minute , second , millisecond );
 					return second;
 				};
 				booinline ::booldog::uint32 millisecond( ::booldog::uint64 time )
 				{
 					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
-					::booldog::utils::time::unix::time( time , hour , minute , second , millisecond );
+					::booldog::utils::time::unix0::time( time , hour , minute , second , millisecond );
 					return millisecond;
 				};
 				namespace mbs
@@ -229,11 +229,11 @@ namespace booldog
 
 						debuginfo_macros_statement( 1 );						
 
-						::booldog::utils::time::unix::time( time , hour , minute , second , millisecond );					
+						::booldog::utils::time::unix0::time( time , hour , minute , second , millisecond );					
 		
 						debuginfo_macros_statement( 2 );
 							
-						::booldog::utils::time::unix::date( time , year , month , day_of_month );
+						::booldog::utils::time::unix0::date( time , year , month , day_of_month );
 
 						debuginfo_macros_statement( 3 );
 
