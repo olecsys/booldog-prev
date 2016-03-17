@@ -64,7 +64,7 @@ namespace booldog
 					days += ::booldog::utils::time::days_in_month( month , year );
 				return days;
 			};
-			namespace unix
+			namespace unix0
 			{
 				booinline ::booldog::uint64 tolocal( ::booldog::uint64 timems )
 				{
@@ -209,9 +209,7 @@ namespace booldog
 						::booldog::result resres;
 						::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
 						::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
-						size_t /*index = 0 ,*/ diff = 0;
-						//::booldog::result_size ressize;
-						//size_t indexof_index = 0;
+						size_t diff = 0;
 
 						size_t hourstrlen = 0 , minutestrlen = 0 , secondstrlen = 0
 							, millisecondstrlen = 0 , yearstrlen = 0 , monthstrlen = 0
@@ -219,14 +217,7 @@ namespace booldog
 						char hourstr[ 3 ] = {0} , minutestr[ 3 ] = {0} , secondstr[ 3 ] = {0} 
 							, millisecondstr[ 4 ] = {0} , yearstr[ 8 ] = {0} , monthstr[ 3 ] = {0} 
 							, day_of_monthstr[ 3 ] = {0};
-						//::booldog::result_mbchar hourstr( res->mballocator );
-						//::booldog::result_mbchar minutestr( res->mballocator );
-						//::booldog::result_mbchar secondstr( res->mballocator );
-						//::booldog::result_mbchar millisecondstr( res->mballocator );
-						//::booldog::result_mbchar yearstr( res->mballocator );
-						//::booldog::result_mbchar monthstr( res->mballocator );
-						//::booldog::result_mbchar day_of_monthstr( res->mballocator );
-	
+
 						debuginfo_macros_statement( 8 );
 
 						if( ::booldog::utils::string::mbs::insert< 8 >( &resres , res->mballocator , false , 0 , res->mbchar 
@@ -251,8 +242,6 @@ namespace booldog
 						{
 							debuginfo_macros_statement( 4 );
 							
-							//indexof_index = index;
-							//char* ptr = &res->mbchar[ index ];
 							for( ; ; )
 							{
 								switch( *ptr++ )
@@ -264,23 +253,7 @@ namespace booldog
 								}
 							}
 goto_away_from_for:				
-							//indexof_index = ptr - res->mbchar;
-
-							//if( ::booldog::utils::string::mbs::indexof( &ressize , false , res->mbchar , index , SIZE_MAX , "%" , 0 
-							//	, 1 , debuginfo ) == false )
-							//{
-							//	res->copy( ressize );
-							//	goto goto_return;
-							//}
-
-							debuginfo_macros_statement( 5 );
-
-							//index = ptr - res->mbchar;
-							//index = indexof_index + 1;
-
 							debuginfo_macros_statement( 6 );
-
-							//switch( res->mbchar[ index ] )
 							switch( *ptr )
 							{
 							case 'H':
@@ -298,8 +271,6 @@ goto_away_from_for:
 								{
 									ptr[ -1 ] = '0';
 									*ptr = hourstr[ 0 ];
-									//res->mbchar[ index - 1 ] = '0';
-									//res->mbchar[ index ] = hourstr[ 0 ];
 								}
 								else
 								{
