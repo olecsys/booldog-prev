@@ -163,6 +163,58 @@ namespace booldog
 #endif
 			};
 		};
+		namespace single_threaded
+		{
+			template< size_t s >
+			class stack : public ::booldog::stack_allocator
+			{
+				::booldog::byte _data[ s + sizeof( ::booldog::mem::info4 ) ];
+				::booldog::mem::cluster _cluster;
+			public:
+				stack( void )
+					: _cluster( _data , s + sizeof( ::booldog::mem::info4 ) )
+				{
+				};
+				booinline void print( void )
+				{
+					_cluster.print();
+				};
+			public:
+				size_t available( void )
+				{
+					return _cluster.available();
+				};
+				void* begin( void )
+				{
+					return _cluster.begin();
+				};
+				void* end( void )
+				{
+					return _cluster.end();
+				};
+				virtual void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					return _cluster.alloc( size , debuginfo );
+				};
+				virtual void free( void* pointer )
+				{
+					_cluster.free( pointer );
+				};
+				virtual size_t getsize( void* pointer )
+				{
+					return _cluster.getsize( pointer );
+				};
+				virtual void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					return _cluster.tryrealloc( pointer , size , free_if_cannot_alloc , oldpointer , debuginfo );
+				};
+				virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					return _cluster.realloc( pointer , size , debuginfo );
+				};
+			};
+		};
 	};
 };
 #endif

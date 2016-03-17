@@ -233,6 +233,7 @@ char utf8_TESTil_var[] =
 #include BOOLDOG_HEADER(boo_json.h)
 #include BOOLDOG_HEADER(boo_io_file.h)
 #include BOOLDOG_HEADER(boo_bits_utils.h)
+#include BOOLDOG_HEADER(boo_time_utils.h)
 
 
 class boo_bits_utilsTest : public ::testing::Test 
@@ -6189,6 +6190,72 @@ TEST_F( boo_stringTest , test )
 	ASSERT_EQ( allocator.available() , total );
 };
 
+class boo_time_utilsTest : public ::testing::Test 
+{
+};
+TEST_F( boo_time_utilsTest , test )
+{
+	::booldog::allocators::stack< 4096 > allocator;
+
+	size_t total = allocator.available();
+
+	char* begin = (char*)allocator.begin();
+	{
+		ASSERT_EQ( ::booldog::utils::time::unix::day_of_month( 1458128777336000 ) , 16 );
+
+		ASSERT_EQ( ::booldog::utils::time::unix::month( 1458128777336000 ) , 3 );
+
+		ASSERT_EQ( ::booldog::utils::time::unix::year( 1458128777336000 ) , 2016 );
+
+		ASSERT_EQ( ::booldog::utils::time::unix::hour( 1458128777336000 ) , 11 );
+
+		ASSERT_EQ( ::booldog::utils::time::unix::minute( 1458128777336000 ) , 46 );
+
+		ASSERT_EQ( ::booldog::utils::time::unix::second( 1458128777336000 ) , 17 );
+
+		ASSERT_EQ( ::booldog::utils::time::unix::millisecond( 1458128777336000 ) , 336 );
+
+		::booldog::uint64 local = ::booldog::utils::time::unix::tolocal( 1458128777336000 );
+
+		ASSERT_EQ( ::booldog::utils::time::unix::toutc( local ) , 1458128777336000 );
+
+		::booldog::result_mbchar resmbchar( &allocator );
+
+		::booldog::utils::time::unix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 , 1458128777336000 , debuginfo_macros );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mblen , 19 );
+
+		ASSERT_EQ( strcmp( resmbchar.mbchar , "11:46:17 16.03.2016" ) , 0 );
+
+
+		::booldog::utils::time::unix::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %Y%" , 1458128777336000
+			, debuginfo_macros );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mblen , 10 );
+
+		ASSERT_EQ( strcmp( resmbchar.mbchar , "Gt%y 2016%" ) , 0 );
+
+
+		::booldog::utils::time::unix::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %MS%" , 1458128777336000
+			, debuginfo_macros );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mblen , 9 );
+
+		ASSERT_EQ( strcmp( resmbchar.mbchar , "Gt%y 336%" ) , 0 );
+	//1458128777336000 16.03.2016/11:46:17
+	}
+
+	ASSERT_TRUE( allocator.begin() == begin );
+		
+	ASSERT_EQ( allocator.available() , total );
+};
+
 class boo_string_utilsTest : public ::testing::Test 
 {
 };
@@ -6281,7 +6348,7 @@ TEST_F( boo_string_utilsTest , test )
 		size_t mbsdstlen = 0;
 		size_t mbsdstsize = 0;
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
+		::booldog::utils::string::mbs::insert< 0 >( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , 0 );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -6290,7 +6357,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
+		::booldog::utils::string::mbs::insert< 0 >( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "" );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -6299,7 +6366,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
+		::booldog::utils::string::mbs::insert< 0 >( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" , 3 );
 
 		ASSERT_FALSE( res.succeeded() );
 
@@ -6308,7 +6375,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_EQ( res.booerror , ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
+		::booldog::utils::string::mbs::insert< 0 >( &res , &allocator , true , SIZE_MAX , mbsdst , mbsdstlen , mbsdstsize , "lib" );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -6319,7 +6386,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "lib" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , true , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
+		::booldog::utils::string::mbs::insert< 0 >( &res , &allocator , true , 3 , mbsdst , mbsdstlen , mbsdstsize , "re" );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -6330,7 +6397,7 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( strcmp( mbsdst , "libre" ) == 0 );
 
 
-		::booldog::utils::string::mbs::insert( &res , &allocator , true , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
+		::booldog::utils::string::mbs::insert< 0 >( &res , &allocator , true , 3 , mbsdst , mbsdstlen , mbsdstsize , "libcore.so" , 3 , 2 );
 
 		ASSERT_TRUE( res.succeeded() );
 
@@ -6788,6 +6855,54 @@ TEST_F( boo_string_utilsTest , test )
 		ASSERT_TRUE( ressize.succeeded() );
 
 		ASSERT_EQ( ressize.sres , 72 );
+	}
+
+	{
+		::booldog::result_mbchar numbermbchar( &allocator );
+
+		::booldog::utils::string::mbs::tostring( &numbermbchar , &allocator , 0L , debuginfo_macros );
+
+		ASSERT_TRUE( numbermbchar.succeeded() );
+
+		ASSERT_EQ( numbermbchar.mblen , 1 );
+
+		ASSERT_TRUE( strcmp( numbermbchar.mbchar , "0" ) == 0 );
+
+
+		::booldog::utils::string::mbs::tostring( &numbermbchar , &allocator , 2L , debuginfo_macros );
+
+		ASSERT_TRUE( numbermbchar.succeeded() );
+
+		ASSERT_EQ( numbermbchar.mblen , 1 );
+
+		ASSERT_TRUE( strcmp( numbermbchar.mbchar , "2" ) == 0 );
+
+
+		::booldog::utils::string::mbs::tostring( &numbermbchar , &allocator , 2908980L , debuginfo_macros );
+
+		ASSERT_TRUE( numbermbchar.succeeded() );
+
+		ASSERT_EQ( numbermbchar.mblen , 7 );
+
+		ASSERT_TRUE( strcmp( numbermbchar.mbchar , "2908980" ) == 0 );
+
+
+		::booldog::utils::string::mbs::tostring( &numbermbchar , &allocator , 290898000L , debuginfo_macros );
+
+		ASSERT_TRUE( numbermbchar.succeeded() );
+
+		ASSERT_EQ( numbermbchar.mblen , 9 );
+
+		ASSERT_TRUE( strcmp( numbermbchar.mbchar , "290898000" ) == 0 );
+
+
+		::booldog::utils::string::mbs::tostring( &numbermbchar , &allocator , -290898000L , debuginfo_macros );
+
+		ASSERT_TRUE( numbermbchar.succeeded() );
+
+		ASSERT_EQ( numbermbchar.mblen , 10 );
+
+		ASSERT_TRUE( strcmp( numbermbchar.mbchar , "-290898000" ) == 0 );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );

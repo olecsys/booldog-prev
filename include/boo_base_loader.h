@@ -68,6 +68,8 @@ namespace booldog
 		class loader
 		{
 		public:
+			virtual bool utf8load( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
+				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
 			virtual bool mbsload( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
 				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
 			virtual bool wcsload( ::booldog::result_module* pres , booldog::allocator* allocator , const wchar_t* name_or_path 
@@ -182,6 +184,15 @@ namespace booldog
 		virtual booldog::allocator* allocator( void )
 		{
 			return _allocator;
+		};
+		virtual bool utf8load( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
+			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		{
+			debuginfo = debuginfo;
+			::booldog::result_module locres;
+			BOOINIT_RESULT( ::booldog::result_module );
+			
+			return res->succeeded();
 		};
 		virtual bool mbsload( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
 			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
@@ -1194,6 +1205,9 @@ goto_return:
 #else
 						dlclose( mod->_handle );
 #endif
+						mod->_udata = 0;
+						mod->_inited_ref = 0;
+						mod->_handle = 0;
 					}
 					else
 #ifdef __WINDOWS__
