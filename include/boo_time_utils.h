@@ -66,13 +66,13 @@ namespace booldog
 			};
 			namespace unix
 			{
-				booinline ::booldog::uint64 tolocal( ::booldog::uint64 time )
+				booinline ::booldog::uint64 tolocal( ::booldog::uint64 timems )
 				{
-					return time - ( ::booldog::utils::time::tz() * 1000000LL );
+					return timems - ( ::booldog::utils::time::tz() * 1000000LL );
 				};
-				booinline ::booldog::uint64 toutc( ::booldog::uint64 time )
+				booinline ::booldog::uint64 toutc( ::booldog::uint64 timems )
 				{
-					return time + ( ::booldog::utils::time::tz() * 1000000LL );
+					return timems + ( ::booldog::utils::time::tz() * 1000000LL );
 				};
 				booinline ::booldog::uint64 now_as_utc( void )
 				{	

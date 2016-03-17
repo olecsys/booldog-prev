@@ -386,7 +386,7 @@ namespace booldog
 						}
 						else if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pwchar )
 						{
-							if( ::booldog::utils::string::wcs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
+							if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 								, res_root_dir.mblen , res_root_dir.mbsize , settings[ 0 ].pparamvalue[ index ].pwcharvalue , 0
 								, SIZE_MAX , debuginfo ) == false )
 							{
