@@ -760,7 +760,7 @@ goto_next:
 							else if( dst == 0 )
 							{
 								dstsize = 1;
-								dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
+								dst = allocator->realloc_array< char >( dst , dstsize , debuginfo );
 								dstlen = 0;
 								dst[ dstlen ] = 0;
 							}
@@ -773,7 +773,7 @@ goto_next:
 						else if( dst == 0 )
 						{
 							dstsize = 1;
-							dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
+							dst = allocator->realloc_array< char >( dst , dstsize , debuginfo );
 							dstlen = 0;
 							dst[ dstlen ] = 0;
 						}
