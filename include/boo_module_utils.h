@@ -225,7 +225,7 @@ goto_return:
 						struct link_map *map = 0;
 						if( dlinfo( module_handle , RTLD_DI_LINKMAP , &map ) != -1 )
 						{
-							if( ::booldog::utils::string::mbs::insert( &resres , allocator , true , 0 , res->mbchar , res->mblen , res->mbsize 
+							if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , true , 0 , res->mbchar , res->mblen , res->mbsize 
 								, map->l_name , 0 , SIZE_MAX , debuginfo ) == false )
 							{
 								res->copy( resres );
@@ -279,7 +279,7 @@ goto_return:
 						if( dladdr( address , &info ) != 0 )
 						{
 							::booldog::result resres;
-							if( ::booldog::utils::string::mbs::insert( &resres , allocator , true , 0 , res->mbchar , res->mblen
+							if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , true , 0 , res->mbchar , res->mblen
 								, res->mbsize , info.dli_fname , 0 , SIZE_MAX , debuginfo ) == false )
 							{
 								res->copy( resres );
@@ -321,7 +321,7 @@ goto_return:
 							{
 								::booldog::result_mbchar resmbchar( allocator );
 								::booldog::result resres;
-								if( ::booldog::utils::string::mbs::insert( &resres , allocator , true , 0 , resmbchar.mbchar , resmbchar.mblen 
+								if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , true , 0 , resmbchar.mbchar , resmbchar.mblen 
 									, resmbchar.mbsize , info.dli_fname , 0 , SIZE_MAX , debuginfo ) == false )
 								{
 									res->copy( resres );

@@ -759,7 +759,7 @@ goto_next:
 								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 							else if( dst == 0 )
 							{
-								dstsize_in_bytes = 1;
+								dstsize = 1;
 								dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
 								dstlen = 0;
 								dst[ dstlen ] = 0;
@@ -772,7 +772,7 @@ goto_next:
 							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 						else if( dst == 0 )
 						{
-							dstsize_in_bytes = 1;
+							dstsize = 1;
 							dst = allocator->realloc_array< char >( dst , dstsize_in_bytes , debuginfo );
 							dstlen = 0;
 							dst[ dstlen ] = 0;

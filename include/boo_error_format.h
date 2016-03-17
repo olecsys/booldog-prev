@@ -46,10 +46,10 @@ namespace booldog
 			{
 				char* dlerrorstr = pres->dlerror();
 				if( dlerrorstr )
-					::booldog::utils::string::mbs::insert( 0 , allocator , false , 0 , mbchar , mblen , mbsize_in_bytes , dlerrorstr
+					::booldog::utils::string::mbs::insert< 0 >( 0 , allocator , false , 0 , mbchar , mblen , mbsize_in_bytes , dlerrorstr
 						, 0 , SIZE_MAX , debuginfo );
 				else
-					::booldog::utils::string::mbs::insert( 0 , allocator , false , 0 , mbchar , mblen , mbsize_in_bytes , "unknown error" 
+					::booldog::utils::string::mbs::insert< 0 >( 0 , allocator , false , 0 , mbchar , mblen , mbsize_in_bytes , "unknown error" 
 						, 0 , SIZE_MAX , debuginfo );
 			}
 #endif
