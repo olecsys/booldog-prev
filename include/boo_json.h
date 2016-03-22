@@ -269,6 +269,7 @@ namespace booldog
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
 					const char* ptr = string;
+					size_t size = 0;
 					for( ; ; )
 					{
 						switch( *ptr++ )
@@ -290,7 +291,7 @@ namespace booldog
 						}
 					}
 goto_next:
-					size_t size = 2 + 2 * ( ptr - string - 1 );
+					size = 2 + 2 * ( ptr - string - 1 );
 					if( jsonlen + size + 1 > jsonsize )
 					{
 						jsonsize += size + step;
