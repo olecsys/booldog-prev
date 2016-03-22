@@ -519,13 +519,15 @@ goto_return:
 				{
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
+
+					char* ptr = 0 , * begin = 0;
+					size_t count_of_digits = 0;
+					T locnumber = value;
 					if( nodesindex )
 					{
 						res->booerr( ::booldog::enums::result::booerr_type_object_is_already_initialized );
 						goto goto_return;
 					}
-					size_t count_of_digits = 0;
-					T locnumber = value;
 					if( locnumber < 0 )
 #ifdef __WINDOWS__
 #pragma warning( push )
@@ -558,7 +560,7 @@ goto_return:
 						if( letter != '[' && letter != '{' )
 							json[ jsonlen++ ] = ',';
 					}
-					char* begin = &json[ jsonlen ];
+					begin = &json[ jsonlen ];
 					if( value < 0 )
 					{
 						*begin = '-';
@@ -573,7 +575,7 @@ goto_return:
 #endif
 					}
 					jsonlen += count_of_digits;
-					char* ptr = &json[ jsonlen - 1 ];
+					ptr = &json[ jsonlen - 1 ];
 					for( ; ptr >= begin ; --ptr )
 					{
 						*ptr = 0x30 + (char)( value % 10 );
@@ -589,6 +591,11 @@ goto_return:
 				{
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
+
+					char* ptr = 0 , * begin = 0;
+					size_t count_of_digits = 0;
+					T locnumber = value;
+
 					if( nodesindex )
 					{
 						res->booerr( ::booldog::enums::result::booerr_type_object_is_already_initialized );
@@ -612,8 +619,6 @@ goto_return:
 					}
 					if( serialize_and_add< step >( res , name , debuginfo ) == false )
 						goto goto_return;
-					size_t count_of_digits = 0;
-					T locnumber = value;
 					if( locnumber < 0 )
 #ifdef __WINDOWS__
 #pragma warning( push )
@@ -641,7 +646,7 @@ goto_return:
 						}
 					}
 					json[ jsonlen++ ] = ':';
-					char* begin = &json[ jsonlen ];
+					begin = &json[ jsonlen ];
 					if( value < 0 )
 					{
 						*begin = '-';
@@ -656,7 +661,7 @@ goto_return:
 #endif
 					}
 					jsonlen += count_of_digits;
-					char* ptr = &json[ jsonlen - 1 ];
+					ptr = &json[ jsonlen - 1 ];
 					for( ; ptr >= begin ; --ptr )
 					{
 						*ptr = 0x30 + (char)( value % 10 );
