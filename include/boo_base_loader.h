@@ -188,6 +188,9 @@ namespace booldog
 		virtual bool utf8load( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
 			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
+			named_params = named_params;
+			name_or_path = name_or_path;
+			allocator = allocator;
 			debuginfo = debuginfo;
 			::booldog::result_module locres;
 			BOOINIT_RESULT( ::booldog::result_module );

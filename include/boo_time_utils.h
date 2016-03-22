@@ -221,7 +221,7 @@ namespace booldog
 
 						debuginfo_macros_statement( 8 );
 
-						if( ::booldog::utils::string::mbs::insert< 8 >( &resres , res->mballocator , false , 0 , res->mbchar 
+						if( ::booldog::utils::string::mbs::assign< 8 >( &resres , res->mballocator , false , 0 , res->mbchar 
 							, res->mblen , res->mbsize , format , 0 , SIZE_MAX , debuginfo ) == false )
 						{
 							res->copy( resres );

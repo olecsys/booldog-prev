@@ -241,19 +241,66 @@ class boo_bits_utilsTest : public ::testing::Test
 };
 TEST_F( boo_bits_utilsTest , test )
 {
+	::booldog::byte eq = 0;
+
 	::booldog::byte res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_HEAP 
 		, BOOLDOG_MEM_INFO_USE_INFO1 , BOOLDOG_MEM_INFO_BUSY >::value;
-	ASSERT_EQ( res , 0x1c );
+
+	eq = 0;
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_HEAP );
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_USE_INFO1 );
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_BUSY );
+
+	ASSERT_EQ( res , eq );
+
+
+	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte 
+		, 8 * sizeof( ::booldog::byte ) >::value;
+
+	eq = 0;
+	::booldog::utils::set_bit( eq , 8 * sizeof( ::booldog::byte ) );
+
+	ASSERT_EQ( res , eq );
+
 
 	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_HEAP 
 		, BOOLDOG_MEM_INFO_USE_INFO3 , BOOLDOG_MEM_INFO_BUSY >::value;
-	ASSERT_EQ( res , 0x4c );
+	
+	eq = 0;
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_HEAP );
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_USE_INFO3 );
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_BUSY );
+
+	ASSERT_EQ( res , eq );
 		
 	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_USE_INFO1 >::value;
-	ASSERT_EQ( res , 0x10 );
+	
+
+	eq = 0;
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_USE_INFO1 );
+
+	ASSERT_EQ( res , eq );
+
 		
 	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , BOOLDOG_MEM_INFO_USE_INFO2 >::value;
-	ASSERT_EQ( res , 0x20 );
+	
+	eq = 0;
+	::booldog::utils::set_bit( eq , BOOLDOG_MEM_INFO_USE_INFO2 );
+
+	ASSERT_EQ( res , eq );
+
+
+	res = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte 
+		, BOOLDOG_DATA_JSON_NAME_SERIALIZED , BOOLDOG_DATA_JSON_VALUE_SERIALIZED 
+		, BOOLDOG_DATA_JSON_ROOT >::value;
+
+	eq = 0;
+
+	::booldog::utils::set_bit( eq , BOOLDOG_DATA_JSON_VALUE_SERIALIZED );
+	::booldog::utils::set_bit( eq , BOOLDOG_DATA_JSON_NAME_SERIALIZED );
+	::booldog::utils::set_bit( eq , BOOLDOG_DATA_JSON_ROOT );
+
+	ASSERT_EQ( res , eq );
 };
 
 
@@ -3730,6 +3777,270 @@ TEST_F( boo_jsonTest , test )
 		ASSERT_FALSE( valuebool );
 	}
 
+	{
+		::booldog::result resres;
+
+		::booldog::data::json::serializator serializator( &allocator );
+
+		serializator.fast.begin_object< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 1 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{" ) , 0 );
+
+
+		serializator.fast.end_object< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 2 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{}" ) , 0 );
+
+
+		serializator.clear();
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 0 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "" ) , 0 );
+
+
+		serializator.fast.begin_array< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 1 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "[" ) , 0 );
+
+
+		serializator.fast.end_array< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 2 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "[]" ) , 0 );
+
+
+		serializator.clear();
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 0 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "" ) , 0 );
+
+
+
+		serializator.fast.begin_object< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 1 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{" ) , 0 );
+		
+
+		serializator.fast.begin_object< 1 >( &resres , "test\n \b \\" , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 17 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{" ) , 0 );
+
+
+		serializator.fast.add< 1 >( &resres , "test\n \b \\\\" , "\f" , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 38 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"" ) , 0 );
+
+
+		serializator.fast.end_object< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 39 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"}" ) , 0 );
+		
+
+		serializator.fast.begin_array< 1 >( &resres , "test\n \\b \\" , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 57 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[" ) , 0 );
+
+
+		serializator.fast.add< 1 >( &resres , true , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 61 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true" ) , 0 );
+
+
+		serializator.fast.add< 1 >( &resres , false , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 67 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false" ) , 0 );
+
+
+		serializator.fast.add< 1 >( &resres , -23 , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 71 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23" ) , 0 );
+
+
+		serializator.fast.add< 1 >( &resres , "primer" , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 80 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"" ) , 0 );
+
+
+		serializator.fast.end_array< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 81 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"]" ) , 0 );
+
+
+		serializator.fast.add< 1 >( &resres , "" , true , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 89 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true" ) 
+			, 0 );
+
+
+		serializator.fast.add< 1 >( &resres , "test \n \f" , false , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 108 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
+			",\"test \\n \\f\":false" ) 
+			, 0 );
+
+
+		serializator.fast.add< 1 >( &resres , "1" , -128 , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 117 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
+			",\"test \\n \\f\":false,\"1\":-128" ) 
+			, 0 );
+
+
+		serializator.fast.add< 1 >( &resres , "2" , -128128128128128LL , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 138 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
+			",\"test \\n \\f\":false,\"1\":-128,\"2\":-128128128128128" ) 
+			, 0 );
+
+
+		serializator.fast.add< 1 >( &resres , "3" , 256256256256256ULL , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 158 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
+			",\"test \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256" ) 
+			, 0 );
+
+
+		serializator.fast.end_object< 1 >( &resres , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 159 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
+			",\"test \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256}" )
+			, 0 );
+
+
+		serializator.clear();
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 0 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "" ) , 0 );
+	}
+
 	ASSERT_TRUE( allocator.begin() == begin );
 		
 	ASSERT_EQ( allocator.available() , total );
@@ -6266,6 +6577,527 @@ TEST_F( boo_string_utilsTest , test )
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
+
+	{
+		::booldog::result resres;
+		::booldog::result_mbchar mbchar( &allocator );
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 0 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 0 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$dev" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 4 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$dev" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 4 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$dev" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devnam" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 7 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 7 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devnam " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam " ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera16" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname$devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 16 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname$devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 16 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera16camera16" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname hi $devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 20 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname hi $devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 20 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera16 hi camera16" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname hi $devname  " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 22 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname hi $devname  " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 22 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera16 hi camera16  " ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "  $devname hi $devname  " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 24 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "  $devname hi $devname  " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 24 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "  camera16 hi camera16  " ) , 0 );
+
+
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 0 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 0 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$dev" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 4 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$dev" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 4 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$dev" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devnam" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 7 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 7 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devnam " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam " ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 5 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "cam16" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname$devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 16 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname$devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 10 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "cam16cam16" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname hi $devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 20 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname hi $devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 14 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "cam16 hi cam16" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname hi $devname  " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 22 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname hi $devname  " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 16 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "cam16 hi cam16  " ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "  $devname hi $devname  " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 24 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "  $devname hi $devname  " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "cam16" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 18 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "  cam16 hi cam16  " ) , 0 );
+
+
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 0 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 0 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$dev" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 4 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$dev" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 4 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$dev" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devnam" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 7 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 7 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devnam   " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 10 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam   " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 10 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devnam   " ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 8 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 10 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera2216" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname$devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 16 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname$devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 20 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera2216camera2216" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname hi $devname" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 20 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname hi $devname" ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 24 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera2216 hi camera2216" ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "$devname hi $devname  " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 22 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "$devname hi $devname  " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 26 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "camera2216 hi camera2216  " ) , 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "  $devname hi $devname  " , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 24 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "  $devname hi $devname  " ) , 0 );
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , "camera2216" , 0 , SIZE_MAX , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( mbchar.mblen , 28 );
+
+		ASSERT_EQ( strcmp( mbchar.mbchar , "  camera2216 hi camera2216  " ) , 0 );
+	}
 
 	{
 		::booldog::result_bool resbool;

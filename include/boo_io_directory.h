@@ -9,7 +9,7 @@
 #include BOOLDOG_HEADER(boo_io_utils.h)
 #include BOOLDOG_HEADER(boo_param.h)
 #include BOOLDOG_HEADER(boo_string_utils.h)
-#include BOOLDOG_HEADER(boo_executable.h)
+#include BOOLDOG_HEADER(boo_executable_utils.h)
 
 #ifdef __WINDOWS__
 #include <direct.h>
@@ -43,7 +43,7 @@ namespace booldog
 			
 					::booldog::result_bool resbool;
 					::booldog::result resres;
-					if( ::booldog::utils::string::mbs::insert( &resres , allocator , true , 0 , res_name_or_path.mbchar 
+					if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , true , 0 , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , name_or_path , 0 , SIZE_MAX , debuginfo ) == false )
 					{
 						res->copy( resres );
@@ -77,7 +77,7 @@ namespace booldog
 
 						if( settings[ 1 ].type != ::booldog::enums::param::type_not_found )
 						{
-							if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , SIZE_MAX
+							if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , SIZE_MAX
 								, res_root_dir.mbchar , res_root_dir.mblen , res_root_dir.mbsize , settings[ 1 ].pcharvalue , 0 
 								, SIZE_MAX , debuginfo ) == false )
 							{
@@ -128,7 +128,7 @@ namespace booldog
 								}
 								if( res_root_dir_mblen )
 								{
-									if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen 
+									if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen 
 										, res_root_dir.mbchar , res_root_dir.mblen , res_root_dir.mbsize 
 										, &::booldog::io::mbs::slash , 0 , 1 , debuginfo ) == false )
 									{
@@ -138,7 +138,7 @@ namespace booldog
 								}
 								if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pchar )
 								{
-									if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
+									if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 										, res_root_dir.mblen , res_root_dir.mbsize , settings[ 0 ].pparamvalue[ index ].pcharvalue , 0
 										, SIZE_MAX , debuginfo ) == false )
 									{
@@ -158,14 +158,14 @@ namespace booldog
 								}
 								else
 									continue;
-								if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
+								if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 									, res_root_dir.mblen , res_root_dir.mbsize , &::booldog::io::mbs::slash , 0
 									, 1 , debuginfo ) == false )
 								{
 									res->copy( resres );
 									goto goto_return;
 								}
-								if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
+								if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 									, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
 									, SIZE_MAX , debuginfo ) == false )
 								{
@@ -183,7 +183,7 @@ namespace booldog
 							res_root_dir.mblen = res_root_dir_mblen;
 							if( res_root_dir_mblen )
 							{
-								if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen 
+								if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen 
 									, res_root_dir.mbchar , res_root_dir.mblen , res_root_dir.mbsize , &::booldog::io::mbs::slash 
 									, 0	, 1 , debuginfo ) == false )
 								{
@@ -191,7 +191,7 @@ namespace booldog
 									goto goto_return;
 								}
 							}
-							if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
+							if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 								, res_root_dir.mblen , res_root_dir.mbsize , res_name_or_path.mbchar , 0
 								, SIZE_MAX , debuginfo ) == false )
 							{

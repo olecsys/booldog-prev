@@ -50,7 +50,8 @@ namespace booldog
 				booerr_type_conversion_result_source_exhausted ,
 				booerr_type_unknown_wchar_t_size ,
 				booerr_type_handle_is_executable ,
-				booerr_type_insufficient_memory
+				booerr_type_insufficient_memory ,
+				booerr_type_object_is_already_initialized
 			};
 		};
 	};

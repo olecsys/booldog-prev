@@ -677,6 +677,138 @@ goto_return:
 					}
 					return res->succeeded();
 				};
+				template< size_t step >
+				booinline bool replaceall( ::booldog::result* pres , booldog::allocator* allocator , size_t dstcharindex 
+					, char*& dst , size_t& dstlen , size_t& dstsize , const char* oldsrc , size_t oldsrccharindex = 0 
+					, size_t oldsrccharcount = SIZE_MAX , const char* newsrc = 0 , size_t newsrccharindex = 0 
+					, size_t newsrccharcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+					const char* oldsrcbegin = 0 , * newsrcbegin = 0;
+					char* ptr = 0 , * olddst = 0;
+					if( dst == 0 )
+					{
+						res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+						goto goto_return;
+					}
+					if( newsrc == 0 )
+						newsrc = "";
+
+					oldsrcbegin = &oldsrc[ oldsrccharindex ];
+					ptr = const_cast< char* >( oldsrcbegin );
+					for( ; ; )
+					{
+						switch( *ptr++ )
+						{
+						case 0:
+							goto goto_next_old;
+						}
+						if( (size_t)( ptr - oldsrcbegin ) >= oldsrccharcount )
+						{
+							ptr++;
+							break;
+						}
+					}
+goto_next_old:
+					oldsrccharcount = ptr - oldsrcbegin - 1;
+
+					newsrcbegin = &newsrc[ newsrccharindex ];
+					ptr = const_cast< char* >( newsrcbegin );
+					for( ; ; )
+					{
+						switch( *ptr++ )
+						{
+						case 0:
+							goto goto_next_new;
+						}
+						if( (size_t)( ptr - newsrcbegin ) >= newsrccharcount )
+						{
+							ptr++;
+							break;
+						}
+					}
+goto_next_new:
+					newsrccharcount = ptr - newsrcbegin - 1;
+
+					if( dstcharindex > dstlen )
+						dstcharindex = dstlen;
+					if( oldsrccharcount == newsrccharcount )
+					{
+						ptr = &dst[ dstcharindex ];
+						for( ; ; )
+						{
+							if( dstlen - (size_t)( ptr - dst ) < oldsrccharcount )
+								break;
+							if( *ptr == *oldsrcbegin )
+							{
+								size_t index0 = 1;
+								for( ; index0 < oldsrccharcount ; index0++ )
+								{
+									if( ptr[ index0 ] != oldsrcbegin[ index0 ] )
+										break;
+								}
+								if( index0 == oldsrccharcount )
+								{
+									::memcpy( ptr , newsrcbegin , newsrccharcount );
+									ptr += newsrccharcount;
+								}
+								else
+									ptr++;
+							}
+							else if( *ptr++ == 0 )
+								break;
+						}
+					}
+					else
+					{
+						ptr = &dst[ dstcharindex ];
+						for( ; ; )
+						{
+							if( dstlen - (size_t)( ptr - dst ) < oldsrccharcount )
+								break;
+							if( *ptr == *oldsrcbegin )
+							{
+								size_t index0 = 1;
+								for( ; index0 < oldsrccharcount ; index0++ )
+								{
+									if( ptr[ index0 ] != oldsrcbegin[ index0 ] )
+										break;
+								}
+								if( index0 == oldsrccharcount )
+								{
+									if( ::booldog::mem::insert< char >( ptr - dst , dst , dstlen + 1 , dstsize , oldsrccharcount
+										, newsrcbegin , newsrccharcount ) == false )
+									{
+										olddst = dst;
+
+										dstsize += newsrccharcount + step + 1;
+										dst = allocator->realloc_array< char >( dst , dstsize , debuginfo );
+										if( dst == 0 )
+										{
+											res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+											goto goto_return;
+										}
+										else
+										{
+											ptr = &dst[ ptr - olddst ];
+											::booldog::mem::insert< char >( ptr - dst , dst , dstlen + 1 , dstsize , oldsrccharcount
+												, newsrcbegin , newsrccharcount );
+										}
+									}
+									dstlen += newsrccharcount - oldsrccharcount;
+									ptr += newsrccharcount;
+								}
+								else
+									ptr++;
+							}
+							else if( *ptr++ == 0 )
+								break;
+						}
+					}
+goto_return:
+					return res->succeeded();
+				};
 				booinline void replace( size_t dstbyteindex , char* dst , size_t dstlen , char oldchar
 					, char newchar )
 				{
@@ -711,13 +843,19 @@ goto_return:
 					, size_t srccharindex = 0 , size_t srccharcount = SIZE_MAX 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
+					debuginfo_macros_statement( 43 );
+
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
 					if( src )
 					{
+						debuginfo_macros_statement( 44 );
+					
 						const char* srcbegin = &src[ srccharindex ];
 						if( *srcbegin != 0 )
 						{
+							debuginfo_macros_statement( 45 );
+
 							const char* ptr = srcbegin;
 							for( ; ; )
 							{
@@ -733,6 +871,8 @@ goto_return:
 								}
 							}
 goto_next:
+							debuginfo_macros_statement( 46 );
+
 							if( dstcharindex > dstlen )
 								dstcharindex = dstlen;
 							else
@@ -741,9 +881,12 @@ goto_next:
 							srccharcount = ptr - srcbegin - 1;
 							if( dstlen + srccharcount + 1 > dstsize )
 							{
-								dstsize = dstlen + srccharcount + 1;
+								debuginfo_macros_statement( 47 );
+
+								dstsize = dstlen + srccharcount + 1 + step;
 								dst = allocator->realloc_array< char >( dst , dstsize , debuginfo );
 							}
+							debuginfo_macros_statement( 48 );
 							if( dst )
 							{
 								::memcpy( dst , srcbegin , srccharcount );
@@ -756,28 +899,45 @@ goto_next:
 						else
 						{
 							if( isempty_src_error )
+							{
 								res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+								goto goto_return;
+							}
 							else if( dst == 0 )
 							{
-								dstsize = 1;
+								dstsize = 1 + step;
 								dst = allocator->realloc_array< char >( dst , dstsize , debuginfo );
-								dstlen = 0;
-								dst[ dstlen ] = 0;
+								if( dst == 0 )
+								{
+									res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+									goto goto_return;
+								}
 							}
+							dstlen = 0;
+							dst[ dstlen ] = 0;
 						}
 					}
 					else
 					{
 						if( isempty_src_error )
+						{
 							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
+							goto goto_return;
+						}
 						else if( dst == 0 )
 						{
-							dstsize = 1;
+							dstsize = 1 + step;
 							dst = allocator->realloc_array< char >( dst , dstsize , debuginfo );
-							dstlen = 0;
-							dst[ dstlen ] = 0;
+							if( dst == 0 )
+							{
+								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+								goto goto_return;
+							}
 						}
+						dstlen = 0;
+						dst[ dstlen ] = 0;
 					}
+goto_return:
 					return res->succeeded();
 				};
 				template< size_t reserved_memory_size >
