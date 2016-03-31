@@ -1987,6 +1987,8 @@ TEST_F( boo_jsonTest , test )
 
 	char* begin = (char*)allocator.begin();
 	{
+		::booldog::data::json::serializator copy_serializator( &allocator );
+
 		::booldog::data::json::serializator serializator( &allocator );
 
 		::booldog::data::json::result res( &serializator );
@@ -1994,6 +1996,8 @@ TEST_F( boo_jsonTest , test )
 		::booldog::data::json::parse< 1 >( &res , &allocator , "0" );
 
 		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
 
 		::booldog::data::json::object root = (*res.serializator);
 
@@ -2036,11 +2040,63 @@ TEST_F( boo_jsonTest , test )
 		ASSERT_TRUE( strcmp( json , "0" ) == 0 );
 
 
+		root = copy_serializator;
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "0" ) == 0 );
+		
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "0" ) == 0 );
+
+
+
+
 		::booldog::data::json::parse< 1 >( &res , &allocator , "00" );
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2051,7 +2107,50 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2096,7 +2195,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2107,7 +2215,50 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , -0.02f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2152,7 +2303,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2163,7 +2323,50 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02e0" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , -0.02f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02e0" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2208,7 +2411,50 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02E-3" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( ::booldog::utils::round( valuefloat , 5 ) , -0.00002f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "-0.02E-3" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2253,7 +2499,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2264,7 +2519,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2275,7 +2539,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2286,7 +2559,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2296,8 +2578,51 @@ TEST_F( boo_jsonTest , test )
 		::booldog::data::json::parse< 1 >( &res , &allocator , " 19.86E+3" );
 
 		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
 				
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "19.86E+3" ) == 0 );
+
+		ASSERT_TRUE( root.isnumber() );
+		
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 19860 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 19860 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 19860 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 19860 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 19860.f );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "19.86E+3" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2342,7 +2667,52 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[]" ) == 0 );
+
+		ASSERT_TRUE( root.isarray() );
+
+		ASSERT_EQ( root.count() , 0 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[]" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2389,7 +2759,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2400,7 +2779,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2411,7 +2799,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2422,7 +2819,16 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_FALSE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( json == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -2432,6 +2838,8 @@ TEST_F( boo_jsonTest , test )
 		::booldog::data::json::parse< 1 >( &res , &allocator , "   [\"test0\",1986 ,\t  25.56   , true   , null ,  {\"1\": true  \t} , [1 , 1 , 2    ] , -21E5 , 2e-1 , 6e+4   ]    " );
 
 		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
 
 		root = (*res.serializator);
 
@@ -3059,11 +3467,681 @@ TEST_F( boo_jsonTest , test )
 
 
 
+		root = copy_serializator;
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[\"test0\",1986,25.56,true,null,{\"1\":true},[1,1,2],-21E5,2e-1,6e+4]" ) == 0 );
+
+		ASSERT_TRUE( root.isarray() );
+
+		ASSERT_EQ( root.count() , 10 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+		
+
+		node = root[ 0 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "\"test0\"" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isstring() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( strcmp( valuestring , "test0" ) == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 1 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "1986" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 1986 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 1986 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 1986 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 1986 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 1986.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 2 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "25.56" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 25 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 25 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 25 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 25 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( ::booldog::utils::round( valuefloat , 2 ) , 25.56f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 3 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "true" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_TRUE( valuebool );
+
+
+		node = root[ 4 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "null" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnull() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 5 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "{\"1\":true}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 1 );
+		
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = node( "1" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "true" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "1" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_TRUE( valuebool );
+
+
+		node = root[ 6 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "[1,1,2]" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isarray() );
+
+		ASSERT_EQ( node.count() , 3 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+		
+
+		node = root[ 6 ][ 0 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "1" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 1 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 1 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 1 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 1 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 1.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 6 ][ 1 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "1" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 1 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 1 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 1 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 1 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 1.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 6 ][ 2 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "2" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 2 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 2 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 2 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 2 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 2.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 7 ];
+
+		json = node.json;
+		
+		ASSERT_TRUE( strcmp( json , "-21E5" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , -2100000 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , -2100000 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , -2100000.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 8 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "2e-1" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+		
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0.2f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 9 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "6e+4" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 60000 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 60000 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 60000 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 60000 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 60000.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root[ 10 ];
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "[\"test0\",1986,25.56,true,null,{\"1\":true},[1,1,2],-21E5,2e-1,6e+4]" ) == 0 );
+
+
+
+
 		::booldog::data::json::parse< 1 >( &res , &allocator , "    \"test0 \\t\\n \\u0074\\u0065\\u0073\\u0074\\u0036\\uD834\\uDD1E \\\" \\b \\n\"    " );
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "\"test0 \\t\\n test6\xf0\x9d\x84\x9e \\\" \\b \\n\"" ) == 0 );
+
+		ASSERT_TRUE( root.isstring() );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( strcmp( valuestring , "test0 \t\n test6\xf0\x9d\x84\x9e \" \b \n" ) == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "\"test0 \\t\\n test6\xf0\x9d\x84\x9e \\\" \\b \\n\"" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -3108,7 +4186,572 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0\":{},\"test1\":{},\"test2\":{},\"test3\":null,\"test4\":true,\"test5\":false,\"test6\\n\\b\\f\":\"example \x65 \\b \\n \\f\\n \\\"\",\"test6\xf0\x9d\x84\x9e\":25167.678e+4}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_EQ( root.count() , 8 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test0" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test0" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test1" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test1" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test2" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test2" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test3" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "null" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnull() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test3" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test4" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "true" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test4" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_TRUE( valuebool );
+
+
+		node = root( "test5" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "false" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isboolean() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test5" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test6\n\b\f" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "\"example \x65 \\b \\n \\f\\n \\\"\"" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isstring() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test6\n\b\f" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( strcmp( valuestring , "example \x65 \b \n \f\n \"" ) == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+		
+
+		node = root( "test6\xf0\x9d\x84\x9e" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "25167.678e+4" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isnumber() );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 251676780 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 251676780 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 251676780 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 251676780 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 251676780.f );
+
+		ASSERT_TRUE( strcmp( node.name() , "test6\xf0\x9d\x84\x9e" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 251676780 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 251676780 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 251676780 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 251676780 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 251676780.f );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test6\n \f" );
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+		node = root( "test6777" );
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+		node = root( "test" );
+
+		json = node.json;
+
+		ASSERT_TRUE( json == 0 );
+
+		ASSERT_FALSE( node.exists() );
+
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0\":{},\"test1\":{},\"test2\":{},\"test3\":null,\"test4\":true,\"test5\":false,\"test6\\n\\b\\f\":\"example \x65 \\b \\n \\f\\n \\\"\",\"test6\xf0\x9d\x84\x9e\":25167.678e+4}" ) == 0 );
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -3675,7 +5318,112 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_TRUE( res.succeeded() );
 
+		copy_serializator = serializator;
+
 		root = (*res.serializator);
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0\":{}}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_EQ( root.count() , 1 );
+
+		valueuint64 = root.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = root.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = root.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = root.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = root.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = root.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = root.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+		node = root( "test0" );
+
+		json = node.json;
+
+		ASSERT_TRUE( strcmp( json , "{}" ) == 0 );
+
+		ASSERT_TRUE( node.exists() );
+
+		ASSERT_TRUE( node.isobject() );
+
+		ASSERT_EQ( node.count() , 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		ASSERT_TRUE( strcmp( node.name() , "test0" ) == 0 );
+
+		valueuint64 = node.value;
+
+		ASSERT_EQ( valueuint64 , 0 );
+
+		valueuint32 = node.value;
+
+		ASSERT_EQ( valueuint32 , 0 );
+
+		valueint64 = node.value;
+
+		ASSERT_EQ( valueint64 , 0 );
+
+		valueint32 = node.value;
+
+		ASSERT_EQ( valueint32 , 0 );
+
+		valuefloat = node.value;
+
+		ASSERT_EQ( valuefloat , 0 );
+
+		valuestring = node.value;
+
+		ASSERT_TRUE( valuestring == 0 );
+
+		valuebool = node.value;
+
+		ASSERT_FALSE( valuebool );
+
+
+
+		root = copy_serializator;
 
 		json = root.json;
 
@@ -6501,6 +8249,56 @@ TEST_F( boo_stringTest , test )
 	ASSERT_EQ( allocator.available() , total );
 };
 
+class boo_rdwrlockTest : public ::testing::Test 
+{
+};
+TEST_F( boo_rdwrlockTest , test )
+{
+	::booldog::threading::rdwrlock lock;
+
+	lock.wlock( debuginfo_macros );
+
+	ASSERT_EQ( lock._writer_recursion , 1 );
+
+	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT );
+
+
+	lock.rlock( debuginfo_macros );
+
+	ASSERT_EQ( lock._writer_recursion , 1 );
+
+	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT + 1 );
+
+
+	lock.wlock( debuginfo_macros );
+
+	ASSERT_EQ( lock._writer_recursion , 2 );
+
+	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT + 1 );
+
+
+	lock.wunlock( debuginfo_macros );
+
+	ASSERT_EQ( lock._writer_recursion , 1 );
+
+	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT + 1 );
+
+
+
+	lock.runlock( debuginfo_macros );
+
+	ASSERT_EQ( lock._writer_recursion , 1 );
+
+	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT );
+
+
+	lock.wunlock( debuginfo_macros );
+
+	ASSERT_EQ( lock._writer_recursion , 0 );
+
+	ASSERT_EQ( lock._writer_readers , 0 );
+};
+
 class boo_time_utilsTest : public ::testing::Test 
 {
 };
@@ -6512,6 +8310,87 @@ TEST_F( boo_time_utilsTest , test )
 
 	char* begin = (char*)allocator.begin();
 	{
+		ASSERT_EQ( ::booldog::utils::time::posix::mbs::parse( "2016.03.16 11:46:17:336" ,  "%Y.%m.%d %H:%M:%S:%MS" ) 
+			, 1458128777336000ULL );
+
+		ASSERT_EQ( ::booldog::utils::time::posix::mbs::parse( "  2016.03.16 11:46:17:336" ,  "  %Y.%m.%d %H:%M:%S:%MS" ) 
+			, 1458128777336000ULL );
+		
+		::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1971.02.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		ASSERT_EQ( year , 1971 );
+
+		ASSERT_EQ( month , 2 );
+
+		ASSERT_EQ( day_of_month , 1 );
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1971.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		ASSERT_EQ( year , 1971 );
+
+		ASSERT_EQ( month , 1 );
+
+		ASSERT_EQ( day_of_month , 1 );
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1970.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		ASSERT_EQ( year , 1970 );
+
+		ASSERT_EQ( month , 1 );
+
+		ASSERT_EQ( day_of_month , 1 );
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1970.03.08 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		ASSERT_EQ( year , 1970 );
+
+		ASSERT_EQ( month , 3 );
+
+		ASSERT_EQ( day_of_month , 8 );
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1970.01.05 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		ASSERT_EQ( year , 1970 );
+
+		ASSERT_EQ( month , 1 );
+
+		ASSERT_EQ( day_of_month , 5 );
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2016.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		ASSERT_EQ( year , 2016 );
+
+		ASSERT_EQ( month , 1 );
+
+		ASSERT_EQ( day_of_month , 1 );
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  3395.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );	
+
+		ASSERT_EQ( year , 3395 );
+
+		ASSERT_EQ( month , 1 );
+
+		ASSERT_EQ( day_of_month , 1 );
+
+		
+
+
+
 		ASSERT_EQ( ::booldog::utils::time::posix::day_of_month( 1458128777336000 ) , 16 );
 
 		ASSERT_EQ( ::booldog::utils::time::posix::month( 1458128777336000 ) , 3 );
@@ -6525,6 +8404,8 @@ TEST_F( boo_time_utilsTest , test )
 		ASSERT_EQ( ::booldog::utils::time::posix::second( 1458128777336000 ) , 17 );
 
 		ASSERT_EQ( ::booldog::utils::time::posix::millisecond( 1458128777336000 ) , 336 );
+
+		ASSERT_EQ( ::booldog::utils::time::posix::day_of_week( 1458128777336000 ) , 3 );
 
 		::booldog::uint64 local = ::booldog::utils::time::posix::tolocal( 1458128777336000 );
 
@@ -6560,6 +8441,49 @@ TEST_F( boo_time_utilsTest , test )
 
 		ASSERT_EQ( strcmp( resmbchar.mbchar , "Gt%y 336%" ) , 0 );
 	//1458128777336000 16.03.2016/11:46:17
+
+		ASSERT_EQ( ::booldog::utils::time::posix::generate( 336 , 17 , 46 , 11 , 16 , 3 , 2016 ) , 1458128777336000ULL );
+
+		
+
+		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
+			, ::booldog::utils::time::posix::add_months( 1458128777336000ULL , 27 ) , debuginfo_macros );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mblen , 19 );
+
+		ASSERT_EQ( strcmp( resmbchar.mbchar , "11:46:17 16.06.2018" ) , 0 );
+
+
+		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
+			, ::booldog::utils::time::posix::sub_months( 1458128777336000ULL , 27 ) , debuginfo_macros );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mblen , 19 );
+
+		ASSERT_EQ( strcmp( resmbchar.mbchar , "11:46:17 16.12.2013" ) , 0 );	
+
+
+		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
+			, ::booldog::utils::time::posix::add_years( 1458128777336000ULL , 5 ) , debuginfo_macros );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mblen , 19 );
+
+		ASSERT_EQ( strcmp( resmbchar.mbchar , "11:46:17 16.03.2021" ) , 0 );	
+
+
+		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
+			, ::booldog::utils::time::posix::sub_years( 1458128777336000ULL , 7 ) , debuginfo_macros );
+
+		ASSERT_TRUE( resmbchar.succeeded() );
+
+		ASSERT_EQ( resmbchar.mblen , 19 );
+
+		ASSERT_EQ( strcmp( resmbchar.mbchar , "11:46:17 16.03.2009" ) , 0 );
 	}
 
 	ASSERT_TRUE( allocator.begin() == begin );

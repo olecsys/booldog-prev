@@ -9,6 +9,7 @@
 #include BOOLDOG_HEADER(boo_types.h)
 
 #include <stdarg.h>
+#include <string.h>
 namespace booldog
 {
 	namespace hash

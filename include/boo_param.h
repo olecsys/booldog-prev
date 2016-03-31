@@ -8,6 +8,7 @@
 #endif
 #include BOOLDOG_HEADER(boo_types.h)
 #include BOOLDOG_HEADER(boo_hash_times33.h)
+#include BOOLDOG_HEADER(boo_result.h)
 #include <string.h>
 namespace booldog
 {
@@ -41,6 +42,9 @@ namespace booldog
 				type_pushort ,
 				type_pint64 ,
 				type_puint64 ,
+				type_double ,
+				type_float ,
+				type_presult_mbchar ,
 				type_not_found
 			};
 		};
@@ -74,6 +78,9 @@ namespace booldog
 			booldog::pushort pushortvalue;
 			booldog::pint64 pint64value;
 			booldog::puint64 puint64value;
+			double doublevalue;
+			float floatvalue;
+			::booldog::result_mbchar* presult_mbcharvalue;
 		};
 		param( void )
 		{
@@ -118,6 +125,21 @@ namespace booldog
 		{
 			type = ::booldog::enums::param::type_int64;
 			int64value = value;
+		};
+		param( float value )
+		{
+			type = ::booldog::enums::param::type_float;
+			floatvalue = value;
+		};
+		param( ::booldog::result_mbchar* value )
+		{
+			type = ::booldog::enums::param::type_presult_mbchar;
+			presult_mbcharvalue = value;
+		};
+		param( double value )
+		{
+			type = ::booldog::enums::param::type_double;
+			doublevalue = value;
 		};
 		param( booldog::uint64 value )
 		{
@@ -229,6 +251,24 @@ namespace booldog
 			hash = 0;
 		};
 		named_param( const char* name , char value )
+			: ::booldog::param( value )
+		{
+			this->name = name;
+			hash = 0;
+		};
+		named_param( const char* name , double value )
+			: ::booldog::param( value )
+		{
+			this->name = name;
+			hash = 0;
+		};
+		named_param( const char* name , float value )
+			: ::booldog::param( value )
+		{
+			this->name = name;
+			hash = 0;
+		};
+		named_param( const char* name , ::booldog::result_mbchar* value )
 			: ::booldog::param( value )
 		{
 			this->name = name;
@@ -391,28 +431,31 @@ namespace booldog
 		};
 	};
 };
-#define BOOPARAM_INT32( val ) ::booldog::param( (booldog::int32)val )
+#define BOOPARAM_INT32( val ) ::booldog::param( (::booldog::int32)val )
 #define BOOPARAM_BOOL( val ) ::booldog::param( (bool)val )
 #define BOOPARAM_CHAR( val ) ::booldog::param( (char)val )
 #define BOOPARAM_UCHAR( val ) ::booldog::param( (unsigned char)val )
 #define BOOPARAM_SHORT( val ) ::booldog::param( (short)val )
 #define BOOPARAM_USHORT( val ) ::booldog::param( (unsigned short)val )
-#define BOOPARAM_INT64( val ) ::booldog::param( (booldog::int64)val )
-#define BOOPARAM_UINT64( val ) ::booldog::param( (booldog::uint64)val )
+#define BOOPARAM_INT64( val ) ::booldog::param( (::booldog::int64)val )
+#define BOOPARAM_DOUBLE( val ) ::booldog::param( (double)val )
+#define BOOPARAM_FLOAT( val ) ::booldog::param( (float)val )
+#define BOOPARAM_UINT64( val ) ::booldog::param( (::booldog::uint64)val )
 #define BOOPARAM_WCHAR( val ) ::booldog::param( (wchar_t)val )
 #define BOOPARAM_PCHAR( val ) ::booldog::param( (char*)val )
 #define BOOPARAM_PWCHAR( val ) ::booldog::param( (wchar_t*)val )
 #define BOOPARAM_PVOID( val ) ::booldog::param( (void*)val )
-#define BOOPARAM_PNAMED_PARAM( val ) ::booldog::param( (booldog::named_param*)val )
-#define BOOPARAM_PPARAM( val ) ::booldog::param( (booldog::param*)val )
-#define BOOPARAM_PINT32( val ) ::booldog::param( (booldog::pint32)val )
-#define BOOPARAM_PUINT32( val ) ::booldog::param( (booldog::puint32)val )
-#define BOOPARAM_PBOOL( val ) ::booldog::param( (booldog::pbool)val )
-#define BOOPARAM_PUCHAR( val ) ::booldog::param( (booldog::puchar)val )
-#define BOOPARAM_PSHORT( val ) ::booldog::param( (booldog::pshort)val )
-#define BOOPARAM_PUSHORT( val ) ::booldog::param( (booldog::pushort)val )
-#define BOOPARAM_PINT64( val ) ::booldog::param( (booldog::pint64)val )
-#define BOOPARAM_PUINT64( val ) ::booldog::param( (booldog::puint64)val )
+#define BOOPARAM_PNAMED_PARAM( val ) ::booldog::param( (::booldog::named_param*)val )
+#define BOOPARAM_PPARAM( val ) ::booldog::param( (::booldog::param*)val )
+#define BOOPARAM_PINT32( val ) ::booldog::param( (::booldog::pint32)val )
+#define BOOPARAM_PUINT32( val ) ::booldog::param( (::booldog::puint32)val )
+#define BOOPARAM_PBOOL( val ) ::booldog::param( (::booldog::pbool)val )
+#define BOOPARAM_PUCHAR( val ) ::booldog::param( (::booldog::puchar)val )
+#define BOOPARAM_PSHORT( val ) ::booldog::param( (::booldog::pshort)val )
+#define BOOPARAM_PUSHORT( val ) ::booldog::param( (::booldog::pushort)val )
+#define BOOPARAM_PINT64( val ) ::booldog::param( (::booldog::pint64)val )
+#define BOOPARAM_PUINT64( val ) ::booldog::param( (::booldog::puint64)val )
+#define BOOPARAM_PRESULT_MBCHAR( val ) ::booldog::param( (::booldog::result_mbchar*)val )
 
 #define BOONAMED_PARAM_INT32( name , val ) ::booldog::named_param( name , (::booldog::int32)val )
 #define BOONAMED_PARAM_BOOL( name , val ) ::booldog::named_param( name , (bool)val )
@@ -421,6 +464,8 @@ namespace booldog
 #define BOONAMED_PARAM_SHORT( name , val ) ::booldog::named_param( name , (short)val )
 #define BOONAMED_PARAM_USHORT( name , val ) ::booldog::named_param( name , (unsigned short)val )
 #define BOONAMED_PARAM_INT64( name , val ) ::booldog::named_param( name , (::booldog::int64)val )
+#define BOONAMED_PARAM_DOUBLE( name , val ) ::booldog::named_param( name , (double)val )
+#define BOONAMED_PARAM_FLOAT( name , val ) ::booldog::named_param( name , (float)val )
 #define BOONAMED_PARAM_UINT64( name , val ) ::booldog::named_param( name , (::booldog::uint64)val )
 #define BOONAMED_PARAM_WCHAR( name , val ) ::booldog::named_param( name , (wchar_t)val )
 #define BOONAMED_PARAM_PCHAR( name , val ) ::booldog::named_param( name , (char*)val )
@@ -428,14 +473,15 @@ namespace booldog
 #define BOONAMED_PARAM_PVOID( name , val ) ::booldog::named_param( name , (void*)val )
 #define BOONAMED_PARAM_PNAMED_PARAM( name , val ) ::booldog::named_param( name , (::booldog::named_param*)val )
 #define BOONAMED_PARAM_PPARAM( name , val ) ::booldog::named_param( name , (::booldog::param*)val )
-#define BOONAMED_PARAM_PINT32( name , val ) ::booldog::named_param( name , (booldog::pint32)val )
-#define BOONAMED_PARAM_PUINT32( name , val ) ::booldog::named_param( name , (booldog::puint32)val )
-#define BOONAMED_PARAM_PBOOL( name , val ) ::booldog::named_param( name , (booldog::pbool)val )
-#define BOONAMED_PARAM_PUCHAR( name , val ) ::booldog::named_param( name , (booldog::puchar)val )
-#define BOONAMED_PARAM_PSHORT( name , val ) ::booldog::named_param( name , (booldog::pshort)val )
-#define BOONAMED_PARAM_PUSHORT( name , val ) ::booldog::named_param( name , (booldog::pushort)val )
-#define BOONAMED_PARAM_PINT64( name , val ) ::booldog::named_param( name , (booldog::pint64)val )
-#define BOONAMED_PARAM_PUINT64( name , val ) ::booldog::named_param( name , (booldog::puint64)val )
+#define BOONAMED_PARAM_PINT32( name , val ) ::booldog::named_param( name , (::booldog::pint32)val )
+#define BOONAMED_PARAM_PUINT32( name , val ) ::booldog::named_param( name , (::booldog::puint32)val )
+#define BOONAMED_PARAM_PBOOL( name , val ) ::booldog::named_param( name , (::booldog::pbool)val )
+#define BOONAMED_PARAM_PUCHAR( name , val ) ::booldog::named_param( name , (::booldog::puchar)val )
+#define BOONAMED_PARAM_PSHORT( name , val ) ::booldog::named_param( name , (::booldog::pshort)val )
+#define BOONAMED_PARAM_PUSHORT( name , val ) ::booldog::named_param( name , (::booldog::pushort)val )
+#define BOONAMED_PARAM_PINT64( name , val ) ::booldog::named_param( name , (::booldog::pint64)val )
+#define BOONAMED_PARAM_PUINT64( name , val ) ::booldog::named_param( name , (::booldog::puint64)val )
+#define BOONAMED_PARAM_PRESULT_MBCHAR( name , val ) ::booldog::named_param( name , (::booldog::result_mbchar*)val )
 
 #define BOO_SEARCH_NAMED_PARAM_INT32( name ) ::booldog::named_param( name , ::booldog::enums::param::type_int32 )
 #define BOO_SEARCH_NAMED_PARAM_BOOL( name ) ::booldog::named_param( name , ::booldog::enums::param::type_bool )
@@ -444,6 +490,8 @@ namespace booldog
 #define BOO_SEARCH_NAMED_PARAM_SHORT( name ) ::booldog::named_param( name , ::booldog::enums::param::type_short )
 #define BOO_SEARCH_NAMED_PARAM_USHORT( name ) ::booldog::named_param( name , ::booldog::enums::param::type_ushort )
 #define BOO_SEARCH_NAMED_PARAM_INT64( name ) ::booldog::named_param( name , ::booldog::enums::param::type_int64 )
+#define BOO_SEARCH_NAMED_PARAM_FLOAT( name ) ::booldog::named_param( name , ::booldog::enums::param::type_float )
+#define BOO_SEARCH_NAMED_PARAM_DOUBLE( name ) ::booldog::named_param( name , ::booldog::enums::param::type_double )
 #define BOO_SEARCH_NAMED_PARAM_UINT64( name ) ::booldog::named_param( name , ::booldog::enums::param::type_uint64 )
 #define BOO_SEARCH_NAMED_PARAM_WCHAR( name ) ::booldog::named_param( name , ::booldog::enums::param::type_wchar )
 #define BOO_SEARCH_NAMED_PARAM_PCHAR( name ) ::booldog::named_param( name , ::booldog::enums::param::type_pchar )
@@ -459,6 +507,7 @@ namespace booldog
 #define BOO_SEARCH_NAMED_PARAM_PUSHORT( name ) ::booldog::named_param( name , ::booldog::enums::param::type_pushort )
 #define BOO_SEARCH_NAMED_PARAM_PINT64( name ) ::booldog::named_param( name , ::booldog::enums::param::type_pint64 )
 #define BOO_SEARCH_NAMED_PARAM_PUINT64( name ) ::booldog::named_param( name , ::booldog::enums::param::type_puint64 )
+#define BOO_SEARCH_NAMED_PARAM_PRESULT_MBCHAR( name ) ::booldog::named_param( name , ::booldog::enums::param::type_presult_mbchar )
 
 #define BOONAMED_PARAM_NONE ::booldog::named_param()
 #define BOOPARAM_NONE ::booldog::param()

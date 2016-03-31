@@ -96,44 +96,37 @@ namespace booldog
 					, ::booldog::uint32& day_of_month )
 				{
 					day_of_month = (::booldog::uint32)( ( time / 1000000ULL ) / ( 60ULL * 60ULL * 24ULL ) );
-					year = 1970;
-					::booldog::uint32 leap = 2;
-					::booldog::uint32 days_offset = 0;
-					for( ; ; )
+					if( day_of_month >= 2 * 365 )
 					{
-						if( leap == 0 )
+						day_of_month -= 2 * 365;
+						::booldog::uint32 leapyears = day_of_month / ( 3 * 365 + 366 );
+						year = 1972 + leapyears * 4;
+						day_of_month -= leapyears * ( 3 * 365 + 366 );
+						if( day_of_month >= 366 )
 						{
-							days_offset += 366;
-							if( days_offset >= day_of_month )
-							{
-								days_offset -= 366;
-								break;
-							}
-							leap = 3;
+							day_of_month -= 366;
+							year++;
 						}
-						else
-						{
-							days_offset += 365;
-							if( days_offset >= day_of_month )
-							{
-								days_offset -= 365;
-								break;
-							}
-							leap--;
-						}
-						year++;
 					}
-					day_of_month -= days_offset;
-					day_of_month++;
+					else
+						year = 1970;
+					year += day_of_month / 365;
+					day_of_month %= 365;
+					::booldog::uint32 days_in_month_in_year = 0;
 					month = 1;
 					for( ; month < 13 ; month++ )
 					{
-						days_offset = ::booldog::utils::time::days_in_month( month , year );
-						if( day_of_month > days_offset )
-							day_of_month -= days_offset;
-						else
+						days_in_month_in_year = ::booldog::utils::time::days_in_month( month , year );
+						if( days_in_month_in_year > day_of_month )
 							break;
+						else
+							day_of_month -= days_in_month_in_year;
 					}
+					day_of_month++;
+				};
+				booinline ::booldog::uint32 day_of_week( ::booldog::uint64 time )
+				{
+					return ( 4 + (::booldog::uint32)( ( time / 1000000ULL ) / ( 60ULL * 60ULL * 24ULL ) ) ) % 7;
 				};
 				booinline ::booldog::uint32 month( ::booldog::uint64 time )
 				{
@@ -191,6 +184,123 @@ namespace booldog
 					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
 					::booldog::utils::time::posix::time( time , hour , minute , second , millisecond );
 					return millisecond;
+				};
+				booinline ::booldog::uint64 generate( ::booldog::uint32 millisecond , ::booldog::uint32 second 
+					, ::booldog::uint32 minute , ::booldog::uint32 hour , ::booldog::uint32 day_of_month 
+					, ::booldog::uint32 month , ::booldog::uint32 year )
+				{
+					if( year >= 1970 )
+					{
+						::booldog::uint64 time = ( day_of_month - 1 ) * 24ULL * 3600ULL * 1000000ULL 
+							+ hour * 60ULL * 60ULL * 1000000ULL + minute * 60ULL * 1000000ULL
+							+ second * 1000000ULL + millisecond * 1000ULL;
+						month--;
+						for( ; month > 0 ; month-- )
+							time += ::booldog::utils::time::days_in_month( month , year ) * 24ULL * 3600ULL * 1000000ULL;
+						year -= 1970;
+						if( year >= 2 )
+						{
+							day_of_month = 2 * 365;
+							::booldog::uint32 quarter_years = ( year - 2 ) / 4;
+							day_of_month += quarter_years * ( 3 * 365 + 366 );
+							year -= 2 + 4 * quarter_years;
+							if( year > 0 )
+								day_of_month += ( 366 + ( year - 1 ) * 365 );
+						}
+						else
+							day_of_month = year * 365ULL;
+						time += day_of_month * 24ULL * 3600ULL * 1000000ULL;
+						return time;
+					}
+					return 0;
+				};
+				booinline ::booldog::uint64 add_months( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
+					::booldog::utils::time::posix::date( time , year , month , day_of_month );
+
+					year += ( month + added - 1 ) / 12;
+					month += added % 12;
+
+					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
+					::booldog::utils::time::posix::time( time , hour , minute , second , millisecond );
+
+					return ::booldog::utils::time::posix::generate( millisecond , second , minute , hour , day_of_month 
+						, month , year );
+				};
+				booinline ::booldog::uint64 sub_months( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
+					::booldog::utils::time::posix::date( time , year , month , day_of_month );
+
+					year -= added / 12;
+
+					added %= 12;
+					if( added >= month )
+					{
+						month -= added - 12;
+						year--;
+					}
+					else
+						month -= added;
+
+					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
+					::booldog::utils::time::posix::time( time , hour , minute , second , millisecond );
+
+					return ::booldog::utils::time::posix::generate( millisecond , second , minute , hour , day_of_month 
+						, month , year );
+				};
+				booinline ::booldog::uint64 add_years( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
+					::booldog::utils::time::posix::date( time , year , month , day_of_month );
+					year += added;
+					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
+					::booldog::utils::time::posix::time( time , hour , minute , second , millisecond );
+					return ::booldog::utils::time::posix::generate( millisecond , second , minute , hour , day_of_month 
+						, month , year );
+				};
+				booinline ::booldog::uint64 sub_years( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
+					::booldog::utils::time::posix::date( time , year , month , day_of_month );
+					year -= added;
+					::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
+					::booldog::utils::time::posix::time( time , hour , minute , second , millisecond );
+					return ::booldog::utils::time::posix::generate( millisecond , second , minute , hour , day_of_month 
+						, month , year );
+				};
+				booinline ::booldog::uint64 add_days( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time + added * 24ULL * 3600ULL * 1000000ULL;
+				};
+				booinline ::booldog::uint64 sub_days( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time - added * 24ULL * 3600ULL * 1000000ULL;
+				};
+				booinline ::booldog::uint64 add_hours( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time + added * 3600ULL * 1000000ULL;
+				};
+				booinline ::booldog::uint64 sub_hours( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time - added * 3600ULL * 1000000ULL;
+				};
+				booinline ::booldog::uint64 add_minutes( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time + added * 60ULL * 1000000ULL;
+				};
+				booinline ::booldog::uint64 sub_minutes( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time - added * 60ULL * 1000000ULL;
+				};
+				booinline ::booldog::uint64 add_seconds( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time + added * 1000000ULL;
+				};
+				booinline ::booldog::uint64 sub_seconds( ::booldog::uint64 time , ::booldog::uint32 added )
+				{
+					return time - added * 1000000ULL;
 				};
 				namespace mbs
 				{
@@ -444,6 +554,77 @@ goto_away_from_for:
 						}
 	goto_return:
 						return res->succeeded();
+					};
+					booinline ::booldog::uint64 parse( const char* timestring , const char* format )
+					{
+						if( format == 0 || format[ 0 ] == 0 )
+							format = "%H:%M:%S %d.%m.%Y";
+
+						::booldog::uint64 time = 0;
+						::booldog::uint32 millisecond = 0 , second = 0 , minute = 0 , hour = 0 , day_of_month = 0 
+							, month = 0 , year = 0;
+
+						const char* fmtptr = format;
+						const ::booldog::byte* ptr = (::booldog::byte*)timestring;
+goto_begin:						
+						for( ; ; )
+						{
+							switch( *fmtptr )
+							{
+							case 0:
+								if( *ptr != 0 )
+									goto goto_return;
+								goto goto_cycle_away;
+							case '%':
+								goto goto_process;
+							default:
+								if( *fmtptr++ != (char)*ptr++ )
+									goto goto_return;
+							}
+						}
+goto_process:
+						switch( *++fmtptr )
+						{
+						case 'Y':
+							fmtptr++;
+							year = ::booldog::utils::decimal_string_to_number< ::booldog::uint32 >( ptr );
+							break;
+						case 'm':
+							fmtptr++;
+							month = ::booldog::utils::decimal_string_to_number< ::booldog::uint32 >( ptr );
+							break;
+						case 'd':
+							fmtptr++;
+							day_of_month = ::booldog::utils::decimal_string_to_number< ::booldog::uint32 >( ptr );
+							break;
+						case 'S':
+							fmtptr++;
+							second = ::booldog::utils::decimal_string_to_number< ::booldog::uint32 >( ptr );
+							break;
+						case 'M':
+							if( *++fmtptr == 'S' )
+							{
+								fmtptr++;
+								millisecond = ::booldog::utils::decimal_string_to_number< ::booldog::uint32 >( ptr );
+							}
+							else							
+								minute = ::booldog::utils::decimal_string_to_number< ::booldog::uint32 >( ptr );
+							break;
+						case 'H':
+							fmtptr++;
+							hour = ::booldog::utils::decimal_string_to_number< ::booldog::uint32 >( ptr );
+							break;
+						default:
+							if( fmtptr[ -1 ] != (char)*ptr++ )
+								goto goto_return;
+							break;
+						}
+						goto goto_begin;
+goto_cycle_away:
+						time = ::booldog::utils::time::posix::generate( millisecond , second , minute , hour , day_of_month 
+							, month , year );
+goto_return:					
+						return time;
 					};
 				};
 				namespace wcs

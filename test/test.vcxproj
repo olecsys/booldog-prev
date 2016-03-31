@@ -17,6 +17,7 @@
     <ClInclude Include="..\include\boo_allocator.h" />
     <ClInclude Include="..\include\boo_application.h" />
     <ClInclude Include="..\include\boo_array.h" />
+    <ClInclude Include="..\include\boo_base64.h" />
     <ClInclude Include="..\include\boo_base_loader.h" />
     <ClInclude Include="..\include\boo_base_module.h" />
     <ClInclude Include="..\include\boo_bits_utils.h" />
@@ -29,6 +30,7 @@
     <ClInclude Include="..\include\boo_error_format.h" />
     <ClInclude Include="..\include\boo_executable_utils.h" />
     <ClInclude Include="..\include\boo_fps_counter.h" />
+    <ClInclude Include="..\include\boo_hash_sha1.h" />
     <ClInclude Include="..\include\boo_hash_times33.h" />
     <ClInclude Include="..\include\boo_heap_allocator.h" />
     <ClInclude Include="..\include\boo_holder_allocator.h" />

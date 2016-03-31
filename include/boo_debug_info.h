@@ -9,8 +9,7 @@ namespace booldog
 	{
 		namespace typedefs
 		{
-			typedef void (*statement_t)( void* udata , unsigned int& lineid , unsigned int label , const char* __boofile__ 
-				, const char* __boofunction__ , int __booline__ );
+			typedef void (*statement_t)( void* udata , unsigned int& lineid , unsigned int label , int __booline__ );
 			typedef unsigned int (*lineid_t)( void* udata , unsigned int label , const char* __boofile__ 
 				, const char* __boofunction__ , int __booline__ );
 		};
@@ -26,14 +25,11 @@ namespace booldog
 				__booline__ = __booline__;
 				return 0;
 			};
-			static void statement_empty( void* udata , unsigned int& lineid , unsigned int label , const char* __boofile__ 
-				, const char* __boofunction__ , int __booline__ )
+			static void statement_empty( void* udata , unsigned int& lineid , unsigned int label , int __booline__ )
 			{
 				udata = udata;
 				lineid = lineid;
 				label = label;
-				__boofile__ = __boofile__;
-				__boofunction__ = __boofunction__;
 				__booline__ = __booline__;
 			};
 			const char* file;
@@ -77,7 +73,7 @@ namespace booldog
 #define debuginfo_macros_statement( label ) \
 		{\
 			static unsigned int lineid = debuginfo.lineid( debuginfo.udata , label , __FILE__ , __FUNCTION__ , __LINE__ );\
-			debuginfo.statement( debuginfo.udata , lineid , label , __FILE__ , __FUNCTION__ , __LINE__ );\
+			debuginfo.statement( debuginfo.udata , lineid , label , __LINE__ );\
 		}
 	};
 };

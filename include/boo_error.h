@@ -51,7 +51,13 @@ namespace booldog
 				booerr_type_unknown_wchar_t_size ,
 				booerr_type_handle_is_executable ,
 				booerr_type_insufficient_memory ,
-				booerr_type_object_is_already_initialized
+				booerr_type_object_is_already_initialized , 
+				booerr_type_base64_decoded_length_is_equal_0 ,
+				booerr_type_base64_incorrect_encoded_length ,
+				booerr_type_base64_decoded_data_pointer_is_NULL ,
+				booerr_type_base64_decoded_data_pointer_size_is_equal_0 ,
+				booerr_type_base64_encoded_data_pointer_size_is_equal_0 , 
+				booerr_type_sqlite3_error
 			};
 		};
 	};

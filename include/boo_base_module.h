@@ -79,6 +79,14 @@ namespace booldog
 			{
 				return false;
 			};
+			virtual void lock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				debuginfo = debuginfo;
+			};
+			virtual void unlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			{
+				debuginfo = debuginfo;
+			};
 		};
 	};
 	class loader;
@@ -125,11 +133,11 @@ namespace booldog
 		{
 			return _handle;
 		};
-		void lock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual void lock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			_lock.wlock( debuginfo );
 		};
-		void unlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual void unlock( const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
 			_lock.wunlock( debuginfo );
 		};

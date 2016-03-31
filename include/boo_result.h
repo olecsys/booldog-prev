@@ -7,6 +7,7 @@
 #define BOOLDOG_HEADER( header ) <header>
 #endif
 #include BOOLDOG_HEADER(boo_allocator.h)
+#include BOOLDOG_HEADER(boo_types.h)
 #ifdef __UNIX__
 #include <string.h>
 #endif

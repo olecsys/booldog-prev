@@ -785,6 +785,93 @@ goto_return:
 					return res->succeeded();
 				};
 				template< size_t step >
+				booinline bool addnull( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+					if( nodesindex )
+					{
+						res->booerr( ::booldog::enums::result::booerr_type_object_is_already_initialized );
+						goto goto_return;
+					}
+					if( jsonlen + 6 > jsonsize )
+					{
+						jsonsize += 5 + step;
+						json = jsonallocator->realloc_array< char >( json , jsonsize , debuginfo );
+						if( json == 0 )
+						{
+							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+							goto goto_return;
+						}
+					}
+					if( jsonlen )
+					{
+						char letter = json[ jsonlen - 1 ];
+						if( letter != '[' && letter != '{' )
+							json[ jsonlen++ ] = ',';
+					}
+					json[ jsonlen++ ] = 'n';
+					json[ jsonlen++ ] = 'u';
+					json[ jsonlen++ ] = 'l';
+					json[ jsonlen++ ] = 'l';
+					json[ jsonlen ] = 0;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step >
+				booinline bool addnull( ::booldog::result* pres , const char* name 
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+					if( nodesindex )
+					{
+						res->booerr( ::booldog::enums::result::booerr_type_object_is_already_initialized );
+						goto goto_return;
+					}
+
+					if( jsonlen + 2 > jsonsize )
+					{
+						jsonsize += 1 + step;
+						json = jsonallocator->realloc_array< char >( json , jsonsize , debuginfo );
+						if( json == 0 )
+						{
+							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+							goto goto_return;
+						}
+					}
+
+					if( jsonlen )
+					{
+						char letter = json[ jsonlen - 1 ];
+						if( letter != '[' && letter != '{' )
+							json[ jsonlen++ ] = ',';
+					}
+
+					if( serialize_and_add< step >( res , name , debuginfo ) == false )
+						goto goto_return;
+
+					if( jsonlen + 6 > jsonsize )
+					{
+						jsonsize += 5 + step;
+						json = jsonallocator->realloc_array< char >( json , jsonsize , debuginfo );
+						if( json == 0 )
+						{
+							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+							goto goto_return;
+						}
+					}
+
+					json[ jsonlen++ ] = ':';
+					json[ jsonlen++ ] = 'n';
+					json[ jsonlen++ ] = 'u';
+					json[ jsonlen++ ] = 'l';
+					json[ jsonlen++ ] = 'l';
+					json[ jsonlen ] = 0;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step >
 				booinline bool begin_object( ::booldog::result* pres , const char* name
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -998,6 +1085,7 @@ goto_return:
 					slow.jsonlen = 0;
 					slow.nodesindex = 0;
 				};
+				booinline ::booldog::data::json::serializator& operator = ( const ::booldog::data::json::serializator& obj );
 				operator ::booldog::data::json::object() const
 				{	
 					if( slow.nodesindex )
@@ -1840,6 +1928,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -1862,6 +1958,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -1884,6 +1988,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -1906,6 +2018,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -1928,6 +2048,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -1950,6 +2078,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -1972,6 +2108,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -1994,6 +2138,14 @@ goto_return:
 													if( parentserializator->slow.json != oldjsonstr )
 													{
 														parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+														parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+															parentserializator->slow.json + ( 
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+														parentserializator->slow.nodes[ 0 ].valueend = 
+															parentserializator->slow.json + (
+															parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 														ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 													}
 												}
@@ -2051,6 +2203,14 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2073,6 +2233,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2095,6 +2261,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2117,6 +2289,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2139,6 +2317,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2161,6 +2345,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2183,6 +2373,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2205,6 +2401,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2280,6 +2482,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2302,6 +2510,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2324,6 +2538,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2346,6 +2566,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2368,6 +2594,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2390,6 +2622,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2412,6 +2650,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2434,6 +2678,12 @@ goto_next0:
 														if( parentserializator->slow.json != oldjsonstr )
 														{
 															parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+															parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+																parentserializator->slow.json + ( 
+																parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+															parentserializator->slow.nodes[ 0 ].valueend = 
+																parentserializator->slow.json + (
+																parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 															ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 														}
 													}
@@ -2493,6 +2743,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -2515,6 +2771,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -2537,6 +2799,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -2559,6 +2827,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -2581,6 +2855,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -2603,6 +2883,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -2625,6 +2911,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -2647,6 +2939,12 @@ goto_next0:
 											if( parentserializator->slow.json != oldjsonstr )
 											{
 												parentserializator->slow.nodes[ 0 ].offset( oldjsonstr , parentserializator->slow.json );
+												parentserializator->slow.nodes[ 0 ].name_or_valuebegin = 
+													parentserializator->slow.json + ( 
+													parentserializator->slow.nodes[ 0 ].name_or_valuebegin - oldjsonstr );
+												parentserializator->slow.nodes[ 0 ].valueend = 
+													parentserializator->slow.json + (
+													parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
 												ptr = parentserializator->slow.json + ( ptr - oldjsonstr );
 											}
 										}
@@ -3047,6 +3345,81 @@ goto_next0:
 				0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff , 0xff , 0xff , 0xff , 0xff , 0xff, 0xff,
 				0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff , 0xff , 0xff , 0xff , 0xff , 0xff, 0xff,
 				0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff , 0xff , 0xff , 0xff , 0xff , 0xff, 0xff
+			};
+			::booldog::data::json::serializator& serializator::operator = ( const ::booldog::data::json::serializator& obj )
+			{
+				if( this == &obj )
+					return *this;
+				if( obj.slow.jsonlen + 1 > slow.jsonsize )
+				{
+					slow.jsonsize = obj.slow.jsonlen + 1;
+					slow.json = slow.jsonallocator->realloc_array< char >( slow.json , slow.jsonsize , debuginfo_macros );
+					if( slow.json == 0 )
+					{
+						slow.jsonsize = 0;
+						slow.jsonlen = 0;
+						slow.nodesindex = 0;
+						return *this;
+					}
+				}
+				if( obj.slow.jsonlen )
+				{
+					slow.jsonlen = obj.slow.jsonlen;
+					::memcpy( slow.json , obj.slow.json , obj.slow.jsonlen + 1 );
+				}
+				else
+				{
+					slow.jsonlen = 0;
+					if( slow.json )
+						slow.json[ 0 ] = 0;
+				}
+				if( obj.slow.nodessize > slow.nodessize )
+				{
+					slow.nodessize = obj.slow.nodessize;
+					slow.nodes = slow.jsonallocator->realloc_array< ::booldog::data::json::node >( slow.nodes , slow.nodessize 
+						, debuginfo_macros );
+					if( slow.nodes == 0 )
+					{
+						slow.nodessize = 0;
+						slow.nodesindex = 0;
+						return *this;
+					}
+				}
+				if( obj.slow.nodesindex )
+				{
+					slow.nodesindex = obj.slow.nodesindex;
+					char* nodesptr = (char*)obj.slow.nodes;
+					size_t size = 0;
+					::memcpy( slow.nodes , obj.slow.nodes , obj.slow.nodessize * sizeof( ::booldog::data::json::node ) );
+					for( size_t index0 = 0 ; index0 < slow.nodessize ; index0++ )
+					{
+						if( slow.nodes[ index0 ].next )
+						{
+							size = ((char*)slow.nodes[ index0 ].next) - nodesptr;
+							slow.nodes[ index0 ].next = (::booldog::data::json::node*)(((char*)slow.nodes) + size);
+						}
+						if( ::booldog::utils::get_bit( slow.nodes[ index0 ].flags
+							, BOOLDOG_DATA_JSON_ROOT ) == 0 )
+						{
+							size = ((char*)slow.nodes[ index0 ].parent) - nodesptr;
+							slow.nodes[ index0 ].parent = (::booldog::data::json::node*)(((char*)slow.nodes) + size);
+						}
+						else
+							slow.nodes[ index0 ].serializator = this;
+						if( slow.nodes[ index0 ].child )
+						{
+							size = ((char*)slow.nodes[ index0 ].child) - nodesptr;
+							slow.nodes[ index0 ].child = (::booldog::data::json::node*)(((char*)slow.nodes) + size);
+						}
+					}
+					slow.nodes[ 0 ].offset( obj.slow.json , slow.json );
+					slow.nodes[ 0 ].name_or_valuebegin = 
+						slow.json + ( obj.slow.nodes[ 0 ].name_or_valuebegin - obj.slow.json );
+					slow.nodes[ 0 ].valueend = slow.json + ( obj.slow.nodes[ 0 ].valueend - obj.slow.json );
+				}
+				else
+					slow.nodesindex = 0;
+				return *this;
 			};
 			template< size_t step >
 			booinline bool serializator::parse( ::booldog::result* pres , const ::booldog::debug::info& debuginfo )
