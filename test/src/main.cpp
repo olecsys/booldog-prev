@@ -1986,6 +1986,29 @@ TEST_F( boo_jsonTest , test )
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
+		
+	{
+		::booldog::data::json::serializator serializator( &allocator );
+
+		::booldog::data::json::result res( &serializator );
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{\r\n"
+			"	\"databases\":\r\n"
+			"	[\r\n"
+			"		{\"key\":\"conf\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"configuration.db\",\"upgrade\":\"server_upgrade.sql\"}},\r\n"
+			"		{\"key\":\"events\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"events.db\",\"upgrade\":\"events_upgrade.sql\"}},\r\n"
+			"		{\"key\":\"ptzusers\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"ptzusers.db\",\"upgrade\":\"ptzusers_upgrade.sql\"}}\r\n"
+			"	]\r\n"
+			"}\r\n"
+			"\r\n" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		::booldog::data::json::object root = (*res.serializator);
+
+		ASSERT_TRUE( root.isobject() );
+	}
+
 	{
 		::booldog::data::json::serializator copy_serializator( &allocator );
 
@@ -5789,6 +5812,111 @@ TEST_F( boo_jsonTest , test )
 		ASSERT_EQ( strcmp( serializator.fast.json , "" ) , 0 );
 	}
 
+	{
+		::booldog::result resres;
+
+		::booldog::data::json::serializator serializator( &allocator );
+
+		::booldog::data::json::result res( &serializator );
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{\"test0 \\\" \":1,\"1\":{\"2\":1986}}" );
+
+		ASSERT_TRUE( res.succeeded() );
+		
+		::booldog::data::json::object root = (*res.serializator);
+
+		::booldog::data::json::object field = root( "test0 \" " );
+
+		::booldog::data::json::object field1 = root( "1" );
+
+		::booldog::data::json::object field2 = field1( "2" );
+
+		const char* json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0 \\\" \":1,\"1\":{\"2\":1986}}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( field.isnumber() );
+
+		ASSERT_TRUE( field1.isobject() );
+
+		ASSERT_TRUE( field2.isnumber() );
+
+		ASSERT_EQ( (int)field2.value , 1986 );
+
+
+		field.name( &resres , "test1 \" " , debuginfo_macros );
+
+		field = root( "test1 \" " );
+
+		field1 = root( "1" );
+
+		field2 = field1( "2" );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test1 \\\" \":1,\"1\":{\"2\":1986}}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( field.isnumber() );
+
+		ASSERT_TRUE( field1.isobject() );
+
+		ASSERT_TRUE( field2.isnumber() );
+
+		ASSERT_EQ( (int)field2.value , 1986 );
+
+
+		ASSERT_TRUE( strcmp( field.name() , "test1 \" " ) == 0 );
+
+		field.name( &resres , "test0 \" " , debuginfo_macros );
+
+		field = root( "test0 \" " );
+
+		field1 = root( "1" );
+
+		field2 = field1( "2" );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test0 \\\" \":1,\"1\":{\"2\":1986}}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( field.isnumber() );
+
+		ASSERT_TRUE( field1.isobject() );
+
+		ASSERT_TRUE( field2.isnumber() );
+
+		ASSERT_EQ( (int)field2.value , 1986 );
+
+
+		
+		field.name( &resres , "test10000 \" " , debuginfo_macros );
+
+		field = root( "test10000 \" " );
+
+		field1 = root( "1" );
+
+		field2 = field1( "2" );
+
+		json = root.json;
+
+		ASSERT_TRUE( strcmp( json , "{\"test10000 \\\" \":1,\"1\":{\"2\":1986}}" ) == 0 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( field.isnumber() );
+
+		ASSERT_TRUE( field1.isobject() );
+
+		ASSERT_TRUE( field2.isnumber() );
+
+		ASSERT_EQ( (int)field2.value , 1986 );
+	}
 	ASSERT_TRUE( allocator.begin() == begin );
 		
 	ASSERT_EQ( allocator.available() , total );

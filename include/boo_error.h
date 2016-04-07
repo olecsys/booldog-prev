@@ -57,7 +57,10 @@ namespace booldog
 				booerr_type_base64_decoded_data_pointer_is_NULL ,
 				booerr_type_base64_decoded_data_pointer_size_is_equal_0 ,
 				booerr_type_base64_encoded_data_pointer_size_is_equal_0 , 
-				booerr_type_sqlite3_error
+				booerr_type_sqlite3_error ,
+				booerr_type_json_object_has_not_node , 
+				booerr_type_json_it_is_root_object ,
+				booerr_type_json_parent_is_not_object
 			};
 		};
 	};
