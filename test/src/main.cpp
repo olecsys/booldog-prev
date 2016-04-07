@@ -8388,28 +8388,28 @@ TEST_F( boo_rdwrlockTest , test )
 
 	ASSERT_EQ( lock._writer_recursion , 1 );
 
-	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT );
+	ASSERT_EQ( lock._writer_readers , ( 1L << ( sizeof( ::booldog::int32 ) * 8 - 2 ) ) );
 
 
 	lock.rlock( debuginfo_macros );
 
 	ASSERT_EQ( lock._writer_recursion , 1 );
 
-	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT + 1 );
+	ASSERT_EQ( lock._writer_readers , ( 1L << ( sizeof( ::booldog::int32 ) * 8 - 2 ) ) + 1 );
 
 
 	lock.wlock( debuginfo_macros );
 
 	ASSERT_EQ( lock._writer_recursion , 2 );
 
-	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT + 1 );
+	ASSERT_EQ( lock._writer_readers , ( 1L << ( sizeof( ::booldog::int32 ) * 8 - 2 ) ) + 1 );
 
 
 	lock.wunlock( debuginfo_macros );
 
 	ASSERT_EQ( lock._writer_recursion , 1 );
 
-	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT + 1 );
+	ASSERT_EQ( lock._writer_readers , ( 1L << ( sizeof( ::booldog::int32 ) * 8 - 2 ) ) + 1 );
 
 
 
@@ -8417,7 +8417,7 @@ TEST_F( boo_rdwrlockTest , test )
 
 	ASSERT_EQ( lock._writer_recursion , 1 );
 
-	ASSERT_EQ( lock._writer_readers , ::booldog::threading::rdwrlock::WRITER_BIT );
+	ASSERT_EQ( lock._writer_readers , ( 1L << ( sizeof( ::booldog::int32 ) * 8 - 2 ) ) );
 
 
 	lock.wunlock( debuginfo_macros );
