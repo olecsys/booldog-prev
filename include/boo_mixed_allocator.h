@@ -19,8 +19,8 @@ namespace booldog
 			::booldog::allocators::stack< s > stack;
 			::booldog::allocators::holder holder;
 		public:
-			mixed( ::booldog::heap_allocator* pheap , ::booldog::pid_t owner_thread_id = 0 )
-				: stack( owner_thread_id ) , holder( &stack , pheap )
+			mixed( ::booldog::heap_allocator* pheap )
+				: holder( &stack , pheap )
 			{
 			};
 		public:

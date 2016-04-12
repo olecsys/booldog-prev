@@ -234,6 +234,7 @@ char utf8_TESTil_var[] =
 #include BOOLDOG_HEADER(boo_io_file.h)
 #include BOOLDOG_HEADER(boo_bits_utils.h)
 #include BOOLDOG_HEADER(boo_time_utils.h)
+#include BOOLDOG_HEADER(boo_doubly_linked_list.h)
 
 
 class boo_bits_utilsTest : public ::testing::Test 
@@ -1650,7 +1651,7 @@ class boo_allocators_mixedTest : public ::testing::Test
 TEST_F( boo_allocators_mixedTest , test )
 {
 	::booldog::allocators::easy::heap heap;
-	::booldog::allocators::mixed< 32 > mixed( &heap , ::booldog::threading::threadid() );
+	::booldog::allocators::mixed< 32 > mixed( &heap );
 
 	size_t total = mixed.stack.available();
 
@@ -1992,7 +1993,7 @@ TEST_F( boo_jsonTest , test )
 
 		::booldog::data::json::result res( &serializator );
 
-		::booldog::data::json::parse< 1 >( &res , &allocator , "{\r\n"
+		::booldog::data::json::parse< 64 >( &res , &allocator , "{\r\n"
 			"	\"databases\":\r\n"
 			"	[\r\n"
 			"		{\"key\":\"conf\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"configuration.db\",\"upgrade\":\"server_upgrade.sql\"}},\r\n"
@@ -2007,6 +2008,28 @@ TEST_F( boo_jsonTest , test )
 		::booldog::data::json::object root = (*res.serializator);
 
 		ASSERT_TRUE( root.isobject() );
+
+		
+
+		::booldog::data::json::parse< 64 >( &res , &allocator , "{\"test0\":{\"test0\":-1986}}" );
+
+		ASSERT_TRUE( res.succeeded() );
+
+		root = (*res.serializator);
+
+		root( "test0" )( "test0" ).name( 0 , "te" , debuginfo_macros );
+
+		ASSERT_TRUE( strcmp( root.json , "{\"test0\":{\"te\":-1986}}" ) == 0 );
+
+		ASSERT_EQ( root( "test0" ).value.node->name_or_valuebegin , &res.serializator->slow.json[ 2 ] );
+
+		ASSERT_EQ( root( "test0" ).value.node->valueend , &res.serializator->slow.json[ 20 ] );
+
+		ASSERT_EQ( root( "test0" )( "te" ).value.node->name_or_valuebegin , &res.serializator->slow.json[ 11 ] );
+
+		ASSERT_EQ( root( "test0" )( "te" ).value.node->valueend , &res.serializator->slow.json[ 19 ] );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"te\":-1986}" ) == 0 );
 	}
 
 	{
@@ -5917,11 +5940,827 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_EQ( (int)field2.value , 1986 );
 	}
-	ASSERT_TRUE( allocator.begin() == begin );
+
+	{
+		::booldog::data::json::serializator copy_serializator( &allocator );
+
+		::booldog::data::json::serializator serializator( &allocator );
+
+		::booldog::data::json::result res( &serializator );
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{}" );
+
+		/*::booldog::data::json::parse< 64 >( &res , &allocator , "{\r\n"
+			"	\"databases\":\r\n"
+			"	[\r\n"
+			"		{\"key\":\"conf\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"configuration.db\",\"upgrade\":\"server_upgrade.sql\"}},\r\n"
+			"		{\"key\":\"events\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"events.db\",\"upgrade\":\"events_upgrade.sql\"}},\r\n"
+			"		{\"key\":\"ptzusers\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"ptzusers.db\",\"upgrade\":\"ptzusers_upgrade.sql\"}}\r\n"
+			"	]\r\n"
+			"}\r\n"
+			"\r\n" );*/
+
+		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
+
+		::booldog::data::json::object root = copy_serializator;
+
+		root.value = (int)-1986;
+
+		ASSERT_TRUE( root.isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 5 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "-1986" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = -1;
+
+		ASSERT_TRUE( root.isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 2 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "-1" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = 1;
+
+		ASSERT_TRUE( root.isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 1 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "1" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = (::booldog::uint32)1986;
+
+		ASSERT_TRUE( root.isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 4 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "1986" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = (::booldog::uint64)1986198619861986;
+
+		ASSERT_TRUE( root.isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 16 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "1986198619861986" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = (::booldog::int64)-1986198619861986;
+
+		ASSERT_TRUE( root.isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 17 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "-1986198619861986" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = true;
+
+		ASSERT_TRUE( root.isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 4 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "true" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = false;
+
+		ASSERT_TRUE( root.isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 5 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "false" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = "test1986 \"";
+
+		ASSERT_TRUE( root.isstring() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 12 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "\"test1986 \\\"\"" ) == 0 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.value , "test1986 \"" ) == 0 );
+
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{\"test0\":{\"test0\":121212121212}}" );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (int)-1986;
+		
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 25 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = -1;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 22 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = 1;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 21 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::uint32)1986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 24 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::uint64)1986198619861986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1986198619861986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 36 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1986198619861986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::int64)-1986198619861986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1986198619861986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 37 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1986198619861986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = true;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":true}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 24 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":true}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = false;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":false}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 25 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":false}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = "test1986 \"";
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 32 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":\"test1986 \\\"\"}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isstring() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 33 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":\"test1986 \\\"\"}}" ) == 0 );
+
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{\"test0\":{\"test0\":12}}" );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (int)-1986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 25 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = -1;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 22 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = 1;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 21 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::uint32)1986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 24 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::uint64)1986198619861986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1986198619861986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 36 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1986198619861986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::int64)-1986198619861986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1986198619861986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 37 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1986198619861986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = true;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":true}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 24 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":true}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = false;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":false}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 25 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":false}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = "test1986 \"";
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 32 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":\"test1986 \\\"\"}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isstring() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 33 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":\"test1986 \\\"\"}}" ) == 0 );
+
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{\"test0\":{\"test0\":121212121212121212}}" );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (int)-1986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 25 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = -1;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 22 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = 1;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 21 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::uint32)1986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 24 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::uint64)1986198619861986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":1986198619861986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 36 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":1986198619861986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = (::booldog::int64)-1986198619861986;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":-1986198619861986}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 37 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":-1986198619861986}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = true;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":true}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 24 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":true}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = false;
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":false}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isboolean() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 25 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":false}}" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root("test0")("test0").value = "test1986 \"";
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 32 );
+
+		ASSERT_TRUE( root.isobject() );
+
+		ASSERT_TRUE( root( "test0" ).isobject() );
+
+		ASSERT_TRUE( strcmp( root( "test0" ).json , "{\"test0\":\"test1986 \\\"\"}" ) == 0 );
+
+		ASSERT_TRUE( root("test0")("test0").isstring() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 33 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "{\"test0\":{\"test0\":\"test1986 \\\"\"}}" ) == 0 );
+	}
+
+	ASSERT_TRUE( allocator.begin() == begin );     
 		
 	ASSERT_EQ( allocator.available() , total );
 };
 
+struct boo_doubly_linked_listTest_struct
+{
+	const char* value;
+	boo_doubly_linked_listTest_struct* _doubly_linked_list_prev;
+	boo_doubly_linked_listTest_struct* _doubly_linked_list_next;
+	boo_doubly_linked_listTest_struct( const char* pvalue )
+	{
+		value = pvalue;
+	};
+};
+class boo_doubly_linked_listTest : public ::testing::Test 
+{
+};
+TEST_F( boo_doubly_linked_listTest , test )
+{
+	boo_doubly_linked_listTest_struct item0( "item0" );
+	boo_doubly_linked_listTest_struct item1( "item1" );
+	boo_doubly_linked_listTest_struct item2( "item2" );
+	boo_doubly_linked_listTest_struct item3( "item3" );
+
+	::booldog::data::doubly_linked_list< boo_doubly_linked_listTest_struct > doubly_linked_list;
+
+	ASSERT_EQ( doubly_linked_list.add( item0 ) , 0 );
+
+	ASSERT_EQ( doubly_linked_list.count() , 1 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == &item0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+
+
+	ASSERT_EQ( doubly_linked_list.add( item1 ) , 1 );
+
+	ASSERT_EQ( doubly_linked_list.count() , 2 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == &item0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == &item1 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+
+
+	ASSERT_EQ( doubly_linked_list.add( item2 ) , 2 );
+
+	ASSERT_EQ( doubly_linked_list.count() , 3 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == &item0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == &item1 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == &item2 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+
+
+	ASSERT_EQ( doubly_linked_list.add( item3 ) , 3 );
+
+	ASSERT_EQ( doubly_linked_list.count() , 4 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == &item0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == &item1 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == &item2 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == &item3 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+
+
+	doubly_linked_list.remove( item3 );
+
+	ASSERT_EQ( doubly_linked_list.count() , 3 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == &item0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == &item1 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == &item2 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+
+
+	doubly_linked_list.remove( item1 );
+
+	ASSERT_EQ( doubly_linked_list.count() , 2 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == &item0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == &item2 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+
+
+	doubly_linked_list.remove( item0 );
+
+	ASSERT_EQ( doubly_linked_list.count() , 1 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == &item2 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+
+
+	doubly_linked_list.clear();
+
+	ASSERT_EQ( doubly_linked_list.count() , 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 0 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 1 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 2 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 3 ] == 0 );
+
+	ASSERT_TRUE( doubly_linked_list[ 4 ] == 0 );
+};
 class boo_stringTest : public ::testing::Test 
 {
 };
@@ -12308,7 +13147,7 @@ class boo_io_fileTest : public ::testing::Test
 TEST_F( boo_io_fileTest , test )
 {
 	::booldog::allocators::easy::heap heap;
-	::booldog::allocators::mixed< 16 * 1024 > allocator( &heap , ::booldog::threading::threadid() );
+	::booldog::allocators::mixed< 16 * 1024 > allocator( &heap );
 	
 	size_t total = allocator.stack.available();
 

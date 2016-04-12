@@ -9,6 +9,7 @@
 #include BOOLDOG_HEADER(boo_mem_cluster.h)
 #include BOOLDOG_HEADER(boo_interlocked.h)
 #include BOOLDOG_HEADER(boo_bits_utils.h)
+#include <stdlib.h>
 namespace booldog
 {
 	namespace allocators

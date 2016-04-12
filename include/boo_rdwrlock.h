@@ -34,7 +34,7 @@ namespace booldog
 				if( ::booldog::interlocked::increment( &_writer_readers ) >= WRITER_BIT )
 				{
 					::booldog::pid_t tid = ::booldog::threading::threadid();
-					if( ::booldog::interlocked::compare_exchange( &_writer_thread , 0 , 0 ) != tid )
+					if( (::booldog::pid_t)::booldog::interlocked::compare_exchange( &_writer_thread , 0 , 0 ) != tid )
 					{
 						::booldog::byte tries = 0;
 						while( booldog::interlocked::compare_exchange( &_writer_readers , 0 , 0 ) >= WRITER_BIT )
@@ -42,7 +42,9 @@ namespace booldog
 							tries++;
 							if( tries == 5 )
 							{
+								debuginfo_macros_sleep( 49 );
 								::booldog::threading::sleep( 1 );
+								debuginfo_macros_statement( 52 );
 								tries = 0;
 							}
 						}
@@ -84,7 +86,9 @@ namespace booldog
 						tries++;
 						if( tries == 5 )
 						{
+							debuginfo_macros_sleep( 50 );
 							::booldog::threading::sleep( 1 );
+							debuginfo_macros_statement( 51 );
 							tries = 0;
 						}
 					}
@@ -101,7 +105,7 @@ namespace booldog
 			{
 				debuginfo = debuginfo;
 				::booldog::pid_t tid = ::booldog::threading::threadid();
-				if( ::booldog::interlocked::compare_exchange( &_writer_thread , 0 , 0 ) == tid )
+				if( (::booldog::pid_t)::booldog::interlocked::compare_exchange( &_writer_thread , 0 , 0 ) == tid )
 				{
 					if( booldog::interlocked::decrement( &_writer_recursion ) == 0 )
 					{

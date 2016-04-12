@@ -57,8 +57,11 @@ namespace booldog
 				return 0;
 			};
 			virtual bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0 
+				, ::booldog::events::typedefs::onbeforefree ponafterinit = 0 , void* udata = 0
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
+				ponafterinit = ponafterinit;
+				udata = udata;
 				pres = pres;
 				allocator = allocator;
 				initparams = initparams;
@@ -153,11 +156,13 @@ namespace booldog
 		{
 			bool res = false;
 			_lock.rlock( debuginfo_macros );
-			res = _inited_ref > 0;
+			res = _inited_ref > 0 && _inited_ref != UINT32_MAX;
 			_lock.runlock( debuginfo_macros );
 			return res;
 		};
-		virtual bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual bool init( ::booldog::result* pres , booldog::allocator* allocator , void* initparams = 0
+			, ::booldog::events::typedefs::onbeforefree ponafterinit = 0 , void* udata = 0
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{		
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
@@ -173,12 +178,20 @@ namespace booldog
 				if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "dll_init" , debuginfo ) )
 					goto goto_method_success_return;
 			}
+			else if( _inited_ref == UINT32_MAX )
+			{
+				res->booerr( ::booldog::enums::result::booerr_type_module_is_deinitialized_and_must_be_unloaded );
+				goto goto_error;
+			}
 			goto goto_return;
 goto_method_success_return:
 			module_init = (::booldog::module_init_t)respointer.pres;
 			module_init( initparams );
+			if( ponafterinit )
+				ponafterinit( udata , this );
 goto_return:
 			_inited_ref++;
+goto_error:
 			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
@@ -188,11 +201,12 @@ goto_return:
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
 			_lock.wlock( debuginfo );
-			if( _inited_ref )
+			if( _inited_ref && _inited_ref != UINT32_MAX )
 			{
 				_inited_ref--;			
 				if( _inited_ref == 0 )
 				{
+					_inited_ref = UINT32_MAX;
 					if( ponbeforefree )
 						ponbeforefree( udata , this );
 					::booldog::result_pointer respointer;
