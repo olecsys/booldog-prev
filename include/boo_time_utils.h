@@ -60,7 +60,7 @@ namespace booldog
 			booinline ::booldog::uint32 days_in_year( ::booldog::uint32 year )
 			{
 				::booldog::uint32 days = 0;
-				for( size_t month = 1 ; month < 13 ; month++ )
+				for( ::booldog::uint32 month = 1 ; month < 13 ; month++ )
 					days += ::booldog::utils::time::days_in_month( month , year );
 				return days;
 			};

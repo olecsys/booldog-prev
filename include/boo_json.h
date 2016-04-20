@@ -45,7 +45,9 @@ namespace booldog
 #define BOOLDOG_DATA_JSON_ROOT 1
 #define BOOLDOG_DATA_JSON_VALUE_SERIALIZED 2
 #define BOOLDOG_DATA_JSON_NODE_FREE 3
-			struct node;
+			boobegin_struct_pack( 1 )
+			struct node
+			booend_struct_pack( 1 );
 			struct serializator;
 
 			template< size_t step >
