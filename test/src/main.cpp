@@ -235,6 +235,7 @@ char utf8_TESTil_var[] =
 #include BOOLDOG_HEADER(boo_bits_utils.h)
 #include BOOLDOG_HEADER(boo_time_utils.h)
 #include BOOLDOG_HEADER(boo_doubly_linked_list.h)
+#include BOOLDOG_HEADER(boo_threading_event.h)
 
 
 class boo_bits_utilsTest : public ::testing::Test 
@@ -901,6 +902,19 @@ TEST_F( boo_paramTest , test )
 };
 
 #define boo_stackTestAllocatorSize 64
+class boo_threading_eventTest : public ::testing::Test 
+{
+};
+TEST_F( boo_threading_eventTest , test )
+{
+	::booldog::threading::event evt( 0 , debuginfo_macros );
+
+	::booldog::uint64 time = ::booldog::utils::time::posix::now_as_utc();
+
+	ASSERT_TRUE( evt.sleep( 0 , 5000 , debuginfo_macros ) );
+
+	ASSERT_GT( ::booldog::utils::time::posix::now_as_utc() - time , 4999999 );
+};
 class boo_stackTest : public ::testing::Test 
 {
 };
@@ -5939,6 +5953,133 @@ TEST_F( boo_jsonTest , test )
 		ASSERT_TRUE( field2.isnumber() );
 
 		ASSERT_EQ( (int)field2.value , 1986 );
+	}
+
+	{
+		::booldog::result resres;
+
+		::booldog::data::json::serializator copy_serializator( &allocator );
+
+		::booldog::data::json::serializator serializator( &allocator );
+
+		::booldog::data::json::result res( &serializator );
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{}" );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
+
+		::booldog::data::json::object root = copy_serializator;
+
+		::booldog::data::json::object field = root.add< 1 >( &resres , "1" , true , debuginfo_macros );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "true" ) == 0 );
+
+		ASSERT_TRUE( (bool)field.value );
+
+		ASSERT_TRUE( strcmp( root.json , "{\"1\":true}" ) == 0 );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 10 );
+
+		field = root( "1" );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "true" ) == 0 );
+
+		ASSERT_TRUE( (bool)field.value );
+
+
+		field = root.add< 1 >( &resres , "2" , false , debuginfo_macros );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "false" ) == 0 );
+
+		ASSERT_FALSE( (bool)field.value );
+
+		ASSERT_TRUE( strcmp( root.json , "{\"1\":true,\"2\":false}" ) == 0 );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 20 );
+
+		field = root( "1" );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "true" ) == 0 );
+
+		ASSERT_TRUE( (bool)field.value );
+
+		field = root( "2" );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "false" ) == 0 );
+
+		ASSERT_FALSE( (bool)field.value );
+
+
+		::booldog::data::json::parse< 1 >( &res , &allocator , "{\"internal\":{\"internal\":{}}}" );
+		
+		ASSERT_TRUE( res.succeeded() );
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		::booldog::data::json::object internalroot = root( "internal" )( "internal" );
+
+		field = internalroot.add< 1 >( &resres , "1" , true , debuginfo_macros );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "true" ) == 0 );
+
+		ASSERT_TRUE( (bool)field.value );
+
+		ASSERT_TRUE( strcmp( root.json , "{\"internal\":{\"internal\":{\"1\":true}}}" ) == 0 );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 36 );
+
+		field = internalroot( "1" );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "true" ) == 0 );
+
+		ASSERT_TRUE( (bool)field.value );
+
+
+		field = internalroot.add< 1 >( &resres , "2" , false , debuginfo_macros );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "false" ) == 0 );
+
+		ASSERT_FALSE( (bool)field.value );
+
+		ASSERT_TRUE( strcmp( root.json , "{\"internal\":{\"internal\":{\"1\":true,\"2\":false}}}" ) == 0 );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 46 );
+
+		field = internalroot( "1" );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "true" ) == 0 );
+
+		ASSERT_TRUE( (bool)field.value );
+
+		field = internalroot( "2" );
+
+		ASSERT_TRUE( field.isboolean() );
+
+		ASSERT_TRUE( strcmp( field.json , "false" ) == 0 );
+
+		ASSERT_FALSE( (bool)field.value );
 	}
 
 	{

@@ -64,6 +64,7 @@
     <ClInclude Include="..\include\boo_string_enums.h" />
     <ClInclude Include="..\include\boo_string_utils.h" />
     <ClInclude Include="..\include\boo_thread.h" />
+    <ClInclude Include="..\include\boo_threading_event.h" />
     <ClInclude Include="..\include\boo_threading_utils.h" />
     <ClInclude Include="..\include\boo_time_utils.h" />
     <ClInclude Include="..\include\boo_types.h" />
