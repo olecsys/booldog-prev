@@ -4323,6 +4323,8 @@ goto_return:
 					::booldog::uint64 newutf8namehash = 0;
 				
 					char* end = 0;
+					::booldog::data::json::serializator* parentserializator = 0;
+					::booldog::data::json::node* pparent = 0;
 					::booldog::byte* ptrbyte = (::booldog::byte*)utf8name;
 
 					size_t size = 0;
@@ -4416,8 +4418,7 @@ goto_return:
 					else
 						size += 5;
 
-					::booldog::data::json::serializator* parentserializator = 0;
-					::booldog::data::json::node* pparent = json.node;
+					pparent = json.node;
 					for( ; ; )
 					{
 						if( ::booldog::utils::get_bit( pparent->flags , BOOLDOG_DATA_JSON_ROOT ) )
