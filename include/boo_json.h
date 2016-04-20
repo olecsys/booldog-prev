@@ -48,17 +48,14 @@ namespace booldog
 			struct node;
 			struct serializator;		
 
-			boobegin_struct_pack( 1 )
 			struct object_json
 			{
 				::booldog::data::json::node* nodes;
 				::booldog::data::json::serializator* parentserializator;
 				::booldog::data::json::node* node;
 				booinline operator const char*();
-			}
-			booend_struct_pack( 1 );
+			};
 
-			boobegin_struct_pack( 1 )
 			struct object_value
 			{
 				::booldog::data::json::node* nodes;
@@ -80,13 +77,11 @@ namespace booldog
 				booinline ::booldog::data::json::object_value& operator = ( ::booldog::uint32 value );
 				booinline ::booldog::data::json::object_value& operator = ( ::booldog::uint64 value );
 				booinline ::booldog::data::json::object_value& operator = ( bool value );
-			}
-			booend_struct_pack( 1 );
+			};
 
 			template< class T >
 			booinline void checknode( T* nodeholder );
 
-			boobegin_struct_pack( 1 )
 			struct node
 			{	
 				::booldog::byte flags;
@@ -186,8 +181,7 @@ namespace booldog
 				template< size_t step >
 				booinline bool addnull( ::booldog::result* pres , const char* name 
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros );
-			}
-			booend_struct_pack( 1 );
+			};
 
 			template< size_t step >
 			booinline ::booldog::data::json::node* newnode( ::booldog::result* res 
