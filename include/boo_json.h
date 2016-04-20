@@ -45,19 +45,8 @@ namespace booldog
 #define BOOLDOG_DATA_JSON_ROOT 1
 #define BOOLDOG_DATA_JSON_VALUE_SERIALIZED 2
 #define BOOLDOG_DATA_JSON_NODE_FREE 3
-			boobegin_struct_pack( 1 )
-			struct node
-			booend_struct_pack( 1 );
-			struct serializator;
-
-			template< size_t step >
-			booinline ::booldog::data::json::node* newnode( ::booldog::result* res 
-				, ::booldog::data::json::serializator* serializer , ::booldog::data::json::node*& curnode
-				, const ::booldog::debug::info& debuginfo );
-			template< size_t step >
-			booinline ::booldog::data::json::node* newnode( ::booldog::result* res 
-				, ::booldog::data::json::serializator* serializer , ::booldog::data::json::node*& curnode 
-				, ::booldog::data::json::node*& parentnode , size_t& size , const ::booldog::debug::info& debuginfo );
+			struct node;
+			struct serializator;		
 
 			boobegin_struct_pack( 1 )
 			struct object_json
@@ -199,6 +188,15 @@ namespace booldog
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros );
 			}
 			booend_struct_pack( 1 );
+
+			template< size_t step >
+			booinline ::booldog::data::json::node* newnode( ::booldog::result* res 
+				, ::booldog::data::json::serializator* serializer , ::booldog::data::json::node*& curnode
+				, const ::booldog::debug::info& debuginfo );
+			template< size_t step >
+			booinline ::booldog::data::json::node* newnode( ::booldog::result* res 
+				, ::booldog::data::json::serializator* serializer , ::booldog::data::json::node*& curnode 
+				, ::booldog::data::json::node*& parentnode , size_t& size , const ::booldog::debug::info& debuginfo );
 
 			struct object
 			{
