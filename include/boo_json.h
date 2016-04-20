@@ -4322,6 +4322,7 @@ goto_return:
 					::booldog::data::json::node* newnode = 0;
 					::booldog::uint64 newutf8namehash = 0;
 				
+					char* end = 0;
 					::booldog::byte* ptrbyte = (::booldog::byte*)utf8name;
 
 					size_t size = 0;
@@ -4485,7 +4486,7 @@ goto_return:
 						*ptrbyte++ = 's';
 						*ptrbyte = 'e';
 					}				
-					char* end = json.node->valueend;
+					end = json.node->valueend;
 					parentserializator->slow.jsonlen += size;
 					parentserializator->slow.nodes[ 0 ].jsonoffset( (int)size , json.node->valueend );
 					parentserializator->slow.nodes[ 0 ].valueend += size;
