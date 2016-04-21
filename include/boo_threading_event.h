@@ -135,38 +135,48 @@ goto_error:
 #else
 				struct timespec abstime;
 				clock_gettime( _clockid , &abstime );
-				::booldog::uint32 seconds_in_timeout = timeout_in_ms / 1000;
-				abstime.tv_sec += seconds_in_timeout;
-				abstime.tv_nsec += ( timeout_in_ms - seconds_in_timeout * 1000 ) * 1000000; /* nanoseconds */
+				abstime.tv_sec += ( timeout_in_ms / 1000 );
+				abstime.tv_nsec += ( timeout_in_ms % 1000 ) * 1000000; /* nanoseconds */
 				if( abstime.tv_nsec > 999999999 )
 				{
 					abstime.tv_sec += 1;
 					abstime.tv_nsec -= 1000000000;
 				}
-				debuginfo_macros_sleep( 55 );
+debuginfo_macros_statement( 62 );
+				//debuginfo_macros_sleep( 55 );
 				pthread_mutex_lock( &_mutex );
-				debuginfo_macros_statement( 62 );
+				//debuginfo_macros_statement( 62 );
+debuginfo_macros_statement( 55 );
 				if( _isset == false && _wakeall == false )
 				{
-					debuginfo_macros_sleep( 56 );
+debuginfo_macros_statement( 63 );
+					//debuginfo_macros_sleep( 56 );
 					int result = pthread_cond_timedwait( &_cond , &_mutex , &abstime );
-					debuginfo_macros_statement( 63 );
+					//debuginfo_macros_statement( 63 );
+debuginfo_macros_statement( 56 );
 					if( result == 0 )
 					{
 						_isset = false;
+						pthread_mutex_unlock( &_mutex );
 						res->bres = true;
 					}
 					else if( result == ETIMEDOUT )
+					{
+						pthread_mutex_unlock( &_mutex );
 						res->bres = false;
+					}
 					else
+					{
+						pthread_mutex_unlock( &_mutex );
 						res->setpthreaderror( result );
+					}
 				}
 				else
 				{
 					_isset = false;
+					pthread_mutex_unlock( &_mutex );
 					res->bres = true;
 				}
-				pthread_mutex_unlock( &_mutex );
 #endif
 				return res->succeeded();
 			};
@@ -216,10 +226,15 @@ goto_error:
 				debuginfo_macros_statement( 70 );
 				int result = pthread_cond_broadcast( &_cond );
 				if( result == 0 )
+				{
 					_wakeall = true;
+					pthread_mutex_unlock( &_mutex );
+				}
 				else
+				{
+					pthread_mutex_unlock( &_mutex );
 					res->setpthreaderror( result );
-				pthread_mutex_unlock( &_mutex );
+				}
 #endif
 				return res->succeeded();
 			};
@@ -237,10 +252,15 @@ goto_error:
 				debuginfo_macros_statement( 67 );
 				int result = pthread_cond_signal( &_cond );
 				if( result == 0 )
+				{
 					_isset = true;
+					pthread_mutex_unlock( &_mutex );
+				}
 				else
+				{
+					pthread_mutex_unlock( &_mutex );
 					res->setpthreaderror( result );
-				pthread_mutex_unlock( &_mutex );
+				}
 #endif
 				return res->succeeded();
 			};

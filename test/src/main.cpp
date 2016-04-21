@@ -214,6 +214,7 @@ char utf8_TESTil_var[] =
 #define BOOLDOG_HEADER( header ) <header>
 #endif
 #include BOOLDOG_HEADER(boo_object.h)
+#include BOOLDOG_HEADER(boo_thread.h)
 #include BOOLDOG_HEADER(boo_if.h)
 #include BOOLDOG_HEADER(boo_check.h)
 #include BOOLDOG_HEADER(boo_string.h)
@@ -902,18 +903,55 @@ TEST_F( boo_paramTest , test )
 };
 
 #define boo_stackTestAllocatorSize 64
+
+static void ontestthread( ::booldog::threading::thread* thread )
+{
+	::booldog::threading::event** events = (::booldog::threading::event**)thread->udata();
+	::booldog::result_bool resbool;
+	resbool.bres = false;
+	while( resbool.bres == false )
+	{	
+		events[ 0 ]->sleep( 0 , 5000 , debuginfo_macros );
+
+		events[ 1 ]->sleep( &resbool , 1 , debuginfo_macros );
+	}
+};
 class boo_threading_eventTest : public ::testing::Test 
 {
 };
 TEST_F( boo_threading_eventTest , test )
 {
-	::booldog::threading::event evt( 0 , debuginfo_macros );
+	::booldog::allocators::easy::heap heap;
+	{
+		::booldog::threading::event evt( 0 , debuginfo_macros );
 
-	::booldog::uint64 time = ::booldog::utils::time::posix::now_as_utc();
+		::booldog::uint64 time = ::booldog::utils::time::posix::now_as_utc();
 
-	ASSERT_TRUE( evt.sleep( 0 , 5000 , debuginfo_macros ) );
+		ASSERT_TRUE( evt.sleep( 0 , 5000 , debuginfo_macros ) );
 
-	ASSERT_GT( ::booldog::utils::time::posix::now_as_utc() - time , 4999999 );
+		ASSERT_GT( ::booldog::utils::time::posix::now_as_utc() - time , 4999999 );
+
+		::booldog::threading::event exitevt( 0 , debuginfo_macros );
+
+		::booldog::threading::event* events[] = { &evt , &exitevt };
+
+		::booldog::threading::thread* threads[ 16 ] = {0};
+
+		for( size_t index0 = 0 ; index0 < 16 ; index0++ )
+			threads[ index0 ] = ::booldog::threading::thread::create( 0 , &heap , 30000 , 0 , 0 , ontestthread , events 
+			, debuginfo_macros );
+
+		for( size_t index0 = 0 ; index0 < 1000 ; index0++ )
+		{
+			evt.wake( 0 , debuginfo_macros );
+			::booldog::threading::sleep( 1 );
+		}
+
+		exitevt.wake_all( 0 , debuginfo_macros );
+
+		for( size_t index0 = 0 ; index0 < 16 ; index0++ )
+			::booldog::threading::thread::destroy( threads[ index0 ] );
+	}
 };
 class boo_stackTest : public ::testing::Test 
 {
