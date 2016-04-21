@@ -907,13 +907,15 @@ TEST_F( boo_paramTest , test )
 static void ontestthread( ::booldog::threading::thread* thread )
 {
 	::booldog::threading::event** events = (::booldog::threading::event**)thread->udata();
-	::booldog::result_bool resbool;
-	resbool.bres = false;
-	while( resbool.bres == false )
+	::booldog::result_bool resbool0 , resbool1;
+	resbool0.bres = false;
+	while( resbool0.bres == false )
 	{	
-		events[ 0 ]->sleep( 0 , 5000 , debuginfo_macros );
+		events[ 0 ]->sleep( &resbool1 , 5000 , debuginfo_macros );
+		if( resbool1.bres )
+			events[ 0 ]->wake( 0 , debuginfo_macros );
 
-		events[ 1 ]->sleep( &resbool , 1 , debuginfo_macros );
+		events[ 1 ]->sleep( &resbool0 , 1 , debuginfo_macros );
 	}
 };
 class boo_threading_eventTest : public ::testing::Test 
@@ -941,7 +943,7 @@ TEST_F( boo_threading_eventTest , test )
 			threads[ index0 ] = ::booldog::threading::thread::create( 0 , &heap , 30000 , 0 , 0 , ontestthread , events 
 			, debuginfo_macros );
 
-		for( size_t index0 = 0 ; index0 < 1000 ; index0++ )
+		for( size_t index0 = 0 ; index0 < 4000 ; index0++ )
 		{
 			evt.wake( 0 , debuginfo_macros );
 			::booldog::threading::sleep( 1 );
