@@ -61,25 +61,25 @@ namespace booldog
 				if( size % 4 )
 					size = 4 * ( size / 4 ) + 4;
 
-				if( size < 0xff )
+				if( size < UINT8_MAX )
 					size += sizeof( ::booldog::mem::info1 );
-				else if( size < 0xffff )
+				else if( size < UINT16_MAX )
 					size += sizeof( ::booldog::mem::info2 );
-				else if( size < 0xffffffff )
+				else if( size < UINT32_MAX )
 					size += sizeof( ::booldog::mem::info3 );
-				else if( size < 0xffffffffffffffff )
+				else if( size < UINT64_MAX )
 					size += sizeof( ::booldog::mem::info4 );
 				return size;
 			};
 			booinline size_t memory_info_size( size_t size )
 			{
-				if( size < 0xff )
+				if( size < UINT8_MAX )
 					return sizeof( ::booldog::mem::info1 );
-				else if( size < 0xffff )
+				else if( size < UINT16_MAX )
 					return sizeof( ::booldog::mem::info2 );
-				else if( size < 0xffffffff )
+				else if( size < UINT32_MAX )
 					return sizeof( ::booldog::mem::info3 );
-				else if( size < 0xffffffffffffffff )
+				else if( size < UINT64_MAX )
 					return sizeof( ::booldog::mem::info4 );
 				return 0;
 			};

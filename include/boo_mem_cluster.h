@@ -31,7 +31,7 @@ namespace booldog
 				_avail = data_size;
 				size_t s = data_size - sizeof( ::booldog::mem::info4 );
 				_begin = _data;
-				if( s < 0xff )
+				if( s < UINT8_MAX )
 				{
 					::booldog::mem::info1* info = (::booldog::mem::info1*)_begin;
 					info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -39,7 +39,7 @@ namespace booldog
 					info->_size = (::booldog::byte)( _avail - sizeof( ::booldog::mem::info1 ) );
 					_begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( s < 0xffff )
+				else if( s < UINT16_MAX )
 				{
 					::booldog::mem::info2* info = (::booldog::mem::info2*)_begin;
 					info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -47,7 +47,7 @@ namespace booldog
 					info->_size = (::booldog::ushort)( _avail - sizeof( ::booldog::mem::info2 ) );
 					_begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( s < 0xffffffff )
+				else if( s < UINT32_MAX )
 				{
 					::booldog::mem::info3* info = (::booldog::mem::info3*)_begin;
 					info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -55,7 +55,7 @@ namespace booldog
 					info->_size = (::booldog::uint32)( _avail - sizeof( ::booldog::mem::info3 ) );
 					_begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( s < 0xffffffffffffffff )
+				else if( s < UINT64_MAX )
 				{
 					::booldog::mem::info4* info = (::booldog::mem::info4*)_begin;
 					info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -153,7 +153,7 @@ namespace booldog
 					}
 				}
 
-				if( size < 0xff )
+				if( size < UINT8_MAX )
 				{
 					begin_size = size - sizeof( ::booldog::mem::info1 );
 					::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
@@ -162,7 +162,7 @@ namespace booldog
 					info->_size = (::booldog::byte)begin_size;
 					begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( size < 0xffff )
+				else if( size < UINT16_MAX )
 				{
 					begin_size = size - sizeof( ::booldog::mem::info2 );
 					::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
@@ -171,7 +171,7 @@ namespace booldog
 					info->_size = (::booldog::ushort)begin_size;
 					begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( size < 0xffffffff )
+				else if( size < UINT32_MAX )
 				{
 					begin_size = size - sizeof( ::booldog::mem::info3 );
 					::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
@@ -180,7 +180,7 @@ namespace booldog
 					info->_size = (::booldog::uint32)begin_size;
 					begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( size < 0xffffffffffffffff )
+				else if( size < UINT64_MAX )
 				{
 					begin_size = size - sizeof( ::booldog::mem::info4 );
 					::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
@@ -197,29 +197,28 @@ namespace booldog
 				if( begin_size == size )
 				{
 					_avail -= total;
-					begin_size = total - size;
-					if( begin_size == sizeof( ::booldog::mem::info1 ) )
+					if( size < UINT8_MAX )
 					{
 						::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 							BOOLDOG_MEM_INFO_USE_INFO1 , BOOLDOG_MEM_INFO_BUSY >::value;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( begin_size == sizeof( ::booldog::mem::info2 ) )
+					else if( size < UINT16_MAX )
 					{
 						::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 							BOOLDOG_MEM_INFO_USE_INFO2 , BOOLDOG_MEM_INFO_BUSY >::value;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( begin_size == sizeof( ::booldog::mem::info3 ) )
+					else if( size < UINT32_MAX )
 					{
 						::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 							BOOLDOG_MEM_INFO_USE_INFO3 , BOOLDOG_MEM_INFO_BUSY >::value;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( begin_size == sizeof( ::booldog::mem::info4 ) )
+					else if( size < UINT64_MAX )
 					{
 						::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -232,25 +231,25 @@ namespace booldog
 				{
 					size_t diff = offsize - total;
 						
-					if( diff > sizeof( ::booldog::mem::info1 ) && diff - sizeof( ::booldog::mem::info1 ) < 0xff )
+					if( diff > sizeof( ::booldog::mem::info1 ) && diff - sizeof( ::booldog::mem::info1 ) < UINT8_MAX )
 					{
 						size_t new_offsize = diff;
 						diff -= sizeof( ::booldog::mem::info1 );
 						concat_unbusy_slices( &begin[ total ] , new_offsize , diff );
 					}
-					else if( diff > sizeof( ::booldog::mem::info2 ) && diff - sizeof( ::booldog::mem::info2 ) < 0xffff )
+					else if( diff > sizeof( ::booldog::mem::info2 ) && diff - sizeof( ::booldog::mem::info2 ) < UINT16_MAX )
 					{
 						size_t new_offsize = diff;
 						diff -= sizeof( ::booldog::mem::info2 );
 						concat_unbusy_slices( &begin[ total ] , new_offsize , diff );
 					}
-					else if( diff > sizeof( ::booldog::mem::info3 ) && diff - sizeof( ::booldog::mem::info3 ) < 0xffffffff )
+					else if( diff > sizeof( ::booldog::mem::info3 ) && diff - sizeof( ::booldog::mem::info3 ) < UINT32_MAX )
 					{
 						size_t new_offsize = diff;
 						diff -= sizeof( ::booldog::mem::info3 );
 						concat_unbusy_slices( &begin[ total ] , new_offsize , diff );
 					}
-					else if( diff > sizeof( ::booldog::mem::info4 ) && diff - sizeof( ::booldog::mem::info4 ) < 0xffffffffffffffff )
+					else if( diff > sizeof( ::booldog::mem::info4 ) && diff - sizeof( ::booldog::mem::info4 ) < UINT64_MAX )
 					{
 						size_t new_offsize = diff;
 						diff -= sizeof( ::booldog::mem::info4 );
@@ -262,29 +261,28 @@ namespace booldog
 						_avail -= total;
 
 						size = begin_size;
-						begin_size = offsize - size;
-						if( begin_size == sizeof( ::booldog::mem::info1 ) )
+						if( size < UINT8_MAX )
 						{
 							::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_USE_INFO1 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( begin_size == sizeof( ::booldog::mem::info2 ) )
+						else if( size < UINT16_MAX )
 						{
 							::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_USE_INFO2 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( begin_size == sizeof( ::booldog::mem::info3 ) )
+						else if( size < UINT32_MAX )
 						{
 							::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_USE_INFO3 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( begin_size == sizeof( ::booldog::mem::info4 ) )
+						else if( size < UINT64_MAX )
 						{
 							::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -294,8 +292,7 @@ namespace booldog
 						return begin;
 					}
 					_avail -= total;
-					diff = total - size;
-					if( diff == sizeof( ::booldog::mem::info1 ) )
+					if( size < UINT8_MAX )
 					{
 						::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -303,7 +300,7 @@ namespace booldog
 						info->_size = (::booldog::byte)size;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( diff == sizeof( ::booldog::mem::info2 ) )
+					else if( size < UINT16_MAX )
 					{
 						::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -311,7 +308,7 @@ namespace booldog
 						info->_size = (::booldog::ushort)size;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( diff == sizeof( ::booldog::mem::info3 ) )
+					else if( size < UINT32_MAX )
 					{
 						::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -319,7 +316,7 @@ namespace booldog
 						info->_size = (::booldog::uint32)size;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( diff == sizeof( ::booldog::mem::info4 ) )
+					else if( size < UINT64_MAX )
 					{
 						::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -401,13 +398,13 @@ namespace booldog
 					concat_unbusy_slices( _begin , offsize , begin_size );
 
 					size_t total = size;
-					if( size < 0xff )
+					if( size < UINT8_MAX )
 						total += sizeof( ::booldog::mem::info1 );
-					else if( size < 0xffff )
+					else if( size < UINT16_MAX )
 						total += sizeof( ::booldog::mem::info2 );
-					else if( size < 0xffffffff )
+					else if( size < UINT32_MAX )
 						total += sizeof( ::booldog::mem::info3 );
-					else if( size < 0xffffffffffffffff )
+					else if( size < UINT64_MAX )
 						total += sizeof( ::booldog::mem::info4 );
 					::booldog::byte* begin = check_alloc( _begin , size , total );
 					if( begin )
@@ -506,13 +503,13 @@ namespace booldog
 				else if( begin_size > size )
 				{
 					size_t total = size;
-					if( size < 0xff )
+					if( size < UINT8_MAX )
 						total += sizeof( ::booldog::mem::info1 );
-					else if( size < 0xffff )
+					else if( size < UINT16_MAX )
 						total += sizeof( ::booldog::mem::info2 );
-					else if( size < 0xffffffff )
+					else if( size < UINT32_MAX )
 						total += sizeof( ::booldog::mem::info3 );
-					else if( size < 0xffffffffffffffff )
+					else if( size < UINT64_MAX )
 						total += sizeof( ::booldog::mem::info4 );
 						
 					size_t old_offset = offsize - begin_size;
@@ -520,7 +517,7 @@ namespace booldog
 						
 					size_t diff = offsize - total;
 						
-					if( diff > sizeof( ::booldog::mem::info1 ) && diff - sizeof( ::booldog::mem::info1 ) < 0xff )
+					if( diff > sizeof( ::booldog::mem::info1 ) && diff - sizeof( ::booldog::mem::info1 ) < UINT8_MAX )
 					{
 						if( old_offset != new_offset )
 							::memmove( &begin[ new_offset ] , &begin[ old_offset ] , begin_size );
@@ -529,7 +526,7 @@ namespace booldog
 						diff -= sizeof( ::booldog::mem::info1 );
 						concat_unbusy_slices( &begin[ total ] , new_offsize , diff );
 					}
-					else if( diff > sizeof( ::booldog::mem::info2 ) && diff - sizeof( ::booldog::mem::info2 ) < 0xffff )
+					else if( diff > sizeof( ::booldog::mem::info2 ) && diff - sizeof( ::booldog::mem::info2 ) < UINT16_MAX )
 					{
 						if( old_offset != new_offset )
 							::memmove( &begin[ new_offset ] , &begin[ old_offset ] , size );
@@ -538,7 +535,7 @@ namespace booldog
 						diff -= sizeof( ::booldog::mem::info2 );
 						concat_unbusy_slices( &begin[ total ] , new_offsize , diff );
 					}
-					else if( diff > sizeof( ::booldog::mem::info3 ) && diff - sizeof( ::booldog::mem::info3 ) < 0xffffffff )
+					else if( diff > sizeof( ::booldog::mem::info3 ) && diff - sizeof( ::booldog::mem::info3 ) < UINT32_MAX )
 					{
 						if( old_offset != new_offset )
 							::memmove( &begin[ new_offset ] , &begin[ old_offset ] , size );
@@ -547,7 +544,7 @@ namespace booldog
 						diff -= sizeof( ::booldog::mem::info3 );
 						concat_unbusy_slices( &begin[ total ] , new_offsize , diff );
 					}
-					else if( diff > sizeof( ::booldog::mem::info4 ) && diff - sizeof( ::booldog::mem::info4 ) < 0xffffffffffffffff )
+					else if( diff > sizeof( ::booldog::mem::info4 ) && diff - sizeof( ::booldog::mem::info4 ) < UINT64_MAX )
 					{
 						if( old_offset != new_offset )
 							::memmove( &begin[ new_offset ] , &begin[ old_offset ] , size );
@@ -560,7 +557,7 @@ namespace booldog
 						return pointer;
 					if( _begin > &begin[ total ] )
 						_begin = &begin[ total ];
-					if( new_offset == sizeof( ::booldog::mem::info1 ) )
+					if( size < UINT8_MAX )
 					{
 						::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -568,7 +565,7 @@ namespace booldog
 						info->_size = (::booldog::byte)size;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( new_offset == sizeof( ::booldog::mem::info2 ) )
+					else if( size < UINT16_MAX )
 					{
 						::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -576,7 +573,7 @@ namespace booldog
 						info->_size = (::booldog::ushort)size;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( new_offset == sizeof( ::booldog::mem::info3 ) )
+					else if( size < UINT32_MAX )
 					{
 						::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -584,7 +581,7 @@ namespace booldog
 						info->_size = (::booldog::uint32)size;
 						begin[ sizeof( *info ) - 1 ] = info->_flags;
 					}
-					else if( new_offset == sizeof( ::booldog::mem::info4 ) )
+					else if( size < UINT64_MAX )
 					{
 						::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
 						info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -621,22 +618,22 @@ namespace booldog
 							
 						_avail -= info_offsize;
 						size_t diff = offsize + info_offsize;
-						if( diff > sizeof( ::booldog::mem::info1 ) && diff - sizeof( ::booldog::mem::info1 ) < 0xff )
+						if( diff > sizeof( ::booldog::mem::info1 ) && diff - sizeof( ::booldog::mem::info1 ) < UINT8_MAX )
 						{
 							info_offsize = diff;
 							info_begin_size = diff - sizeof( ::booldog::mem::info1 );
 						}
-						else if( diff > sizeof( ::booldog::mem::info2 ) && diff - sizeof( ::booldog::mem::info2 ) < 0xffff )
+						else if( diff > sizeof( ::booldog::mem::info2 ) && diff - sizeof( ::booldog::mem::info2 ) < UINT16_MAX )
 						{
 							info_offsize = diff;
 							info_begin_size = diff - sizeof( ::booldog::mem::info2 );
 						}
-						else if( diff > sizeof( ::booldog::mem::info3 ) && diff - sizeof( ::booldog::mem::info3 ) < 0xffffffff )
+						else if( diff > sizeof( ::booldog::mem::info3 ) && diff - sizeof( ::booldog::mem::info3 ) < UINT32_MAX )
 						{
 							info_offsize = diff;
 							info_begin_size = diff - sizeof( ::booldog::mem::info3 );
 						}
-						else if( diff > sizeof( ::booldog::mem::info4 ) && diff - sizeof( ::booldog::mem::info4 ) < 0xffffffffffffffff )
+						else if( diff > sizeof( ::booldog::mem::info4 ) && diff - sizeof( ::booldog::mem::info4 ) < UINT64_MAX )
 						{
 							info_offsize = diff;
 							info_begin_size = diff - sizeof( ::booldog::mem::info4 );
@@ -645,7 +642,7 @@ namespace booldog
 						size_t new_offset = info_offsize - info_begin_size;
 						if( old_offset != new_offset )
 							::memmove( &begin[ new_offset ] , &begin[ old_offset ] , begin_size );
-						if( new_offset == sizeof( ::booldog::mem::info1 ) )
+						if( info_begin_size < UINT8_MAX )
 						{
 							::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -653,7 +650,7 @@ namespace booldog
 							info->_size = (::booldog::byte)info_begin_size;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( new_offset == sizeof( ::booldog::mem::info2 ) )
+						else if( info_begin_size < UINT16_MAX )
 						{
 							::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -661,7 +658,7 @@ namespace booldog
 							info->_size = (::booldog::ushort)info_begin_size;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( new_offset == sizeof( ::booldog::mem::info3 ) )
+						else if( info_begin_size < UINT32_MAX )
 						{
 							::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
@@ -669,7 +666,7 @@ namespace booldog
 							info->_size = (::booldog::uint32)info_begin_size;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( new_offset == sizeof( ::booldog::mem::info4 ) )
+						else if( info_begin_size < UINT64_MAX )
 						{
 							::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 

@@ -88,28 +88,27 @@ namespace booldog
 
 					debuginfo = debuginfo;
 					size_t pointerinfosize = pointertotal - pointersize;
-
 					size_t total = size , oldsize = size;
-					if( size < 0xff )
+					if( size < UINT8_MAX )
 						total += sizeof( ::booldog::mem::info1 );
-					else if( size < 0xffff )
+					else if( size < UINT16_MAX )
 						total += sizeof( ::booldog::mem::info2 );
-					else if( size < 0xffffffff )
+					else if( size < UINT32_MAX )
 						total += sizeof( ::booldog::mem::info3 );
-					else if( size < 0xffffffffffffffff )
+					else if( size < UINT64_MAX )
 						total += sizeof( ::booldog::mem::info4 );
 					size_t begin_size = total - size;
 					if( pointerinfosize > begin_size )
 					{
 						size += pointerinfosize - begin_size;
 						total = size;
-						if( size < 0xff )
+						if( size < UINT8_MAX )
 							total += sizeof( ::booldog::mem::info1 );
-						else if( size < 0xffff )
+						else if( size < UINT16_MAX )
 							total += sizeof( ::booldog::mem::info2 );
-						else if( size < 0xffffffff )
+						else if( size < UINT32_MAX )
 							total += sizeof( ::booldog::mem::info3 );
-						else if( size < 0xffffffffffffffff )
+						else if( size < UINT64_MAX )
 							total += sizeof( ::booldog::mem::info4 );
 						begin_size = total - size;
 					}
@@ -126,7 +125,8 @@ namespace booldog
 						if( pointerinfosize != begin_size )
 							memmove( &begin[ begin_size ] , &begin[ pointerinfosize ] , pointertotal > total 
 							? oldsize : pointersize );
-						if( begin_size == sizeof( ::booldog::mem::info1 ) )
+
+						if( size < UINT8_MAX )
 						{
 							::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 							info->_size = (::booldog::byte)size;
@@ -134,7 +134,7 @@ namespace booldog
 								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO1 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( begin_size == sizeof( ::booldog::mem::info2 ) )
+						else if( size < UINT16_MAX )
 						{
 							::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
 							info->_size = (::booldog::ushort)size;
@@ -142,7 +142,7 @@ namespace booldog
 								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO2 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( begin_size == sizeof( ::booldog::mem::info3 ) )
+						else if( size < UINT32_MAX )
 						{
 							::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
 							info->_size = (::booldog::uint32)size;
@@ -150,7 +150,7 @@ namespace booldog
 								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO3 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( begin_size == sizeof( ::booldog::mem::info4 ) )
+						else if( size < UINT64_MAX )
 						{
 							::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
 							info->_size = size;
