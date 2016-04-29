@@ -36,6 +36,10 @@ namespace booldog
 			{
 				return holder.getsize( pointer );
 			};
+			virtual size_t gettotalsize( void* pointer )
+			{
+				return holder.gettotalsize( pointer );
+			};
 			virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				return holder.realloc( pointer , size , debuginfo );
@@ -66,6 +70,10 @@ namespace booldog
 				virtual size_t getsize( void* pointer )
 				{
 					return holder.getsize( pointer );
+				};
+				virtual size_t gettotalsize( void* pointer )
+				{
+					return holder.gettotalsize( pointer );
 				};
 				virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{

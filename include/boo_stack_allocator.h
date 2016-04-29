@@ -61,6 +61,13 @@ namespace booldog
 				_lock.wunlock( debuginfo_macros );
 				return size;
 			};
+			virtual size_t gettotalsize( void* pointer )
+			{
+				_lock.wlock( debuginfo_macros );
+				size_t size = _cluster.gettotalsize( pointer );
+				_lock.wunlock( debuginfo_macros );
+				return size;
+			};
 			virtual void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
@@ -117,6 +124,10 @@ namespace booldog
 				virtual size_t getsize( void* pointer )
 				{
 					return _cluster.getsize( pointer );
+				};
+				virtual size_t gettotalsize( void* pointer )
+				{
+					return _cluster.gettotalsize( pointer );
 				};
 				virtual void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )

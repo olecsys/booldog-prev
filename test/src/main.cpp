@@ -905,26 +905,11 @@ TEST_F( boo_paramTest , test )
 
 #define boo_stackTestAllocatorSize 64
 
-static void ontestthread( ::booldog::threading::thread* thread )
-{
-	::booldog::threading::event** events = (::booldog::threading::event**)thread->udata();
-	::booldog::result_bool resbool0 , resbool1;
-	resbool0.bres = false;
-	while( resbool0.bres == false )
-	{	
-		events[ 0 ]->sleep( &resbool1 , 5000 , debuginfo_macros );
-		if( resbool1.bres )
-			events[ 0 ]->wake( 0 , debuginfo_macros );
-
-		events[ 1 ]->sleep( &resbool0 , 1 , debuginfo_macros );
-	}
-};
 class boo_threading_eventTest : public ::testing::Test 
 {
 };
 TEST_F( boo_threading_eventTest , test )
 {
-	::booldog::allocators::easy::heap heap;
 	{
 		::booldog::threading::event evt( 0 , debuginfo_macros );
 
@@ -933,27 +918,6 @@ TEST_F( boo_threading_eventTest , test )
 		ASSERT_TRUE( evt.sleep( 0 , 5000 , debuginfo_macros ) );
 
 		ASSERT_GT( ::booldog::utils::time::posix::now_as_utc() - time , 4999999 );
-
-		::booldog::threading::event exitevt( 0 , debuginfo_macros );
-
-		::booldog::threading::event* events[] = { &evt , &exitevt };
-
-		::booldog::threading::thread* threads[ 16 ] = {0};
-
-		for( size_t index0 = 0 ; index0 < 16 ; index0++ )
-			threads[ index0 ] = ::booldog::threading::thread::create( 0 , &heap , 30000 , 0 , 0 , ontestthread , events 
-			, debuginfo_macros );
-
-		for( size_t index0 = 0 ; index0 < 4000 ; index0++ )
-		{
-			evt.wake( 0 , debuginfo_macros );
-			::booldog::threading::sleep( 1 );
-		}
-
-		exitevt.wake_all( 0 , debuginfo_macros );
-
-		for( size_t index0 = 0 ; index0 < 16 ; index0++ )
-			::booldog::threading::thread::destroy( threads[ index0 ] );
 	}
 };
 class boo_stackTest : public ::testing::Test 
@@ -1711,7 +1675,17 @@ TEST_F( boo_allocators_heapTest , test )
 
 		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
 	}
-			
+	
+	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 83076 - sizeof( ::booldog::mem::info3 ) );
+
+		ASSERT_EQ( allocator.gettotalsize( ptr0 ) , 83076 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+	}
+
 	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
 };
 

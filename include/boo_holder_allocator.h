@@ -52,6 +52,17 @@ namespace booldog
 				else
 					return stack->getsize( pointer );
 			};
+			virtual size_t gettotalsize( void* pointer )
+			{
+				if( pointer == 0 )
+					return 0;
+				::booldog::byte* ptr = (::booldog::byte*)pointer;
+				ptr--;
+				if( ::booldog::utils::get_bit( *ptr , BOOLDOG_MEM_INFO_HEAP ) )
+					return heap->gettotalsize( pointer );
+				else
+					return stack->gettotalsize( pointer );
+			};
 			virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				if( pointer == 0 )

@@ -114,6 +114,7 @@ namespace booldog
 			object->~booclass();
 			this->free( object );
 		};
+		virtual size_t gettotalsize( void* pointer ) = 0;
 	};
 	class heap_allocator : public ::booldog::allocator
 	{

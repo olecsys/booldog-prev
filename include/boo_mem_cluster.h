@@ -476,6 +476,14 @@ namespace booldog
 				from_pointer( pointer , offsize , size );
 				return size;
 			};
+			size_t gettotalsize( void* pointer )
+			{
+				if( pointer == 0 )
+					return 0;
+				size_t offsize = 0 , size = 0;
+				from_pointer( pointer , offsize , size );
+				return offsize;
+			};
 			void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{

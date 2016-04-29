@@ -192,6 +192,14 @@ namespace booldog
 					from_pointer( pointer , offsize , size );
 					return size;
 				};
+				virtual size_t gettotalsize( void* pointer )
+				{
+					if( pointer == 0 )
+						return 0;
+					size_t offsize = 0 , size = 0;
+					from_pointer( pointer , offsize , size );
+					return offsize;
+				};
 				virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					if( size == 0 )
