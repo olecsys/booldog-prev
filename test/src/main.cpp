@@ -1621,6 +1621,16 @@ TEST_F( boo_allocators_heapTest , test )
 	}
 
 	{
+		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 83076 - sizeof( ::booldog::mem::info3 ) );
+
+		ASSERT_EQ( allocator.gettotalsize( ptr0 ) , 83076 );
+
+		allocator.free( ptr0 );
+
+		ptr0 = 0;
+	}
+
+	{
 		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 563 );
 
 		int checker = 1986;
@@ -1674,16 +1684,6 @@ TEST_F( boo_allocators_heapTest , test )
 		ptr0 = 0;
 
 		ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
-	}
-	
-	{
-		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 83076 - sizeof( ::booldog::mem::info3 ) );
-
-		ASSERT_EQ( allocator.gettotalsize( ptr0 ) , 83076 );
-
-		allocator.free( ptr0 );
-
-		ptr0 = 0;
 	}
 
 	ASSERT_EQ( allocator.size_of_allocated_memory() , 0 );
