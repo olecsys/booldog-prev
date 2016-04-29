@@ -1621,6 +1621,14 @@ TEST_F( boo_allocators_heapTest , test )
 	}
 
 	{
+		printf( "sizeof(info1)=%d\n" , sizeof( ::booldog::mem::info1 ) );
+
+		printf( "sizeof(info2)=%d\n" , sizeof( ::booldog::mem::info2 ) );
+
+		printf( "sizeof(info3)=%d\n" , sizeof( ::booldog::mem::info3 ) );
+
+		printf( "sizeof(info4)=%d\n" , sizeof( ::booldog::mem::info4 ) );
+
 		ptr0 = allocator.realloc_array< char >( (char*)ptr0 , 83076 - sizeof( ::booldog::mem::info3 ) );
 
 		ASSERT_EQ( allocator.gettotalsize( ptr0 ) , 83076 );
