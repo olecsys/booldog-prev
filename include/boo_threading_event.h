@@ -14,6 +14,7 @@
 #include <process.h>
 #else
 #include <pthread.h>
+#include <stdio.h>
 #endif
 namespace booldog
 {
@@ -25,21 +26,23 @@ namespace booldog
 			HANDLE _manual_reset_event;
 			HANDLE _auto_reset_event;
 #else
+			pthread_mutex_t _mutex;//don't touch, address must be aligned by 4
+			pthread_cond_t _cond;//don't touch, address must be aligned by 4
 			int _clockid;
+			int _waiters;
 			bool _isset;
 			bool _wakeall;
 			bool _mutex_inited;
-			pthread_mutex_t _mutex;
 			bool _cond_inited;
-			pthread_cond_t _cond;
 #endif
 		public:
-			event( ::booldog::result_bool* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			event( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				:
 #ifdef __WINDOWS__
 				_auto_reset_event( 0 ) , _manual_reset_event( 0 )
 #else
-				_mutex_inited( false ) , _cond_inited( false ) , _isset( false ) , _wakeall( false )
+				_mutex_inited( false ) , _cond_inited( false ) , _isset( false ) , _wakeall( false ) , _waiters( 0 ) 
+					, _clockid( CLOCK_REALTIME )
 #endif
 			{
 				debuginfo = debuginfo;
@@ -72,22 +75,15 @@ namespace booldog
 							result = pthread_condattr_setclock( &condattr , _clockid );
 						}
 						if( result == 0 )
-						{
 							result = pthread_cond_init( &_cond , &condattr );
-							if( result != 0 )
-								result = pthread_cond_init( &_cond , 0 );
-							if( result == 0 )
-								_cond_inited = true;
-							else
-								goto goto_error;
-						}
 						else
-						{
 							pthread_condattr_destroy( &condattr );
-							goto goto_error;
-						}
 						pthread_condattr_destroy( &condattr );
 					}
+					if( result != 0 )
+						result = pthread_cond_init( &_cond , 0 );
+					if( result == 0 )
+						_cond_inited = true;
 					else
 						goto goto_error;
 				}
@@ -142,41 +138,28 @@ goto_error:
 					abstime.tv_sec += 1;
 					abstime.tv_nsec -= 1000000000;
 				}
-debuginfo_macros_statement( 62 );
-				//debuginfo_macros_sleep( 55 );
+				int result = 0;
+				debuginfo_macros_sleep( 55 );
 				pthread_mutex_lock( &_mutex );
-				//debuginfo_macros_statement( 62 );
-debuginfo_macros_statement( 55 );
-				if( _isset == false && _wakeall == false )
+				debuginfo_macros_statement( 62 );
+				while( _isset == false && _wakeall == false && result != ETIMEDOUT )
 				{
-debuginfo_macros_statement( 63 );
-					//debuginfo_macros_sleep( 56 );
-					int result = pthread_cond_timedwait( &_cond , &_mutex , &abstime );
-					//debuginfo_macros_statement( 63 );
-debuginfo_macros_statement( 56 );
-					if( result == 0 )
-					{
-						_isset = false;
-						pthread_mutex_unlock( &_mutex );
-						res->bres = true;
-					}
-					else if( result == ETIMEDOUT )
-					{
-						pthread_mutex_unlock( &_mutex );
-						res->bres = false;
-					}
-					else
-					{
-						pthread_mutex_unlock( &_mutex );
-						res->setpthreaderror( result );
-					}
+					_waiters++;
+					debuginfo_macros_sleep( 56 );
+					result = pthread_cond_timedwait( &_cond , &_mutex , &abstime );
+					debuginfo_macros_statement( 63 );
+					_waiters--;
 				}
-				else
+				if( result == 0 )
 				{
 					_isset = false;
-					pthread_mutex_unlock( &_mutex );
 					res->bres = true;
 				}
+				else if( result == ETIMEDOUT )
+					res->bres = false;
+				else
+					res->setpthreaderror( result );
+				pthread_mutex_unlock( &_mutex );
 #endif
 				return res->succeeded();
 			};
@@ -197,9 +180,11 @@ debuginfo_macros_statement( 56 );
 				debuginfo_macros_statement( 65 );
 				while( _isset == false && _wakeall == false )
 				{
+					_waiters++;
 					debuginfo_macros_sleep( 59 );
 					result = pthread_cond_wait( &_cond , &_mutex );
 					debuginfo_macros_statement( 66 );
+					_waiters--;
 					if( result != 0 )
 					{
 						res->setpthreaderror( result );
@@ -224,17 +209,15 @@ debuginfo_macros_statement( 56 );
 				debuginfo_macros_sleep( 69 );
 				pthread_mutex_lock( &_mutex );
 				debuginfo_macros_statement( 70 );
-				int result = pthread_cond_broadcast( &_cond );
-				if( result == 0 )
+				if( _wakeall == false && _waiters )
 				{
-					_wakeall = true;
-					pthread_mutex_unlock( &_mutex );
+					int result = pthread_cond_broadcast( &_cond );
+					if( result == 0 )
+						_wakeall = true;
+					else
+						res->setpthreaderror( result );
 				}
-				else
-				{
-					pthread_mutex_unlock( &_mutex );
-					res->setpthreaderror( result );
-				}
+				pthread_mutex_unlock( &_mutex );
 #endif
 				return res->succeeded();
 			};
@@ -250,17 +233,15 @@ debuginfo_macros_statement( 56 );
 				debuginfo_macros_sleep( 60 );
 				pthread_mutex_lock( &_mutex );
 				debuginfo_macros_statement( 67 );
-				int result = pthread_cond_signal( &_cond );
-				if( result == 0 )
+				if( _isset == false && _waiters )
 				{
-					_isset = true;
-					pthread_mutex_unlock( &_mutex );
+					int result = pthread_cond_signal( &_cond );
+					if( result == 0 )
+						_isset = true;
+					else
+						res->setpthreaderror( result );
 				}
-				else
-				{
-					pthread_mutex_unlock( &_mutex );
-					res->setpthreaderror( result );
-				}
+				pthread_mutex_unlock( &_mutex );
 #endif
 				return res->succeeded();
 			};

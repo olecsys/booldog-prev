@@ -22,6 +22,7 @@
     <ClInclude Include="..\include\boo_base_module.h" />
     <ClInclude Include="..\include\boo_bits_utils.h" />
     <ClInclude Include="..\include\boo_check.h" />
+    <ClInclude Include="..\include\boo_console_utils.h" />
     <ClInclude Include="..\include\boo_cp1251.h" />
     <ClInclude Include="..\include\boo_cp1251_consts.h" />
     <ClInclude Include="..\include\boo_d2d1_context.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="..\include\boo_mixed_allocator.h" />
     <ClInclude Include="..\include\boo_module_utils.h" />
     <ClInclude Include="..\include\boo_monitor.h" />
+    <ClInclude Include="..\include\boo_network_utils.h" />
     <ClInclude Include="..\include\boo_object.h" />
     <ClInclude Include="..\include\boo_opengl_buffer.h" />
     <ClInclude Include="..\include\boo_opengl_context.h" />

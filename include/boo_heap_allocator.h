@@ -71,7 +71,9 @@ namespace booldog
 				~heap( void )
 				{
 					if( ::booldog::interlocked::compare_exchange( &_size_of_allocated_memory , 0 , 0 ) > 0 )
-						throw int();
+					{
+						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
+					}
 				};
 				virtual size_t size_of_allocated_memory( void )
 				{
@@ -178,7 +180,9 @@ namespace booldog
 							, (booldog::interlocked::atomic_return)offsize );
 					}
 					else
-						throw int();
+					{
+						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
+					}
 				};
 				virtual size_t getsize( void* pointer )
 				{

@@ -237,6 +237,7 @@ char utf8_TESTil_var[] =
 #include BOOLDOG_HEADER(boo_time_utils.h)
 #include BOOLDOG_HEADER(boo_doubly_linked_list.h)
 #include BOOLDOG_HEADER(boo_threading_event.h)
+#include BOOLDOG_HEADER(boo_network_utils.h)
 
 
 class boo_bits_utilsTest : public ::testing::Test 
@@ -1322,6 +1323,22 @@ TEST_F( boo_stackTest , test )
 	ASSERT_EQ( allocator.available() , total );
 };
 
+class boo_network_utilsTest : public ::testing::Test 
+{
+};
+TEST_F( boo_network_utilsTest , test )
+{
+	::booldog::result resres;
+
+	size_t ipstrlen = 0;
+	char ipstr[ 16 ] = {0};
+
+	ASSERT_TRUE( ::booldog::utils::network::ip( &resres , ipstr , ipstrlen , sizeof( ipstr ) , 2130706433 , debuginfo_macros ) );
+
+	ASSERT_EQ( ipstrlen , 9 );
+
+	ASSERT_EQ( strcmp( ipstr , "127.0.0.1" ) , 0 );
+};
 
 class boo_allocators_heapTest : public ::testing::Test 
 {

@@ -464,7 +464,9 @@ namespace booldog
 						_begin = ptr;
 				}
 				else
-					throw int();
+				{
+					int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
+				}
 			};
 			size_t getsize( void* pointer )
 			{
