@@ -2079,6 +2079,7 @@ goto_return:
 						pparent = pparent->parent;
 					}
 				}
+				int diff = 0;
 				char* ptr = 0;
 				size_t count_of_digits = 0 , removed_size = valueend - valuebegin + 1;
 				T locnumber = value;
@@ -2147,7 +2148,6 @@ goto_return:
 				}
 				if( value < 0 )
 					count_of_digits++;
-				int diff = 0;
 				if( parentserializator->slow.jsonlen + count_of_digits - removed_size + 1 > parentserializator->slow.jsonsize )
 				{
 					char* oldjsonstr = parentserializator->slow.json;
