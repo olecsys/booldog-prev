@@ -29,7 +29,7 @@ namespace booldog
 				_cluster.print();
 			};
 		public:
-			size_t available( void )
+			virtual size_t available( void )
 			{
 				return _cluster.available();
 			};
@@ -101,7 +101,7 @@ namespace booldog
 					_cluster.print();
 				};
 			public:
-				size_t available( void )
+				virtual size_t available( void )
 				{
 					return _cluster.available();
 				};

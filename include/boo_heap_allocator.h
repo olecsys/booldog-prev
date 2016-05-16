@@ -95,7 +95,7 @@ namespace booldog
 						total += sizeof( ::booldog::mem::info2 );
 					else if( size < UINT32_MAX )
 						total += sizeof( ::booldog::mem::info3 );
-					else if( size < UINT64_MAX )
+					else
 						total += sizeof( ::booldog::mem::info4 );
 					size_t begin_size = total - size;
 					if( pointerinfosize > begin_size )
@@ -108,7 +108,7 @@ namespace booldog
 							total += sizeof( ::booldog::mem::info2 );
 						else if( size < UINT32_MAX )
 							total += sizeof( ::booldog::mem::info3 );
-						else if( size < UINT64_MAX )
+						else
 							total += sizeof( ::booldog::mem::info4 );
 						begin_size = total - size;
 					}
@@ -130,6 +130,7 @@ namespace booldog
 						{
 							::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
 							info->_size = (::booldog::byte)size;
+							info->_check = 86;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO1 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
@@ -137,6 +138,7 @@ namespace booldog
 						else if( size < UINT16_MAX )
 						{
 							::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
+							info->_check = 86;
 							info->_size = (::booldog::ushort)size;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO2 , BOOLDOG_MEM_INFO_BUSY >::value;
@@ -145,14 +147,16 @@ namespace booldog
 						else if( size < UINT32_MAX )
 						{
 							::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
+							info->_check = 86;
 							info->_size = (::booldog::uint32)size;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO3 , BOOLDOG_MEM_INFO_BUSY >::value;
 							begin[ sizeof( *info ) - 1 ] = info->_flags;
 						}
-						else if( size < UINT64_MAX )
+						else
 						{
 							::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
+							info->_check = 86;
 							info->_size = size;
 							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_HEAP , BOOLDOG_MEM_INFO_USE_INFO4 , BOOLDOG_MEM_INFO_BUSY >::value;

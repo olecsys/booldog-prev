@@ -12,6 +12,13 @@
 #include <string.h>
 namespace booldog
 {
+	namespace data
+	{
+		namespace json
+		{
+			struct node;
+		};
+	};
 	namespace enums
 	{
 		namespace param
@@ -45,7 +52,8 @@ namespace booldog
 				type_double ,
 				type_float ,
 				type_presult_mbchar ,
-				type_not_found
+				type_not_found , 
+				type_data_json_pnode
 			};
 		};
 	};
@@ -81,10 +89,20 @@ namespace booldog
 			double doublevalue;
 			float floatvalue;
 			::booldog::result_mbchar* presult_mbcharvalue;
+			::booldog::data::json::node* datajsonpnodevalue;
 		};
 		param( void )
 		{
 			type = ::booldog::enums::param::type_none;
+		};
+		booinline void nullify( void )
+		{
+			type = ::booldog::enums::param::type_none;
+		};
+		param( ::booldog::data::json::node* value )
+		{
+			type = ::booldog::enums::param::type_data_json_pnode;
+			datajsonpnodevalue = value;
 		};
 		param( booldog::int32 value )
 		{
@@ -216,6 +234,169 @@ namespace booldog
 			type = ::booldog::enums::param::type_puint64;
 			puint64value = value;
 		};
+
+		booinline param& operator = ( ::booldog::data::json::node* value )
+		{
+			type = ::booldog::enums::param::type_data_json_pnode;
+			datajsonpnodevalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::int32 value )
+		{
+			type = ::booldog::enums::param::type_int32;
+			int32value = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::uint32 value )
+		{
+			type = ::booldog::enums::param::type_uint32;
+			uint32value = value;
+			return *this;
+		};
+		booinline param& operator = ( bool value )
+		{
+			type = ::booldog::enums::param::type_bool;
+			boolvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( char value )
+		{
+			type = ::booldog::enums::param::type_char;
+			charvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::byte value )
+		{
+			type = ::booldog::enums::param::type_uchar;
+			ucharvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( short value )
+		{
+			type = ::booldog::enums::param::type_short;
+			shortvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( unsigned short value )
+		{
+			type = ::booldog::enums::param::type_ushort;
+			ushortvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::int64 value )
+		{
+			type = ::booldog::enums::param::type_int64;
+			int64value = value;
+			return *this;
+		};
+		booinline param& operator = ( float value )
+		{
+			type = ::booldog::enums::param::type_float;
+			floatvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( ::booldog::result_mbchar* value )
+		{
+			type = ::booldog::enums::param::type_presult_mbchar;
+			presult_mbcharvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( double value )
+		{
+			type = ::booldog::enums::param::type_double;
+			doublevalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::uint64 value )
+		{
+			type = ::booldog::enums::param::type_uint64;
+			uint64value = value;
+			return *this;
+		};
+		booinline param& operator = ( wchar_t value )
+		{
+			type = ::booldog::enums::param::type_wchar;
+			wcharvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( const char* value )
+		{
+			type = ::booldog::enums::param::type_pchar;
+			pcharvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( const wchar_t* value )
+		{
+			type = ::booldog::enums::param::type_pwchar;
+			pwcharvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( void* value )
+		{
+			type = ::booldog::enums::param::type_pvoid;
+			pvoidvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::named_param* value )
+		{
+			type = ::booldog::enums::param::type_pnamed_param;
+			pnamed_paramvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::param* value )
+		{
+			type = ::booldog::enums::param::type_pparam;
+			pparamvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::pint32 value )
+		{
+			type = ::booldog::enums::param::type_pint32;
+			pint32value = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::puint32 value )
+		{
+			type = ::booldog::enums::param::type_puint32;
+			puint32value = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::pbool value )
+		{
+			type = ::booldog::enums::param::type_pbool;
+			pboolvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::puchar value )
+		{
+			type = ::booldog::enums::param::type_puchar;
+			pucharvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::pshort value )
+		{
+			type = ::booldog::enums::param::type_pshort;
+			pshortvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::pushort value )
+		{
+			type = ::booldog::enums::param::type_pushort;
+			pushortvalue = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::pint64 value )
+		{
+			type = ::booldog::enums::param::type_pint64;
+			pint64value = value;
+			return *this;
+		};
+		booinline param& operator = ( booldog::puint64 value )
+		{
+			type = ::booldog::enums::param::type_puint64;
+			puint64value = value;
+			return *this;
+		};
 	} param;
 
 	typedef struct named_param : public booldog::param
@@ -230,6 +411,12 @@ namespace booldog
 			::memset( zero , 0 , size );
 			type = ptype;
 			name = pname;
+			hash = 0;
+		};
+		named_param( const char* name , ::booldog::data::json::node* value )		
+			: ::booldog::param( value )
+		{
+			this->name = name;
 			hash = 0;
 		};
 		named_param( const char* name , booldog::int32 value )		
@@ -388,6 +575,195 @@ namespace booldog
 			this->name = name;
 			hash = 0;
 		};
+		booinline named_param& operator = ( ::booldog::data::json::node* value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::int32 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::uint32 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( bool value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( char value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::byte value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( short value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( unsigned short value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::int64 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( float value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( ::booldog::result_mbchar* value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( double value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::uint64 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( wchar_t value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( const char* value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( const wchar_t* value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( void* value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::named_param* value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::param* value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::pint32 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::puint32 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::pbool value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::puchar value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::pshort value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::pushort value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::pint64 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
+		booinline named_param& operator = ( booldog::puint64 value )
+		{
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+			return *this;
+		};
 		::booldog::uint64 name_hash( void )
 		{
 			if( name )
@@ -432,6 +808,7 @@ namespace booldog
 	};
 };
 #define BOOPARAM_INT32( val ) ::booldog::param( (::booldog::int32)val )
+#define BOOPARAM_UINT32( val ) ::booldog::param( (::booldog::uint32)val )
 #define BOOPARAM_BOOL( val ) ::booldog::param( (bool)val )
 #define BOOPARAM_CHAR( val ) ::booldog::param( (char)val )
 #define BOOPARAM_UCHAR( val ) ::booldog::param( (unsigned char)val )
@@ -458,6 +835,7 @@ namespace booldog
 #define BOOPARAM_PRESULT_MBCHAR( val ) ::booldog::param( (::booldog::result_mbchar*)val )
 
 #define BOONAMED_PARAM_INT32( name , val ) ::booldog::named_param( name , (::booldog::int32)val )
+#define BOONAMED_PARAM_UINT32( name , val ) ::booldog::named_param( name , (::booldog::uint32)val )
 #define BOONAMED_PARAM_BOOL( name , val ) ::booldog::named_param( name , (bool)val )
 #define BOONAMED_PARAM_CHAR( name , val ) ::booldog::named_param( name , (char)val )
 #define BOONAMED_PARAM_UCHAR( name , val ) ::booldog::named_param( name , (unsigned char)val )
@@ -484,6 +862,7 @@ namespace booldog
 #define BOONAMED_PARAM_PRESULT_MBCHAR( name , val ) ::booldog::named_param( name , (::booldog::result_mbchar*)val )
 
 #define BOO_SEARCH_NAMED_PARAM_INT32( name ) ::booldog::named_param( name , ::booldog::enums::param::type_int32 )
+#define BOO_SEARCH_NAMED_PARAM_UINT32( name ) ::booldog::named_param( name , ::booldog::enums::param::type_uint32 )
 #define BOO_SEARCH_NAMED_PARAM_BOOL( name ) ::booldog::named_param( name , ::booldog::enums::param::type_bool )
 #define BOO_SEARCH_NAMED_PARAM_CHAR( name ) ::booldog::named_param( name , ::booldog::enums::param::type_char )
 #define BOO_SEARCH_NAMED_PARAM_UCHAR( name ) ::booldog::named_param( name , ::booldog::enums::param::type_uchar )

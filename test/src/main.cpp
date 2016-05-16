@@ -5650,6 +5650,19 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_EQ( strcmp( serializator.fast.json , "{}" ) , 0 );
 
+		serializator.clear();
+
+
+		serializator.fast.add< 1 >( &resres , 0LL , debuginfo_macros );
+
+		ASSERT_TRUE( resres.succeeded() );
+
+		ASSERT_EQ( serializator.fast.nodesindex , 0 );
+
+		ASSERT_EQ( serializator.fast.jsonlen , 1 );
+
+		ASSERT_EQ( strcmp( serializator.fast.json , "0" ) , 0 );
+
 
 		serializator.clear();
 
@@ -6153,6 +6166,19 @@ TEST_F( boo_jsonTest , test )
 		ASSERT_EQ( copy_serializator.slow.jsonlen , 5 );
 
 		ASSERT_TRUE( strcmp( (const char*)root.json , "-1986" ) == 0 );
+
+
+		copy_serializator = serializator;
+
+		root = copy_serializator;
+
+		root.value = 0LL;
+
+		ASSERT_TRUE( root.isnumber() );
+
+		ASSERT_EQ( copy_serializator.slow.jsonlen , 1 );
+
+		ASSERT_TRUE( strcmp( (const char*)root.json , "0" ) == 0 );
 
 
 		copy_serializator = serializator;

@@ -67,7 +67,7 @@ namespace booldog
 					size += sizeof( ::booldog::mem::info2 );
 				else if( size < UINT32_MAX )
 					size += sizeof( ::booldog::mem::info3 );
-				else if( size < UINT64_MAX )
+				else
 					size += sizeof( ::booldog::mem::info4 );
 				return size;
 			};
@@ -79,9 +79,8 @@ namespace booldog
 					return sizeof( ::booldog::mem::info2 );
 				else if( size < UINT32_MAX )
 					return sizeof( ::booldog::mem::info3 );
-				else if( size < UINT64_MAX )
+				else
 					return sizeof( ::booldog::mem::info4 );
-				return 0;
 			};
 		};
 		template< class booclass >

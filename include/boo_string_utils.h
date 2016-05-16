@@ -889,7 +889,7 @@ goto_next:
 							debuginfo_macros_statement( 48 );
 							if( dst )
 							{
-								::memcpy( dst , srcbegin , srccharcount );
+								::memcpy( &dst[ dstcharindex ] , srcbegin , srccharcount );
 								dstlen += srccharcount;
 								dst[ dstlen ] = 0;
 							}

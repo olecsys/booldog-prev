@@ -145,6 +145,21 @@ namespace booldog
 				template< size_t step >
 				booinline bool set( ::booldog::result* pres , char* valuebegin , const char* value
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros );
+				booinline operator float();
+				booinline operator const char*();
+				booinline operator ::booldog::int32();
+				booinline operator ::booldog::int64();
+				booinline operator ::booldog::uint32();
+				booinline operator ::booldog::uint64();
+				booinline operator bool();
+				booinline bool isstring( void );
+				booinline bool isnumber( void );
+				booinline bool isnegativenumber( void );
+				booinline bool isnull( void );
+				booinline bool isboolean( void );
+				booinline bool isobject( void );
+				booinline bool isarray( void );
+				booinline size_t count( void );
 			};
 
 			template< size_t step >
@@ -195,6 +210,7 @@ namespace booldog
 				};
 				booinline bool isstring( void );
 				booinline bool isnumber( void );
+				booinline bool isnegativenumber( void );
 				booinline bool isnull( void );
 				booinline bool isboolean( void );
 				booinline bool isobject( void );
@@ -504,7 +520,30 @@ goto_return:
 						res->booerr( ::booldog::enums::result::booerr_type_object_is_already_initialized );
 						goto goto_return;
 					}
-					if( locnumber < 0 )
+					if( locnumber == 0 )
+					{
+						if( jsonlen + 3 > jsonsize )
+						{
+							jsonsize += 3 + step;
+							json = jsonallocator->realloc_array< char >( json , jsonsize , debuginfo );
+							if( json == 0 )
+							{
+								clear();
+								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+								goto goto_return;
+							}
+						}
+						if( jsonlen )
+						{
+							char letter = json[ jsonlen - 1 ];
+							if( letter != '[' && letter != '{' )
+								json[ jsonlen++ ] = ',';
+						}
+						json[ jsonlen++ ] = '0';
+						json[ jsonlen ] = 0;
+						goto goto_return;
+					}
+					else if( locnumber < 0 )
 #ifdef __WINDOWS__
 #pragma warning( push )
 #pragma warning( disable: 4146 )
@@ -598,7 +637,25 @@ goto_return:
 					}
 					if( serialize_and_add< step >( res , name , debuginfo ) == false )
 						goto goto_return;
-					if( locnumber < 0 )
+					if( locnumber == 0 )
+					{
+						if( jsonlen + 3 > jsonsize )
+						{
+							jsonsize += 3 + step;
+							json = jsonallocator->realloc_array< char >( json , jsonsize , debuginfo );
+							if( json == 0 )
+							{
+								clear();
+								res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+								goto goto_return;
+							}
+						}
+						json[ jsonlen++ ] = ':';
+						json[ jsonlen++ ] = '0';
+						json[ jsonlen ] = 0;
+						goto goto_return;
+					}
+					else if( locnumber < 0 )
 #ifdef __WINDOWS__
 #pragma warning( push )
 #pragma warning( disable: 4146 )
@@ -1145,25 +1202,26 @@ goto_return:
 				if( node )
 				{
 					::booldog::data::json::checknode( this );
-					if( node->type == ::booldog::enums::data::json::boolean_true )
-						return true;
+					return node->operator bool();
 				}
 				return false;
 			};
-			object_value::operator ::booldog::int32()
+			node::operator bool()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
+				if( type == ::booldog::enums::data::json::boolean_true )
+					return true;
+				return false;
+			};
+			node::operator ::booldog::int32()
+			{
+				if( this->type != ::booldog::enums::data::json::number )
 					return 0;
-				if( node->type != ::booldog::enums::data::json::number )
-					return 0;
-				char* ptr = node->name_or_valuebegin;
-				if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
-					&& node->parent->type == ::booldog::enums::data::json::object )
+				char* ptr = this->name_or_valuebegin;
+				if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
+					&& this->parent->type == ::booldog::enums::data::json::object )
 				{
 					ptr--;
-					if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+					if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
 					{
 						for( ; ; )
 						{
@@ -1202,7 +1260,7 @@ goto_next0:
 				::booldog::uint64 res_float_part = 0;				
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1227,7 +1285,7 @@ goto_next0:
 goto_float:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1256,7 +1314,7 @@ goto_exponent_part:
 				}
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count += ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1265,7 +1323,7 @@ goto_exponent_part:
 goto_exponent_part_minus:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count -= ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1306,20 +1364,24 @@ goto_return:
 					realres *= -1;
 				return realres;
 			};
-			object_value::operator float()
+			object_value::operator ::booldog::int32()
 			{
 				if( node )
 					::booldog::data::json::checknode( this );
 				else
 					return 0;
-				if( node->type != ::booldog::enums::data::json::number )
-					return 0;
-				char* ptr = node->name_or_valuebegin;
-				if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
-					&& node->parent->type == ::booldog::enums::data::json::object )
+				return node->operator booldog::int32();
+			};
+			node::operator float()
+			{
+				if( this->type != ::booldog::enums::data::json::number )
+					return 0;				
+				char* ptr = this->name_or_valuebegin;
+				if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
+					&& this->parent->type == ::booldog::enums::data::json::object )
 				{
 					ptr--;
-					if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+					if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
 					{
 						for( ; ; )
 						{
@@ -1358,7 +1420,7 @@ goto_next0:
 				::booldog::uint64 res_float_part = 0;				
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1383,7 +1445,7 @@ goto_next0:
 goto_float:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1412,7 +1474,7 @@ goto_exponent_part:
 				}
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count += ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1421,7 +1483,7 @@ goto_exponent_part:
 goto_exponent_part_minus:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count -= ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1461,20 +1523,24 @@ goto_return:
 					realres *= -1;
 				return realres;
 			};
-			object_value::operator ::booldog::uint32()
+			object_value::operator float()
 			{
 				if( node )
 					::booldog::data::json::checknode( this );
 				else
 					return 0;
-				if( node->type != ::booldog::enums::data::json::number )
+				return node->operator float();
+			};
+			node::operator ::booldog::uint32()
+			{
+				if( this->type != ::booldog::enums::data::json::number )
 					return 0;
-				char* ptr = node->name_or_valuebegin;
-				if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
-					&& node->parent->type == ::booldog::enums::data::json::object )
+				char* ptr = this->name_or_valuebegin;
+				if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
+					&& this->parent->type == ::booldog::enums::data::json::object )
 				{
 					ptr--;
-					if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+					if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
 					{
 						for( ; ; )
 						{
@@ -1508,7 +1574,7 @@ goto_next0:
 				::booldog::uint64 res_float_part = 0;				
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1533,7 +1599,7 @@ goto_next0:
 goto_float:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1562,7 +1628,7 @@ goto_exponent_part:
 				}
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count += ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1571,7 +1637,7 @@ goto_exponent_part:
 goto_exponent_part_minus:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count -= ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1610,20 +1676,24 @@ goto_return:
 					realres = (::booldog::uint32)( realres + realfloatpart );
 				return realres;
 			};
-			object_value::operator ::booldog::uint64()
+			object_value::operator ::booldog::uint32()
 			{
 				if( node )
 					::booldog::data::json::checknode( this );
 				else
 					return 0;
-				if( node->type != ::booldog::enums::data::json::number )
+				return node->operator booldog::uint32();
+			};
+			node::operator ::booldog::uint64()
+			{
+				if( this->type != ::booldog::enums::data::json::number )
 					return 0;
-				char* ptr = node->name_or_valuebegin;
-				if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
-					&& node->parent->type == ::booldog::enums::data::json::object )
+				char* ptr = this->name_or_valuebegin;
+				if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
+					&& this->parent->type == ::booldog::enums::data::json::object )
 				{
 					ptr--;
-					if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+					if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
 					{
 						for( ; ; )
 						{
@@ -1657,7 +1727,7 @@ goto_next0:
 				::booldog::uint64 res_float_part = 0;				
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1682,7 +1752,7 @@ goto_next0:
 goto_float:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1711,7 +1781,7 @@ goto_exponent_part:
 				}
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count += ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1720,7 +1790,7 @@ goto_exponent_part:
 goto_exponent_part_minus:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count -= ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1759,20 +1829,24 @@ goto_return:
 					realres = (::booldog::uint64)( realres + realfloatpart );
 				return realres;
 			};
-			object_value::operator ::booldog::int64()
+			object_value::operator ::booldog::uint64()
 			{
 				if( node )
 					::booldog::data::json::checknode( this );
 				else
 					return 0;
-				if( node->type != ::booldog::enums::data::json::number )
+				return node->operator booldog::uint64();
+			};
+			node::operator ::booldog::int64()
+			{
+				if( this->type != ::booldog::enums::data::json::number )
 					return 0;
-				char* ptr = node->name_or_valuebegin;
-				if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
-					&& node->parent->type == ::booldog::enums::data::json::object )
+				char* ptr = this->name_or_valuebegin;
+				if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
+					&& this->parent->type == ::booldog::enums::data::json::object )
 				{
 					ptr--;
-					if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+					if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
 					{
 						for( ; ; )
 						{
@@ -1811,7 +1885,7 @@ goto_next0:
 				::booldog::uint64 res_float_part = 0;				
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1836,7 +1910,7 @@ goto_next0:
 goto_float:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					switch( ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr ] )
 					{
@@ -1865,7 +1939,7 @@ goto_exponent_part:
 				}
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count += ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1874,7 +1948,7 @@ goto_exponent_part:
 goto_exponent_part_minus:
 				for( ; ; )
 				{
-					if( ptr == node->valueend + 1 )
+					if( ptr == this->valueend + 1 )
 						goto goto_return;
 					exponent_part_count *= 10;
 					exponent_part_count -= ::booldog::data::json::_decimal_string_to_number_table[ (::booldog::byte)*ptr++ ];
@@ -1914,6 +1988,14 @@ goto_return:
 				if( negative )
 					realres *= -1;
 				return realres;
+			};
+			object_value::operator ::booldog::int64()
+			{
+				if( node )
+					::booldog::data::json::checknode( this );
+				else
+					return 0;
+				return node->operator booldog::int64();
 			};
 			booinline bool checknewjssonptr( char*& ptr , ::booldog::data::json::serializator* parentserializator 
 				, const ::booldog::debug::info& debuginfo )
@@ -2000,7 +2082,56 @@ goto_return:
 				char* ptr = 0;
 				size_t count_of_digits = 0 , removed_size = valueend - valuebegin + 1;
 				T locnumber = value;
-				if( locnumber < 0 )
+				if( locnumber == 0 )
+				{
+					int diff = 0;
+					if( parentserializator->slow.jsonlen + 1 - removed_size + 1 > parentserializator->slow.jsonsize )
+					{
+						char* oldjsonstr = parentserializator->slow.json;
+						parentserializator->slow.jsonsize += 1 - removed_size + 1 + step;
+						parentserializator->slow.json = parentserializator->slow.jsonallocator->realloc_array< char >( 
+							parentserializator->slow.json , parentserializator->slow.jsonsize , debuginfo );
+						if( parentserializator->slow.json == 0 )
+						{
+							parentserializator->clear();
+							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+							goto goto_return;
+						}
+						else if( parentserializator->slow.json != oldjsonstr )
+						{
+							parentserializator->slow.nodes[ 0 ].newjsonptr( oldjsonstr , parentserializator->slow.json );
+							parentserializator->slow.nodes[ 0 ].name_or_valuebegin = parentserializator->slow.json;
+							parentserializator->slow.nodes[ 0 ].valueend = 
+								parentserializator->slow.json + (
+								parentserializator->slow.nodes[ 0 ].valueend - oldjsonstr );
+							valuebegin = parentserializator->slow.json + ( valuebegin - oldjsonstr );
+						}
+					}
+					if( 1 > removed_size )
+					{		
+						diff = (int)( 1 - removed_size );
+						::booldog::mem::expand< char >( valuebegin - parentserializator->slow.json
+							, parentserializator->slow.json , parentserializator->slow.jsonlen + 1 , parentserializator->slow.jsonsize
+							, diff );
+					}
+					else if( 1 < removed_size )
+					{
+						diff = (int)( removed_size - 1 );
+						::booldog::mem::remove< char >( valuebegin - parentserializator->slow.json
+							, parentserializator->slow.json , parentserializator->slow.jsonlen + 1 , diff );
+						diff *= -1;
+					}
+					if( diff != 0 )
+					{
+						parentserializator->slow.nodes[ 0 ].jsonoffset( diff , valueend );
+						parentserializator->slow.nodes[ 0 ].valueend += diff;
+						parentserializator->slow.jsonlen += diff;
+					}
+					*valueend = '0';
+					type = ::booldog::enums::data::json::number;
+					goto goto_return;
+				}
+				else if( locnumber < 0 )
 #ifdef __WINDOWS__
 #pragma warning( push )
 #pragma warning( disable: 4146 )
@@ -3112,20 +3243,16 @@ goto_error:
 				}
 				return node->json( parentserializator );
 			};
-			object_value::operator const char*()
+			node::operator const char*()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
+				if( this->type != ::booldog::enums::data::json::string )
 					return 0;
-				if( node->type != ::booldog::enums::data::json::string )
-					return 0;
-				char* ptr = node->name_or_valuebegin;
-				if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
-					&& node->parent->type == ::booldog::enums::data::json::object )
+				char* ptr = this->name_or_valuebegin;
+				if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
+					&& this->parent->type == ::booldog::enums::data::json::object )
 				{
 					ptr--;
-					if( ::booldog::utils::get_bit( node->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+					if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
 					{
 						for( ; ; )
 						{
@@ -3153,14 +3280,14 @@ goto_next0:
 				}
 				else
 					ptr++;
-				if( ::booldog::utils::get_bit( node->flags	, BOOLDOG_DATA_JSON_VALUE_SERIALIZED ) )
+				if( ::booldog::utils::get_bit( this->flags	, BOOLDOG_DATA_JSON_VALUE_SERIALIZED ) )
 				{
 					::booldog::data::json::serializator* parentserializator = 0;
-					if( ::booldog::utils::get_bit( node->flags	, BOOLDOG_DATA_JSON_ROOT ) )
-						parentserializator = node->serializator;
+					if( ::booldog::utils::get_bit( this->flags	, BOOLDOG_DATA_JSON_ROOT ) )
+						parentserializator = this->serializator;
 					else
 					{
-						::booldog::data::json::node* pparent = node->parent;						
+						::booldog::data::json::node* pparent = this->parent;						
 						for( ; ; )
 						{
 							if( ::booldog::utils::get_bit( pparent->flags	, BOOLDOG_DATA_JSON_ROOT ) )
@@ -3248,13 +3375,21 @@ goto_next0:
 					}
 					if( diff != 0 )
 					{
-						parentserializator->slow.nodes[ 0 ].jsonoffset( diff , node->valueend );
+						parentserializator->slow.nodes[ 0 ].jsonoffset( diff , this->valueend );
 						parentserializator->slow.nodes[ 0 ].valueend += diff;
 					}
-					::booldog::utils::unset_bit( node->flags , BOOLDOG_DATA_JSON_VALUE_SERIALIZED );
+					::booldog::utils::unset_bit( this->flags , BOOLDOG_DATA_JSON_VALUE_SERIALIZED );
 					return begin;
 				}
 				return ptr;
+			};
+			object_value::operator const char*()
+			{
+				if( node )
+					::booldog::data::json::checknode( this );
+				else
+					return 0;
+				return node->operator const char *();
 			};
 			booinline ::booldog::data::json::object_value& object_value::operator = ( const char* value )
 			{		
@@ -3660,6 +3795,88 @@ goto_return:
 					json.nodes = json.parentserializator->slow.nodes;
 				}
 			};
+			bool node::isstring( void )
+			{
+				return this->type == ::booldog::enums::data::json::string;
+			};
+			bool node::isnumber( void )
+			{
+				return this->type == ::booldog::enums::data::json::number;
+			};
+			bool node::isnegativenumber( void )
+			{
+				if( this->type != ::booldog::enums::data::json::number )
+					return false;
+				char* ptr = this->name_or_valuebegin;
+				if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_ROOT ) == 0
+					&& this->parent->type == ::booldog::enums::data::json::object )
+				{
+					ptr--;
+					if( ::booldog::utils::get_bit( this->flags , BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+					{
+						for( ; ; )
+						{
+							switch( *++ptr )
+							{
+							case '\\':
+								ptr++;
+								break;
+							case '"':
+								goto goto_next0;
+							}
+						}
+goto_next0:
+						;
+					}
+					else
+					{
+						for( ; ; )
+						{
+							if( *++ptr == 0 )
+								break;
+						}
+					}
+					ptr += 2;
+				}
+				if( *ptr == '-' )
+					return true;
+				return false;
+			};
+			bool node::isnull( void )
+			{
+				return this->type == ::booldog::enums::data::json::null;
+			};
+			bool node::isboolean( void )
+			{
+				return ( this->type == ::booldog::enums::data::json::boolean_true
+					|| this->type == ::booldog::enums::data::json::boolean_false );
+			};
+			bool node::isobject( void )
+			{
+				return this->type == ::booldog::enums::data::json::object;
+			};
+			bool node::isarray( void )
+			{
+				return this->type == ::booldog::enums::data::json::array;
+			};
+			size_t node::count( void )
+			{
+				if( ( this->type == ::booldog::enums::data::json::array
+					|| this->type == ::booldog::enums::data::json::object ) )
+				{
+					size_t count = 0;
+					::booldog::data::json::node* pnext = this->child;
+					for( ; ; )
+					{
+						if( pnext == 0 )
+							break;
+						pnext = pnext->next;
+						count++;
+					}
+					return count;
+				}
+				return 0;
+			};
 			booinline bool object::isstring( void )
 			{
 				if( json.node )
@@ -3669,16 +3886,19 @@ goto_return:
 				}
 				return false;
 			};
+			booinline bool object::isnegativenumber( void )
+			{
+				if( json.node )
+					::booldog::data::json::checknode( &json );
+				else
+					return false;
+				return json.node->isnegativenumber();
+			};
 			booinline bool object::isnumber( void )
 			{
 				if( json.node )
 				{
-					if( json.parentserializator->slow.nodes > json.node 
-						|| ( json.parentserializator->slow.nodes + json.parentserializator->slow.nodessize - 1 ) < json.node )
-					{
-						json.node = json.parentserializator->slow.nodes + ( json.node - json.nodes );
-						json.nodes = json.parentserializator->slow.nodes;
-					}
+					::booldog::data::json::checknode( &json );
 					return json.node->type == ::booldog::enums::data::json::number;
 				}
 				return false;
@@ -3725,20 +3945,7 @@ goto_return:
 				if( json.node )
 				{
 					::booldog::data::json::checknode( &json );
-					if( ( json.node->type == ::booldog::enums::data::json::array
-						|| json.node->type == ::booldog::enums::data::json::object ) )
-					{
-						size_t count = 0;
-						::booldog::data::json::node* pnext = json.node->child;
-						for( ; ; )
-						{
-							if( pnext == 0 )
-								break;
-							pnext = pnext->next;
-							count++;
-						}
-						return count;
-					}
+					return json.node->count();
 				}
 				return 0;
 			};
@@ -3778,7 +3985,8 @@ goto_return:
 				{
 					::booldog::data::json::checknode( &json );
 					if( ::booldog::utils::get_bit( json.node->flags , BOOLDOG_DATA_JSON_ROOT )
-						|| json.node->parent->type != ::booldog::enums::data::json::object )
+						|| ( json.node->parent->type != ::booldog::enums::data::json::object
+						&& json.node->parent->type != ::booldog::enums::data::json::array ) )
 						json.node = 0;
 					else
 						json.node = json.node->next;

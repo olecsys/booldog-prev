@@ -8,6 +8,7 @@
 #endif
 #include BOOLDOG_HEADER(boo_object.h)
 #include BOOLDOG_HEADER(boo_mem.h)
+#include BOOLDOG_HEADER(boo_result.h)
 namespace booldog
 {
 #define BOOLDOG_ARRAY_STEP 32
@@ -84,7 +85,10 @@ namespace booldog
 					_size += items_count + BOOLDOG_ARRAY_STEP;
 					_array = _allocator->realloc_array< T >( _array , _size , debuginfo );
 				}
-				::memcpy( &_array[ index ] , items , items_count * sizeof( T ) );
+				if( items_count == 1 )
+					_array[ index ] = *items;
+				else
+					::memcpy( &_array[ index ] , items , items_count * sizeof( T ) );
 				_count += items_count;
 			}
 			else
@@ -94,6 +98,38 @@ namespace booldog
 		T& operator[] ( size_t index )
 		{
 			return _array[ index ];
+		};
+		const T* raw( void )
+		{
+			return _array;
+		};
+		bool resize( ::booldog::result* pres , size_t newsize , bool only_increase 
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		{
+			::booldog::result locres;
+			BOOINIT_RESULT( ::booldog::result );
+			if( newsize > _size )
+			{
+				_size = newsize;
+				_array = _allocator->realloc_array< T >( _array , _size , debuginfo );
+			}
+			else if( newsize < _size && only_increase == false )
+			{
+				_size = newsize;
+				_array = _allocator->realloc_array< T >( _array , _size , debuginfo );
+				if( _size > _count )
+					_count = _size;
+			}
+			else
+				goto goto_return;
+			if( _array == 0 )
+			{
+				_count = 0;
+				_size = 0;
+				res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+			}
+goto_return:
+			return res->succeeded();
 		};
 	};
 };

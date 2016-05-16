@@ -126,6 +126,7 @@ namespace booldog
 	public:
 		virtual void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
 			, const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
+		virtual size_t available( void ) = 0;
 	};
 };
 #endif
