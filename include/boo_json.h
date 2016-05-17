@@ -18,6 +18,26 @@
 #include <math.h>
 namespace booldog
 {
+	namespace consts
+	{
+		namespace data
+		{
+			namespace json
+			{
+				const char _to_serialize_chars[ 256 ] = 
+				{
+					0 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 8 , 9 , 10 , 1 , 12 , 13 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,
+					1 , 1 , 34 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 47 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,
+					1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 92 , 1 , 1 , 1 ,
+					1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,
+					1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,
+					1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,
+					1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 ,
+					1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1
+				};
+			};
+		};
+	};
 	namespace enums
 	{
 		namespace data
@@ -248,33 +268,43 @@ namespace booldog
 				bool serialize_and_add( ::booldog::result* pres , const char* string
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
+					debuginfo_macros_statement( 343 );
+
 					::booldog::result locres;
 					BOOINIT_RESULT( ::booldog::result );
-					const char* ptr = string;
-					size_t size = 0;
+					const ::booldog::byte* ptrbyte = (::booldog::byte*)string , * to_serialize_chars = 0;
+					size_t size = 0 , length = 0 , to_serialize_chars_count = 0;
 					for( ; ; )
 					{
-						switch( *ptr++ )
+						switch( ::booldog::consts::data::json::_to_serialize_chars[ *ptrbyte ] )
 						{
 						case 0:
+							++ptrbyte;
 							goto goto_next;
-						default:
+						case 1:
 							{
-								ptr--;
-								const ::booldog::byte* ptrbyte = (::booldog::byte*)ptr;
 								if( ::booldog::utf8::validate_character( ptrbyte ) == false )
 								{
 									clear();
 									res->booerr( ::booldog::enums::result::booerr_type_json_not_utf8_symbol );
 									goto goto_return;
 								}
-								ptr = (char*)ptrbyte;
+								break;
+							}
+						default:
+							{
+								if( to_serialize_chars == 0 )
+									to_serialize_chars = ptrbyte;
+								to_serialize_chars_count++;
+								++ptrbyte;
 								break;
 							}
 						}
 					}
 goto_next:
-					size = 2 + 2 * ( ptr - string - 1 );
+					debuginfo_macros_statement( 346 );
+					length = ( ((const char*)ptrbyte) - string - 1 );
+					size = 2 + 2 * length;
 					if( jsonlen + size + 1 > jsonsize )
 					{
 						jsonsize += size + 1 + step;
@@ -287,73 +317,117 @@ goto_next:
 							goto goto_return;
 						}
 					}
-					ptr = string;
+					ptrbyte = (::booldog::byte*)string;
+
+					
 
 					json[ jsonlen++ ] = '"';
-					for( ; ; )
+					if( to_serialize_chars_count )
 					{
-						switch( *ptr++ )
+						debuginfo_macros_statement( 347 );
+
+						if( to_serialize_chars != ptrbyte )
 						{
-						case '"':
+							size = ((const char*)to_serialize_chars) - string;
+							::memcpy( &json[ jsonlen ] , string , size );
+							jsonlen += size;
+							ptrbyte = to_serialize_chars;
+						}
+						for( ; to_serialize_chars_count ; )
+						{
+							switch( ::booldog::consts::data::json::_to_serialize_chars[ *ptrbyte ] )
 							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = '"';
-								break;
+							case 1:
+								{
+									json[ jsonlen++ ] = (char)*ptrbyte;
+									break;
+								}
+							case 0:
+								goto goto_next0;
+							case '"':
+								{
+									const char* fast = "\\\"";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
+							case '\\':
+								{
+									const char* fast = "\\\\";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
+							case '/':
+								{
+									const char* fast = "\\/";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
+							case '\b':
+								{
+									const char* fast = "\\b";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
+							case '\f':
+								{
+									const char* fast = "\\f";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
+							case '\n':
+								{
+									const char* fast = "\\n";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
+							case '\r':
+								{
+									const char* fast = "\\r";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
+							case '\t':
+								{
+									const char* fast = "\\t";
+									*(::booldog::uint16*)&json[ jsonlen ] = *(::booldog::uint16*)fast;
+									jsonlen += 2;
+									to_serialize_chars_count--;
+									break;
+								}
 							}
-						case '\\':
-							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = '\\';
-								break;
-							}
-						case '/':
-							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = '/';
-								break;
-							}
-						case '\b':
-							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = 'b';
-								break;
-							}
-						case '\f':
-							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = 'f';
-								break;
-							}
-						case '\n':
-							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = 'n';
-								break;
-							}
-						case '\r':
-							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = 'r';
-								break;
-							}
-						case '\t':
-							{
-								json[ jsonlen++ ] = '\\';
-								json[ jsonlen++ ] = 't';
-								break;
-							}
-						case 0:
-							goto goto_next0;
-						default:
-							{
-								json[ jsonlen++ ] = *( ptr - 1 );
-								break;
-							}
+							++ptrbyte;
+						}
+						if( *ptrbyte != 0 )
+						{
+							length -= ((const char*)ptrbyte) - string;
+							::memcpy( &json[ jsonlen ] , ptrbyte , length );
+							jsonlen += length;
 						}
 					}
+					else
+					{
+						debuginfo_macros_statement( 348 );
+
+						::memcpy( &json[ jsonlen ] , string , length );
+						jsonlen += length;
+					}
 goto_next0:
-					json[ jsonlen++ ] = '"';
-					json[ jsonlen ] = 0;
+					json[ jsonlen ] = '"';
+					json[ ++jsonlen ] = 0;
 goto_return:
 					return res->succeeded();
 				};

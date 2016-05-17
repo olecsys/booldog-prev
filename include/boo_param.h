@@ -575,6 +575,15 @@ namespace booldog
 			this->name = name;
 			hash = 0;
 		};
+		template< class booclass >
+		booinline void set( const char* name , booclass value )
+		{
+			this->name = name;
+			hash = 0;
+			const param* _cthis = this;
+			param* _this = const_cast< ::booldog::param* >( _cthis );
+			_this->operator=( value );
+		};
 		booinline named_param& operator = ( ::booldog::data::json::node* value )
 		{
 			const param* _cthis = this;

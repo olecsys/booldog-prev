@@ -5827,16 +5827,16 @@ TEST_F( boo_jsonTest , test )
 			, 0 );
 
 
-		serializator.fast.add< 1 >( &resres , "test \n \f" , false , debuginfo_macros );
+		serializator.fast.add< 1 >( &resres , "test \" \n \f" , false , debuginfo_macros );
 
 		ASSERT_TRUE( resres.succeeded() );
 
 		ASSERT_EQ( serializator.fast.nodesindex , 0 );
 
-		ASSERT_EQ( serializator.fast.jsonlen , 108 );
+		ASSERT_EQ( serializator.fast.jsonlen , 111 );
 
 		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\n \\f\":false" ) 
+			",\"test \\\" \\n \\f\":false" ) 
 			, 0 );
 
 
@@ -5846,10 +5846,10 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_EQ( serializator.fast.nodesindex , 0 );
 
-		ASSERT_EQ( serializator.fast.jsonlen , 117 );
+		ASSERT_EQ( serializator.fast.jsonlen , 120 );
 
 		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\n \\f\":false,\"1\":-128" ) 
+			",\"test \\\" \\n \\f\":false,\"1\":-128" ) 
 			, 0 );
 
 
@@ -5859,10 +5859,10 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_EQ( serializator.fast.nodesindex , 0 );
 
-		ASSERT_EQ( serializator.fast.jsonlen , 138 );
+		ASSERT_EQ( serializator.fast.jsonlen , 141 );
 
 		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\n \\f\":false,\"1\":-128,\"2\":-128128128128128" ) 
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128" ) 
 			, 0 );
 
 
@@ -5872,10 +5872,10 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_EQ( serializator.fast.nodesindex , 0 );
 
-		ASSERT_EQ( serializator.fast.jsonlen , 158 );
+		ASSERT_EQ( serializator.fast.jsonlen , 161 );
 
 		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256" ) 
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256" ) 
 			, 0 );
 
 
@@ -5885,10 +5885,10 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_EQ( serializator.fast.nodesindex , 0 );
 
-		ASSERT_EQ( serializator.fast.jsonlen , 164 );
+		ASSERT_EQ( serializator.fast.jsonlen , 167 );
 
 		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0" ) 
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0" ) 
 			, 0 );
 
 
@@ -5898,10 +5898,10 @@ TEST_F( boo_jsonTest , test )
 
 		ASSERT_EQ( serializator.fast.nodesindex , 0 );
 
-		ASSERT_EQ( serializator.fast.jsonlen , 165 );
+		ASSERT_EQ( serializator.fast.jsonlen , 168 );
 
 		ASSERT_EQ( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0}" )
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0}" )
 			, 0 );
 
 
