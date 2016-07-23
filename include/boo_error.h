@@ -61,7 +61,8 @@ namespace booldog
 				booerr_type_json_object_has_not_node , 
 				booerr_type_json_it_is_root_object ,
 				booerr_type_json_parent_is_not_object ,
-				booerr_type_module_is_deinitialized_and_must_be_unloaded
+				booerr_type_module_is_deinitialized_and_must_be_unloaded ,
+				booerr_type_file_does_not_exist
 			};
 		};
 	};

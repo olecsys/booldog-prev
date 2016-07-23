@@ -16,6 +16,8 @@ namespace booldog
 			booinline bool ip( ::booldog::result* pres , char* dst , size_t& dstlen , size_t dstsize , ::booldog::uint32 ip
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
+				debuginfo = debuginfo;
+
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
 

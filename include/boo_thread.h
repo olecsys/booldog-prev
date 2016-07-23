@@ -114,7 +114,7 @@ namespace booldog
 					thr->_onthreadstopped = onthreadstopped;
 					thr->_onthreadprocedure = onthreadprocedure;
 #ifdef __WINDOWS__
-					thr->_handle = (HANDLE)_beginthreadex( 0 , stack_size , ::booldog::threading::thread::func , thr , 0 , 0 );
+					thr->_handle = (HANDLE)_beginthreadex( 0 , (unsigned)stack_size , ::booldog::threading::thread::func , thr , 0 , 0 );
 					if( thr->_handle == 0 )
 					{
 						res->seterrno();

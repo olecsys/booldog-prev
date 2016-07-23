@@ -8,10 +8,34 @@
 #endif
 #include BOOLDOG_HEADER(boo_types.h)
 #include <string.h>
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS
+#endif
+#ifndef __STDC_CONSTANT_MACROS
+#define __STDC_CONSTANT_MACROS
+#endif
+#ifdef __WINDOWS__
+#if (_MSC_VER >= 1600 )
+#include <stdint.h>
+#endif
+#else
+#include <stdint.h>
+#endif
+#ifndef SIZE_MAX
+#ifdef __SIZE_MAX__
+#define SIZE_MAX __SIZE_MAX__
+#else
+#define SIZE_MAX ((size_t) - 1)
+#endif
+#endif
 namespace booldog
 {
 	namespace mem
 	{
+#ifdef __WINDOWS__
+#pragma warning( push )
+#pragma warning( disable: 4324 )
+#endif
 #define BOOLDOG_MEM_INFO_HEAP 2
 #define BOOLDOG_MEM_INFO_BUSY 3
 #define BOOLDOG_MEM_INFO_USE_INFO1 4
@@ -54,6 +78,9 @@ namespace booldog
 			::booldog::byte _eflags;
 		}
 		booend_struct_pack( 4 );
+#ifdef __WINDOWS__
+#pragma warning( pop )
+#endif
 		namespace info
 		{
 			booinline size_t memory_size_with_info( size_t size )

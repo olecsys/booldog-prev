@@ -10,12 +10,17 @@
 #include BOOLDOG_HEADER(boo_allocator.h)
 #include BOOLDOG_HEADER(boo_mem.h)
 #include BOOLDOG_HEADER(boo_error.h)
+#ifdef __WINDOWS__
+#include <sys/types.h>
+#include <sys/stat.h>
+#else
+#endif
 namespace booldog
 {	
 	namespace utils
 	{
 		namespace io
-		{
+		{	
 			namespace path
 			{
 				namespace mbs
@@ -201,8 +206,8 @@ goto_return:
 						return res->succeeded();
 					};
 					booinline bool toabsolute( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const char* path 
-						, size_t charindex = 0 , size_t charcount = SIZE_MAX , const char* root = 0 , size_t rootcharindex = 0 
-						, size_t rootcharcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+						, size_t charindex = 0 , size_t charcount = SIZE_MAX 
+						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
 						::booldog::result_mbchar locres( allocator );
 						BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -1083,8 +1088,8 @@ goto_return:
 	goto_next:
 						return res->succeeded();
 					};
-					booinline bool toabsolute( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path , size_t charindex = 0 , size_t charcount = SIZE_MAX 
-						, const wchar_t* root = 0 , size_t rootcharindex = 0 , size_t rootcharcount = SIZE_MAX 
+					booinline bool toabsolute( ::booldog::result_wchar* pres , booldog::allocator* allocator , const wchar_t* path 
+						, size_t charindex = 0 , size_t charcount = SIZE_MAX 
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 					{
 						::booldog::result_wchar locres( allocator );

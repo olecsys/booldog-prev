@@ -97,7 +97,13 @@ namespace booldog
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
+#ifdef __WINDOWS__
+#if (_MSC_VER >= 1600 )
 #include <stdint.h>
+#endif
+#else
+#include <stdint.h>
+#endif
 #ifndef SIZE_MAX
 #ifdef __SIZE_MAX__
 #define SIZE_MAX __SIZE_MAX__

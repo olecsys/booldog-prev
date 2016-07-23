@@ -12,7 +12,7 @@
 			"global":
 			{
 				"os":"linux",
-				"compiler_flags":"-fvisibility=hidden -fPIC",
+				"compiler_flags":"-fvisibility=hidden -fPIC -DHAVE_CONFIG_H",
 				"sources":
 				[
 					"./src/main.cpp"
@@ -20,7 +20,6 @@
 				"post_builds":
 				[					
 				],
-				"isystem":"./../extern_sources/gtest-1.7.0/include",
 				"intermediate_directory":"./../build/$(architecture)",
 				"rm_command":"rm -f",
 				"mk_dir_command":"mkdir -p",
@@ -35,7 +34,9 @@
 				[
 					"./src",
 					"./../include",
-					"./../extern_sources/gtest-1.7.0/include"
+					"./../../inc",
+					"./../config",
+					"./../extern_sources"
 				],
 				"lib_paths":
 				[
@@ -44,7 +45,6 @@
 				],
 				"libs":
 				[
-					"gtest",
 					"pthread",
 					"dl",
 					"rt"

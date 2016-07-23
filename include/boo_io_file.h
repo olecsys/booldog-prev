@@ -210,7 +210,8 @@ namespace booldog
 				{
 					::booldog::result_mbchar res_root_dir( allocator );
 
-					if( settings[ 1 ].type != ::booldog::enums::param::type_not_found )
+					if(settings[ 1 ].type != ::booldog::enums::param::type_not_found 
+						&& settings[ 1 ].pcharvalue)
 					{
 						if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , SIZE_MAX , res_root_dir.mbchar , res_root_dir.mblen 
 							, res_root_dir.mbsize , settings[ 1 ].pcharvalue , 0 , SIZE_MAX , debuginfo ) == false )
@@ -219,7 +220,8 @@ namespace booldog
 							goto goto_return;							
 						}
 					}
-					else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found )
+					else if(settings[ 2 ].type != ::booldog::enums::param::type_not_found 
+						&& settings[ 2 ].pwcharvalue)
 					{
 						if( ::booldog::utils::string::wcs::tombs( &res_root_dir , allocator , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX 
 							, debuginfo ) == false )
@@ -230,7 +232,7 @@ namespace booldog
 					}
 					else
 					{
-						if( settings[ 3 ].type != ::booldog::enums::param::type_not_found && settings[ 3 ].boolvalue )
+						if(settings[3].type != ::booldog::enums::param::type_not_found && settings[3].boolvalue)
 						{
 							if( ::booldog::utils::executable::mbs::directory< 256 >( &res_root_dir , allocator , debuginfo ) == false )
 							{
@@ -425,6 +427,39 @@ namespace booldog
 #endif
 					res->seterrno();
 				_allocator->destroy( this );
+				return res->succeeded();
+			};
+			bool write(::booldog::result* pres, ::booldog::byte* buffer, size_t buffer_size, size_t portion_size, size_t& written
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+			{
+				debuginfo = debuginfo;
+				::booldog::result locres;
+				BOOINIT_RESULT(::booldog::result);
+
+				written = 0;
+#ifdef __WINDOWS__
+				int writeres = 0;
+#else
+				ssize_t writeres = 0;
+#endif
+				for( ; ; )
+				{
+					if(buffer_size == written)
+						break;
+					else if(portion_size > buffer_size - written)
+						portion_size = buffer_size - written;
+#ifdef __WINDOWS__
+					writeres = _write(_file, &buffer[written], (unsigned int)portion_size);
+#else
+					writeres = ::write(_file, &buffer[written], portion_size);
+#endif
+					if(writeres == -1)
+					{
+						res->seterrno();
+						break;
+					}
+					written += writeres;
+				}
 				return res->succeeded();
 			};
 			bool read( ::booldog::result_buffer* pres , booldog::allocator* allocator

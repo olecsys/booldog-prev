@@ -249,6 +249,18 @@ namespace booldog
 			};
 			struct serializator_fast
 			{
+				booinline char* detach(void)
+				{
+					char* res = json;
+					json = 0;
+					if(nodes)
+					{
+						jsonallocator->free(nodes);
+						nodes = 0;
+					}
+					clear();
+					return res;
+				};
 				booinline void clear( void )
 				{
 					if( json )
@@ -1184,6 +1196,251 @@ goto_return:
 goto_return:
 					return res->succeeded();
 				};
+				template< size_t step , class P0 >
+				booinline bool object( ::booldog::result* pres , const char* name0 , P0 value0 , bool close_object_scope
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 >
+				booinline bool object( ::booldog::result* pres , const char* name0 , P0 value0 , const char* name1 , P1 value1
+					, bool close_object_scope , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 , class P2 >
+				booinline bool object( ::booldog::result* pres , const char* name0 , P0 value0 , const char* name1 , P1 value1
+					, const char* name2 , P2 value2 , bool close_object_scope , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name2 , value2 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 , class P2 , class P3 >
+				booinline bool object( ::booldog::result* pres , const char* name0 , P0 value0 , const char* name1 , P1 value1
+					, const char* name2 , P2 value2 , const char* name3 , P3 value3 , bool close_object_scope 
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name2 , value2 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name3 , value3 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 , class P2 , class P3 , class P4 >
+				booinline bool object( ::booldog::result* pres , const char* name0 , P0 value0 , const char* name1 , P1 value1
+					, const char* name2 , P2 value2 , const char* name3 , P3 value3 , const char* name4 , P4 value4	, bool close_object_scope
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name2 , value2 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name3 , value3 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name4 , value4 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+
+				template< size_t step , class P0 >
+				booinline bool object( ::booldog::result* pres , const char* object_name , const char* name0 , P0 value0 , bool close_object_scope
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , object_name , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 >
+				booinline bool object( ::booldog::result* pres , const char* object_name , const char* name0 , P0 value0 , const char* name1 , P1 value1
+					, bool close_object_scope , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , object_name , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 , class P2 >
+				booinline bool object( ::booldog::result* pres , const char* object_name , const char* name0 , P0 value0 , const char* name1 , P1 value1
+					, const char* name2 , P2 value2 , bool close_object_scope , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , object_name , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name2 , value2 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 , class P2 , class P3 >
+				booinline bool object( ::booldog::result* pres , const char* object_name , const char* name0 , P0 value0 , const char* name1 , P1 value1
+					, const char* name2 , P2 value2 , const char* name3 , P3 value3 , bool close_object_scope 
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , object_name , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name2 , value2 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name3 , value3 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
+				template< size_t step , class P0 , class P1 , class P2 , class P3 , class P4 >
+				booinline bool object( ::booldog::result* pres , const char* object_name , const char* name0 , P0 value0 , const char* name1 
+					, P1 value1	, const char* name2 , P2 value2 , const char* name3 , P3 value3 , const char* name4 , P4 value4	
+					, bool close_object_scope , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT( ::booldog::result );
+
+					if( begin_object< step >( res , object_name , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name0 , value0 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name1 , value1 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name2 , value2 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name3 , value3 , debuginfo ) == false )
+						goto goto_return;
+
+					if( add< step >( res , name4 , value4 , debuginfo ) == false )
+						goto goto_return;
+
+					if( close_object_scope && end_object< step >( res , debuginfo ) == false )
+						goto goto_return;
+goto_return:
+					return res->succeeded();
+				};
 			};
 
 			struct serializator
@@ -1210,19 +1467,13 @@ goto_return:
 					if( slow.nodes )
 						slow.jsonallocator->free( slow.nodes );
 				};
+				booinline char* detach(void)
+				{
+					return fast.detach();
+				};
 				booinline void clear( void )
 				{
-					if( slow.json )
-						slow.json[ 0 ] = 0;
-					else
-						slow.jsonsize = 0;
-					slow.jsonlen = 0;
-					slow.nodesindex = 0;
-					if( slow.nodes == 0 )
-						slow.nodessize = 0;
-					for( size_t index0 = 0 ; index0 < slow.nodessize ; index0++ )
-						slow.nodes[ index0 ].flags = ::booldog::utils::bits::compile::number_from_bit_index< 
-						::booldog::byte , BOOLDOG_DATA_JSON_NODE_FREE >::value;
+					fast.clear();
 				};
 				booinline ::booldog::data::json::serializator& operator = ( const ::booldog::data::json::serializator& obj );
 				operator ::booldog::data::json::object() const

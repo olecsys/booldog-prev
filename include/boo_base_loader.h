@@ -14,7 +14,7 @@
 #include BOOLDOG_HEADER(boo_rdwrlock.h)
 #include BOOLDOG_HEADER(boo_io_utils.h)
 #include BOOLDOG_HEADER(boo_executable_utils.h)
-#include BOOLDOG_HEADER(boo_string_utils.h)
+#include BOOLDOG_HEADER(boo_file_utils.h)
 
 #ifdef __UNIX__
 #include <dlfcn.h>
@@ -143,6 +143,9 @@ namespace booldog
 						_modules_begin = module;
 					}
 					module->_handle = module_handle;
+#ifdef __UNIX__
+					debuginfo.log_debug( "<booldog>mbsload, %s loaded" , res_name_or_path );
+#endif
 				}
 				module->addref();
 				_lock.wunlock( debuginfo );
@@ -222,6 +225,8 @@ namespace booldog
 
 			::booldog::result_mbchar res_name_or_path( allocator );
 			
+			::booldog::result_module resmod;
+
 			::booldog::result_bool resbool;
 			::booldog::result resres;
 			if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , true , 0 , res_name_or_path.mbchar , res_name_or_path.mblen
@@ -243,6 +248,10 @@ namespace booldog
 					res->copy( resres );
 					goto goto_return;
 				}
+				if( ::booldog::utils::io::file::mbs::exists( &resbool , allocator , res_name_or_path.mbchar , debuginfo ) 
+					== false || resbool.bres == false )
+					goto goto_return;
+
 				::booldog::module_handle module_handle = 0;				
 
 				if( get_loaded_module( res , res_name_or_path.mbchar , debuginfo ) )
@@ -283,6 +292,7 @@ namespace booldog
 								_modules_begin = module;
 							}
 							module->_handle = module_handle;
+							debuginfo.log_debug( "<booldog>mbsload, %s loaded" , name_or_path );
 						}
 						module->addref();
 						_lock.wunlock( debuginfo );
@@ -317,7 +327,8 @@ namespace booldog
 			{
 				::booldog::result_mbchar res_root_dir( allocator );
 
-				if( settings[ 1 ].type != ::booldog::enums::param::type_not_found )
+				if( settings[ 1 ].type != ::booldog::enums::param::type_not_found
+					&& settings[ 1 ].pcharvalue)
 				{
 					if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , SIZE_MAX , res_root_dir.mbchar , res_root_dir.mblen 
 						, res_root_dir.mbsize , settings[ 1 ].pcharvalue , 0 , SIZE_MAX , debuginfo ) == false )
@@ -326,7 +337,8 @@ namespace booldog
 						goto goto_return;							
 					}
 				}
-				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found )
+				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found
+					&& settings[ 2 ].pwcharvalue)
 				{
 					if( ::booldog::utils::string::wcs::tombs( &res_root_dir , allocator , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX 
 						, debuginfo ) == false )
@@ -414,8 +426,14 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+							res->copy( resmod );
 
 						res_root_dir.mbchar[ res_dir_mblen ] = 0;
 						res_root_dir.mblen = res_dir_mblen;
@@ -433,8 +451,14 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+							res->copy( resmod );
 
 						res_root_dir.mbchar[ res_dir_mblen ] = 0;
 						res_root_dir.mblen = res_dir_mblen;
@@ -452,8 +476,14 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+							res->copy( resmod );
 
 						if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 							, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
@@ -462,8 +492,14 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+							res->copy( resmod );
 					}
 				}
 				if( res_root_dir.mbchar )
@@ -488,8 +524,14 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+						res->copy( resmod );
 
 					res_root_dir.mbchar[ res_dir_mblen ] = 0;
 					res_root_dir.mblen = res_dir_mblen;
@@ -507,8 +549,14 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+						res->copy( resmod );
 
 					res_root_dir.mbchar[ res_dir_mblen ] = 0;
 					res_root_dir.mblen = res_dir_mblen;
@@ -526,8 +574,14 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+						res->copy( resmod );
 
 					if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_root_dir.mblen , res_root_dir.mbchar 
 						, res_root_dir.mblen , res_root_dir.mbsize , ".so" , 0
@@ -536,8 +590,14 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( res , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_dlerror )
+						res->copy( resmod );
 				}
 				else
 				{
@@ -638,7 +698,7 @@ namespace booldog
 						}
 					}
 					_lock_loaded_dirs.runlock( debuginfo );
-
+					
 					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
@@ -652,11 +712,13 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
+
 					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
 						res->setdlerror( allocator , dlerror() , debuginfo );
+
 					res_name_or_path.mbchar[ res_root_dir_mblen ] = 0;
 					res_name_or_path.mblen = res_root_dir_mblen;
 					
@@ -667,11 +729,13 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
+
 					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
 					else
 						res->setdlerror( allocator , dlerror() , debuginfo );
+
 					if( ::booldog::utils::string::mbs::insert< 0 >( &resres , allocator , false , res_name_or_path.mblen , res_name_or_path.mbchar 
 						, res_name_or_path.mblen , res_name_or_path.mbsize , ".so" , 0
 						, SIZE_MAX , debuginfo ) == false )
@@ -679,6 +743,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
+					
 					module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
 					if( module_handle )
 						goto goto_loaded_module;
@@ -737,6 +802,7 @@ goto_loaded_module:
 							_modules_begin = module;
 						}
 						module->_handle = module_handle;
+						debuginfo.log_debug( "<booldog>mbsload, %s loaded" , name_or_path );
 					}
 					module->addref();
 					_lock.wunlock( debuginfo );
@@ -762,6 +828,11 @@ goto_return:
 			if( locked )
 				_lock.wunlock( debuginfo );
 #endif
+			if( res->module == 0 )
+			{
+				if( res->succeeded() )
+					res->booerr( ::booldog::enums::result::booerr_type_file_does_not_exist );
+			}	
 			return res->succeeded();
 		};
 		virtual bool wcsload( ::booldog::result_module* pres , booldog::allocator* allocator , const wchar_t* name_or_path 
@@ -782,7 +853,8 @@ goto_return:
 			::booldog::utils::param::search( named_params , settings );
 
 			::booldog::result_wchar res_name_or_path( allocator );
-			
+			::booldog::result_module resmod;			
+
 			::booldog::result_bool resbool;
 			::booldog::result resres;
 			if( ::booldog::utils::string::wcs::insert( &resres , allocator , true , 0 , res_name_or_path.wchar , res_name_or_path.wlen
@@ -804,6 +876,10 @@ goto_return:
 					res->copy( resres );
 					goto goto_return;
 				}
+				if( ::booldog::utils::io::file::wcs::exists( &resbool , allocator , res_name_or_path.wchar , debuginfo ) 
+					== false || resbool.bres == false )
+					goto goto_return;
+
 				::booldog::module_handle module_handle = 0;
 				
 				if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
@@ -854,7 +930,8 @@ goto_return:
 			{
 				::booldog::result_wchar res_root_dir( allocator );
 
-				if( settings[ 1 ].type != ::booldog::enums::param::type_not_found )
+				if( settings[ 1 ].type != ::booldog::enums::param::type_not_found
+					&& settings[ 1 ].pcharvalue)
 				{
 					if( ::booldog::utils::string::mbs::towcs( &res_root_dir , allocator , settings[ 1 ].pcharvalue , 0 , SIZE_MAX 
 						, debuginfo ) == false )
@@ -863,7 +940,8 @@ goto_return:
 						goto goto_return;							
 					}
 				}
-				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found )
+				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found
+					&& settings[ 2 ].pwcharvalue)
 				{
 					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , SIZE_MAX , res_root_dir.wchar , res_root_dir.wlen 
 						, res_root_dir.wsize , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX , debuginfo ) == false )
@@ -951,8 +1029,14 @@ goto_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
 
 						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
 							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
@@ -961,8 +1045,14 @@ goto_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
 
 						res_root_dir.wchar[ res_dir_wlen ] = 0;
 						res_root_dir.wlen = res_dir_wlen;
@@ -980,8 +1070,14 @@ goto_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
 
 						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
 							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
@@ -990,8 +1086,14 @@ goto_return:
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+						{
+							res->clear();
+							res->module = resmod.module;
 							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
 					}
 				}
 				if( res_root_dir.wchar )
@@ -1016,8 +1118,14 @@ goto_return:
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
 
 					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
 						, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
@@ -1026,8 +1134,14 @@ goto_return:
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
 
 					res_root_dir.wchar[ res_dir_wlen ] = 0;
 					res_root_dir.wlen = res_dir_wlen;
@@ -1045,8 +1159,14 @@ goto_return:
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
 
 					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
 						, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
@@ -1055,8 +1175,14 @@ goto_return:
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( wcsload( res , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
+					{
+						res->clear();
+						res->module = resmod.module;
 						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
 				}
 				else
 				{
@@ -1178,6 +1304,8 @@ goto_return:
 			else
 				res->copy( resmbchar );
 #endif
+			if( res->module == 0 && res->succeeded() )
+				res->booerr( ::booldog::enums::result::booerr_type_file_does_not_exist );
 			return res->succeeded();
 		};
 		virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module 

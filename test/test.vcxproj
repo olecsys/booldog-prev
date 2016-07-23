@@ -31,7 +31,9 @@
     <ClInclude Include="..\include\boo_error.h" />
     <ClInclude Include="..\include\boo_error_format.h" />
     <ClInclude Include="..\include\boo_executable_utils.h" />
+    <ClInclude Include="..\include\boo_file_utils.h" />
     <ClInclude Include="..\include\boo_fps_counter.h" />
+    <ClInclude Include="..\include\boo_hash_md5.h" />
     <ClInclude Include="..\include\boo_hash_sha1.h" />
     <ClInclude Include="..\include\boo_hash_times33.h" />
     <ClInclude Include="..\include\boo_heap_allocator.h" />
@@ -63,6 +65,7 @@
     <ClInclude Include="..\include\boo_result.h" />
     <ClInclude Include="..\include\boo_stack_allocator.h" />
     <ClInclude Include="..\include\boo_string.h" />
+    <ClInclude Include="..\include\boo_string_consts.h" />
     <ClInclude Include="..\include\boo_string_enums.h" />
     <ClInclude Include="..\include\boo_string_utils.h" />
     <ClInclude Include="..\include\boo_thread.h" />
@@ -125,19 +128,20 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions);HAVE_CONFIG_H</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\extern_sources\gtest-1.7.0\include;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\config;$(ProjectDir)..\..\inc;$(ProjectDir)..\extern_sources;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
       <ExceptionHandling>Async</ExceptionHandling>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -147,14 +151,14 @@
       <TargetMachine>MachineX86</TargetMachine>
       <OutputFile>$(ProjectDir)..\build\$(Platform)\booldog.test.exe</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)..\extern_lib\windows\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>yajl_s.lib;gtest.lib;Kernel32.lib</AdditionalDependencies>
+      <AdditionalDependencies>yajl_s.lib;Kernel32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN64;%(PreprocessorDefinitions);HAVE_CONFIG_H</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <PrecompiledHeader>
@@ -166,7 +170,7 @@
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\extern_sources\gtest-1.7.0\include;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\config;$(ProjectDir)..\..\inc;$(ProjectDir)..\extern_sources;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>
@@ -174,7 +178,7 @@
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>gtest.lib;Kernel32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Kernel32.lib</AdditionalDependencies>
       <OutputFile>$(ProjectDir)..\build\$(Platform)\booldog.test.exe</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)..\extern_lib\windows\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>

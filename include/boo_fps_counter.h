@@ -65,6 +65,12 @@ namespace booldog
 				_frames_count = 0;
 				_start_time = _tickcount();
 			};
+			void clear( void )
+			{
+				_last_frame_time = 0;
+				_frames_count = 0;
+				_start_time = 0;
+			};
 		};
 	};
 };

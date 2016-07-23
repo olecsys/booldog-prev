@@ -3,8 +3,23 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <stdarg.h>
 namespace booldog
 {
+	namespace enums
+	{
+		namespace debug
+		{
+			enum log_level
+			{
+				log_level_error = 40000 ,
+				log_level_warn = 30000 ,
+				log_level_debug = 10000 ,
+				log_level_trace = 5000 , 
+				log_level_verbose = 0
+			};
+		};
+	};
 	namespace debug
 	{
 		namespace typedefs
@@ -13,6 +28,7 @@ namespace booldog
 			typedef unsigned int (*lineid_t)( void* udata , unsigned int label , const char* __boofile__ 
 				, const char* __boofunction__ , int __booline__ );
 			typedef void (*sleep_t)( void* udata , unsigned int label );
+			typedef void (*write_log_t)( int level , const char* format , va_list ap );
 		};
 		struct info
 		{
@@ -38,6 +54,9 @@ namespace booldog
 				udata = udata;
 				label = label;
 			};
+			static void write_log_empty( int , const char* , va_list )
+			{
+			};
 			const char* file;
 			int line;
 			unsigned int label;
@@ -45,6 +64,7 @@ namespace booldog
 			::booldog::debug::typedefs::lineid_t lineid;
 			::booldog::debug::typedefs::sleep_t sleep;
 			void* udata;
+			::booldog::debug::typedefs::write_log_t log;
 			info( const char* file , int line )
 			{
 				this->file = file;
@@ -52,6 +72,7 @@ namespace booldog
 				this->statement = ::booldog::debug::info::statement_empty;
 				this->lineid = ::booldog::debug::info::lineid_empty;
 				this->sleep = ::booldog::debug::info::sleep_empty;
+				this->log = ::booldog::debug::info::write_log_empty;
 			};
 			info( const char* file , int line , unsigned int label )
 			{
@@ -61,6 +82,7 @@ namespace booldog
 				this->statement = ::booldog::debug::info::statement_empty;
 				this->lineid = ::booldog::debug::info::lineid_empty;
 				this->sleep = ::booldog::debug::info::sleep_empty;
+				this->log = ::booldog::debug::info::write_log_empty;
 			};
 			info( const char* file , int line , unsigned int label , ::booldog::debug::typedefs::statement_t pstatement 
 				, ::booldog::debug::typedefs::lineid_t plineid , ::booldog::debug::typedefs::sleep_t psleep , void* udata )
@@ -72,6 +94,20 @@ namespace booldog
 				this->lineid = plineid;
 				this->sleep = psleep;
 				this->udata = udata;
+				this->log = ::booldog::debug::info::write_log_empty;
+			};
+			info( const char* file , int line , unsigned int label , ::booldog::debug::typedefs::statement_t pstatement 
+				, ::booldog::debug::typedefs::lineid_t plineid , ::booldog::debug::typedefs::sleep_t psleep , void* udata
+				, ::booldog::debug::typedefs::write_log_t write_log )
+			{
+				this->file = file;
+				this->line = line;
+				this->label = label;
+				this->statement = pstatement;
+				this->lineid = plineid;
+				this->sleep = psleep;
+				this->udata = udata;
+				this->log = write_log;
 			};
 			const ::booldog::debug::info& operator = ( const ::booldog::debug::info& ) const
 			{
@@ -80,6 +116,41 @@ namespace booldog
 			int version( void )
 			{
 				return 1;
+			};
+			void log_trace( const char* format , ... ) const
+			{
+				va_list ap;
+				va_start( ap , format );
+				this->log( ::booldog::enums::debug::log_level_trace , format , ap );
+				va_end( ap );
+			};
+			void log_error( const char* format , ... ) const
+			{
+				va_list ap;
+				va_start( ap , format );
+				this->log( ::booldog::enums::debug::log_level_error , format , ap );
+				va_end( ap );
+			};
+			void log_warn( const char* format , ... ) const
+			{
+				va_list ap;
+				va_start( ap , format );
+				this->log( ::booldog::enums::debug::log_level_warn , format , ap );
+				va_end( ap );
+			};
+			void log_debug( const char* format , ... ) const
+			{
+				va_list ap;
+				va_start( ap , format );
+				this->log( ::booldog::enums::debug::log_level_debug , format , ap );
+				va_end( ap );
+			};
+			void log_verbose( const char* format , ... ) const
+			{
+				va_list ap;
+				va_start( ap , format );
+				this->log( ::booldog::enums::debug::log_level_verbose , format , ap );
+				va_end( ap );
 			};
 		};
 #define debuginfo_macros ::booldog::debug::info( __FILE__ , __LINE__ )

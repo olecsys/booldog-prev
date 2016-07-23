@@ -13,6 +13,7 @@
 #include BOOLDOG_HEADER(boo_utf16.h)
 #include BOOLDOG_HEADER(boo_utf32.h)
 #include BOOLDOG_HEADER(boo_if.h)
+#include BOOLDOG_HEADER(boo_string_consts.h)
 
 #ifdef __UNIX__
 #ifndef _LARGEFILE64_SOURCE 
@@ -229,6 +230,34 @@ debuginfo_macros_statement( 41 );
 						else
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 					}
+					return res->succeeded();
+				};
+				booinline bool toreversehexstring( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator , const ::booldog::byte* data 
+					, size_t data_len , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				{
+					::booldog::result_mbchar locres( allocator );
+					BOOINIT_RESULT( ::booldog::result_mbchar );
+					size_t data_size = 2 * data_len + 1;
+					if( data_size > res->mbsize )
+					{
+						res->mbsize = data_size;
+						res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
+					}
+					if( res->mbchar )
+					{
+						const char* hex = 0;
+						res->mblen--;
+						for( size_t index0 = 0 ; index0 < data_len ; index0++ )
+						{
+							hex = ::booldog::consts::string::hex[ data[ index0 ] ];
+							res->mbchar[ ++res->mblen ] = hex[ 0 ];
+							res->mbchar[ ++res->mblen ] = hex[ 1 ];
+						}
+						res->mbchar[ ++res->mblen ] = 0;
+					}
+					else
+						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
+					
 					return res->succeeded();
 				};
 				booinline bool sprintf( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator , const char* format
