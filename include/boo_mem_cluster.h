@@ -666,14 +666,14 @@ namespace booldog
 				}
 				else
 				{
-					if(size == 248)
+					if(requested_size == 248)
 						printf("step %d\n", __LINE__);
 
 					void* endptr = end();
 					::booldog::byte* info = begin + offsize;
 					if( info >= endptr || ::booldog::utils::get_bit( info[ 1 ] , BOOLDOG_MEM_INFO_BUSY ) )
 					{
-						if(size == 248)
+						if(requested_size == 248)
 							printf("step %d\n", __LINE__);
 
 						void* new_pointer = this->alloc( size , debuginfo );
@@ -696,7 +696,7 @@ namespace booldog
 					}
 					else
 					{
-						if(size == 248)
+						if(requested_size == 248)
 							printf("step %d\n", __LINE__);
 
 						size_t info_offsize = 0 , info_begin_size = 0;
@@ -707,7 +707,7 @@ namespace booldog
 						size_t diff = offsize + info_offsize , new_offset = 0;
 						if( diff - sizeof( ::booldog::mem::info1 ) < UINT8_MAX )
 						{
-							if(size == 248)
+							if(requested_size == 248)
 								printf("step %d\n", __LINE__);
 
 							info_offsize = diff;
@@ -726,7 +726,7 @@ namespace booldog
 						}
 						else if( diff - sizeof( ::booldog::mem::info2 ) < UINT16_MAX )
 						{
-							if(size == 248)
+							if(requested_size == 248)
 								printf("step %d\n", __LINE__);
 
 							info_offsize = diff;
@@ -745,7 +745,7 @@ namespace booldog
 						}
 						else if( diff - sizeof( ::booldog::mem::info3 ) < UINT32_MAX )
 						{
-							if(size == 248)
+							if(requested_size == 248)
 								printf("step %d\n", __LINE__);
 
 							info_offsize = diff;
@@ -764,7 +764,7 @@ namespace booldog
 						}
 						else
 						{
-							if(size == 248)
+							if(requested_size == 248)
 								printf("step %d\n", __LINE__);
 
 							info_offsize = diff;
@@ -783,7 +783,7 @@ namespace booldog
 						}
 						if( _begin > begin && _begin < &begin[ info_offsize ] )
 						{
-							if(size == 248)
+							if(requested_size == 248)
 								printf("step %d\n", __LINE__);
 
 							::booldog::byte* info = begin;

@@ -1,3 +1,5 @@
+#define BOOLDOG_MEM_CLUSTER_LOG
+
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
