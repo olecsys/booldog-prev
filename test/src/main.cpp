@@ -1873,6 +1873,8 @@ TEST_CASE("boo_allocators_mixedTest", "test")
 		*/
 		ptr4 = mixed.realloc(ptr4, 246);
 
+		mixed.stack._cluster.print();
+
 		REQUIRE(mixed.check_consistency());
 
 		void* ptr7 = mixed.realloc(0, 232);//mem_cluster::alloc, 7fffd4f92ccc(232)
