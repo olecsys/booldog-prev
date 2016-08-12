@@ -1862,16 +1862,21 @@ TEST_CASE("boo_allocators_mixedTest", "test")
 
 		REQUIRE(mixed.check_consistency());
 
+		printf("%s", "\n\n");
+		mixed.stack._cluster.print();
+
 		void* ptr5 = mixed.realloc(0, 93);//mem_cluster::alloc, 7fffd4f92b6c(93)
 
 		REQUIRE(mixed.check_consistency());
 
+		printf("%s", "\n\n");
 		mixed.stack._cluster.print();
 
 		void* ptr6 = mixed.realloc(0, 248);//mem_cluster::alloc, 7fffd4f92bd0(248)
 
 		REQUIRE(mixed.check_consistency());
 				
+		printf("%s", "\n\n");
 		mixed.stack._cluster.print();
 
 		/*mem_cluster::free, 7fffd4f92af8
