@@ -142,10 +142,15 @@ namespace booldog
 							return false;
 					}
 					prev = info;
-					prev_offsize = offsize;
 					info = info + offsize;
 					if(info >= endptr)
+					{
+						size_t diff = (size_t)((::booldog::byte*)endptr - prev);
+						if(diff <= sizeof(::booldog::mem::info1))
+							return false;
 						break;
+					}
+					prev_offsize = offsize;
 					from_info(info, offsize, begin_size);
 				}
 				return true;
