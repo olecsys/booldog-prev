@@ -111,11 +111,15 @@ namespace booldog
 				void* endptr = end();
 				::booldog::byte* info = _data;
 				size_t offsize = 0 , begin_size = 0;
-				from_info( info , offsize , begin_size );
+				from_info(info, offsize, begin_size);
+				printf("Available size=%u(%u), begin(%p), end(%p)\n", (::booldog::uint32)_avail
+					, (::booldog::uint32)_data_size, _begin, endptr);
 				for( ; ; )
 				{
 					if( ::booldog::utils::get_bit( info[ 1 ] , BOOLDOG_MEM_INFO_BUSY ) )
-						printf( "size=%u, total=%u\n" , (::booldog::uint32)begin_size , (::booldog::uint32)offsize );
+						printf("Busy slice, size=%u(%u)\n", (::booldog::uint32)begin_size, (::booldog::uint32)offsize);
+					else
+						printf("Available slice, size=%u(%u)\n", (::booldog::uint32)begin_size, (::booldog::uint32)offsize);
 					info = info + offsize;
 					if( info >= endptr )
 						break;
