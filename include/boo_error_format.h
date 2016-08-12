@@ -9,6 +9,7 @@
 #include BOOLDOG_HEADER(boo_string_utils.h)
 #include BOOLDOG_HEADER(boo_error.h)
 #include BOOLDOG_HEADER(boo_result.h)
+#include <string.h>
 namespace booldog
 {
 	namespace error
@@ -19,6 +20,16 @@ namespace booldog
 			booldog::enums::result::error_type error_type = pres->get_error_type();
 			if( error_type == ::booldog::enums::result::error_type_errno )
 			{
+				if(mbsize_in_bytes < 1024)
+				{
+					mbsize_in_bytes = 1024;
+					mbchar = allocator->realloc_array<char>(mbchar, mbsize_in_bytes, debuginfo);
+				}
+#ifdef __WINDOWS__
+				strerror_s(mbchar, mbsize_in_bytes, pres->errno_err);
+#else
+				strerror_r(pres->errno_err, mbchar, mbsize_in_bytes);
+#endif
 			}
 			else if( error_type == ::booldog::enums::result::error_type_booerr )
 			{

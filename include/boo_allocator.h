@@ -115,6 +115,7 @@ namespace booldog
 			this->free( object );
 		};
 		virtual size_t gettotalsize( void* pointer ) = 0;
+		virtual bool check_consistency(void){return true;};
 	};
 	class heap_allocator : public ::booldog::allocator
 	{

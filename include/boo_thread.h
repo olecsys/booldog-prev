@@ -128,12 +128,15 @@ namespace booldog
 						res->setpthreaderror( result );
 						goto goto_destroy;
 					}
-					result = pthread_attr_setstacksize( &pthread_attr , stack_size );
-					if( result != 0 )
+					if(stack_size != 0)
 					{
-						res->setpthreaderror( result );
-						pthread_attr_destroy( &pthread_attr );
-						goto goto_destroy;
+						result = pthread_attr_setstacksize(&pthread_attr, stack_size);
+						if(result != 0)
+						{
+							res->setpthreaderror(result);
+							pthread_attr_destroy(&pthread_attr);
+							goto goto_destroy;
+						}
 					}
 					result = pthread_attr_setdetachstate( &pthread_attr , PTHREAD_CREATE_DETACHED );
 					if( result != 0 )

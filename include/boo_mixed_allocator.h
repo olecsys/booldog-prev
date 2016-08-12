@@ -44,6 +44,10 @@ namespace booldog
 			{
 				return holder.realloc( pointer , size , debuginfo );
 			};
+			virtual bool check_consistency(void)
+			{
+				return &stack == holder.stack;
+			};
 		};
 		namespace single_threaded
 		{
@@ -78,6 +82,10 @@ namespace booldog
 				virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					return holder.realloc( pointer , size , debuginfo );
+				};
+				virtual bool check_consistency(void)
+				{
+					return &stack == holder.stack;
 				};
 			};
 		};

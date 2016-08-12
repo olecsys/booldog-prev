@@ -88,10 +88,10 @@ namespace booldog
 		{
 			template< size_t s >
 			class stack : public ::booldog::stack_allocator
-			{
+			{	
 				::booldog::byte _data[ s + sizeof( ::booldog::mem::info4 ) ];
+			public:				
 				::booldog::mem::cluster _cluster;
-			public:
 				stack( void )
 					: _cluster( _data , s + sizeof( ::booldog::mem::info4 ) )
 				{

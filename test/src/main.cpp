@@ -1824,6 +1824,70 @@ TEST_CASE("boo_allocators_mixedTest", "test")
 	REQUIRE( mixed.stack.begin() == begin );
 
 	REQUIRE( mixed.stack.available() == total );
+
+	{
+		::booldog::allocators::single_threaded::mixed< 512 > mixed(&heap);
+
+		void* ptr0 = mixed.realloc(0, 67);//mem_cluster::alloc, 7fffd4f92ac4(67)
+
+		REQUIRE(mixed.check_consistency());
+
+		ptr0 = mixed.realloc(ptr0, 318);//mem_cluster::tryrealloc, again tryrealloc, 7fffd4f92ac4(318)
+
+		REQUIRE(mixed.check_consistency());
+
+		ptr0 = mixed.realloc(ptr0, 843);//mem_cluster::tryrealloc, again tryrealloc, 7fffd4f92ac8(843) go to heap
+
+		REQUIRE(mixed.check_consistency());
+
+		void* ptr1 = mixed.realloc(0, 448);//mem_cluster::alloc, 7fffd4f92ac8(448)
+
+		REQUIRE(mixed.check_consistency());
+
+		ptr1 = mixed.realloc(ptr1, 896);//mem_cluster::tryrealloc, again tryrealloc, 7fffd4f92ac8(896) go to heap
+
+		REQUIRE(mixed.check_consistency());
+
+		void* ptr2 = mixed.realloc(0, 14);//mem_cluster::alloc, 7fffd4f92ac4(14)
+
+		REQUIRE(mixed.check_consistency());
+
+		void* ptr3 = mixed.realloc(0, 25);//mem_cluster::alloc, 7fffd4f92ad8(25)
+
+		REQUIRE(mixed.check_consistency());
+
+		void* ptr4 = mixed.realloc(0, 109);//mem_cluster::alloc, 7fffd4f92af8(109)
+
+		REQUIRE(mixed.check_consistency());
+
+		void* ptr5 = mixed.realloc(0, 93);//mem_cluster::alloc, 7fffd4f92b6c(93)
+
+		REQUIRE(mixed.check_consistency());
+
+		void* ptr6 = mixed.realloc(0, 248);//mem_cluster::alloc, 7fffd4f92bd0(248)
+
+		REQUIRE(mixed.check_consistency());
+
+		/*mem_cluster::free, 7fffd4f92af8
+		mem_cluster::tryrealloc, 7fffd4f92bd0(246, 7fffd4f92af8)
+		*/
+		ptr4 = mixed.realloc(ptr4, 246);
+
+		REQUIRE(mixed.check_consistency());
+
+		void* ptr7 = mixed.realloc(0, 232);//mem_cluster::alloc, 7fffd4f92ccc(232)
+
+		REQUIRE(mixed.check_consistency());
+
+		mixed.free(ptr0);
+		mixed.free(ptr1);
+		mixed.free(ptr2);
+		mixed.free(ptr3);
+		mixed.free(ptr4);
+		mixed.free(ptr5);
+		mixed.free(ptr6);
+		mixed.free(ptr7);
+	}
 };
 TEST_CASE("boo_memTest", "test")
 {
