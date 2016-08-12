@@ -67,9 +67,8 @@ namespace booldog
 				_data = data;
 				_data_size = data_size;
 				_avail = data_size;
-				size_t s = data_size - sizeof( ::booldog::mem::info4 );
 				_begin = _data;
-				if( s < UINT8_MAX )
+				if(_avail - sizeof( ::booldog::mem::info1 ) < UINT8_MAX )
 				{
 					::booldog::mem::info1* info = (::booldog::mem::info1*)_begin;
 					info->_check = 86;
@@ -78,7 +77,7 @@ namespace booldog
 					info->_size = (::booldog::byte)( _avail - sizeof( ::booldog::mem::info1 ) );
 					_begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( s < UINT16_MAX )
+				else if(_avail - sizeof( ::booldog::mem::info2 ) < UINT16_MAX)
 				{
 					::booldog::mem::info2* info = (::booldog::mem::info2*)_begin;
 					info->_check = 86;
@@ -87,7 +86,7 @@ namespace booldog
 					info->_size = (::booldog::ushort)( _avail - sizeof( ::booldog::mem::info2 ) );
 					_begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( s < UINT32_MAX )
+				else if(_avail - sizeof( ::booldog::mem::info3 ) < UINT32_MAX)
 				{
 					::booldog::mem::info3* info = (::booldog::mem::info3*)_begin;
 					info->_check = 86;
@@ -243,7 +242,7 @@ namespace booldog
 					}
 				}
 
-				if( size < UINT8_MAX )
+				if(size - sizeof( ::booldog::mem::info1 ) < UINT8_MAX)
 				{
 					begin_size = size - sizeof( ::booldog::mem::info1 );
 					::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
@@ -253,7 +252,7 @@ namespace booldog
 					info->_size = (::booldog::byte)begin_size;
 					begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( size < UINT16_MAX )
+				else if(size - sizeof( ::booldog::mem::info2 ) < UINT16_MAX)
 				{
 					begin_size = size - sizeof( ::booldog::mem::info2 );
 					::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
@@ -263,7 +262,7 @@ namespace booldog
 					info->_size = (::booldog::ushort)begin_size;
 					begin[ sizeof( *info ) - 1 ] = info->_flags;
 				}
-				else if( size < UINT32_MAX )
+				else if(size - sizeof( ::booldog::mem::info1 ) < UINT32_MAX)
 				{
 					begin_size = size - sizeof( ::booldog::mem::info3 );
 					::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
