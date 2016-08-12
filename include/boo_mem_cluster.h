@@ -287,12 +287,15 @@ namespace booldog
 			booinline ::booldog::byte* check_alloc( ::booldog::byte* begin , size_t& size , size_t& total )
 			{
 				size_t offsize = 0 , begin_size = 0;
-				from_info( begin , offsize , begin_size );
-				if( begin_size != size && offsize <= total )
+				from_info(begin, offsize, begin_size);
+				if(begin_size == size)
+				{
+					total = offsize;
+					_avail -= total;					
+				}
+				else if(offsize <= total)
 					return 0;
-				if( begin_size == size )
-					_avail -= total;
-				else if( offsize > total )
+				else
 				{
 					size_t diff = offsize - total;		
 					if( diff <= sizeof( ::booldog::mem::info1 ) )
