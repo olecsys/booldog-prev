@@ -126,6 +126,30 @@ namespace booldog
 					from_info( info , offsize , begin_size );
 				}
 			};
+			booinline bool check_consistency(void)
+			{
+				void* endptr = end();
+				::booldog::byte* info = _data, * prev = 0;
+				size_t offsize = 0 , begin_size = 0, prev_offsize = 0;
+				from_info(info, offsize, begin_size);
+				for(;;)
+				{
+					if(prev)
+					{					
+						size_t diff = (size_t)(info - prev);
+						if(diff <= sizeof(::booldog::mem::info1)
+							|| prev_offsize != diff)
+							return false;
+					}
+					prev = info;
+					prev_offsize = offsize;
+					info = info + offsize;
+					if(info >= endptr)
+						break;
+					from_info(info, offsize, begin_size);
+				}
+				return true;
+			};
 			booinline void check( void )
 			{
 				void* endptr = end();

@@ -46,7 +46,7 @@ namespace booldog
 			};
 			virtual bool check_consistency(void)
 			{
-				return &stack == holder.stack;
+				return &stack == holder.stack && stack.check_consistency();
 			};
 		};
 		namespace single_threaded
@@ -85,7 +85,7 @@ namespace booldog
 				};
 				virtual bool check_consistency(void)
 				{
-					return &stack == holder.stack;
+					return &stack == holder.stack && stack.check_consistency();
 				};
 			};
 		};

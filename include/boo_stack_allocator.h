@@ -83,6 +83,10 @@ namespace booldog
 				_lock.wunlock( debuginfo );
 				return ptr;
 			};
+			virtual bool check_consistency(void)
+			{
+				return _cluster.check_consistency();
+			};
 		};
 		namespace single_threaded
 		{
@@ -137,6 +141,10 @@ namespace booldog
 				virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
 					return _cluster.realloc( pointer , size , debuginfo );
+				};
+				virtual bool check_consistency(void)
+				{
+					return _cluster.check_consistency();
 				};
 			};
 		};
