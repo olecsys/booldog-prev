@@ -288,11 +288,8 @@ namespace booldog
 			{
 				size_t offsize = 0 , begin_size = 0;
 				from_info(begin, offsize, begin_size);
-				if(begin_size == size)
-				{
-					total = offsize;
-					_avail -= total;					
-				}
+				if(begin_size == size && total == offsize)
+					_avail -= total;
 				else if(offsize <= total)
 					return 0;
 				else
