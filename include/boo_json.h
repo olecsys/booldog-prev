@@ -4924,12 +4924,6 @@ goto_go_away_from_ws0:
 					size = ptr - begin;
 					::booldog::mem::remove< char >( (size_t)( begin - slow.json ) , slow.json , slow.jsonsize
 						, size );
-
-					if(this->slow.jsonallocator->check_consistency() == false)
-					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-					}
-
 					slow.jsonlen -= size;
 					slow.json[ slow.jsonlen ] = 0;
 					ptr = begin;
@@ -4939,12 +4933,6 @@ goto_go_away_from_ws0:
 				case '[':
 					{
 						node = ::booldog::data::json::newnode< step >( res , this , curnode , parentnode , size , debuginfo );
-
-						if(this->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
-
 						if( node == 0 )
 							goto goto_return;
 						node->type = ::booldog::enums::data::json::array;
@@ -4985,12 +4973,6 @@ goto_go_away_from_ws0:
 				case '{':
 					{
 						node = ::booldog::data::json::newnode< step >( res , this , curnode , parentnode , size , debuginfo );
-
-						if(this->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
-
 						if( node == 0 )
 							goto goto_return;			
 						node->type = ::booldog::enums::data::json::object;
@@ -5194,13 +5176,6 @@ goto_go_away_from_ws0:
 												::booldog::mem::insert< char >( begin - slow.json , slow.json 
 													, slow.jsonlen + 1 , slow.jsonsize
 													, size , utf8 , utf8bytes );
-
-												if(this->slow.jsonallocator->check_consistency() == false)
-												{
-													int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-												}
-
-
 												slow.jsonlen -= size - utf8bytes;
 												slow.json[ slow.jsonlen ] = 0;
 												ptr = begin + utf8bytes;
@@ -5251,11 +5226,6 @@ goto_go_away_from_ws0:
 						}
 	goto_object_name_parse_next1:
 						node = ::booldog::data::json::newnode< step >( res , this , curnode , parentnode , size , debuginfo );
-
-						if(this->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
 
 						if( node == 0 )
 							goto goto_return;
@@ -5324,11 +5294,6 @@ goto_go_away_from_ws0:
 						
 						node = ::booldog::data::json::newnode< step >( res , this , curnode , parentnode , size , debuginfo );
 
-						if(this->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
-
 						if( node == 0 )
 							goto goto_return;
 														
@@ -5391,11 +5356,6 @@ goto_go_away_from_ws0:
 						
 						node = ::booldog::data::json::newnode< step >( res , this , curnode , parentnode , size , debuginfo );
 
-						if(this->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
-
 						if( node == 0 )
 							goto goto_return;
 														
@@ -5457,11 +5417,6 @@ goto_go_away_from_ws0:
 						}
 
 						node = ::booldog::data::json::newnode< step >( res , this , curnode , parentnode , size , debuginfo );
-
-						if(this->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
 
 						if( node == 0 )
 							goto goto_return;
@@ -5699,11 +5654,6 @@ goto_exponent_parse:
 goto_number_create:
 						node = ::booldog::data::json::newnode< step >( res , this , curnode , parentnode , size , debuginfo );
 
-						if(this->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
-
 						if( node == 0 )
 							goto goto_return;
 														
@@ -5770,11 +5720,6 @@ goto_go_away_from_ws3:
 					size = ptr - begin;
 					::booldog::mem::remove< char >( (size_t)( begin - slow.json ) , slow.json , slow.jsonsize
 						, size );
-
-					if(this->slow.jsonallocator->check_consistency() == false)
-					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-					}
 
 					slow.jsonlen -= size;
 					slow.json[ slow.jsonlen ] = 0;
@@ -5867,11 +5812,6 @@ goto_go_away_from_ws1:
 					size = ptr - begin;
 					::booldog::mem::remove< char >( (size_t)( begin - slow.json ) , slow.json , slow.jsonsize
 						, size );
-
-					if(this->slow.jsonallocator->check_consistency() == false)
-					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-					}
 
 					slow.jsonlen -= size;
 					slow.json[ slow.jsonlen ] = 0;
@@ -6101,11 +6041,6 @@ goto_go_away_from_ws1:
 											, slow.jsonlen + 1 , slow.jsonsize
 											, size , utf8 , utf8bytes );
 
-										if(this->slow.jsonallocator->check_consistency() == false)
-										{
-											int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-										}
-
 										slow.jsonlen -= size - utf8bytes;
 										slow.json[ slow.jsonlen ] = 0;
 										ptr = begin + utf8bytes;
@@ -6182,11 +6117,6 @@ goto_go_away_from_ws2:
 					::booldog::mem::remove< char >( (size_t)( begin - slow.json ) , slow.json , slow.jsonsize
 						, size );
 
-					if(this->slow.jsonallocator->check_consistency() == false)
-					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-					}
-
 					slow.jsonlen -= size;
 					slow.json[ slow.jsonlen ] = 0;
 					ptr = begin;
@@ -6230,11 +6160,6 @@ goto_go_away_from_ws4:
 					::booldog::mem::remove< char >( (size_t)( begin - slow.json ) , slow.json , slow.jsonsize
 						, size );
 
-					if(this->slow.jsonallocator->check_consistency() == false)
-					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-					}
-
 					slow.jsonlen -= size;
 					slow.json[ slow.jsonlen ] = 0;
 				}
@@ -6250,11 +6175,6 @@ goto_return:
 				BOOINIT_RESULT( ::booldog::data::json::result );
 				if( js && js[ 0 ] != 0 )
 				{	
-					if(res->serializator->slow.jsonallocator->check_consistency() == false)
-					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-					}
-
 					const char* ptr = js;
 					for( ; ; )
 					{
@@ -6265,12 +6185,6 @@ goto_return:
 						}
 					}
 goto_next:
-
-					if(res->serializator->slow.jsonallocator->check_consistency() == false)
-					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-					}
-
 					size_t size = ptr - js;
 					res->serializator->slow.jsonlen = size - 1;
 					if( size > res->serializator->slow.jsonsize )
@@ -6278,27 +6192,11 @@ goto_next:
 						res->serializator->slow.jsonsize = size;
 						res->serializator->slow.json = res->serializator->slow.jsonallocator->realloc_array< char >( 
 							res->serializator->slow.json , res->serializator->slow.jsonsize , debuginfo );
-
-						if(res->serializator->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
 					}
 					if( res->serializator->slow.json )
 					{
 						::memcpy( res->serializator->slow.json , js , res->serializator->slow.jsonlen );
-
-						if(res->serializator->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
-
 						res->serializator->slow.json[ res->serializator->slow.jsonlen ] = 0;
-
-						if(res->serializator->slow.jsonallocator->check_consistency() == false)
-						{
-							int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
-						}
 					}
 					else
 					{

@@ -35,7 +35,7 @@ namespace booldog
 			{
 				namespace mbs
 				{
-					static bool printf( ::booldog::result* pres , ::booldog::allocator* allocator 
+					booinline bool printf( ::booldog::result* pres , ::booldog::allocator* allocator 
 						, ::booldog::enums::console::colors color , const ::booldog::debug::info& debuginfo , const char* format 
 						, ... )
 					{
@@ -82,7 +82,7 @@ namespace booldog
 						if( mbchar.succeeded() )
 						{
 #ifdef __WINDOWS__
-							if( ::_write( 1 , mbchar.mbchar , mbchar.mblen ) == -1 )
+							if( ::_write( 1 , mbchar.mbchar , (unsigned int)mbchar.mblen ) == -1 )
 #else
 							if( write( 1 , mbchar.mbchar , mbchar.mblen ) == -1 )
 #endif
@@ -112,7 +112,7 @@ namespace booldog
 			{
 				namespace mbs
 				{
-					static bool printf( ::booldog::result* pres , ::booldog::allocator* allocator 
+					booinline bool printf( ::booldog::result* pres , ::booldog::allocator* allocator 
 						, ::booldog::enums::console::colors color , const ::booldog::debug::info& debuginfo , const char* format 
 						, ... )
 					{
@@ -159,7 +159,7 @@ namespace booldog
 						if( mbchar.succeeded() )
 						{
 #ifdef __WINDOWS__
-							if( ::_write( 2 , mbchar.mbchar , mbchar.mblen ) == -1 )
+							if( ::_write( 2 , mbchar.mbchar , (unsigned int)mbchar.mblen ) == -1 )
 #else
 							if( write( 2 , mbchar.mbchar , mbchar.mblen ) == -1 )
 #endif

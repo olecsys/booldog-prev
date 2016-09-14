@@ -304,6 +304,9 @@ namespace booldog
 				};
 				namespace mbs
 				{
+					/*
+					format(%H - hour, %M - minute, %S - second, %MS - milisecond, %d - day, %m - month, %Y - year)
+					*/
 					template< size_t step >
 					booinline bool tostring( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator , const char* format
 						, ::booldog::uint64 time , const ::booldog::debug::info& debuginfo = debuginfo_macros )
@@ -555,14 +558,17 @@ goto_away_from_for:
 	goto_return:
 						return res->succeeded();
 					};
+					/*
+					format(%H - hour, %M - minute, %S - second, %MS - milisecond, %d - day, %m - month, %Y - year)
+					*/
 					booinline ::booldog::uint64 parse( const char* timestring , const char* format )
 					{
 						if( format == 0 || format[ 0 ] == 0 )
 							format = "%H:%M:%S %d.%m.%Y";
 
 						::booldog::uint64 time = 0;
-						::booldog::uint32 millisecond = 0 , second = 0 , minute = 0 , hour = 0 , day_of_month = 0 
-							, month = 0 , year = 0;
+						::booldog::uint32 millisecond = 0 , second = 0 , minute = 0 , hour = 0 , day_of_month = 1 
+							, month = 1 , year = 1970;
 
 						const char* fmtptr = format;
 						const ::booldog::byte* ptr = (::booldog::byte*)timestring;
