@@ -1,5 +1,3 @@
-#define BOOLDOG_MEM_CLUSTER_LOG
-
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
 #endif
@@ -176,6 +174,7 @@ char utf8_TESTil_var[] =
 #include BOOLDOG_HEADER(boo_threading_event.h)
 #include BOOLDOG_HEADER(boo_network_utils.h)
 #include BOOLDOG_HEADER(boo_hash_md5.h)
+#include BOOLDOG_HEADER(boo_web_camera.h)
 TEST_CASE("boo_bits_utilsTest", "test")
 {
 	::booldog::byte eq = 0;
@@ -1861,24 +1860,15 @@ TEST_CASE("boo_allocators_mixedTest", "test")
 		void* ptr4 = mixed.realloc(0, 109);//mem_cluster::alloc, 7fffd4f92af8(109)
 
 		REQUIRE(mixed.check_consistency());
-
-		printf("%s", "\n\n");
-		mixed.stack._cluster.print();
-
+		
 		void* ptr5 = mixed.realloc(0, 93);//mem_cluster::alloc, 7fffd4f92b6c(93)
 
 		REQUIRE(mixed.check_consistency());
-
-		printf("%s", "\n\n");
-		mixed.stack._cluster.print();
 
 		void* ptr6 = mixed.realloc(0, 248);//mem_cluster::alloc, 7fffd4f92bd0(248)
 
 		REQUIRE(mixed.check_consistency());
 				
-		printf("%s", "\n\n");
-		mixed.stack._cluster.print();
-
 		/*mem_cluster::free, 7fffd4f92af8
 		mem_cluster::tryrealloc, 7fffd4f92bd0(246, 7fffd4f92af8)
 		*/
@@ -2013,7 +2003,19 @@ TEST_CASE("boo_jsonTest", "test")
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
+	
+	{
+		::booldog::data::json::serializator serializator( &allocator );
+		serializator.fast.json = allocator.realloc_array<char>(0, 19);
+		::memcpy(serializator.fast.json, "{\"timeout\":0", 13);
+		serializator.fast.jsonlen = 12;
+		serializator.fast.jsonsize = 19;
+
+		serializator.fast.add<16>(0, "wait_result", true /*: false*/);
 		
+		serializator.fast.add<16>(0, "need_owner", /*true : */false);
+	}
+
 	{
 		::booldog::data::json::serializator serializator( &allocator );
 
@@ -13606,6 +13608,36 @@ TEST_CASE("boo_io_fileTest", "test")
 
 			REQUIRE( res.succeeded() );
 		}
+	}
+
+	REQUIRE( allocator.stack.begin() == begin );
+
+	REQUIRE( allocator.stack.available() == total );
+
+	REQUIRE( allocator.holder.heap->size_of_allocated_memory() == 0 );
+};
+#ifdef __LINUX__
+static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allocator, void* udata, const char* name
+	, const char* deviceid, ::booldog::uint32 capabilities)
+{
+	allocator = allocator;
+	udata = udata;
+	printf("Web camera %s(%s), %u\n", name, deviceid, capabilities);
+};
+#endif
+TEST_CASE("boo_web_camera", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator( &heap );
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+	{
+#ifdef __LINUX__
+		REQUIRE(::booldog::multimedia::web_camera::available_cameras(0, &allocator
+			, boo_web_camera_available_cameras_callback, 0));
+#endif
 	}
 
 	REQUIRE( allocator.stack.begin() == begin );

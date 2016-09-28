@@ -27,6 +27,7 @@
     <ClInclude Include="..\include\boo_cp1251_consts.h" />
     <ClInclude Include="..\include\boo_d2d1_context.h" />
     <ClInclude Include="..\include\boo_debug_info.h" />
+    <ClInclude Include="..\include\boo_directory_utils.h" />
     <ClInclude Include="..\include\boo_doubly_linked_list.h" />
     <ClInclude Include="..\include\boo_error.h" />
     <ClInclude Include="..\include\boo_error_format.h" />
@@ -52,6 +53,7 @@
     <ClInclude Include="..\include\boo_mixed_allocator.h" />
     <ClInclude Include="..\include\boo_module_utils.h" />
     <ClInclude Include="..\include\boo_monitor.h" />
+    <ClInclude Include="..\include\boo_multimedia_enums.h" />
     <ClInclude Include="..\include\boo_network_utils.h" />
     <ClInclude Include="..\include\boo_object.h" />
     <ClInclude Include="..\include\boo_opengl_buffer.h" />
@@ -86,6 +88,7 @@
     <ClInclude Include="..\include\boo_utf8.h" />
     <ClInclude Include="..\include\boo_utf8_consts.h" />
     <ClInclude Include="..\include\boo_utils.h" />
+    <ClInclude Include="..\include\boo_web_camera.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E845952E-96D2-4457-B162-D5D6B9DF773C}</ProjectGuid>

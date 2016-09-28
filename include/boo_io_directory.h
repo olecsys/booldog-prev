@@ -56,57 +56,65 @@ namespace booldog
 					::booldog::result locres;
 					BOOINIT_RESULT(::booldog::result);
 					::booldog::enums::io::entry_type entry_type = ::booldog::enums::io::unknown;
-#ifdef __WINDOWS__		
-					udata = udata;
-					callback = callback;
-					entry_type = entry_type;
-
 					::booldog::result_mbchar pathname_mbchar(allocator);
+#ifdef __WINDOWS__
 					if(::booldog::utils::string::mbs::assign<16>(res, allocator, false, 0, pathname_mbchar.mbchar
 						, pathname_mbchar.mblen, pathname_mbchar.mbsize, pathname, 0, SIZE_MAX, debuginfo) == false)
 						goto goto_return;
-					if(::booldog::utils::string::mbs::assign<16>(res, allocator, false, pathname_mbchar.mblen
-						, pathname_mbchar.mbchar, pathname_mbchar.mblen, pathname_mbchar.mbsize, "/*", 0, SIZE_MAX
-						, debuginfo) == false)
-						goto goto_return;
-					/*{
-						rux::uint32 symbol = directory_name.get_UTF8Char( directory_name.Length() - 1 );
-						if( symbol == '/' )
-							directory_name += L"*";
-						else
-							directory_name += L"/*";		
-						directory_name.set_ByRef( directory_name.ConvertToUTF16() );
-						HANDLE find_handle = NULL;
-						WIN32_FIND_DATAW win32_find_data;
-						if( ( find_handle = FindFirstFileW( (wchar_t*)directory_name.str() , &win32_find_data ) ) != INVALID_HANDLE_VALUE )
+					if(pathname_mbchar.mblen > 0)
+					{
+						size_t pathname_mbchar_mblen = pathname_mbchar.mblen;
+						if(pathname_mbchar.mbchar[pathname_mbchar.mblen - 1] == '\\'
+							|| pathname_mbchar.mbchar[pathname_mbchar.mblen - 1] == '/')
 						{
-							rux::io::XDirectory directory;
-							do
+							if(::booldog::utils::string::mbs::assign<16>(res, allocator, false, pathname_mbchar.mblen
+								, pathname_mbchar.mbchar, pathname_mbchar.mblen, pathname_mbchar.mbsize, "*", 0, SIZE_MAX
+								, debuginfo) == false)
+								goto goto_return;
+						}
+						else
+						{
+							if(::booldog::utils::string::mbs::assign<16>(res, allocator, false, pathname_mbchar.mblen
+								, pathname_mbchar.mbchar, pathname_mbchar.mblen, pathname_mbchar.mbsize, "/*", 0, SIZE_MAX
+								, debuginfo) == false)
+								goto goto_return;
+						}
+						HANDLE find_handle = 0;
+						WIN32_FIND_DATAA win32_find_data;
+						find_handle = FindFirstFileA(pathname_mbchar.mbchar, &win32_find_data);
+						if(find_handle != INVALID_HANDLE_VALUE)
+						{
+							pathname_mbchar.mblen = pathname_mbchar_mblen;
+							pathname_mbchar.mbchar[pathname_mbchar_mblen] = 0;
+							for(;;)
 							{
-								if( ( win32_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) )
+								if(strcmp(win32_find_data.cFileName, ".") != 0
+									&& strcmp(win32_find_data.cFileName, "..") != 0)
 								{
-									if( XString::IsEqualUTF16( (uint16*)win32_find_data.cFileName , (uint16*)L"." ) == 0
-										&& XString::IsEqualUTF16( (uint16*)win32_find_data.cFileName , (uint16*)L".." ) == 0 )
-									{
-										directory = rux::io::XDirectory();
-										directory()->_directory_name = _directory_name;
-										directory()->_directory_name = directory()->_directory_name.ReplaceAll( '\\' , '/' );
-										symbol = directory()->_directory_name.get_UTF8Char( directory()->_directory_name.Length() - 1 );
-										if( symbol == '/' )
-											directory()->_directory_name += 	win32_find_data.cFileName;		
-										else
-										{
-											directory()->_directory_name += "/";
-											directory()->_directory_name += win32_find_data.cFileName;		
-										}
-										directories.Add( directory );
-									}
+									if((win32_find_data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+										entry_type = ::booldog::enums::io::directory;
+									else
+										entry_type = ::booldog::enums::io::file;
+									if(callback(allocator, udata, pathname_mbchar.mbchar, win32_find_data.cFileName
+										, entry_type) == false)
+										break;
+								}								
+								BOOL boolres = FindNextFileA(find_handle, &win32_find_data);
+								if(boolres == 0)
+								{
+									DWORD get_last_error = GetLastError();
+									if(get_last_error != ERROR_NO_MORE_FILES)
+										res->GetLastError(get_last_error);
+									break;
 								}
 							}
-							while( FindNextFileW( find_handle , &win32_find_data ) );
-							FindClose( find_handle );
+							FindClose(find_handle);
 						}
-					}*/			
+						else
+							res->GetLastError();
+					}
+					else
+						res->booerr(::booldog::enums::result::booerr_type_string_parameter_is_empty);
 goto_return:
 #else
 					long name_max = 0;
@@ -115,6 +123,9 @@ goto_return:
 					dirent* dirent_result = 0;
 					dirent* dirent_object_ptr = 0;
 					DIR* dir_ptr = opendir(pathname);
+					if(::booldog::utils::string::mbs::assign<16>(res, allocator, false, 0, pathname_mbchar.mbchar
+						, pathname_mbchar.mblen, pathname_mbchar.mbsize, pathname, 0, SIZE_MAX, debuginfo) == false)
+						goto goto_return;
 					if(dir_ptr == 0)
 					{
 						res->seterrno();
@@ -168,7 +179,8 @@ goto_return:
 									entry_type = ::booldog::enums::io::unknown;
 									break;
 								}
-								if(callback(allocator, udata, pathname, dirent_object_ptr->d_name, entry_type) == false)
+								if(callback(allocator, udata, pathname_mbchar.mbchar, dirent_object_ptr->d_name
+									, entry_type) == false)
 									break;
 							}
 							else

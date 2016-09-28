@@ -54,6 +54,21 @@ namespace booldog
 #endif
 					return res->succeeded();
 				};
+				booinline bool rmdir(::booldog::result* pres, const char* path
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+				{
+					debuginfo = debuginfo;
+					::booldog::result locres;
+					BOOINIT_RESULT(::booldog::result);
+#ifdef __WINDOWS__
+					if(RemoveDirectoryA(path) == 0)
+						res->GetLastError();
+#else
+					if(::rmdir(path) == -1)
+						res->seterrno();
+#endif
+					return res->succeeded();
+				};
 			};
 			namespace path
 			{
