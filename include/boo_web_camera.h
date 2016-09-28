@@ -98,7 +98,16 @@ namespace booldog
 			::booldog::allocator* _allocator;
 		private:
 #ifdef __LINUX__
+			struct buffer 
+			{
+				void* start;
+				size_t length;
+				bool mmap;
+			};
 			int _fd;
+			int _capture_type;
+			::booldog::multimedia::web_camera::buffer _buffers[4];
+			int _buffers_count;
 			static int xioctl(int fh, int request, void *arg)
 			{
 				int r;
@@ -123,6 +132,9 @@ namespace booldog
 				, _fd(pfd)
 #endif
 			{
+#ifdef __LINUX__
+				::memset(_buffers, 0, sizeof(_buffers));
+#endif
 			};
 			web_camera(const ::booldog::multimedia::web_camera&)
 			{
@@ -139,6 +151,7 @@ namespace booldog
 				::booldog::results::multimedia::camera locres;
 				BOOINIT_RESULT(::booldog::results::multimedia::camera);
 #ifdef __LINUX__
+				struct v4l2_capability cap;
 				int fd = -1;
 				struct stat st;
 				if(stat(name, &st) == -1)
@@ -157,14 +170,21 @@ namespace booldog
 					res->seterrno();
 					goto goto_return;
 				}
-goto_return:
-				if(res->succeeded() == false)
-				{
-					if(fd != -1)
-						::close(fd);
-					return false;
-				}
 				else
+				{
+					if(xioctl(fd, VIDIOC_QUERYCAP, &cap) == -1)
+					{
+						res->seterrno();
+						goto goto_return;
+					}
+					if((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE) == 0)
+					{
+						res->booerr(::booldog::enums::result::booerr_type_file_is_not_video_capture_device);
+						goto goto_return;
+					}
+				}
+goto_return:
+				if(res->succeeded())
 				{
 					res->cam = allocator->create< ::booldog::multimedia::web_camera >(allocator, fd);
 					if(res->cam == 0)
@@ -173,6 +193,12 @@ goto_return:
 						return false;
 					}
 					return true;
+				}
+				else
+				{
+					if(fd != -1)
+						::close(fd);
+					return false;
 				}
 #else
 				allocator = allocator;
@@ -208,27 +234,291 @@ goto_return:
 								{
 									next = callback(allocator, udata, fmtdesc.pixelformat, framesizeenum.discrete.width
 										, framesizeenum.discrete.height, (const char*)fmtdesc.description);
-									//char sfcc[5] = {0}; *((rux::uint32*)sfcc) = fmtdesc.pixelformat;
+									//char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fmtdesc.pixelformat;
 
 									++framesizeenum.index;
+
 									if(next == false)
 										break;
 								}
 								else
+								{
+									next = callback(allocator, udata, fmtdesc.pixelformat, 0, 0, (const char*)fmtdesc.description);
+									++framesizeenum.index;
 									break;
+								}
 							}
 							else
 								break;
 						}
 						if(framesizeenum.index == 0)
-							next = callback(allocator, udata, fmtdesc.pixelformat, 0, 0, (const char*)fmtdesc.description);
+							next = callback(allocator, udata, fmtdesc.pixelformat, 640, 480, (const char*)fmtdesc.description);
 					}
+					else
+						break;
 					++fmtdesc.index;
 					if(next == false)
 						break;
 				}
 #else
 				allocator = allocator;
+				callback = callback;
+				udata = udata;
+				debuginfo = debuginfo;
+				res->booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
+#endif
+				return res->succeeded();
+			};
+			booinline bool start_capturing(::booldog::result* pres, ::booldog::uint32 fourcc, ::booldog::uint32 width
+				, ::booldog::uint32 height, ::booldog::multimedia::typedefs::available_formats_callback_t callback
+				, void* udata, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT(::booldog::result);
+#ifdef __LINUX__
+				enum v4l2_buf_type v4l2buftype;
+				struct v4l2_buffer v4l2buf;
+				struct v4l2_requestbuffers req;
+
+				struct v4l2_capability cap;
+				struct v4l2_cropcap cropcap;
+				struct v4l2_crop crop;
+				struct v4l2_format fmt;
+				unsigned int min = 0;
+
+				if(xioctl(_fd, VIDIOC_QUERYCAP, &cap) == -1)
+				{
+					res->seterrno();
+					goto goto_return;
+				}
+				if(cap.capabilities & V4L2_CAP_STREAMING)
+					_capture_type = V4L2_MEMORY_USERPTR;
+				else
+				{
+					_capture_type = 0;
+					if((cap.capabilities & V4L2_CAP_READWRITE) == false)
+					{
+						res->booerr(::booldog::enums::result::booerr_type_video_capture_device_does_not_support_neither_streaming_nor_io);
+						goto goto_return;
+					}
+				}
+				::memset(&cropcap, 0, sizeof(cropcap));
+				cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+				if(xioctl(_fd, VIDIOC_CROPCAP, &cropcap) == 0)
+				{
+					crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+					crop.c = cropcap.defrect;
+					if(xioctl(fd, VIDIOC_S_CROP, &crop) == -1)
+					{
+						switch (errno) {
+						case EINVAL:
+							/* Cropping not supported. */
+							break;
+						default:
+							/* Errors ignored. */
+							break;
+						}
+					}
+				}
+				else 
+				{
+					/* Errors ignored. */
+				}
+				::memset(&fmt, 0, sizeof(fmt));
+				fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+				fmt.fmt.pix.width = width;
+				fmt.fmt.pix.height = height;
+				fmt.fmt.pix.pixelformat = fourcc;
+				fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
+				if(xioctl(_fd, VIDIOC_S_FMT, &fmt) == -1)
+				{
+					res->seterrno();
+					goto goto_return;
+				}
+				min = fmt.fmt.pix.width * 2;
+				if(fmt.fmt.pix.bytesperline < min)
+					fmt.fmt.pix.bytesperline = min;
+				min = fmt.fmt.pix.bytesperline * fmt.fmt.pix.height;
+				if(fmt.fmt.pix.sizeimage < min)
+					fmt.fmt.pix.sizeimage = min;
+				if(_capture_type == V4L2_MEMORY_USERPTR)
+				{
+					::memset(&req, 0, sizeof(req));
+
+					req.count  = 4;
+					req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+					req.memory = V4L2_MEMORY_USERPTR;
+
+					if(xioctl(_fd, VIDIOC_REQBUFS, &req) == -1)
+					{
+						int errnoval = errno;
+						if(errnoval != EINVAL) 
+						{
+							res->seterrno(errnoval);
+							goto goto_return;
+						} 
+						else
+							_capture_type = V4L2_MEMORY_MMAP;
+					}
+					else
+					{
+						for(_buffers_count = 0 ; _buffers_count < sizeof(_buffers) / sizeof(_buffers[0]) ; ++_buffers_count)
+						{
+							if(_buffers[_buffers_count].mmap)
+							{
+								if(_buffers[_buffers_count].start)
+								{
+									munmap(_buffers[_buffers_count].start, buffers[_buffers_count].length);
+									_buffers[_buffers_count].start = 0;
+								}
+							}
+							_buffers[_buffers_count].start = _allocator->realloc_array<char>(_buffers[_buffers_count].start
+								, fmt.fmt.pix.sizeimage, debuginfo);
+							if(_buffers[_buffers_count].start == 0)
+							{
+								res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+								goto goto_return;
+							}
+							_buffers[_buffers_count].mmap = false;
+							_buffers[_buffers_count].length = fmt.fmt.pix.sizeimage;
+						}
+					}
+				}
+				if(_capture_type == V4L2_MEMORY_MMAP)
+				{
+					::memset(&req, 0, sizeof(req));
+
+					req.count = 4;
+					req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+					req.memory = V4L2_MEMORY_MMAP;
+
+					if(xioctl(_fd, VIDIOC_REQBUFS, &req) == -1)
+					{
+						int errnoval = errno;
+						if(errnoval != EINVAL) 
+						{
+							res->seterrno(errnoval);
+							goto goto_return;
+						} 
+						else
+							_capture_type = 0;
+					}
+					else
+					{
+						if(req.count < 2)
+						{
+							res->booerr(::booldog::enums::result::booerr_type_insufficient_memory);
+							goto goto_return;
+						}
+
+						for(_buffers_count = 0 ; _buffers_count < req.count ; ++_buffers_count)
+						{
+							::memset(&v4l2buf, 0, sizeof(v4l2buf));
+							
+							v4l2buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+							v4l2buf.memory = V4L2_MEMORY_MMAP;
+							v4l2buf.index = _buffers_count;
+
+							if(xioctl(fd, VIDIOC_QUERYBUF, &v4l2buf) == -1)
+							{
+								res->seterrno();
+								goto goto_return;
+							}
+							if(_buffers[_buffers_count].mmap)
+							{
+								if(_buffers[_buffers_count].start)
+								{
+									munmap(_buffers[_buffers_count].start, buffers[_buffers_count].length);
+									_buffers[_buffers_count].start = 0;
+								}
+							}
+							else
+							{
+								if(_buffers[_buffers_count].start)
+								{
+									_allocator->free(_buffers[_buffers_count].start);
+									_buffers[_buffers_count].start = 0;
+								}
+							}
+							_buffers[_buffers_count].start = mmap(0, v4l2buf.length, PROT_READ | PROT_WRITE, MAP_SHARED, _fd
+								, v4l2buf.m.offset);
+							if(_buffers[_buffers_count].start == MAP_FAILED)
+							{
+								_buffers[_buffers_count].start = 0;
+								res->booerr(::booldog::enums::result::booerr_type_map_failed);
+								goto goto_return;
+							}
+							_buffers[_buffers_count].mmap = true;
+							_buffers[_buffers_count].length = v4l2buf.length;
+						}
+					}
+				}
+				if(_capture_type == 0)
+				{
+					if(_buffers[0].mmap)
+					{
+						if(_buffers[0].start)
+						{
+							munmap(_buffers[0].start, buffers[0].length);
+							_buffers[0].start = 0;
+						}
+					}
+					_buffers[0].start = _allocator->realloc_array<char>(_buffers[0].start
+						, fmt.fmt.pix.sizeimage, debuginfo);
+					if(_buffers[0].start == 0)
+					{
+						res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+						goto goto_return;
+					}
+					_buffers[0].mmap = false;
+					_buffers[0].length = fmt.fmt.pix.sizeimage;
+				}
+				switch(_capture_type)
+				{
+				case V4L2_MEMORY_USERPTR:
+					for(int index = 0;index < _buffers_count; ++index)
+					{
+						::memset(&v4l2buf, 0, sizeof(v4l2buf));
+						v4l2buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+						v4l2buf.memory = V4L2_MEMORY_USERPTR;
+                        v4l2buf.index = index;
+                        v4l2buf.m.userptr = (unsigned long)_buffers[index].start;
+                        v4l2buf.length = _buffers[index].length;
+						if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
+						{
+							res->seterrno();
+							goto goto_return;
+						}
+					}
+					break;
+				case V4L2_MEMORY_MMAP:
+					for(int index = 0;index < _buffers_count; ++index)
+					{
+						::memset(&v4l2buf, 0, sizeof(v4l2buf));
+						v4l2buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+						v4l2buf.memory = V4L2_MEMORY_MMAP;
+						v4l2buf.index = index;
+						if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
+						{
+							res->seterrno();
+							goto goto_return;
+						}
+					}
+					break;
+				default:
+					goto goto_return;
+				}
+				v4l2buftype = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+				if(xioctl(_fd, VIDIOC_STREAMON, &v4l2buftype) == -1)
+				{
+					res->seterrno();
+					goto goto_return;
+				}
+goto_return:
+#else
+				fourcc = fourcc;
+				width = width;
+				height = height;
 				callback = callback;
 				udata = udata;
 				debuginfo = debuginfo;
@@ -263,16 +553,6 @@ goto_return:
 				{
 				};
 			};
-			static int xioctl(int fh, int request, void *arg)
-			{
-				int r;
-				do
-				{
-					r = ioctl(fh, request, arg);
-				}
-				while(-1 == r && EINTR == errno);
-				return r;
-			}
 			static bool listdir_callback(::booldog::allocator* allocator, void* udata, const char* pathname
 				, const char* entry_name, ::booldog::enums::io::entry_type entry_type)
 			{

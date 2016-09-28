@@ -13616,27 +13616,53 @@ TEST_CASE("boo_io_fileTest", "test")
 
 	REQUIRE( allocator.holder.heap->size_of_allocated_memory() == 0 );
 };
+struct boo_web_camera_info
+{
+	::booldog::result_mbchar deviceid;
+	bool exists;
+	::booldog::uint32 fourcc;
+	::booldog::uint32 width;
+	::booldog::uint32 height;
+	boo_web_camera_info(::booldog::allocator* allocator)
+		: deviceid(allocator)
+	{
+	}
+};
 #ifdef __LINUX__
 static bool boo_web_camera_available_formats_callback(::booldog::allocator* allocator, void* udata
 	, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, const char* description)
 {
 	allocator = allocator;
-	udata = udata;
-	char sfcc[5] = {0}; *((rux::uint32*)sfcc) = fourcc;
+	boo_web_camera_info* info = (boo_web_camera_info*)udata;
+	if(info->width < width)
+	{
+		info->exists = true;
+		info->width = width;
+		info->height = height;
+		info->fourcc = fourcc;
+	}
+	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fourcc;
 	printf("Format %s(%s), %ux%u\n", description, sfcc, width, height);
+	return true; 
 };
 static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allocator, void* udata, const char* name
 	, const char* deviceid, ::booldog::uint32 capabilities)
 {
-	allocator = allocator;
-	udata = udata;
-	printf("Web camera %s(%s), %u\n==========", name, deviceid, capabilities);
+	boo_web_camera_info* info = (boo_web_camera_info*)udata;
+	info->exists = false;
+	printf("Web camera %s(%s), %u\n==========\n", name, deviceid, capabilities);
 	::booldog::results::multimedia::camera camera;
 	if(::booldog::multimedia::web_camera::open(&camera, allocator, deviceid))
 	{
 		REQUIRE(camera.cam->available_formats(0, allocator, boo_web_camera_available_formats_callback, udata));
 		camera.cam->close(0);
 	}
+	if(info->exists)
+	{
+		::booldog::utils::string::mbs::assign<16>(0, info.deviceid.mballocator, false, 0, info.deviceid.mbchar
+			, info.deviceid.mblen, info.deviceid.mbsize, deviceid, 0, SIZE_MAX);
+	}
+	return true; 
 };
 #endif
 TEST_CASE("boo_web_camera", "test")
@@ -13648,10 +13674,30 @@ TEST_CASE("boo_web_camera", "test")
 
 	char* begin = (char*)allocator.stack.begin();
 	{
+		boo_web_camera_info info(&allocator);		
+		info.exists = false;
+		info.width = 0;
+		info.height = 0;
 #ifdef __LINUX__
 		REQUIRE(::booldog::multimedia::web_camera::available_cameras(0, &allocator
 			, boo_web_camera_available_cameras_callback, 0));
 #endif
+		if(info.deviceid.mblen)
+		{
+			::booldog::results::multimedia::camera camera;
+			bool boolval = ::booldog::multimedia::web_camera::open(&camera, &allocator, info.deviceid.mbchar);
+#ifdef __LINUX__
+			REQUIRE(boolval);
+#endif
+			if(boolval)
+			{
+				boolval = camera.cam->start_capturing(0, info.fourcc, info.width, info.height, 0, 0);
+#ifdef __LINUX__
+				REQUIRE(boolval);
+#endif				
+				camera.cam->close(0);
+			}
+		}
 	}
 
 	REQUIRE( allocator.stack.begin() == begin );

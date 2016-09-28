@@ -64,7 +64,10 @@ namespace booldog
 				booerr_type_module_is_deinitialized_and_must_be_unloaded ,
 				booerr_type_file_does_not_exist,
 				booerr_type_method_is_not_implemented_yet,
-				booerr_type_file_is_not_character_device
+				booerr_type_file_is_not_character_device,
+				booerr_type_file_is_not_video_capture_device,
+				booerr_type_video_capture_device_does_not_support_neither_streaming_nor_io,
+				booerr_type_map_failed
 			};
 		};
 	};
