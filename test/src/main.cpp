@@ -13617,12 +13617,26 @@ TEST_CASE("boo_io_fileTest", "test")
 	REQUIRE( allocator.holder.heap->size_of_allocated_memory() == 0 );
 };
 #ifdef __LINUX__
+static bool boo_web_camera_available_formats_callback(::booldog::allocator* allocator, void* udata
+	, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, const char* description)
+{
+	allocator = allocator;
+	udata = udata;
+	char sfcc[5] = {0}; *((rux::uint32*)sfcc) = fourcc;
+	printf("Format %s(%s), %ux%u\n", description, sfcc, width, height);
+};
 static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allocator, void* udata, const char* name
 	, const char* deviceid, ::booldog::uint32 capabilities)
 {
 	allocator = allocator;
 	udata = udata;
-	printf("Web camera %s(%s), %u\n", name, deviceid, capabilities);
+	printf("Web camera %s(%s), %u\n==========", name, deviceid, capabilities);
+	::booldog::results::multimedia::camera camera;
+	if(::booldog::multimedia::web_camera::open(&camera, allocator, deviceid))
+	{
+		REQUIRE(camera.cam->available_formats(0, allocator, boo_web_camera_available_formats_callback, udata));
+		camera.cam->close(0);
+	}
 };
 #endif
 TEST_CASE("boo_web_camera", "test")

@@ -8,6 +8,7 @@
 #endif
 
 #include BOOLDOG_HEADER(boo_multimedia_enums.h)
+#include BOOLDOG_HEADER(boo_error.h)
 
 //#if 1
 #ifdef __LINUX__
@@ -17,9 +18,9 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 #else
 #include BOOLDOG_HEADER(boo_result.h)
-#include BOOLDOG_HEADER(boo_error.h)
 #endif
 //#include BOOLDOG_HEADER(boo_param.h)
 //#include BOOLDOG_HEADER(boo_string_utils.h)
@@ -88,17 +89,39 @@ namespace booldog
 		{
 			typedef bool (*available_cameras_callback_t)(::booldog::allocator* allocator, void* udata, const char* name
 				, const char* deviceid, ::booldog::uint32 capabilities);
+			typedef bool (*available_formats_callback_t)(::booldog::allocator* allocator, void* udata
+				, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, const char* description);
 		};
 		class web_camera
 		{
 			friend class ::booldog::allocator;
 			::booldog::allocator* _allocator;
 		private:
+#ifdef __LINUX__
+			int _fd;
+			static int xioctl(int fh, int request, void *arg)
+			{
+				int r;
+				do
+				{
+					r = ioctl(fh, request, arg);
+				}
+				while(-1 == r && EINTR == errno);
+				return r;
+			}
+#endif
 			web_camera(void)
 			{
 			};
-			web_camera(::booldog::allocator* pallocator)
+			web_camera(::booldog::allocator* pallocator
+#ifdef __LINUX__
+				, int pfd
+#endif
+				)
 				: _allocator(pallocator)
+#ifdef __LINUX__
+				, _fd(pfd)
+#endif
 			{
 			};
 			web_camera(const ::booldog::multimedia::web_camera&)
@@ -115,10 +138,99 @@ namespace booldog
 				debuginfo = debuginfo;
 				::booldog::results::multimedia::camera locres;
 				BOOINIT_RESULT(::booldog::results::multimedia::camera);
-#ifdef __LINUX__				
+#ifdef __LINUX__
+				int fd = -1;
+				struct stat st;
+				if(stat(name, &st) == -1)
+				{
+					res->seterrno();
+					goto goto_return;
+				}
+				if(S_ISCHR(st.st_mode) == 0) 
+				{
+					res->booerr(::booldog::enums::result::booerr_type_file_is_not_character_device);
+					goto goto_return;
+				}
+				fd = ::open(name, O_RDWR | O_NONBLOCK, 0);
+				if(fd == -1)
+				{
+					res->seterrno();
+					goto goto_return;
+				}
+goto_return:
+				if(res->succeeded() == false)
+				{
+					if(fd != -1)
+						::close(fd);
+					return false;
+				}
+				else
+				{
+					res->cam = allocator->create< ::booldog::multimedia::web_camera >(allocator, fd);
+					if(res->cam == 0)
+					{
+						res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+						return false;
+					}
+					return true;
+				}
 #else
 				allocator = allocator;
 				name = name;
+				debuginfo = debuginfo;
+				res->booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
+				return res->succeeded();
+#endif				
+			};
+			booinline bool available_formats(::booldog::result* pres, ::booldog::allocator* allocator
+				, ::booldog::multimedia::typedefs::available_formats_callback_t callback, void* udata
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT(::booldog::result);
+#ifdef __LINUX__
+				v4l2_fmtdesc fmtdesc;
+				fmtdesc.index = 0;
+				fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+				bool next = true;
+				v4l2_frmsizeenum framesizeenum;
+				for(;;)
+				{
+					if(xioctl(_fd, VIDIOC_ENUM_FMT, &fmtdesc) != -1)
+					{
+						framesizeenum.index = 0;
+						framesizeenum.pixel_format = fmtdesc.pixelformat;
+						for(;;)
+						{
+							if(xioctl(_fd, VIDIOC_ENUM_FRAMESIZES, &framesizeenum) != -1)
+							{
+								if(framesizeenum.type == V4L2_FRMSIZE_TYPE_DISCRETE)
+								{
+									next = callback(allocator, udata, fmtdesc.pixelformat, framesizeenum.discrete.width
+										, framesizeenum.discrete.height, (const char*)fmtdesc.description);
+									//char sfcc[5] = {0}; *((rux::uint32*)sfcc) = fmtdesc.pixelformat;
+
+									++framesizeenum.index;
+									if(next == false)
+										break;
+								}
+								else
+									break;
+							}
+							else
+								break;
+						}
+						if(framesizeenum.index == 0)
+							next = callback(allocator, udata, fmtdesc.pixelformat, 0, 0, (const char*)fmtdesc.description);
+					}
+					++fmtdesc.index;
+					if(next == false)
+						break;
+				}
+#else
+				allocator = allocator;
+				callback = callback;
+				udata = udata;
 				debuginfo = debuginfo;
 				res->booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
 #endif
@@ -183,15 +295,16 @@ namespace booldog
 									if(info->capability.capabilities & V4L2_CAP_VIDEO_CAPTURE)
 									{
 										const char* name = info->mbchar.mbchar;
-										struct video_capability video_cap;
-										if(xioctl(fd, VIDIOCGCAP, &video_cap) != -1)
-											name = video_cap.name;
-
+										if(info->capability.card && info->capability.card[0])
+											name = (const char*)info->capability.card;
+										::close(fd);
+										fd = -1;
 										next = info->callback(allocator, info->udata, name, info->mbchar.mbchar
 											, info->capability.capabilities);
 									}
 								}
-								::close(fd);
+								if(fd != -1)
+									::close(fd);
 							}
 							return next;
 						}
