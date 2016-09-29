@@ -13623,12 +13623,22 @@ struct boo_web_camera_info
 	::booldog::uint32 fourcc;
 	::booldog::uint32 width;
 	::booldog::uint32 height;
+	int frame_count;
 	boo_web_camera_info(::booldog::allocator* allocator)
-		: deviceid(allocator)
+		: deviceid(allocator), frame_count(0)
 	{
 	}
 };
 #ifdef __LINUX__
+void boo_web_camera_read_frame_callback(::booldog::allocator* allocator, void* udata, void* frame
+	, ::booldog::uint32 frame_size, ::booldog::uint32 fourcc, ::booldog::uint32 width
+	, ::booldog::uint32 height)
+{
+	boo_web_camera_info* info = (boo_web_camera_info*)udata;
+	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fourcc;
+	printf("Frame %s, %ux%u(%u)\n", sfcc, width, height, frame_size);
+	++info->frame_count;
+};
 static bool boo_web_camera_available_formats_callback(::booldog::allocator* allocator, void* udata
 	, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, const char* description)
 {
@@ -13659,8 +13669,8 @@ static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allo
 	}
 	if(info->exists)
 	{
-		::booldog::utils::string::mbs::assign<16>(0, info.deviceid.mballocator, false, 0, info.deviceid.mbchar
-			, info.deviceid.mblen, info.deviceid.mbsize, deviceid, 0, SIZE_MAX);
+		::booldog::utils::string::mbs::assign<16>(0, info->deviceid.mballocator, false, 0, info->deviceid.mbchar
+			, info->deviceid.mblen, info->deviceid.mbsize, deviceid, 0, SIZE_MAX);
 	}
 	return true; 
 };
@@ -13680,7 +13690,7 @@ TEST_CASE("boo_web_camera", "test")
 		info.height = 0;
 #ifdef __LINUX__
 		REQUIRE(::booldog::multimedia::web_camera::available_cameras(0, &allocator
-			, boo_web_camera_available_cameras_callback, 0));
+			, boo_web_camera_available_cameras_callback, &info));
 #endif
 		if(info.deviceid.mblen)
 		{
@@ -13695,6 +13705,23 @@ TEST_CASE("boo_web_camera", "test")
 #ifdef __LINUX__
 				REQUIRE(boolval);
 #endif				
+				::booldog::result_bool resbool;
+				int count = 70;
+				while(count)
+				{
+					boolval = camera.cam->is_frame_available(&resbool);
+#ifdef __LINUX__
+					REQUIRE(boolval);
+#endif				
+					if(boolval && resbool.bres)
+					{
+#ifdef __LINUX__
+						boolval = camera.cam->read_frame(0, boo_web_camera_read_frame_callback, &info);
+						REQUIRE(boolval);
+#endif				
+						--count;
+					}
+				}
 				camera.cam->close(0);
 			}
 		}
