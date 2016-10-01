@@ -13640,7 +13640,8 @@ void boo_web_camera_read_frame_callback(::booldog::allocator* allocator, void* u
 	++info->frame_count;
 };
 static bool boo_web_camera_available_formats_callback(::booldog::allocator* allocator, void* udata
-	, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, const char* description)
+	, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, ::booldog::uint32 framerate_numerator
+	, ::booldog::uint32 framerate_denomerator, const char* description)
 {
 	allocator = allocator;
 	boo_web_camera_info* info = (boo_web_camera_info*)udata;
@@ -13652,7 +13653,7 @@ static bool boo_web_camera_available_formats_callback(::booldog::allocator* allo
 		info->fourcc = fourcc;
 	}
 	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fourcc;
-	printf("Format %s(%s), %ux%u\n", description, sfcc, width, height);
+	printf("Format %s(%s), %ux%u %u/%u\n", description, sfcc, width, height, framerate_numerator, framerate_denomerator);
 	return true; 
 };
 static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allocator, void* udata, const char* name

@@ -24,22 +24,6 @@
 #else
 #include BOOLDOG_HEADER(boo_result.h)
 #endif
-//#include BOOLDOG_HEADER(boo_param.h)
-//#include BOOLDOG_HEADER(boo_string_utils.h)
-//#include BOOLDOG_HEADER(boo_executable_utils.h)
-
-//#include <fcntl.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#ifdef __WINDOWS__
-//#include <io.h>
-//#include <share.h>
-//#else
-//#ifndef _LARGEFILE64_SOURCE 
-//#define _LARGEFILE64_SOURCE 
-//#endif
-//#include <unistd.h>
-//#endif
 namespace booldog
 {
 	namespace multimedia
@@ -92,7 +76,8 @@ namespace booldog
 			typedef bool (*available_cameras_callback_t)(::booldog::allocator* allocator, void* udata, const char* name
 				, const char* deviceid, ::booldog::uint32 capabilities);
 			typedef bool (*available_formats_callback_t)(::booldog::allocator* allocator, void* udata
-				, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, const char* description);
+				, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height
+				, ::booldog::uint32 framerate_numerator, ::booldog::uint32 framerate_denomerator, const char* description);
 			typedef void (*read_frame_callback_t)(::booldog::allocator* allocator, void* udata, void* frame
 				, ::booldog::uint32 frame_size, ::booldog::uint32 fourcc, ::booldog::uint32 width
 				, ::booldog::uint32 height);
@@ -243,30 +228,67 @@ goto_return:
 				fmtdesc.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 				bool next = true;
 				v4l2_frmsizeenum framesizeenum;
+				v4l2_frmivalenum v4l2frameivalenum;
 				for(;;)
 				{
 					if(xioctl(_fd, VIDIOC_ENUM_FMT, &fmtdesc) != -1)
 					{
 						framesizeenum.index = 0;
 						framesizeenum.pixel_format = fmtdesc.pixelformat;
+						v4l2frameivalenum.pixel_format = fmtdesc.pixelformat;
 						for(;;)
 						{
 							if(xioctl(_fd, VIDIOC_ENUM_FRAMESIZES, &framesizeenum) != -1)
 							{
 								if(framesizeenum.type == V4L2_FRMSIZE_TYPE_DISCRETE)
 								{
-									next = callback(allocator, udata, fmtdesc.pixelformat, framesizeenum.discrete.width
-										, framesizeenum.discrete.height, (const char*)fmtdesc.description);
-									//char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fmtdesc.pixelformat;
+									v4l2frameivalenum.index = 0;	
+									v4l2frameivalenum.width = framesizeenum.discrete.width;
+									v4l2frameivalenum.height = framesizeenum.discrete.height;
+									for(;;)
+									{
+										if(xioctl(_fd, VIDIOC_ENUM_FRAMEINTERVALS, &v4l2frameivalenum) != -1)
+										{
+											if(v4l2frameivalenum.type == V4L2_FRMIVAL_TYPE_DISCRETE)
+											{
+												next = callback(allocator, udata, fmtdesc.pixelformat
+													, framesizeenum.discrete.width, framesizeenum.discrete.height
+													, v4l2frameivalenum.discrete.numerator
+													, v4l2frameivalenum.discrete.denominator
+													, (const char*)fmtdesc.description);												
 
-									++framesizeenum.index;
+												++v4l2frameivalenum.index;
 
-									if(next == false)
-										break;
+												if(next == false)
+													break;
+											}
+											else
+											{
+												next = callback(allocator, udata, fmtdesc.pixelformat
+													, framesizeenum.discrete.width
+													, framesizeenum.discrete.height, 0, 0
+													, (const char*)fmtdesc.description);
+												++v4l2frameivalenum.index;
+												break;
+											}
+										}
+										else
+											break;
+									}
+									if(v4l2frameivalenum.index == 0)
+									{
+										next = callback(allocator, udata, fmtdesc.pixelformat, framesizeenum.discrete.width
+											, framesizeenum.discrete.height, 0, 0, (const char*)fmtdesc.description);
+										//char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fmtdesc.pixelformat;
+										++framesizeenum.index;
+										if(next == false)
+											break;
+									}
 								}
 								else
 								{
-									next = callback(allocator, udata, fmtdesc.pixelformat, 0, 0, (const char*)fmtdesc.description);
+									next = callback(allocator, udata, fmtdesc.pixelformat, 0, 0, 0, 0
+										, (const char*)fmtdesc.description);
 									++framesizeenum.index;
 									break;
 								}
@@ -275,7 +297,8 @@ goto_return:
 								break;
 						}
 						if(framesizeenum.index == 0)
-							next = callback(allocator, udata, fmtdesc.pixelformat, 640, 480, (const char*)fmtdesc.description);
+							next = callback(allocator, udata, fmtdesc.pixelformat, 640, 480, 0, 0
+							, (const char*)fmtdesc.description);
 					}
 					else
 						break;
@@ -292,6 +315,26 @@ goto_return:
 #endif
 				return res->succeeded();
 			};
+			booinline bool stop_capturing(::booldog::result* pres, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT(::booldog::result);
+#ifdef __LINUX__
+				enum v4l2_buf_type type;
+				switch (_capture_type) 
+				{
+				case V4L2_MEMORY_USERPTR:
+				case V4L2_MEMORY_MMAP:
+					type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+					if(xioctl(_fd, VIDIOC_STREAMOFF, &type) == -1)
+						res->seterrno();
+					break;
+				}
+#else
+				debuginfo = debuginfo;
+#endif
+				return res->succeeded();
+			}
 			booinline bool start_capturing(::booldog::result* pres, ::booldog::uint32 fourcc, ::booldog::uint32 width
 				, ::booldog::uint32 height, ::booldog::multimedia::typedefs::available_formats_callback_t callback
 				, void* udata, const ::booldog::debug::info& debuginfo = debuginfo_macros)
@@ -571,8 +614,8 @@ goto_return:
 					FD_SET(_fd, &fds);
 
 					struct timeval tv;
-					tv.tv_sec = 2;
-					tv.tv_usec = 0;
+					tv.tv_sec = 0;
+					tv.tv_usec = 33333;
 
 					int resint = select(_fd + 1, &fds, 0, 0, &tv);
 					if(resint == -1)
@@ -599,6 +642,7 @@ goto_return:
 				::booldog::result locres;
 				BOOINIT_RESULT(::booldog::result);
 #ifdef __LINUX__
+				int index = 0;
 				struct v4l2_buffer v4l2buf;
 				switch(_capture_type)
 				{
@@ -613,15 +657,14 @@ goto_return:
 						res->seterrno();
 						return false;
 					}
-					int index = 0;
 					for(;index < _buffers_count;++index)
 					{
 						if(v4l2buf.m.userptr == (unsigned long)_buffers[index].start
 							&& v4l2buf.length == _buffers[index].length)
 							break;
 					}
-					if(index < _buffer_count)
-						callback(_allocator, udata, (void*)v4l2buf.m.userptr, v4l2buf.byteused, _fourcc, _width, _height);
+					if(index < _buffers_count)
+						callback(_allocator, udata, (void*)v4l2buf.m.userptr, v4l2buf.bytesused, _fourcc, _width, _height);
 					if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
 					{
 						res->seterrno();
@@ -640,7 +683,7 @@ goto_return:
 						res->seterrno();
 						return false;
 					}
-					callback(_allocator, udata, _buffers[v4l2buf.index].start, v4l2buf.byteused, _fourcc, _width, _height);
+					callback(_allocator, udata, _buffers[v4l2buf.index].start, v4l2buf.bytesused, _fourcc, _width, _height);
 					if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
 					{
 						res->seterrno();
@@ -668,7 +711,9 @@ goto_return:
 				debuginfo = debuginfo;
 				::booldog::result locres;
 				BOOINIT_RESULT( ::booldog::result );
-#ifdef __LINUX__				
+#ifdef __LINUX__
+				if(::close(_fd) == -1)
+					res->seterrno();
 #else
 				debuginfo = debuginfo;
 				res->booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);

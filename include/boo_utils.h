@@ -39,9 +39,9 @@ namespace booldog
 		};
 		booinline float round( float number , int precision )
 		{	
-			number *= pow( 10.0f , precision );
-			number = floor( number + 0.5f );
-			number /= pow( 10.0f , precision );
+			number *= (float)pow( 10.0f , precision );
+			number = (float)floor( number + 0.5f );
+			number /= (float)pow( 10.0f , precision );
 			return number;
 		};
 		booinline double round( double number )
@@ -50,7 +50,7 @@ namespace booldog
 		};
 		booinline float round( float d )
 		{
-		  return floor( d + 0.5f );
+		  return (float)floor( d + 0.5f );
 		};
 		template< class T >
 		booinline bool odd( T val )
