@@ -13624,8 +13624,10 @@ struct boo_web_camera_info
 	::booldog::uint32 width;
 	::booldog::uint32 height;
 	int frame_count;
+	::booldog::uint32 framerate_numerator;
+	::booldog::uint32 framerate_denominator;
 	boo_web_camera_info(::booldog::allocator* allocator)
-		: deviceid(allocator), frame_count(0)
+		: deviceid(allocator), frame_count(0), framerate_numerator(0), framerate_denominator(0)
 	{
 	}
 };
@@ -13641,7 +13643,7 @@ void boo_web_camera_read_frame_callback(::booldog::allocator* allocator, void* u
 };
 static bool boo_web_camera_available_formats_callback(::booldog::allocator* allocator, void* udata
 	, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, ::booldog::uint32 framerate_numerator
-	, ::booldog::uint32 framerate_denomerator, const char* description)
+	, ::booldog::uint32 framerate_denominator, const char* description)
 {
 	allocator = allocator;
 	boo_web_camera_info* info = (boo_web_camera_info*)udata;
@@ -13651,9 +13653,11 @@ static bool boo_web_camera_available_formats_callback(::booldog::allocator* allo
 		info->width = width;
 		info->height = height;
 		info->fourcc = fourcc;
+		info->framerate_numerator = framerate_numerator;
+		info->framerate_denominator = framerate_denominator;
 	}
 	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fourcc;
-	printf("Format %s(%s), %ux%u %u/%u\n", description, sfcc, width, height, framerate_numerator, framerate_denomerator);
+	printf("Format %s(%s), %ux%u %u/%u\n", description, sfcc, width, height, framerate_numerator, framerate_denominator);
 	return true; 
 };
 static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allocator, void* udata, const char* name
@@ -13702,7 +13706,8 @@ TEST_CASE("boo_web_camera", "test")
 #endif
 			if(boolval)
 			{
-				boolval = camera.cam->start_capturing(0, info.fourcc, info.width, info.height, 0, 0);
+				boolval = camera.cam->start_capturing(0, info.fourcc, info.width, info.height, info.framerate_numerator
+					, info.framerate_denominator);
 #ifdef __LINUX__
 				REQUIRE(boolval);
 #endif				
