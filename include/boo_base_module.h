@@ -169,42 +169,43 @@ namespace booldog
 			::booldog::result_pointer respointer;
 			::booldog::module_init_t module_init = 0;
 			_lock.wlock( debuginfo );
-			if( _inited_ref == 0 )
+			if(_inited_ref == 0)
 			{
-				if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "core_init" , debuginfo ) )
+				if(::booldog::utils::module::mbs::method(&respointer, allocator, _handle, "core_init", debuginfo))
 					goto goto_method_success_return;
-				if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "rux_module_init" , debuginfo ) )
+				if(::booldog::utils::module::mbs::method(&respointer, allocator, _handle, "rux_module_init", debuginfo))
 					goto goto_method_success_return;
-				if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "dll_init" , debuginfo ) )
+				if(::booldog::utils::module::mbs::method(&respointer, allocator, _handle, "dll_init", debuginfo))
 					goto goto_method_success_return;
+				goto goto_return;
 			}
-			else if( _inited_ref == UINT32_MAX )
+			else if(_inited_ref == UINT32_MAX)
 			{
-				res->booerr( ::booldog::enums::result::booerr_type_module_is_deinitialized_and_must_be_unloaded );
-				goto goto_error;
+				res->booerr(::booldog::enums::result::booerr_type_module_is_deinitialized_and_must_be_unloaded);
+				goto goto_return;
 			}
-			goto goto_return;
+			goto goto_inited_ref;
 goto_method_success_return:
 			module_init = (::booldog::module_init_t)respointer.pres;
-			module_init( initparams );
-			if( ponafterinit )
-				ponafterinit( udata , this );
+			module_init(initparams);			
+			if(ponafterinit)
+				ponafterinit(udata, this);
+goto_inited_ref:
+			++_inited_ref;
 goto_return:
-			_inited_ref++;
-goto_error:
 			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		};
-		virtual bool free( ::booldog::result* pres , booldog::allocator* allocator , ::booldog::events::typedefs::onbeforefree ponbeforefree 
-			, void* udata, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		virtual bool free(::booldog::result* pres, booldog::allocator* allocator, ::booldog::events::typedefs::onbeforefree ponbeforefree
+			, void* udata, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 		{
 			::booldog::result locres;
 			BOOINIT_RESULT( ::booldog::result );
 			_lock.wlock( debuginfo );
-			if( _inited_ref && _inited_ref != UINT32_MAX )
+			if(_inited_ref && _inited_ref != UINT32_MAX)
 			{
-				_inited_ref--;			
-				if( _inited_ref == 0 )
+				--_inited_ref;			
+				if(_inited_ref == 0)
 				{
 					_inited_ref = UINT32_MAX;
 					if( ponbeforefree )

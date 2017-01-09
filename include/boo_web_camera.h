@@ -8,7 +8,10 @@
 #endif
 
 #include BOOLDOG_HEADER(boo_multimedia_enums.h)
+#include BOOLDOG_HEADER(boo_multimedia_video_frame.h)
+#include BOOLDOG_HEADER(boo_time_utils.h)
 #include BOOLDOG_HEADER(boo_error.h)
+#include BOOLDOG_HEADER(boo_result.h)
 
 //#if 1
 #ifdef __LINUX__
@@ -21,8 +24,10 @@
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/select.h>
-#else
-#include BOOLDOG_HEADER(boo_result.h)
+
+#ifndef V4L2_PIX_FMT_H264
+#define V4L2_PIX_FMT_H264     v4l2_fourcc('H', '2', '6', '4') /* H264 with start codes */
+#endif
 #endif
 namespace booldog
 {
@@ -78,9 +83,7 @@ namespace booldog
 			typedef bool (*available_formats_callback_t)(::booldog::allocator* allocator, void* udata
 				, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height
 				, ::booldog::uint32 framerate_numerator, ::booldog::uint32 framerate_denominator, const char* description);
-			typedef void (*read_frame_callback_t)(::booldog::allocator* allocator, void* udata, void* frame
-				, ::booldog::uint32 frame_size, ::booldog::uint32 fourcc, ::booldog::uint32 width
-				, ::booldog::uint32 height);
+			typedef void (*read_frame_callback_t)(::booldog::allocator* allocator, void* udata, ::booldog::multimedia::video::frame* vframe);
 		};
 		class web_camera
 		{
@@ -99,7 +102,7 @@ namespace booldog
 			};
 			int _fd;
 			int _capture_type;
-			::booldog::multimedia::web_camera::buffer _buffers[4];
+			::booldog::multimedia::web_camera::buffer _buffers[30];
 			int _buffers_count;
 			static int xioctl(int fh, int request, void *arg)
 			{
@@ -112,6 +115,8 @@ namespace booldog
 				return r;
 			}
 #endif
+			::booldog::uint64 _difference;
+			::booldog::uint64 _timestamp;
 			web_camera(void)
 			{
 			};
@@ -164,17 +169,20 @@ namespace booldog
 				struct stat st;
 				if(stat(name, &st) == -1)
 				{
+				printf("error, %d\n", __LINE__);
 					res->seterrno();
 					goto goto_return;
 				}
 				if(S_ISCHR(st.st_mode) == 0) 
 				{
+				printf("error, %d\n", __LINE__);
 					res->booerr(::booldog::enums::result::booerr_type_file_is_not_character_device);
 					goto goto_return;
 				}
 				fd = ::open(name, O_RDWR | O_NONBLOCK, 0);
 				if(fd == -1)
 				{
+				printf("error, %d\n", __LINE__);
 					res->seterrno();
 					goto goto_return;
 				}
@@ -182,11 +190,13 @@ namespace booldog
 				{
 					if(xioctl(fd, VIDIOC_QUERYCAP, &cap) == -1)
 					{
+					printf("error, %d\n", __LINE__);
 						res->seterrno();
 						goto goto_return;
 					}
 					if((cap.capabilities & V4L2_CAP_VIDEO_CAPTURE) == 0)
 					{
+					printf("error, %d\n", __LINE__);
 						res->booerr(::booldog::enums::result::booerr_type_file_is_not_video_capture_device);
 						goto goto_return;
 					}
@@ -197,6 +207,7 @@ goto_return:
 					res->cam = allocator->create< ::booldog::multimedia::web_camera >(allocator, fd);
 					if(res->cam == 0)
 					{
+					printf("error, %d\n", __LINE__);
 						res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
 						return false;
 					}
@@ -341,6 +352,8 @@ goto_return:
 			{
 				::booldog::result locres;
 				BOOINIT_RESULT(::booldog::result);
+				_timestamp = 0;
+				_difference = 0;
 #ifdef __LINUX__
 				enum v4l2_buf_type v4l2buftype;
 				struct v4l2_buffer v4l2buf;
@@ -355,6 +368,7 @@ goto_return:
 
 				if(xioctl(_fd, VIDIOC_QUERYCAP, &cap) == -1)
 				{
+				printf("error, %d\n", __LINE__);
 					res->seterrno();
 					goto goto_return;
 				}
@@ -365,6 +379,7 @@ goto_return:
 					_capture_type = 0;
 					if((cap.capabilities & V4L2_CAP_READWRITE) == false)
 					{
+					printf("error, %d\n", __LINE__);
 						res->booerr(::booldog::enums::result::booerr_type_video_capture_device_does_not_support_neither_streaming_nor_io);
 						goto goto_return;
 					}
@@ -399,6 +414,7 @@ goto_return:
 				fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 				if(xioctl(_fd, VIDIOC_S_FMT, &fmt) == -1)
 				{
+				printf("error, %d\n", __LINE__);
 					res->seterrno();
 					goto goto_return;
 				}
@@ -421,6 +437,7 @@ goto_return:
 							v4l2streamparm.parm.capture.timeperframe.denominator = framerate_denominator;
 							if(xioctl(_fd, VIDIOC_S_PARM, &v4l2streamparm) == -1)
 							{
+							printf("error, %d\n", __LINE__);
 								res->seterrno();
 								goto goto_return;
 							}
@@ -437,7 +454,7 @@ goto_return:
 				{
 					::memset(&req, 0, sizeof(req));
 
-					req.count  = 4;
+					req.count  = sizeof(_buffers) / sizeof(_buffers[0]);
 					req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 					req.memory = V4L2_MEMORY_USERPTR;
 
@@ -446,6 +463,7 @@ goto_return:
 						int errnoval = errno;
 						if(errnoval != EINVAL) 
 						{
+						printf("error, %d\n", __LINE__);
 							res->seterrno(errnoval);
 							goto goto_return;
 						} 
@@ -468,6 +486,7 @@ goto_return:
 								, fmt.fmt.pix.sizeimage, debuginfo);
 							if(_buffers[_buffers_count].start == 0)
 							{
+							printf("error, %d\n", __LINE__);
 								res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
 								goto goto_return;
 							}
@@ -480,7 +499,7 @@ goto_return:
 				{
 					::memset(&req, 0, sizeof(req));
 
-					req.count = 4;
+					req.count = sizeof(_buffers) / sizeof(_buffers[0]);
 					req.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 					req.memory = V4L2_MEMORY_MMAP;
 
@@ -489,6 +508,7 @@ goto_return:
 						int errnoval = errno;
 						if(errnoval != EINVAL) 
 						{
+						printf("error, %d\n", __LINE__);
 							res->seterrno(errnoval);
 							goto goto_return;
 						} 
@@ -499,6 +519,7 @@ goto_return:
 					{
 						if(req.count < 2)
 						{
+						printf("error, %d\n", __LINE__);
 							res->booerr(::booldog::enums::result::booerr_type_insufficient_memory);
 							goto goto_return;
 						}
@@ -513,6 +534,7 @@ goto_return:
 
 							if(xioctl(_fd, VIDIOC_QUERYBUF, &v4l2buf) == -1)
 							{
+							printf("error, %d\n", __LINE__);
 								res->seterrno();
 								goto goto_return;
 							}
@@ -536,6 +558,7 @@ goto_return:
 								, v4l2buf.m.offset);
 							if(_buffers[_buffers_count].start == MAP_FAILED)
 							{
+							printf("error, %d\n", __LINE__);
 								_buffers[_buffers_count].start = 0;
 								res->booerr(::booldog::enums::result::booerr_type_map_failed);
 								goto goto_return;
@@ -559,6 +582,7 @@ goto_return:
 						, fmt.fmt.pix.sizeimage, debuginfo);
 					if(_buffers[0].start == 0)
 					{
+					printf("error, %d\n", __LINE__);
 						res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
 						goto goto_return;
 					}
@@ -578,6 +602,7 @@ goto_return:
                         v4l2buf.length = _buffers[index].length;
 						if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
 						{
+						printf("error, %d\n", __LINE__);
 							res->seterrno();
 							goto goto_return;
 						}
@@ -592,6 +617,7 @@ goto_return:
 						v4l2buf.index = index;
 						if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
 						{
+						printf("error, %d\n", __LINE__);
 							res->seterrno();
 							goto goto_return;
 						}
@@ -603,6 +629,7 @@ goto_return:
 				v4l2buftype = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 				if(xioctl(_fd, VIDIOC_STREAMON, &v4l2buftype) == -1)
 				{
+				printf("error, %d\n", __LINE__);
 					res->seterrno();
 					goto goto_return;
 				}
@@ -652,7 +679,10 @@ goto_return:
 						res->seterrno(resint);
 					}
 					else if(resint != 0)
+					{
+						_timestamp = ::booldog::utils::time::posix::now_as_utc();
 						res->bres = true;
+					}
 					break;
 				}
 #else
@@ -668,6 +698,12 @@ goto_return:
 				::booldog::result locres;
 				BOOINIT_RESULT(::booldog::result);
 #ifdef __LINUX__
+				::booldog::uint64 timestamp = ::booldog::utils::time::posix::now_as_utc();
+				if(_timestamp)
+					timestamp = _timestamp;
+				
+				struct timespec ts;
+				::booldog::multimedia::video::frame vframe;
 				int index = 0;
 				struct v4l2_buffer v4l2buf;
 				switch(_capture_type)
@@ -682,7 +718,7 @@ goto_return:
 					{
 						res->seterrno();
 						return false;
-					}
+					}					
 					for(;index < _buffers_count;++index)
 					{
 						if(v4l2buf.m.userptr == (unsigned long)_buffers[index].start
@@ -690,7 +726,43 @@ goto_return:
 							break;
 					}
 					if(index < _buffers_count)
-						callback(_allocator, udata, (void*)v4l2buf.m.userptr, v4l2buf.bytesused, _fourcc, _width, _height);
+					{
+						vframe.fourcc = _fourcc;
+						vframe.width = _width;
+						vframe.height = _height;
+						vframe.data = (::booldog::byte*)v4l2buf.m.userptr;
+						vframe.size = (::booldog::uint32)v4l2buf.bytesused;
+
+						if(_difference == 0)
+						{
+							_difference = v4l2buf.timestamp.tv_sec * 1000000ULL + v4l2buf.timestamp.tv_usec;
+							if(v4l2buf.flags & V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC)
+							{
+								clock_gettime(CLOCK_MONOTONIC, &ts);
+								_difference = ts.tv_sec * 1000000LL + (ts.tv_nsec / 1000ULL) - _difference;
+								//printf("%d(%x) MONOTONIC(" I64u ", " I64u ", " I64u ")\n", index, v4l2buf.flags, (::booldog::uint64)v4l2buf.timestamp.tv_sec, (::booldog::uint64)v4l2buf.timestamp.tv_usec, _difference);
+							}
+							else
+							{
+								clock_gettime(CLOCK_REALTIME, &ts);
+								_difference = ts.tv_sec * 1000000LL + (ts.tv_nsec / 1000ULL) - _difference;
+							}
+						}
+						timestamp -= _difference;
+
+						/*timestamp = v4l2buf.timestamp.tv_sec * 1000000ULL + v4l2buf.timestamp.tv_usec;
+						if(v4l2buf.flags & V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC)
+						{
+						printf("%d(%x) MONOTONIC(" I64u ", " I64u ")\n", index, v4l2buf.flags, (::booldog::uint64)v4l2buf.timestamp.tv_sec, (::booldog::uint64)v4l2buf.timestamp.tv_usec);
+							clock_gettime(CLOCK_MONOTONIC, &ts);
+							timestamp = ts.tv_sec * 1000000LL + (ts.tv_nsec / 1000ULL) - timestamp;						
+							timestamp = ::booldog::utils::time::posix::now_as_utc() - timestamp;
+						}
+						else
+						printf("UNKNOWN(" I64u ", " I64u ")\n", (::booldog::uint64)v4l2buf.timestamp.tv_sec, (::booldog::uint64)v4l2buf.timestamp.tv_usec);*/
+						vframe.timestamp = timestamp;
+						callback(_allocator, udata, &vframe);
+					}
 					if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
 					{
 						res->seterrno();
@@ -709,7 +781,24 @@ goto_return:
 						res->seterrno();
 						return false;
 					}
-					callback(_allocator, udata, _buffers[v4l2buf.index].start, v4l2buf.bytesused, _fourcc, _width, _height);
+					timestamp = ::booldog::utils::time::posix::now_as_utc();
+					vframe.fourcc = _fourcc;
+					vframe.width = _width;
+					vframe.height = _height;
+					vframe.data = (::booldog::byte*)_buffers[v4l2buf.index].start;
+					vframe.size = (::booldog::uint32)v4l2buf.bytesused;
+					/*timestamp = v4l2buf.timestamp.tv_sec * 1000000ULL + v4l2buf.timestamp.tv_usec;
+					if(v4l2buf.flags & V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC)
+					{
+					printf("MONOTONIC(" I64u ", " I64u ")\n", (::booldog::uint64)v4l2buf.timestamp.tv_sec, (::booldog::uint64)v4l2buf.timestamp.tv_usec);
+						clock_gettime(CLOCK_MONOTONIC, &ts);
+						timestamp = ts.tv_sec * 1000000LL + ( ts.tv_nsec / 1000ULL ) - timestamp;						
+						timestamp = ::booldog::utils::time::posix::now_as_utc() - timestamp;
+					}
+					else
+					printf("UNKNOWN(" I64u ", " I64u ")\n", (::booldog::uint64)v4l2buf.timestamp.tv_sec, (::booldog::uint64)v4l2buf.timestamp.tv_usec);*/
+					vframe.timestamp = timestamp;
+					callback(_allocator, udata, &vframe);
 					if(xioctl(_fd, VIDIOC_QBUF, &v4l2buf) == -1)
 					{
 						res->seterrno();
@@ -722,7 +811,16 @@ goto_return:
 						res->seterrno();
 						return false;
 					}
-					callback(_allocator, udata, _buffers[0].start, _buffers[0].length, _fourcc, _width, _height);
+					timestamp = ::booldog::utils::time::posix::now_as_utc();
+					vframe.fourcc = _fourcc;
+					vframe.width = _width;
+					vframe.height = _height;
+					vframe.data = (::booldog::byte*)_buffers[0].start;
+					vframe.size = (::booldog::uint32)_buffers[0].length;
+					vframe.timestamp = timestamp;
+					
+					callback(_allocator, udata, &vframe);
+					break;
 				}
 #else
 				callback = callback;

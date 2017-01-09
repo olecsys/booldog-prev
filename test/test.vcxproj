@@ -46,6 +46,7 @@
     <ClInclude Include="..\include\boo_io_utils.h" />
     <ClInclude Include="..\include\boo_json.h" />
     <ClInclude Include="..\include\boo_list.h" />
+    <ClInclude Include="..\include\boo_lockfree_queue.h" />
     <ClInclude Include="..\include\boo_math_utils.h" />
     <ClInclude Include="..\include\boo_media_enums.h" />
     <ClInclude Include="..\include\boo_mem.h" />
@@ -53,8 +54,17 @@
     <ClInclude Include="..\include\boo_mixed_allocator.h" />
     <ClInclude Include="..\include\boo_module_utils.h" />
     <ClInclude Include="..\include\boo_monitor.h" />
+    <ClInclude Include="..\include\boo_multimedia_async_graph.h" />
+    <ClInclude Include="..\include\boo_multimedia_audio_capture.h" />
+    <ClInclude Include="..\include\boo_multimedia_audio_frame.h" />
     <ClInclude Include="..\include\boo_multimedia_converters.h" />
     <ClInclude Include="..\include\boo_multimedia_enums.h" />
+    <ClInclude Include="..\include\boo_multimedia_formatter.h" />
+    <ClInclude Include="..\include\boo_multimedia_graph_chain.h" />
+    <ClInclude Include="..\include\boo_multimedia_video_async_capture.h" />
+    <ClInclude Include="..\include\boo_multimedia_video_capture.h" />
+    <ClInclude Include="..\include\boo_multimedia_video_decoder.h" />
+    <ClInclude Include="..\include\boo_multimedia_video_frame.h" />
     <ClInclude Include="..\include\boo_network_utils.h" />
     <ClInclude Include="..\include\boo_object.h" />
     <ClInclude Include="..\include\boo_opengl_buffer.h" />

@@ -28,6 +28,14 @@
 #define SIZE_MAX ((size_t) - 1)
 #endif
 #endif
+
+#ifndef BOOLDOG_MEM_ALIGN_SIZE
+#ifdef __ARM_ALIGN_MAX_STACK_PWR
+#define BOOLDOG_MEM_ALIGN_SIZE __ARM_ALIGN_MAX_STACK_PWR
+#else
+#define BOOLDOG_MEM_ALIGN_SIZE 4
+#endif
+#endif
 namespace booldog
 {
 	namespace mem
@@ -42,7 +50,7 @@ namespace booldog
 #define BOOLDOG_MEM_INFO_USE_INFO2 5
 #define BOOLDOG_MEM_INFO_USE_INFO3 6
 #define BOOLDOG_MEM_INFO_USE_INFO4 7
-		boobegin_struct_pack( 4 )
+		boobegin_struct_pack(BOOLDOG_MEM_ALIGN_SIZE)
 		struct info1
 		{
 			::booldog::byte _check;
@@ -50,8 +58,8 @@ namespace booldog
 			::booldog::byte _size;
 			::booldog::byte _eflags;
 		}
-		booend_struct_pack( 4 );
-		boobegin_struct_pack( 4 )
+		booend_struct_pack(BOOLDOG_MEM_ALIGN_SIZE);
+		boobegin_struct_pack(BOOLDOG_MEM_ALIGN_SIZE)
 		struct info2
 		{
 			::booldog::byte _check;
@@ -59,8 +67,8 @@ namespace booldog
 			::booldog::ushort _size;
 			::booldog::byte _eflags;
 		}
-		booend_struct_pack( 4 );
-		boobegin_struct_pack( 4 )
+		booend_struct_pack(BOOLDOG_MEM_ALIGN_SIZE);
+		boobegin_struct_pack(BOOLDOG_MEM_ALIGN_SIZE)
 		struct info3
 		{
 			::booldog::byte _check;
@@ -68,8 +76,8 @@ namespace booldog
 			::booldog::uint32 _size;
 			::booldog::byte _eflags;
 		}
-		booend_struct_pack( 4 );
-		boobegin_struct_pack( 4 )
+		booend_struct_pack(BOOLDOG_MEM_ALIGN_SIZE);
+		boobegin_struct_pack(BOOLDOG_MEM_ALIGN_SIZE)
 		struct info4
 		{
 			::booldog::byte _check;
@@ -77,7 +85,7 @@ namespace booldog
 			::booldog::uint64 _size;
 			::booldog::byte _eflags;
 		}
-		booend_struct_pack( 4 );
+		booend_struct_pack(BOOLDOG_MEM_ALIGN_SIZE);
 #ifdef __WINDOWS__
 #pragma warning( pop )
 #endif
@@ -85,8 +93,8 @@ namespace booldog
 		{
 			booinline size_t memory_size_with_info( size_t size )
 			{
-				if( size % 4 )
-					size = 4 * ( size / 4 ) + 4;
+				if( size % BOOLDOG_MEM_ALIGN_SIZE)
+					size = BOOLDOG_MEM_ALIGN_SIZE * ( size / BOOLDOG_MEM_ALIGN_SIZE ) + BOOLDOG_MEM_ALIGN_SIZE;
 
 				if( size < UINT8_MAX )
 					size += sizeof( ::booldog::mem::info1 );

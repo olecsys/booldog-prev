@@ -72,19 +72,20 @@ namespace booldog
 				{
 					if( ::booldog::interlocked::compare_exchange( &_size_of_allocated_memory , 0 , 0 ) > 0 )
 					{
+printf("Heap memory leak(%d)\n", (int)_size_of_allocated_memory);
 						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
 					}
-				};
+                                }
 				virtual size_t size_of_allocated_memory( void )
 				{
 					return ::booldog::interlocked::compare_exchange( &_size_of_allocated_memory , 0 , 0 );
-				};
+                                }
 			private:
 				void* palloc( void* pointer , size_t pointertotal , size_t pointersize , size_t size
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
-					if( size % 4 )
-						size = 4 * ( size / 4 ) + 4;
+					if( size % BOOLDOG_MEM_ALIGN_SIZE)
+						size = BOOLDOG_MEM_ALIGN_SIZE * ( size / BOOLDOG_MEM_ALIGN_SIZE ) + BOOLDOG_MEM_ALIGN_SIZE;
 
 					debuginfo = debuginfo;
 					size_t pointerinfosize = pointertotal - pointersize;
@@ -215,8 +216,8 @@ namespace booldog
 					if( pointer == 0 )
 						return palloc( 0 , 0 , 0 , size , debuginfo );
 
-					if( size % 4 )
-						size = 4 * ( size / 4 ) + 4;
+					if( size % BOOLDOG_MEM_ALIGN_SIZE )
+						size = BOOLDOG_MEM_ALIGN_SIZE * ( size / BOOLDOG_MEM_ALIGN_SIZE ) + BOOLDOG_MEM_ALIGN_SIZE;
 
 					size_t offsize = 0 , begin_size = 0;
 					from_pointer( pointer , offsize , begin_size );

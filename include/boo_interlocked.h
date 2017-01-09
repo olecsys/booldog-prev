@@ -98,6 +98,16 @@ namespace booldog
 			return atomic_cas_ptr( *target , comparand , exchange );
 #endif
 		};
+		booinline void* exchange_pointer(void* volatile* target, void* exchange)
+		{
+#ifdef __WINDOWS__
+			return InterlockedExchangePointer(target, exchange);
+#elif defined( __LINUX__ )
+			return __sync_lock_test_and_set(target, exchange);
+#else
+			error
+#endif
+		};
 	};
 };
 #endif

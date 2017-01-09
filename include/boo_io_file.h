@@ -53,7 +53,9 @@ namespace booldog
 				file_mode_read = 2 ,	
 				file_mode_write = 4 ,
 				file_mode_create = 8 ,
-				file_mode_truncate = 16
+                                file_mode_truncate = 16,
+                                file_mode_tmpfile = 32,
+                                file_mode_nobuffering = 64
 			};
 			enum file_position_origin
 			{
@@ -61,34 +63,35 @@ namespace booldog
 				file_position_origin_curpos = SEEK_CUR ,
 				file_position_origin_end = SEEK_END
 			};
-		};
-	};
+                }
+        }
 	namespace io
 	{
 		class file;
-	};
+        }
 	class result_file : public ::booldog::result
 	{
 	private:
 		result_file( const ::booldog::result& )
 		{
-		};
-		result_file( const ::booldog::result_file& )
+                }
+                result_file(const ::booldog::result_file&)
+                    : result()
 		{
-		};
+                }
 		::booldog::result_file& operator = ( const ::booldog::result_file& )
 		{
 			return *this;
-		};
+                }
 	public:
 		::booldog::io::file* file;
 		result_file( void )
 		{
 			file = 0;
-		};
+                }
 		virtual ~result_file( void )
 		{
-		};
+                }
 		virtual void clear( void ) const
 		{
 			::booldog::result_file* _obj_ = const_cast< ::booldog::result_file* >( this );
@@ -97,7 +100,7 @@ namespace booldog
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
 			_obj_->file = 0;
-		};
+                }
 	};
 	namespace io
 	{
@@ -111,18 +114,18 @@ namespace booldog
 		private:
 			file( void )
 			{
-			};
+                        }
 			file( ::booldog::allocator* pallocator , int pfh , int file_mode )
 				: _allocator( pallocator ) , _file( pfh ) , _file_mode( file_mode )
 			{
-			};
+                        }
 			file( const ::booldog::io::file& )
 			{
-			};
+                        }
 			::booldog::io::file& operator = ( const ::booldog::io::file& )
 			{
 				return *this;
-			};
+                        }
 		public:
 			static bool mbsopen( ::booldog::result_file* pres , booldog::allocator* allocator , const char* name_or_path , int file_mode
 				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
@@ -164,8 +167,22 @@ namespace booldog
 						goto goto_return;
 					}
 					int mode = 0;
-					if( file_mode & ::booldog::enums::io::file_mode_create )
-						mode |= ::booldog::enums::io::CREAT;
+#ifdef __WINDOWS__
+                                        if(file_mode & ::booldog::enums::io::file_mode_tmpfile)
+                                        {
+                                            mode |= O_TMPFILE;
+                                            mode |= ::booldog::enums::io::CREAT;
+                                        }
+                                        else if(file_mode & ::booldog::enums::io::file_mode_create)
+                                            mode |= ::booldog::enums::io::CREAT;
+#else
+                                        if(file_mode & ::booldog::enums::io::file_mode_tmpfile)
+                                            mode |= O_TMPFILE;
+                                        else if(file_mode & ::booldog::enums::io::file_mode_create)
+                                            mode |= ::booldog::enums::io::CREAT;
+                                        if(file_mode & ::booldog::enums::io::file_mode_nobuffering)
+                                            mode |= O_SYNC;
+#endif
 					if( ( file_mode & ::booldog::enums::io::file_mode_read )
 						&& ( file_mode & ::booldog::enums::io::file_mode_write ) )
 					{
@@ -195,7 +212,7 @@ namespace booldog
 						}
 						else
 							mode |= ::booldog::enums::io::RDONLY;
-					}
+                                        }
 #ifdef __WINDOWS__
 					_sopen_s( &pfh , res_name_or_path.mbchar , mode , _SH_DENYNO , _S_IREAD | _S_IWRITE );
 #else
@@ -396,7 +413,7 @@ namespace booldog
 						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 				}
 				return res->succeeded();
-			};
+                        }
 			static bool mbsopen( ::booldog::result_file* pres , booldog::allocator* allocator , const char* name_or_path 
 				, int file_mode	, const char* search_path , bool exedir_as_root_path 
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
@@ -414,7 +431,7 @@ namespace booldog
 					BOONAMED_PARAM_NONE
 				};
 				return ::booldog::io::file::mbsopen( pres , allocator , name_or_path , file_mode , load_params );
-			};
+                        }
 			bool close( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
@@ -428,21 +445,22 @@ namespace booldog
 					res->seterrno();
 				_allocator->destroy( this );
 				return res->succeeded();
-			};
+                        }
 			bool write(::booldog::result* pres, ::booldog::byte* buffer, size_t buffer_size, size_t portion_size, size_t& written
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
 				debuginfo = debuginfo;
 				::booldog::result locres;
 				BOOINIT_RESULT(::booldog::result);
-
 				written = 0;
 #ifdef __WINDOWS__
 				int writeres = 0;
 #else
 				ssize_t writeres = 0;
 #endif
-				for( ; ; )
+				if(portion_size > buffer_size)
+					portion_size = buffer_size;
+                                for(;;)
 				{
 					if(buffer_size == written)
 						break;
@@ -461,7 +479,7 @@ namespace booldog
 					written += writeres;
 				}
 				return res->succeeded();
-			};
+                        }
 			bool read( ::booldog::result_buffer* pres , booldog::allocator* allocator
 				, size_t portionsize , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
@@ -495,7 +513,7 @@ namespace booldog
 				res->bufdatasize = readres;
 goto_return:
 				return res->succeeded();
-			};
+                        }
 			bool position( ::booldog::result_int64* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
@@ -512,22 +530,41 @@ goto_return:
 #endif
 					res->seterrno();
 				return res->succeeded();
-			};
+                        }
 			bool position( ::booldog::result* pres , ::booldog::int64 offset , ::booldog::enums::io::file_position_origin origin
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
 				debuginfo = debuginfo;
 				::booldog::result locres;
-				BOOINIT_RESULT( ::booldog::result );
-
+                                BOOINIT_RESULT(::booldog::result);
 #ifdef __WINDOWS__
-				if( _lseeki64( _file , offset , origin ) == -1 )
+                            if( _lseeki64( _file , offset , origin ) == -1 )
 #else
-				if( lseek64( _file , (off64_t)offset , origin ) == (off64_t)-1 )
+                            if( lseek64( _file , (off64_t)offset , origin ) == (off64_t)-1 )
 #endif
-					res->seterrno();
+                                    res->seterrno();
 				return res->succeeded();
-			};
+                        }
+                        bool flush(::booldog::result* pres, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+                        {
+                            debuginfo = debuginfo;
+                            ::booldog::result locres;
+                            BOOINIT_RESULT(::booldog::result);
+#ifdef __WINDOWS__
+                            if(FlushFileBuffers((HANDLE)_file) == 0)
+                            {
+                                res->GetLastError();
+                                return false;
+                            }
+#else
+                            if(fdatasync(_file) == -1)
+                            {
+                                res->seterrno();
+                                return false;
+                            }
+#endif
+                            return true;
+                        }
 			template< size_t step >
 			bool readline( ::booldog::result_buffer* pres , booldog::allocator* allocator
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )

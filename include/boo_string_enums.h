@@ -28,15 +28,15 @@ namespace booldog
 				CP1251 = 1251 ,		
 				UTF8 = 65001 ,
 				UTF32 = 12000
-			};
-		};
-	};
+                        };
+                }
+        }
 	namespace global
 	{
 		namespace string
 		{
 			static ::booldog::enums::string::code_page default_code_page = BOOLDOG_STRING_CODE_PAGE;
-		};
-	};
-};
+                }
+        }
+}
 #endif

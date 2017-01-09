@@ -31,15 +31,15 @@ namespace booldog
 		booinline void sleep( ::booldog::uint32 milliseconds )
 		{
 #ifdef __WINDOWS__
-			::Sleep( milliseconds );
+                        ::Sleep(milliseconds);
 #else
-			struct timespec ts = { 0 };	
-			struct timespec rem = { 0 };
+                        struct timespec ts = {};
+                        struct timespec rem = {};
 			ts.tv_sec = milliseconds / 1000;
 			ts.tv_nsec = ( milliseconds % 1000 ) * 1000000;
 			nanosleep( &ts , &rem );
 #endif
-		};
+                }
 		booinline ::booldog::pid_t threadid( void )
 		{
 #ifdef __WINDOWS__

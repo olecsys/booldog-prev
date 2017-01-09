@@ -39,10 +39,9 @@ namespace booldog
 			event( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				:
 #ifdef __WINDOWS__
-				_auto_reset_event( 0 ) , _manual_reset_event( 0 )
+                                _manual_reset_event(0), _auto_reset_event(0)
 #else
-				_mutex_inited( false ) , _cond_inited( false ) , _isset( false ) , _wakeall( false ) , _waiters( 0 ) 
-					, _clockid( CLOCK_REALTIME )
+                                _clockid(CLOCK_REALTIME), _waiters(0), _isset(false), _wakeall(false), _mutex_inited(false), _cond_inited(false)
 #endif
 			{
 				debuginfo = debuginfo;
@@ -217,6 +216,8 @@ goto_error:
 					else
 						res->setpthreaderror( result );
 				}
+				else
+					_wakeall = true;
 				pthread_mutex_unlock( &_mutex );
 #endif
 				return res->succeeded();
@@ -241,6 +242,8 @@ goto_error:
 					else
 						res->setpthreaderror( result );
 				}
+				else
+					_isset = true;
 				pthread_mutex_unlock( &_mutex );
 #endif
 				return res->succeeded();

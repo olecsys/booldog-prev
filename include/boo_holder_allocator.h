@@ -21,9 +21,9 @@ namespace booldog
 			::booldog::heap_allocator* heap;
 		public:
 			holder( ::booldog::stack_allocator* pstack , ::booldog::heap_allocator* pheap )
-				: heap( pheap ) , stack( pstack )
+                                : stack(pstack), heap(pheap)
 			{
-			};
+                        }
 		public:
 			virtual void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{

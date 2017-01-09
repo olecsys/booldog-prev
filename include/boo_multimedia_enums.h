@@ -7,6 +7,9 @@
 #define BOOLDOG_HEADER( header ) <header>
 #endif
 #include BOOLDOG_HEADER(boo_types.h)
+#define BOOLDOG_MAKEFCC(ch0, ch1, ch2, ch3)                              \
+                ((::booldog::uint32)(::booldog::uint8)(ch0) | ((::booldog::uint32)(::booldog::uint8)(ch1) << 8) |   \
+                ((::booldog::uint32)(::booldog::uint8)(ch2) << 16) | ((::booldog::uint32)(::booldog::uint8)(ch3) << 24 ))
 namespace booldog
 {
 	namespace enums
@@ -26,10 +29,14 @@ namespace booldog
 					GREY = 0x59455247 ,
 					Y800 = 0x30303859 ,
 					Y8 = 0x20203859 ,
+					H264 = BOOLDOG_MAKEFCC('H', '2', '6', '4'),
+					MJPEG = BOOLDOG_MAKEFCC('M', 'J', 'P', 'G'),
+					YV16 = BOOLDOG_MAKEFCC('Y', 'V', '1', '6'),
+                                        I422 = BOOLDOG_MAKEFCC('I', '4', '2', '2'),
 					Unknown = 0xffffffff
 				};
-			};
-		};
-	};
-};
+                        }
+                }
+        }
+}
 #endif
