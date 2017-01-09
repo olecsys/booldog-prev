@@ -33,7 +33,11 @@
 #ifdef __ARM_ALIGN_MAX_STACK_PWR
 #define BOOLDOG_MEM_ALIGN_SIZE __ARM_ALIGN_MAX_STACK_PWR
 #else
+#ifdef __ELBRUS__
+#define BOOLDOG_MEM_ALIGN_SIZE 8 
+#else 
 #define BOOLDOG_MEM_ALIGN_SIZE 4
+#endif
 #endif
 #endif
 namespace booldog

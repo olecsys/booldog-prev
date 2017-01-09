@@ -423,8 +423,8 @@ namespace booldog
 #ifdef BOOLDOG_MEM_CLUSTER_LOG
 				size_t requested_size = size;
 #endif
-				if( size % 4 )
-					size = 4 * ( size / 4 ) + 4;
+				if(size % BOOLDOG_MEM_ALIGN_SIZE)
+					size = BOOLDOG_MEM_ALIGN_SIZE * (size /BOOLDOG_MEM_ALIGN_SIZE) + BOOLDOG_MEM_ALIGN_SIZE;
 
 				debuginfo = debuginfo;
 				if( _avail > 0 )
@@ -548,8 +548,8 @@ namespace booldog
 #ifdef BOOLDOG_MEM_CLUSTER_LOG
 				size_t requested_size = size;
 #endif
-				if( size % 4 )
-					size = 4 * ( size / 4 ) + 4;
+				if(size % BOOLDOG_MEM_ALIGN_SIZE)
+					size = BOOLDOG_MEM_ALIGN_SIZE * (size / BOOLDOG_MEM_ALIGN_SIZE) + BOOLDOG_MEM_ALIGN_SIZE;
 
 				size_t offsize = 0 , begin_size = 0;
 				::booldog::byte* begin = from_pointer( pointer , offsize , begin_size );
