@@ -1595,6 +1595,7 @@ goto_return:
                     ::booldog::result locres;
                     BOOINIT_RESULT(::booldog::result);
 #ifdef __LINUX__
+					allocator = allocator;
 					debuginfo = debuginfo;
 					::booldog::uint32 buffer_frames = _buffer_frames;
 					::booldog::byte* data = aframe->data;
@@ -1709,7 +1710,7 @@ goto_return:
 #else
                     ::booldog::multimedia::audio::frame aframe;
                     aframe.data = (::booldog::byte*)_buffer;
-                    if(read_frame(pres, &aframe,debuginfo))
+                    if(read_frame(pres, _allocator, &aframe,debuginfo))
                     {
                         callback(_allocator, udata, &aframe);
                         return true;
