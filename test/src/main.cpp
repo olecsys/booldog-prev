@@ -14065,8 +14065,8 @@ TEST_CASE("boo_multimedia_audio_capture", "test")
 	{
 		boo_audio_info info(&allocator);		
 		info.exists = false;
-		REQUIRE(::booldog::multimedia::audio::capture::available_capture_devices(0, &allocator
-			, boo_available_audio_callback, &info));
+		::booldog::multimedia::audio::capture::available_capture_devices(0, &allocator, boo_available_audio_callback
+			, &info);
 		if(info.deviceid.mblen)
 		{
 			::booldog::results::multimedia::audio::capture camera;
