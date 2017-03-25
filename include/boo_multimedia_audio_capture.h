@@ -772,9 +772,7 @@ namespace booldog
                     else
                     {
                         if(_filename == name || ::booldog::utils::string::mbs::assign<16>(res, _allocator
-                                                                                          , true, 0, _filename
-                                                                                          , _filename_len, _filename_size
-                                                                                          , name, 0, SIZE_MAX, debuginfo))
+							, true, 0, _filename, _filename_len, _filename_size, name, 0, SIZE_MAX, debuginfo))
                             return true;
                         else
                         {
@@ -782,6 +780,7 @@ namespace booldog
                             _snd_pcm = 0;
                             res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
                             return false;
+						}
                     }
 #elif defined(__WINDOWS__)
                     HRESULT hr = CoInitializeEx(0, COINIT_MULTITHREADED);
