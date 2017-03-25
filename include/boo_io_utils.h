@@ -3,17 +3,19 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_result.h)
-#include BOOLDOG_HEADER(boo_allocator.h)
-#include BOOLDOG_HEADER(boo_mem.h)
-#include BOOLDOG_HEADER(boo_error.h)
+#include "boo_result.h"
+#include "boo_allocator.h"
+#include "boo_mem.h"
+#include "boo_error.h"
 #ifdef __WINDOWS__
 #include <sys/types.h>
 #include <sys/stat.h>
 #else
+#ifndef _LARGEFILE64_SOURCE 
+#define _LARGEFILE64_SOURCE 
+#endif
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 #endif
@@ -25,6 +27,25 @@ namespace booldog
 		{	
 			namespace mbs
 			{
+				booinline bool isfifo(::booldog::results::boolean* pres, const char* pathname
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+				{
+					debuginfo = debuginfo;
+					::booldog::results::boolean locres;
+					BOOINIT_RESULT(::booldog::results::boolean);
+#ifdef __WINDOWS__
+					pathname = pathname;
+					res->booerr(::booldog::enums::result::booerr_type_windows_has_not_fifo);
+					return false;
+#else
+					struct stat st;
+					if(stat(pathname, &st) == 0)
+						res->bres = (S_ISFIFO(st.st_mode) != 0);
+					else
+						res->seterrno();
+#endif				
+					return res->succeeded();
+				}
 				booinline bool rename(::booldog::result* pres, const char* oldpath, const char* newpath
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 				{

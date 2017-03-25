@@ -3,12 +3,9 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER(header) <header>
-#endif
-#include BOOLDOG_HEADER(boo_types.h)
-#include BOOLDOG_HEADER(boo_result.h)
-#include BOOLDOG_HEADER(boo_error.h)
+#include "boo_types.h"
+#include "boo_result.h"
+#include "boo_error.h"
 namespace booldog
 {
 	namespace multimedia
@@ -25,7 +22,7 @@ namespace booldog
 
                                 ::booldog::uint32 alloc_size;
                                 ::booldog::byte* data;
-				::booldog::multimedia::video::frame* _next;
+				::booldog::multimedia::video::frame* volatile _next;
 				frame(void)
                                         : fourcc(0xffffffff), width(0), height(0), size(0), timestamp(0), alloc_size(0), data(0)
 				{

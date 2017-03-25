@@ -3,10 +3,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_types.h)
+#include "boo_types.h"
 namespace booldog
 {
 #define BOOLDOG_STRING_CODE_PAGE ::booldog::enums::string::UTF8

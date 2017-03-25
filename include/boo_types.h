@@ -3,10 +3,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_platform.h)
+#include "boo_platform.h"
 
 #ifdef __WINDOWS__
 #define boobegin_struct_pack( bytes ) __pragma( pack( push ) )\
@@ -100,9 +97,11 @@ namespace booldog
 #ifdef __WINDOWS__
 #if (_MSC_VER >= 1600 )
 #include <stdint.h>
+#include <stddef.h>
 #endif
 #else
 #include <stdint.h>
+#include <stddef.h>
 #endif
 #ifndef SIZE_MAX
 #ifdef __SIZE_MAX__
@@ -113,6 +112,18 @@ namespace booldog
 #endif
 namespace booldog
 {
+	namespace data
+	{
+		struct buffer
+		{
+			void* buf;
+			size_t size;
+			buffer(::booldog::byte* data, size_t datasize)
+				: buf(data), size(datasize)
+			{
+			}
+		};
+	}
 	namespace io
 	{
 		namespace mbs

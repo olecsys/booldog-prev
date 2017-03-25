@@ -3,13 +3,13 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_string_utils.h)
+#include "boo_string_utils.h"
 #ifdef __WINDOWS__
 #include <io.h>
 #else
+#ifndef _LARGEFILE64_SOURCE 
+#define _LARGEFILE64_SOURCE 
+#endif
 #include <unistd.h>
 #endif
 namespace booldog

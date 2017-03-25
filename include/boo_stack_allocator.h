@@ -3,90 +3,166 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_mem_cluster.h)
-#include BOOLDOG_HEADER(boo_threading_utils.h)
-#include BOOLDOG_HEADER(boo_rdwrlock.h)
+#include "boo_mem_cluster.h"
+#include "boo_threading_utils.h"
 namespace booldog
 {
 	namespace allocators
 	{
-		template< size_t s >
+		template< size_t s, size_t cluster_count = 1 >
 		class stack : public ::booldog::stack_allocator
 		{
-			::booldog::byte _data[ s + sizeof( ::booldog::mem::info4 ) ];
-			::booldog::mem::cluster _cluster;
-			::booldog::threading::rdwrlock _lock;
+			::booldog::byte _data[s + sizeof(::booldog::mem::info4)];
+			::booldog::mem::cluster _clusters[cluster_count];
+			size_t _count;
+			::booldog::interlocked::atomic _index;
 		public:
-			stack( void )
-				: _cluster( _data , s + sizeof( ::booldog::mem::info4 ) )
+			stack()
+				: _index(0)
 			{
-			};
-			booinline void print( void )
+				_count = cluster_count;
+				size_t cluster_size = (s + sizeof(::booldog::mem::info4)) / _count;				
+				while(cluster_size < sizeof(::booldog::mem::info4))
+				{
+					--_count;
+					if(_count == 0)
+						break;
+					cluster_size = (s + sizeof(::booldog::mem::info4)) / _count;
+					if(cluster_size % BOOLDOG_MEM_ALIGN_SIZE)
+						cluster_size = BOOLDOG_MEM_ALIGN_SIZE * (cluster_size /BOOLDOG_MEM_ALIGN_SIZE) + BOOLDOG_MEM_ALIGN_SIZE;
+				}
+				_count = (s + sizeof(::booldog::mem::info4)) / cluster_size;
+				::booldog::byte* ptr = _data;
+				for(size_t cluster_index = 0;cluster_index < _count;++cluster_index)
+				{
+					_clusters[cluster_index].initialize(ptr, cluster_size);
+					ptr += cluster_size;
+				}
+			}
+			booinline void print()
 			{
-				_cluster.print();
-			};
+				_clusters[0].print();
+			}
 		public:
-			virtual size_t available( void )
+			virtual size_t available()
 			{
-				return _cluster.available();
-			};
-			void* begin( void )
+				return _clusters[0].available();
+			}
+			void* begin()
 			{
-				return _cluster.begin();
+				return _clusters[0].begin();
 			};
-			void* end( void )
+			void* end()
 			{
-				return _cluster.end();
+				return _clusters[0].end();
 			};
-			virtual void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		private:
+			::booldog::mem::cluster* get_free_cluster(void* pointer)
 			{
-				_lock.wlock( debuginfo );
-				void* ptr = _cluster.alloc( size , debuginfo );
-				_lock.wunlock( debuginfo );
-				return ptr;
-			};
-			virtual void free( void* pointer )
+				::booldog::mem::cluster* cluster = 0;
+				if(pointer)
+				{
+					for(size_t index = 0;index < _count;++index)
+					{
+						cluster = &_clusters[index];
+						if(cluster->contains(pointer))
+							break;
+						cluster = 0;
+					}
+					::booldog::byte tries = 0;
+					while(::booldog::interlocked::compare_exchange(&cluster->_locked, 1, 0) != 0)
+					{
+						if(tries++ == 5)
+							::booldog::threading::sleep(1);
+					}
+				}
+				else
+				{
+					size_t index = (size_t)::booldog::interlocked::increment(&_index) - 1;
+					if(index >= _count)
+					{
+						::booldog::interlocked::exchange(&_index, 0);
+						index = 0;
+					}
+					for(;index < _count;++index)
+					{
+						cluster = &_clusters[index];
+						if(::booldog::interlocked::compare_exchange(&cluster->_locked, 1, 0) == 0)
+							break;
+						cluster = 0;
+					}
+					if(cluster == 0)
+					{
+						for(index = 0;index < _count;++index)
+						{
+							cluster = &_clusters[index];
+							if(::booldog::interlocked::compare_exchange(&cluster->_locked, 1, 0) == 0)
+								break;
+							cluster = 0;
+						}
+					}
+				}
+				return cluster;
+			}
+		public:
+			virtual void* alloc(size_t size, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				_lock.wlock( debuginfo_macros );
-				_cluster.free( pointer );
-				_lock.wunlock( debuginfo_macros );
+				::booldog::mem::cluster* cluster = get_free_cluster(0);
+				if(cluster)
+				{
+					void* ptr = cluster->alloc(size, debuginfo);
+					::booldog::interlocked::exchange(&cluster->_locked, 0);
+					return ptr;
+				}
+				return 0;
 			};
+			virtual void free(void* pointer)
+			{
+				::booldog::mem::cluster* cluster = get_free_cluster(pointer);
+				cluster->free(pointer);
+				::booldog::interlocked::exchange(&cluster->_locked, 0);
+			}
 			virtual size_t getsize( void* pointer )
 			{
-				_lock.wlock( debuginfo_macros );
-				size_t size = _cluster.getsize( pointer );
-				_lock.wunlock( debuginfo_macros );
+				::booldog::mem::cluster* cluster = get_free_cluster(pointer);
+				size_t size = cluster->getsize(pointer);
+				::booldog::interlocked::exchange(&cluster->_locked, 0);
 				return size;
 			};
 			virtual size_t gettotalsize( void* pointer )
 			{
-				_lock.wlock( debuginfo_macros );
-				size_t size = _cluster.gettotalsize( pointer );
-				_lock.wunlock( debuginfo_macros );
+				::booldog::mem::cluster* cluster = get_free_cluster(pointer);
+				size_t size = cluster->gettotalsize(pointer);
+				::booldog::interlocked::exchange(&cluster->_locked, 0);
 				return size;
 			};
 			virtual void* tryrealloc( void* pointer , size_t size , bool free_if_cannot_alloc , void*& oldpointer
 				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{
-				_lock.wlock( debuginfo );
-				void* ptr = _cluster.tryrealloc( pointer , size , free_if_cannot_alloc , oldpointer , debuginfo );
-				_lock.wunlock( debuginfo );
-				return ptr;
+				::booldog::mem::cluster* cluster = get_free_cluster(pointer);
+				if(cluster)
+				{
+					void* ptr = cluster->tryrealloc(pointer, size, free_if_cannot_alloc, oldpointer, debuginfo);
+					::booldog::interlocked::exchange(&cluster->_locked, 0);
+					return ptr;
+				}
+				return 0;
 			};
-			virtual void* realloc( void* pointer , size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			virtual void* realloc(void* pointer, size_t size, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				_lock.wlock( debuginfo );
-				void* ptr = _cluster.realloc( pointer , size , debuginfo );
-				_lock.wunlock( debuginfo );
-				return ptr;
-			};
-			virtual bool check_consistency(void)
+				::booldog::mem::cluster* cluster = get_free_cluster(pointer);
+				if(cluster)
+				{
+					void* ptr = cluster->realloc(pointer, size, debuginfo);
+					::booldog::interlocked::exchange(&cluster->_locked, 0);
+					return ptr;
+				}
+				return 0;
+			}
+			virtual bool check_consistency()
 			{
-				return _cluster.check_consistency();
-			};
+				return _clusters[0].check_consistency();
+			}
 		};
 		namespace single_threaded
 		{
@@ -145,9 +221,9 @@ namespace booldog
 				virtual bool check_consistency(void)
 				{
 					return _cluster.check_consistency();
-				};
+				}
 			};
-		};
-	};
-};
+		}
+	}
+}
 #endif

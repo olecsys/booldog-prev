@@ -3,13 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_allocator.h)
-#include BOOLDOG_HEADER(boo_types.h)
-#include BOOLDOG_HEADER(boo_utils.h)
-#include BOOLDOG_HEADER(boo_mem.h)
+#include "boo_allocator.h"
+#include "boo_types.h"
+#include "boo_utils.h"
+#include "boo_mem.h"
 namespace booldog
 {
 	namespace allocators

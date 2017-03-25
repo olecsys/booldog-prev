@@ -66,6 +66,7 @@ namespace booldog
 			void* udata;
 			::booldog::debug::typedefs::write_log_t log;
 			info( const char* file , int line )
+				: udata(0)
 			{
 				this->file = file;
 				this->line = line;
@@ -75,6 +76,7 @@ namespace booldog
 				this->log = ::booldog::debug::info::write_log_empty;
 			};
 			info( const char* file , int line , unsigned int label )
+				: udata(0)
 			{
 				this->file = file;
 				this->line = line;

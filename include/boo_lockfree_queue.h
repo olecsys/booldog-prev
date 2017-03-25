@@ -3,95 +3,109 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER(header) <header>
-#endif
-#include BOOLDOG_HEADER(boo_types.h)
-#include BOOLDOG_HEADER(boo_interlocked.h)
-#include BOOLDOG_HEADER(boo_if.h)
+#include "boo_types.h"
+#include "boo_interlocked.h"
 namespace booldog
 {
 	namespace data
 	{
 		namespace lockfree
 		{
+			static const void* queue_max = (void*)SIZE_MAX;
 			template< class T >
 			class queue
 			{
 			public:
-			private:
+			private:				
 				void* volatile _head;
 				void* volatile _tail;
 				::booldog::interlocked::atomic _count;
 			public:
-				queue(void)
+                queue()
 					: _head(0), _tail(0), _count(0)
 				{
-				};
-				::booldog::interlocked::atomic_return count(void)
+                }
+                ::booldog::interlocked::atomic_return count()
 				{
 					return ::booldog::interlocked::compare_exchange(&_count, 0, 0);
-				};
+                }
 				booinline void enqueue(T* item)
 				{
-					item->_next = 0;
-					void* max = (void*)0xffffffff;
-					if(::booldog::compile::If<sizeof(void*) == 8>::test())
-						max = (void*)0xffffffffffffffff;
+					T* volatile* item_next = &item->_next;
+					item->_next = (T*)::booldog::data::lockfree::queue_max;
 					for(;;)
-					{
-						T* head = (T*)::booldog::interlocked::compare_exchange_pointer(&_head, max, 0);
-						if(head == max)
+					{	
+						T* tail = (T*)::booldog::interlocked::exchange_pointer(&_tail, (void*)::booldog::data::lockfree::queue_max);
+						if(tail == ::booldog::data::lockfree::queue_max)
 							continue;
-						T* tail = (T*)::booldog::interlocked::exchange_pointer(&_tail, max);
-						if(tail == max)
+						else if(tail)
 						{
-							if(head == 0)
-								::booldog::interlocked::exchange_pointer(&_head, (void*)0);
-							continue;
+							T* volatile* tail_next = &tail->_next;
+
+							if(::booldog::interlocked::exchange_pointer((void* volatile*)tail_next
+								, (void*)::booldog::data::lockfree::queue_max) == ::booldog::data::lockfree::queue_max)
+							{
+								::booldog::interlocked::exchange_pointer(&_tail, (void*)tail);
+								continue;
+							}
+							::booldog::interlocked::exchange_pointer(&_tail, (void*)item);
+							::booldog::interlocked::exchange_pointer((void* volatile*)tail_next, (void*)item);
 						}
-						if(tail)
-							tail->_next = item;
-						::booldog::interlocked::exchange_pointer(&_tail, (void*)item);
-						if(head == 0)
-							::booldog::interlocked::exchange_pointer(&_head, (void*)item);
+						else
+						{
+							if(::booldog::interlocked::compare_exchange_pointer(&_head, (void*)item, 0) != 0)
+							{
+								::booldog::interlocked::exchange_pointer(&_tail, (void*)tail);
+								continue;
+							}
+							::booldog::interlocked::exchange_pointer(&_tail, (void*)item);
+						}
 						::booldog::interlocked::increment(&_count);
 						break;
 					}
-				};
-				booinline T* dequeue(void)
+					::booldog::interlocked::exchange_pointer((void* volatile*)item_next, (void*)0);
+                }
+                booinline T* dequeue()
 				{
 					T* item = 0;
-					void* max = (void*)0xffffffff;
-					if(::booldog::compile::If<sizeof(void*) == 8>::test())
-						max = (void*)0xffffffffffffffff;
 					for(;;)
 					{
-						T* head = (T*)::booldog::interlocked::exchange_pointer(&_head, max);
-						if(head == max)
+						T* head = (T*)::booldog::interlocked::exchange_pointer(&_head, (void*)::booldog::data::lockfree::queue_max);
+						if(head == ::booldog::data::lockfree::queue_max)
 							continue;
 						else if(head == 0)
 						{
 							::booldog::interlocked::exchange_pointer(&_head, (void*)0);
 							break;
-						}
-						T* tail = (T*)::booldog::interlocked::compare_exchange_pointer(&_tail, max, head);
-						if(tail == max)
+						}						
+						T* volatile* head_next = &head->_next;
+
+						void* next = ::booldog::interlocked::exchange_pointer((void* volatile*)head_next
+							, (void*)::booldog::data::lockfree::queue_max);
+						if(next == ::booldog::data::lockfree::queue_max)
 						{
 							::booldog::interlocked::exchange_pointer(&_head, head);
 							continue;
 						}
+						else if(next == 0)
+						{
+							if(::booldog::interlocked::compare_exchange_pointer(&_tail, (void*)0, head) != head)
+							{
+								::booldog::interlocked::exchange_pointer((void* volatile*)head_next, next);
+								::booldog::interlocked::exchange_pointer(&_head, head);
+								continue;
+							}
+						}
+						::booldog::interlocked::exchange_pointer(&_head, next);
+						::booldog::interlocked::exchange_pointer((void* volatile*)head_next, next);
 						item = head;
-						if(head == tail)
-							::booldog::interlocked::exchange_pointer(&_tail, (void*)0);
-						::booldog::interlocked::exchange_pointer(&_head, item->_next);
 						::booldog::interlocked::decrement(&_count);
 						break;
 					}
 					return item;
-				};
+                }
 			};
-		};
-	};
-};
+        }
+    }
+}
 #endif

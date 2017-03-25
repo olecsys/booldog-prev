@@ -3,26 +3,23 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_stack_allocator.h)
-#include BOOLDOG_HEADER(boo_holder_allocator.h)
+#include "boo_stack_allocator.h"
+#include "boo_holder_allocator.h"
 namespace booldog
 {
 	namespace allocators
 	{
-		template< size_t s >
+		template< size_t s, size_t cluster_count = 32 >
 		class mixed : public ::booldog::allocator
 		{
 		public:
-			::booldog::allocators::stack< s > stack;
+			::booldog::allocators::stack< s, cluster_count > stack;
 			::booldog::allocators::holder holder;
 		public:
-			mixed( ::booldog::heap_allocator* pheap )
-				: holder( &stack , pheap )
+			mixed(::booldog::heap_allocator* pheap)
+				: holder(&stack, pheap)
 			{
-			};
+			}
 		public:
 			virtual void* alloc( size_t size , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 			{

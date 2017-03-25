@@ -3,14 +3,11 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_application.h)
-#include BOOLDOG_HEADER(boo_threading_utils.h)
-#include BOOLDOG_HEADER(boo_array.h)
-#include BOOLDOG_HEADER(boo_rdwrlock.h)
-#include BOOLDOG_HEADER(boo_ui_window.h)
+#include "boo_application.h"
+#include "boo_threading_utils.h"
+#include "boo_array.h"
+#include "boo_rdwrlock.h"
+#include "boo_ui_window.h"
 namespace booldog
 {
 	namespace typedefs

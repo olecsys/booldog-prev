@@ -22,6 +22,7 @@
     <ClInclude Include="..\include\boo_base_module.h" />
     <ClInclude Include="..\include\boo_bits_utils.h" />
     <ClInclude Include="..\include\boo_check.h" />
+    <ClInclude Include="..\include\boo_classes_string.h" />
     <ClInclude Include="..\include\boo_console_utils.h" />
     <ClInclude Include="..\include\boo_cp1251.h" />
     <ClInclude Include="..\include\boo_cp1251_consts.h" />
@@ -47,6 +48,7 @@
     <ClInclude Include="..\include\boo_json.h" />
     <ClInclude Include="..\include\boo_list.h" />
     <ClInclude Include="..\include\boo_lockfree_queue.h" />
+    <ClInclude Include="..\include\boo_lockfree_stack.h" />
     <ClInclude Include="..\include\boo_math_utils.h" />
     <ClInclude Include="..\include\boo_media_enums.h" />
     <ClInclude Include="..\include\boo_mem.h" />
@@ -55,6 +57,7 @@
     <ClInclude Include="..\include\boo_module_utils.h" />
     <ClInclude Include="..\include\boo_monitor.h" />
     <ClInclude Include="..\include\boo_multimedia_async_graph.h" />
+    <ClInclude Include="..\include\boo_multimedia_audio_async_capture.h" />
     <ClInclude Include="..\include\boo_multimedia_audio_capture.h" />
     <ClInclude Include="..\include\boo_multimedia_audio_frame.h" />
     <ClInclude Include="..\include\boo_multimedia_converters.h" />
@@ -65,6 +68,7 @@
     <ClInclude Include="..\include\boo_multimedia_video_capture.h" />
     <ClInclude Include="..\include\boo_multimedia_video_decoder.h" />
     <ClInclude Include="..\include\boo_multimedia_video_frame.h" />
+    <ClInclude Include="..\include\boo_multimedia_video_yuv.h" />
     <ClInclude Include="..\include\boo_network_utils.h" />
     <ClInclude Include="..\include\boo_object.h" />
     <ClInclude Include="..\include\boo_opengl_buffer.h" />
@@ -73,6 +77,7 @@
     <ClInclude Include="..\include\boo_opengl_texture.h" />
     <ClInclude Include="..\include\boo_param.h" />
     <ClInclude Include="..\include\boo_platform.h" />
+    <ClInclude Include="..\include\boo_process_utils.h" />
     <ClInclude Include="..\include\boo_rdwrlock.h" />
     <ClInclude Include="..\include\boo_render_context.h" />
     <ClInclude Include="..\include\boo_result.h" />
@@ -81,6 +86,7 @@
     <ClInclude Include="..\include\boo_string_consts.h" />
     <ClInclude Include="..\include\boo_string_enums.h" />
     <ClInclude Include="..\include\boo_string_utils.h" />
+    <ClInclude Include="..\include\boo_system_utils.h" />
     <ClInclude Include="..\include\boo_thread.h" />
     <ClInclude Include="..\include\boo_threading_event.h" />
     <ClInclude Include="..\include\boo_threading_utils.h" />
@@ -149,7 +155,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\config;$(ProjectDir)..\..\inc;$(ProjectDir)..\extern_sources;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\config;$(ProjectDir)..\..\inc\booldog;$(ProjectDir)..\extern_sources;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>
@@ -184,7 +190,7 @@
       <PrecompiledHeaderOutputFile>
       </PrecompiledHeaderOutputFile>
       <OmitFramePointers>false</OmitFramePointers>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\config;$(ProjectDir)..\..\inc;$(ProjectDir)..\extern_sources;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\config;$(ProjectDir)..\..\inc\booldog;$(ProjectDir)..\extern_sources;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
     <Link>

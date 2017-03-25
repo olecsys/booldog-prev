@@ -5,10 +5,7 @@
 #endif
 #include <new>
 #include <stddef.h>
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_debug_info.h)
+#include "boo_debug_info.h"
 namespace booldog
 {
 	class allocator

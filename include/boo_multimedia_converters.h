@@ -3,11 +3,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_result.h)
-#include BOOLDOG_HEADER(boo_error.h)
+#include "boo_result.h"
+#include "boo_error.h"
 #define booclip(x) x > 0 ? x < 255 ? x : 255 : 0
 namespace booldog
 {

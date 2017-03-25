@@ -3,10 +3,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_types.h)
+#include "boo_types.h"
 #include <string.h>
 #ifndef __STDC_LIMIT_MACROS
 #define __STDC_LIMIT_MACROS
@@ -34,9 +31,17 @@
 #define BOOLDOG_MEM_ALIGN_SIZE __ARM_ALIGN_MAX_STACK_PWR
 #else
 #ifdef __ELBRUS__
-#define BOOLDOG_MEM_ALIGN_SIZE 8 
-#else 
+#define BOOLDOG_MEM_ALIGN_SIZE 16 
+#else
+#ifdef __WINDOWS__
+#ifdef __x64__
+#define BOOLDOG_MEM_ALIGN_SIZE 8
+#else
 #define BOOLDOG_MEM_ALIGN_SIZE 4
+#endif
+#else
+#define BOOLDOG_MEM_ALIGN_SIZE 4
+#endif
 #endif
 #endif
 #endif

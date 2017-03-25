@@ -3,10 +3,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_types.h)
+#include "boo_types.h"
 #define BOOLDOG_MAKEFCC(ch0, ch1, ch2, ch3)                              \
                 ((::booldog::uint32)(::booldog::uint8)(ch0) | ((::booldog::uint32)(::booldog::uint8)(ch1) << 8) |   \
                 ((::booldog::uint32)(::booldog::uint8)(ch2) << 16) | ((::booldog::uint32)(::booldog::uint8)(ch3) << 24 ))
@@ -16,6 +13,14 @@ namespace booldog
 	{
 		namespace multimedia
 		{
+			namespace audio
+			{
+				enum fourcc
+				{	
+					PCM = BOOLDOG_MAKEFCC('P', 'C', 'M', ' '),
+					Unknown = 0xffffffff
+				};
+			}
 			namespace image
 			{
 				enum fourcc
@@ -32,11 +37,13 @@ namespace booldog
 					H264 = BOOLDOG_MAKEFCC('H', '2', '6', '4'),
 					MJPEG = BOOLDOG_MAKEFCC('M', 'J', 'P', 'G'),
 					YV16 = BOOLDOG_MAKEFCC('Y', 'V', '1', '6'),
-                                        I422 = BOOLDOG_MAKEFCC('I', '4', '2', '2'),
+					I422 = BOOLDOG_MAKEFCC('I', '4', '2', '2'),
+                    YUY2 = BOOLDOG_MAKEFCC('Y', 'U', 'Y', '2'),
+					PCM = BOOLDOG_MAKEFCC('P', 'C', 'M', ' '),
 					Unknown = 0xffffffff
 				};
-                        }
-                }
-        }
+			}
+		}
+	}
 }
 #endif

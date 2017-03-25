@@ -3,11 +3,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_io_utils.h)
-#include BOOLDOG_HEADER(boo_string_utils.h)
+#include "boo_io_utils.h"
+#include "boo_string_utils.h"
 #ifdef __UNIX__
 #ifndef _LARGEFILE64_SOURCE 
 #define _LARGEFILE64_SOURCE 
@@ -210,7 +207,15 @@ goto_return:
 					return res->succeeded();
 				};
 			};
-		};
-	};
-};
+			booinline ::booldog::pid_t pid()
+			{
+#ifdef __WINDOWS__
+				return GetCurrentProcessId();
+#else
+				return getpid();
+#endif
+			}
+		}
+	}
+}
 #endif

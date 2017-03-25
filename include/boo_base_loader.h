@@ -3,24 +3,21 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_base_module.h)
-#include BOOLDOG_HEADER(boo_array.h)
-#include BOOLDOG_HEADER(boo_result.h)
-#include BOOLDOG_HEADER(boo_param.h)
-#include BOOLDOG_HEADER(boo_stack_allocator.h)
-#include BOOLDOG_HEADER(boo_rdwrlock.h)
-#include BOOLDOG_HEADER(boo_io_utils.h)
-#include BOOLDOG_HEADER(boo_executable_utils.h)
-#include BOOLDOG_HEADER(boo_file_utils.h)
+#include "boo_base_module.h"
+#include "boo_array.h"
+#include "boo_result.h"
+#include "boo_param.h"
+#include "boo_stack_allocator.h"
+#include "boo_rdwrlock.h"
+#include "boo_io_utils.h"
+#include "boo_executable_utils.h"
+#include "boo_file_utils.h"
 
 #ifdef __UNIX__
 #include <dlfcn.h>
 #include <link.h>
 #include <limits.h>
-#include BOOLDOG_HEADER(boo_module_utils.h)
+#include "boo_module_utils.h"
 #endif
 namespace booldog
 {

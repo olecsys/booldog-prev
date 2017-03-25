@@ -3,12 +3,9 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_allocator.h)
-#include BOOLDOG_HEADER(boo_interlocked.h)
-#include BOOLDOG_HEADER(boo_hash_times33.h)
+#include "boo_allocator.h"
+#include "boo_interlocked.h"
+#include "boo_hash_times33.h"
 
 #include <string.h>
 namespace booldog

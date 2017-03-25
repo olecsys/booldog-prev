@@ -3,24 +3,24 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
 
-#include BOOLDOG_HEADER(boo_multimedia_enums.h)
-#include BOOLDOG_HEADER(boo_multimedia_video_frame.h)
-#include BOOLDOG_HEADER(boo_time_utils.h)
-#include BOOLDOG_HEADER(boo_error.h)
-#include BOOLDOG_HEADER(boo_result.h)
+#include "boo_multimedia_enums.h"
+#include "boo_multimedia_video_frame.h"
+#include "boo_time_utils.h"
+#include "boo_error.h"
+#include "boo_result.h"
 
 //#if 1
 #ifdef __LINUX__
-#include BOOLDOG_HEADER(boo_io_directory.h)
+#include "boo_io_directory.h"
 #include <linux/videodev2.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#ifndef _LARGEFILE64_SOURCE 
+#define _LARGEFILE64_SOURCE 
+#endif
 #include <unistd.h>
 #include <sys/mman.h>
 #include <sys/select.h>

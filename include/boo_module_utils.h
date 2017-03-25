@@ -3,15 +3,12 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_result.h)
-#include BOOLDOG_HEADER(boo_allocator.h)
-#include BOOLDOG_HEADER(boo_mem.h)
-#include BOOLDOG_HEADER(boo_error.h)
-#include BOOLDOG_HEADER(boo_io_utils.h)
-#include BOOLDOG_HEADER(boo_string_utils.h)
+#include "boo_result.h"
+#include "boo_allocator.h"
+#include "boo_mem.h"
+#include "boo_error.h"
+#include "boo_io_utils.h"
+#include "boo_string_utils.h"
 
 #ifdef __UNIX__
 #ifndef _LARGEFILE64_SOURCE 
@@ -24,8 +21,8 @@
 #include <limits.h>
 #endif
 #ifdef __ANDROID__
-#include BOOLDOG_HEADER(boo_io_file.h)
-#include BOOLDOG_HEADER(boo_io_utils.h)
+#include "boo_io_file.h"
+#include "boo_io_utils.h"
 #endif
 namespace booldog
 {

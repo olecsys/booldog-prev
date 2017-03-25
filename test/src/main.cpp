@@ -145,36 +145,35 @@ char utf8_TESTil_var[] =
 
 #define BOOLDOG_STRING_TEST
 
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_object.h)
-#include BOOLDOG_HEADER(boo_thread.h)
-#include BOOLDOG_HEADER(boo_if.h)
-#include BOOLDOG_HEADER(boo_check.h)
-#include BOOLDOG_HEADER(boo_string.h)
-#include BOOLDOG_HEADER(boo_list.h)
-#include BOOLDOG_HEADER(boo_stack_allocator.h)
-#include BOOLDOG_HEADER(boo_heap_allocator.h)
-#include BOOLDOG_HEADER(boo_mixed_allocator.h)
-#include BOOLDOG_HEADER(boo_mem.h)
-#include BOOLDOG_HEADER(boo_base_loader.h)
-#include BOOLDOG_HEADER(boo_module_utils.h)
-#include BOOLDOG_HEADER(boo_executable_utils.h)
-#include BOOLDOG_HEADER(boo_io_utils.h)
-#include BOOLDOG_HEADER(boo_array.h)
-#include BOOLDOG_HEADER(boo_param.h)
-#include BOOLDOG_HEADER(boo_string_utils.h)
-#include BOOLDOG_HEADER(boo_error_format.h)
-#include BOOLDOG_HEADER(boo_json.h)
-#include BOOLDOG_HEADER(boo_io_file.h)
-#include BOOLDOG_HEADER(boo_bits_utils.h)
-#include BOOLDOG_HEADER(boo_time_utils.h)
-#include BOOLDOG_HEADER(boo_doubly_linked_list.h)
-#include BOOLDOG_HEADER(boo_threading_event.h)
-#include BOOLDOG_HEADER(boo_network_utils.h)
-#include BOOLDOG_HEADER(boo_hash_md5.h)
-#include BOOLDOG_HEADER(boo_web_camera.h)
+#include <boo_object.h>
+#include <boo_thread.h>
+#include <boo_if.h>
+#include <boo_check.h>
+#include <boo_string.h>
+#include <boo_list.h>
+#include <boo_stack_allocator.h>
+#include <boo_heap_allocator.h>
+#include <boo_mixed_allocator.h>
+#include <boo_mem.h>
+#include <boo_base_loader.h>
+#include <boo_module_utils.h>
+#include <boo_executable_utils.h>
+#include <boo_io_utils.h>
+#include <boo_array.h>
+#include <boo_param.h>
+#include <boo_string_utils.h>
+#include <boo_error_format.h>
+#include <boo_json.h>
+#include <boo_io_file.h>
+#include <boo_bits_utils.h>
+#include <boo_time_utils.h>
+#include <boo_doubly_linked_list.h>
+#include <boo_threading_event.h>
+#include <boo_network_utils.h>
+#include <boo_hash_md5.h>
+#include <boo_multimedia_video_capture.h>
+#include <boo_multimedia_audio_capture.h>
+#include <boo_system_utils.h>
 TEST_CASE("boo_bits_utilsTest", "test")
 {
 	::booldog::byte eq = 0;
@@ -846,7 +845,7 @@ TEST_CASE("boo_threading_eventTest", "test")
 
 TEST_CASE("boo_stackTest", "test")
 {
-	::booldog::allocators::stack< boo_stackTestAllocatorSize > allocator;
+	::booldog::allocators::stack< boo_stackTestAllocatorSize, 1 > allocator;
 
 	size_t total = allocator.available();
 
@@ -1612,7 +1611,7 @@ TEST_CASE("boo_allocators_heapTest", "test")
 TEST_CASE("boo_allocators_mixedTest", "test")
 {
 	::booldog::allocators::easy::heap heap;
-	::booldog::allocators::mixed< 32 > mixed( &heap );
+	::booldog::allocators::mixed< 32, 1 > mixed( &heap );
 
 	size_t total = mixed.stack.available();
 
@@ -2014,6 +2013,177 @@ TEST_CASE("boo_jsonTest", "test")
 		serializator.fast.add<16>(0, "wait_result", true /*: false*/);
 		
 		serializator.fast.add<16>(0, "need_owner", /*true : */false);
+	}
+
+	{
+		::booldog::data::json::serializator serializator(&allocator);
+		::booldog::data::json::result resjs(&serializator);
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "{}"));
+
+		REQUIRE(resjs.succeeded());
+
+		::booldog::data::json::object root = *resjs.serializator;
+
+
+		::booldog::data::json::serializator formatter(&allocator);
+		::booldog::result res;
+
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":{}}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 11);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "1986"));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":1986}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 13);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "true"));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":true}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 13);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "false"));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":false}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 14);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "null"));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":null}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 13);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "\"text\""));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":\"text\"}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 15);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "	[]"));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":[]}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 11);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "[1986,true,\"string\"]"));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":[1986,true,\"string\"]}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 29);
+
+
+		REQUIRE(::booldog::data::json::parse< 16 >(&resjs, &allocator, "{\"field\":  \"string\"}"));
+		REQUIRE(resjs.succeeded());
+		root = *resjs.serializator;
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, "test", root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_object< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(strcmp(formatter.fast.json, "{\"test\":{\"field\":\"string\"}}") == 0);
+		REQUIRE(formatter.fast.jsonlen == 27);
+	}
+
+	{
+		::booldog::data::json::serializator serializator(&allocator);
+		::booldog::data::json::result resjs(&serializator);
+
+		::booldog::data::json::parse< 16 >(&resjs, &allocator, "{}");
+
+		REQUIRE(resjs.succeeded());
+
+		::booldog::data::json::object root = *resjs.serializator;
+
+		::booldog::data::json::object obj = root.add_object< 16 >(0, "_test");
+
+		REQUIRE(obj.isobject());
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{}}") == 0);
+
+		::booldog::data::json::object Hello = obj.add< 16 >(0, "Hello", true);
+
+		REQUIRE(Hello.isboolean());
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true}}") == 0);
+
+		::booldog::data::json::object fail = Hello.add< 16 >(0, "fail", "fail");
+
+		REQUIRE(fail.exists() == false);
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true}}") == 0);
+
+		::booldog::data::json::object String = obj.add< 16 >(0, "String", "StringValue");
+
+		REQUIRE(String.isstring());
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"}}") == 0);
 	}
 
 	{
@@ -9503,7 +9673,7 @@ TEST_CASE("boo_time_utilsTest", "test")
 		
 		::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
 
-		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1971.02.01 11:46:17:336" 
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1971.02.01 11:46:17:000" 
 			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
 
 		REQUIRE( year == 1971 );
@@ -9513,7 +9683,7 @@ TEST_CASE("boo_time_utilsTest", "test")
 		REQUIRE( day_of_month == 1 );
 
 
-		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1971.01.01 11:46:17:336" 
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1971.01.01 11:46:17:000" 
 			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
 
 		REQUIRE( year == 1971 );
@@ -9522,6 +9692,14 @@ TEST_CASE("boo_time_utilsTest", "test")
 
 		REQUIRE( day_of_month == 1 );
 
+		::booldog::utils::time::posix::date(::booldog::utils::time::posix::mbs::parse("  1972.01.01 00:00:00:000"
+			, "  %Y.%m.%d %H:%M:%S:%MS"), year, month, day_of_month);
+
+		REQUIRE(year == 1972);
+
+		REQUIRE(month == 1);
+
+		REQUIRE(day_of_month == 1);
 
 		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  1970.01.01 11:46:17:336" 
 			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
@@ -9563,7 +9741,98 @@ TEST_CASE("boo_time_utilsTest", "test")
 		REQUIRE( day_of_month == 1 );
 
 
-		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  3395.01.01 11:46:17:336" 
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2017.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2017);
+
+		REQUIRE(month == 1);
+
+		REQUIRE(day_of_month == 1);
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2018.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2018);
+
+		REQUIRE(month == 1);
+
+		REQUIRE(day_of_month == 1);
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2019.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2019);
+
+		REQUIRE(month == 1);
+
+		REQUIRE(day_of_month == 1);
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2020.01.01 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2020);
+
+		REQUIRE(month == 1);
+
+		REQUIRE(day_of_month == 1);
+
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2016.12.31 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE( year == 2016 );
+
+		REQUIRE( month == 12 );
+
+		REQUIRE( day_of_month == 31 );
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2017.12.31 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2017);
+
+		REQUIRE(month == 12);
+
+		REQUIRE(day_of_month == 31);
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2018.12.31 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2018);
+
+		REQUIRE(month == 12);
+
+		REQUIRE(day_of_month == 31);
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2019.12.31 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2019);
+
+		REQUIRE(month == 12);
+
+		REQUIRE(day_of_month == 31);
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  2020.12.31 11:46:17:336" 
+			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );
+
+		REQUIRE(year == 2020);
+
+		REQUIRE(month == 12);
+
+		REQUIRE(day_of_month == 31);
+
+
+		::booldog::utils::time::posix::date( ::booldog::utils::time::posix::mbs::parse( "  3395.01.01 11:46:17:000" 
 			,  "  %Y.%m.%d %H:%M:%S:%MS" ) , year , month , day_of_month );	
 
 		REQUIRE( year == 3395 );
@@ -13631,23 +13900,20 @@ struct boo_web_camera_info
 	{
 	}
 };
-#ifdef __LINUX__
-void boo_web_camera_read_frame_callback(::booldog::allocator* allocator, void* udata, void* frame
-	, ::booldog::uint32 frame_size, ::booldog::uint32 fourcc, ::booldog::uint32 width
-	, ::booldog::uint32 height)
+void boo_web_camera_read_frame_callback(::booldog::allocator* allocator, void* udata, ::booldog::multimedia::video::frame* vframe)
 {
 	boo_web_camera_info* info = (boo_web_camera_info*)udata;
-	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fourcc;
-	printf("Frame %s, %ux%u(%u)\n", sfcc, width, height, frame_size);
+	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = vframe->fourcc;
+	printf("Frame %s, %ux%u(%u)\n", sfcc, vframe->width, vframe->height, vframe->size);
 	++info->frame_count;
-};
+}
 static bool boo_web_camera_available_formats_callback(::booldog::allocator* allocator, void* udata
 	, ::booldog::uint32 fourcc, ::booldog::uint32 width, ::booldog::uint32 height, ::booldog::uint32 framerate_numerator
 	, ::booldog::uint32 framerate_denominator, const char* description)
 {
 	allocator = allocator;
 	boo_web_camera_info* info = (boo_web_camera_info*)udata;
-	if(info->width < width)
+	if(info->width < width || (info->width == width && fourcc == 0))
 	{
 		info->exists = true;
 		info->width = width;
@@ -13657,20 +13923,20 @@ static bool boo_web_camera_available_formats_callback(::booldog::allocator* allo
 		info->framerate_denominator = framerate_denominator;
 	}
 	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fourcc;
-	printf("Format %s(%s), %ux%u %u/%u\n", description, sfcc, width, height, framerate_numerator, framerate_denominator);
+	printf("Format %s(%s 0x%x), %ux%u %u/%u\n", description, sfcc, fourcc, width, height, framerate_numerator, framerate_denominator);
 	return true; 
-};
+}
 static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allocator, void* udata, const char* name
 	, const char* deviceid, ::booldog::uint32 capabilities)
 {
 	boo_web_camera_info* info = (boo_web_camera_info*)udata;
 	info->exists = false;
 	printf("Web camera %s(%s), %u\n==========\n", name, deviceid, capabilities);
-	::booldog::results::multimedia::camera camera;
-	if(::booldog::multimedia::web_camera::open(&camera, allocator, deviceid))
+	::booldog::results::multimedia::video::capture camera;
+	if(::booldog::multimedia::video::capture::open(&camera, allocator, deviceid))
 	{
-		REQUIRE(camera.cam->available_formats(0, allocator, boo_web_camera_available_formats_callback, udata));
-		camera.cam->close(0);
+		REQUIRE(camera.video->available_formats(0, allocator, boo_web_camera_available_formats_callback, udata));
+		camera.video->close(0, true);
 	}
 	if(info->exists)
 	{
@@ -13678,8 +13944,7 @@ static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allo
 			, info->deviceid.mblen, info->deviceid.mbsize, deviceid, 0, SIZE_MAX);
 	}
 	return true; 
-};
-#endif
+}
 TEST_CASE("boo_web_camera", "test")
 {
 	::booldog::allocators::easy::heap heap;
@@ -13693,42 +13958,32 @@ TEST_CASE("boo_web_camera", "test")
 		info.exists = false;
 		info.width = 0;
 		info.height = 0;
-#ifdef __LINUX__
-		REQUIRE(::booldog::multimedia::web_camera::available_cameras(0, &allocator
+		REQUIRE(::booldog::multimedia::video::capture::available_cameras(0, &allocator
 			, boo_web_camera_available_cameras_callback, &info));
-#endif
 		if(info.deviceid.mblen)
 		{
-			::booldog::results::multimedia::camera camera;
-			bool boolval = ::booldog::multimedia::web_camera::open(&camera, &allocator, info.deviceid.mbchar);
-#ifdef __LINUX__
+			::booldog::results::multimedia::video::capture camera;
+			bool boolval = ::booldog::multimedia::video::capture::open(&camera, &allocator, info.deviceid.mbchar);
 			REQUIRE(boolval);
-#endif
 			if(boolval)
 			{
-				boolval = camera.cam->start_capturing(0, info.fourcc, info.width, info.height, info.framerate_numerator
+				boolval = camera.video->start_capturing(0, info.fourcc, info.width, info.height, info.framerate_numerator
 					, info.framerate_denominator);
-#ifdef __LINUX__
 				REQUIRE(boolval);
-#endif				
 				::booldog::result_bool resbool;
 				int count = 70;
 				while(count)
 				{
-					boolval = camera.cam->is_frame_available(&resbool);
-#ifdef __LINUX__
+					boolval = camera.video->is_frame_available(&resbool);
 					REQUIRE(boolval);
-#endif				
 					if(boolval && resbool.bres)
 					{
-#ifdef __LINUX__
-						boolval = camera.cam->read_frame(0, boo_web_camera_read_frame_callback, &info);
+						boolval = camera.video->read_frame(0, boo_web_camera_read_frame_callback, &info);
 						REQUIRE(boolval);
-#endif				
 						--count;
 					}
 				}
-				camera.cam->close(0);
+				camera.video->close(0, true);
 			}
 		}
 	}
@@ -13738,7 +13993,242 @@ TEST_CASE("boo_web_camera", "test")
 	REQUIRE( allocator.stack.available() == total );
 
 	REQUIRE( allocator.holder.heap->size_of_allocated_memory() == 0 );
+}
+
+struct boo_audio_info
+{
+	::booldog::result_mbchar deviceid;
+	bool exists;
+	::booldog::uint32 fourcc;
+	::booldog::uint32 sample_rate;
+	::booldog::uint32 channels;
+	::booldog::uint32 bytes_per_sample;
+	int frame_count;
+	boo_audio_info(::booldog::allocator* allocator)
+		: deviceid(allocator), frame_count(0), sample_rate(0), channels(0), bytes_per_sample(0)
+	{
+	}
 };
+void boo_audio_read_frame_callback(::booldog::allocator* allocator, void* udata, ::booldog::multimedia::audio::frame* vframe)
+{
+	boo_audio_info* info = (boo_audio_info*)udata;
+	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = vframe->fourcc;
+	printf("Frame %s, %u %u channels %u bytes per sample(%u)\n", sfcc, vframe->sample_rate, vframe->channels, vframe->bytes_per_sample
+		, vframe->size);
+	++info->frame_count;
+}
+static bool boo_audio_available_formats_callback(::booldog::allocator* allocator, void* udata
+	, ::booldog::uint32 fourcc, ::booldog::uint32 sample_rate, ::booldog::uint32 channels, ::booldog::uint32 bytes_per_sample
+	, const char* description)
+{
+	allocator = allocator;
+	boo_audio_info* info = (boo_audio_info*)udata;
+	if(info->sample_rate < sample_rate)
+	{
+		info->exists = true;
+		info->sample_rate = sample_rate;
+		info->channels = channels;
+		info->fourcc = fourcc;
+		info->bytes_per_sample = bytes_per_sample;
+	}
+	char sfcc[5] = {0}; *((::booldog::uint32*)sfcc) = fourcc;
+	printf("Format %s(%s 0x%x), %u %u channels %u bytes per sample\n", description, sfcc, fourcc, sample_rate, channels, bytes_per_sample);
+	return true; 
+}
+static bool boo_available_audio_callback(::booldog::allocator* allocator, void* udata, const char* name
+	, const char* deviceid, ::booldog::uint32 capabilities)
+{
+	boo_audio_info* info = (boo_audio_info*)udata;
+	info->exists = false;
+	printf("Audio device %s(%s), %u\n==========\n", name, deviceid, capabilities);
+	::booldog::results::multimedia::audio::capture camera;
+	if(::booldog::multimedia::audio::capture::open(&camera, allocator, 0, deviceid))
+	{
+		REQUIRE(camera.audio->available_formats(0, allocator, boo_audio_available_formats_callback, udata));
+		camera.audio->close(0, true);
+	}
+	if(info->exists)
+	{
+		::booldog::utils::string::mbs::assign<16>(0, info->deviceid.mballocator, false, 0, info->deviceid.mbchar
+			, info->deviceid.mblen, info->deviceid.mbsize, deviceid, 0, SIZE_MAX);
+	}
+	return true; 
+}
+TEST_CASE("boo_multimedia_audio_capture", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator( &heap );
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+	{
+		boo_audio_info info(&allocator);		
+		info.exists = false;
+		REQUIRE(::booldog::multimedia::audio::capture::available_capture_devices(0, &allocator
+			, boo_available_audio_callback, &info));
+		if(info.deviceid.mblen)
+		{
+			::booldog::results::multimedia::audio::capture camera;
+			bool boolval = ::booldog::multimedia::audio::capture::open(&camera, &allocator, 0, info.deviceid.mbchar);
+			REQUIRE(boolval);
+			if(boolval)
+			{
+				boolval = camera.audio->start_capturing(0, info.fourcc, info.sample_rate, info.channels, info.bytes_per_sample);
+				REQUIRE(boolval);
+				::booldog::result_bool resbool;
+				int count = 70;
+				while(count)
+				{
+					boolval = camera.audio->is_frame_available(&resbool);
+					REQUIRE(boolval);
+					if(boolval && resbool.bres)
+					{
+						boolval = camera.audio->read_frame(0, boo_audio_read_frame_callback, &info);
+						REQUIRE(boolval);
+						--count;
+					}
+				}
+				camera.audio->close(0, true);
+			}
+		}
+	}
+
+	REQUIRE( allocator.stack.begin() == begin );
+
+	REQUIRE( allocator.stack.available() == total );
+
+	REQUIRE( allocator.holder.heap->size_of_allocated_memory() == 0 );
+}
+TEST_CASE("boo_system_utils", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+	{
+		::booldog::result_mbchar username(&allocator);
+		REQUIRE(::booldog::utils::system::mbs::username< 256 >(&username, &allocator));
+		REQUIRE(username.succeeded());
+		printf("User name: %s\n", username.mbchar);
+	}
+
+	REQUIRE(allocator.stack.begin() == begin);
+
+	REQUIRE(allocator.stack.available() == total);
+
+	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
+}
+
+class boo_lockfree_stack_struct : public ::booldog::data::lockfree::intrusive::stack_item
+{
+};
+struct boo_lockfree_stack_struct_thread
+{
+	::booldog::allocator* allocator;
+	::booldog::data::lockfree::intrusive::stack< boo_lockfree_stack_struct >* stack;
+	::booldog::data::lockfree::intrusive::stack< boo_lockfree_stack_struct >* avail_stack;
+	::booldog::interlocked::atomic allocated_count;
+};
+void boo_lockfree_stack_thread_reader(::booldog::threading::thread* thread)
+{
+	boo_lockfree_stack_struct_thread* struct_thread = (boo_lockfree_stack_struct_thread*)thread->udata();
+	while(thread->pending_in_stop() == false)
+	{
+		boo_lockfree_stack_struct* stack_struct = struct_thread->stack->pop();
+		if(stack_struct)
+			struct_thread->avail_stack->push(stack_struct);
+		//::booldog::threading::sleep(1);
+	}
+}
+void boo_lockfree_stack_thread_writer(::booldog::threading::thread* thread)
+{
+	boo_lockfree_stack_struct_thread* struct_thread = (boo_lockfree_stack_struct_thread*)thread->udata();
+	while(thread->pending_in_stop() == false)
+	{
+		boo_lockfree_stack_struct* stack_struct = struct_thread->avail_stack->pop();
+		if(stack_struct == 0)
+		{
+			stack_struct = struct_thread->allocator->create< boo_lockfree_stack_struct >();
+			::booldog::interlocked::increment(&struct_thread->allocated_count);
+		}
+		struct_thread->stack->push(stack_struct);
+		//::booldog::threading::sleep(1);
+	}
+}
+TEST_CASE("boo_lockfree_stack", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+	{
+		::booldog::threading::thread* thread_readers[50] = {}; 
+		::booldog::threading::thread* thread_writers[50] = {}; 
+
+		::booldog::data::lockfree::intrusive::stack< boo_lockfree_stack_struct > stack;
+		::booldog::data::lockfree::intrusive::stack< boo_lockfree_stack_struct > avail_stack;
+
+		boo_lockfree_stack_struct_thread struct_thread = {&heap, &stack, &avail_stack, 0};
+		::booldog::result res;
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+		{
+			thread_readers[index] = ::booldog::threading::thread::create(&res, &allocator, 100 * 1024, 0, 0
+				, boo_lockfree_stack_thread_reader, &struct_thread);
+			REQUIRE(thread_readers[index] != 0);
+			REQUIRE(res.succeeded());
+		}
+		for(size_t index = 0;index < sizeof(thread_writers) / sizeof(thread_writers[0]);++index)
+		{
+			thread_writers[index] = ::booldog::threading::thread::create(&res, &allocator, 100 * 1024, 0, 0
+				, boo_lockfree_stack_thread_writer, &struct_thread);
+			REQUIRE(thread_writers[index] != 0);
+			REQUIRE(res.succeeded());
+		}
+
+		::booldog::threading::sleep(20000);
+
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+			::booldog::threading::thread::stop(thread_readers[index]);
+		for(size_t index = 0;index < sizeof(thread_writers) / sizeof(thread_writers[0]);++index)
+			::booldog::threading::thread::stop(thread_writers[index]);
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+			::booldog::threading::thread::destroy(thread_readers[index]);
+		for(size_t index = 0;index < sizeof(thread_writers) / sizeof(thread_writers[0]);++index)
+			::booldog::threading::thread::destroy(thread_writers[index]);
+
+		::booldog::interlocked::atomic_return avail_count = 0, real_count = avail_stack.count();
+		boo_lockfree_stack_struct* stack_struct = avail_stack.pop();
+		while(stack_struct)
+		{
+			++avail_count;
+			heap.destroy(stack_struct);
+			stack_struct = avail_stack.pop();
+		}
+		REQUIRE(avail_count == real_count);
+		::booldog::interlocked::atomic_return count = 0;
+		real_count = stack.count();
+		stack_struct = stack.pop();
+		while(stack_struct)
+		{
+			++count;
+			heap.destroy(stack_struct);
+			stack_struct = stack.pop();
+		}
+		REQUIRE(count == real_count);
+		REQUIRE(struct_thread.allocated_count == avail_count + count);
+	}
+
+	REQUIRE(allocator.stack.begin() == begin);
+
+	REQUIRE(allocator.stack.available() == total);
+
+	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
+}
 //#ifdef __LINUX__
 //#include <locale.h>
 //#include <langinfo.h>

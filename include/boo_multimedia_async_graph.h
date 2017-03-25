@@ -3,13 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER(header) <header>
-#endif
-#include BOOLDOG_HEADER(boo_multimedia_graph_chain.h)
-#include BOOLDOG_HEADER(boo_doubly_linked_list.h)
-#include BOOLDOG_HEADER(boo_thread.h)
-#include BOOLDOG_HEADER(boo_lockfree_queue.h)
+#include "boo_multimedia_graph_chain.h"
+#include "boo_doubly_linked_list.h"
+#include "boo_thread.h"
+#include "boo_lockfree_queue.h"
 
 #include <stdio.h>
 namespace booldog
@@ -35,7 +32,7 @@ namespace booldog
                                 bool _free_chains;
 				void* _udata;
                         public:
-                                ::booldog::multimedia::async::graph* _next;
+                                ::booldog::multimedia::async::graph* volatile _next;
 			public:
 				graph(::booldog::allocator* allocator)
                                         : _allocator(allocator), _thread(0), _free_chains(false), _udata(0)

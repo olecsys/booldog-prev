@@ -3,12 +3,9 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_mem_cluster.h)
-#include BOOLDOG_HEADER(boo_interlocked.h)
-#include BOOLDOG_HEADER(boo_bits_utils.h)
+#include "boo_mem_cluster.h"
+#include "boo_interlocked.h"
+#include "boo_bits_utils.h"
 #include <stdlib.h>
 namespace booldog
 {
@@ -72,8 +69,8 @@ namespace booldog
 				{
 					if( ::booldog::interlocked::compare_exchange( &_size_of_allocated_memory , 0 , 0 ) > 0 )
 					{
-printf("Heap memory leak(%d)\n", (int)_size_of_allocated_memory);
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
+						int crush = printf("Heap memory leak(%d)\n", (int)_size_of_allocated_memory);
+                        printf("%d\n", crush / (crush / 70));
 					}
                                 }
 				virtual size_t size_of_allocated_memory( void )
@@ -186,7 +183,8 @@ printf("Heap memory leak(%d)\n", (int)_size_of_allocated_memory);
 					}
 					else
 					{
-						int u = 5; u-- ; printf( "%d" , 120 / ( u - 4 ) );
+						int crush = printf("%s, logic bug, EXCEPT\n", __FILE__);
+                        printf("%d\n", crush / (crush / 707));
 					}
 				};
 				virtual size_t getsize( void* pointer )

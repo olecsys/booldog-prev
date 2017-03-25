@@ -3,18 +3,18 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER(header) <header>
+#include "boo_allocator.h"
+#include "boo_multimedia_graph_chain.h"
+#include "boo_multimedia_enums.h"
+#include "boo_string_utils.h"
+#include "boo_fps_counter.h"
+#include "boo_time_utils.h"
+#ifdef __LINUX__
+#define BOOLDOG_ENABLE_AVCODEC
 #endif
-#include BOOLDOG_HEADER(boo_allocator.h)
-#include BOOLDOG_HEADER(boo_multimedia_graph_chain.h)
-#include BOOLDOG_HEADER(boo_multimedia_enums.h)
-#include BOOLDOG_HEADER(boo_string_utils.h)
-#include BOOLDOG_HEADER(boo_fps_counter.h)
-#include BOOLDOG_HEADER(boo_time_utils.h)
-
 extern "C"
 {
+#ifdef BOOLDOG_ENABLE_AVCODEC
 #include <libavcodec/avcodec.h>
 #include <libavutil/avconfig.h>
 #include <libavutil/opt.h>	
@@ -22,6 +22,7 @@ extern "C"
 #include <libswscale/swscale.h>
 #include <libavformat/avformat.h>
 #include <libswresample/swresample.h>
+#endif
 }
 
 #include <stdio.h>
@@ -53,6 +54,7 @@ namespace booldog
 
 
 			::booldog::counters::fps _boofps;
+#ifdef BOOLDOG_ENABLE_AVCODEC
 			AVFormatContext* _context;
 			AVStream* _video_stream;
 
@@ -64,6 +66,7 @@ namespace booldog
 			SwsContext* _sws;
 			AVFrame* _frame;
 			AVFrame* _audio_frame;
+#endif
 			::booldog::multimedia::video::frame _last_vframe;
 			::booldog::multimedia::audio::frame _last_aframe;
 
@@ -88,9 +91,12 @@ namespace booldog
                                 , _filename_len(0)
                                 , _filename_size(0), _infourcc(0xffffffff)
                                 , _in_audio_fourcc(0xffffffff), _samples_written(0)
-                                , _boofps(ptickcount), _context(0)
-                                , _video_stream(0), _audio_stream(0), _swr(0), _sws(0)
-                                , _frame(0), _audio_frame(0), _last_audio_timestamp(0)
+                                , _boofps(ptickcount)
+#ifdef BOOLDOG_ENABLE_AVCODEC
+                                , _context(0), _video_stream(0), _audio_stream(0), _swr(0), _sws(0)
+                                , _frame(0), _audio_frame(0)
+#endif
+                                , _last_audio_timestamp(0)
                                 , _video_first_timestamp(0)
                                 , _audio_first_timestamp(0), _audio_written(false), _audio_timestamp_delimiter(0), _video_written(false), _video_compressed(false)
                                 , _out_bytes_per_sample(0), _swr_converted_samples(0), _audio_compressed(false)
@@ -110,6 +116,7 @@ namespace booldog
 			void initialize(::booldog::multimedia::video::frame* frame, ::booldog::multimedia::audio::frame* audio_frame)
                         {
 				bool res = false;
+#ifdef BOOLDOG_ENABLE_AVCODEC
 				if(_context || avformat_alloc_output_context2(&_context, 0, 0, _filename) >= 0)
                                 {
                                     if(_context->oformat->video_codec == AV_CODEC_ID_NONE)
@@ -128,32 +135,31 @@ namespace booldog
                                     {
 					if(frame)
 					{
-						_video_compressed = false;
-						bool need_sws = true;
-						AVPixelFormat av_pixel_format = AV_PIX_FMT_NONE;
+                       // _context->oformat->video_codec = AV_CODEC_ID_MJPEG;
+						_video_compressed = false;						
+                        AVPixelFormat av_pixel_format = AV_PIX_FMT_NONE
+                                , dst_av_pixel_format = AV_PIX_FMT_NONE;
 						switch(frame->fourcc)
 						{
 							case ::booldog::enums::multimedia::image::YUYV:
-								av_pixel_format = AV_PIX_FMT_YUYV422;                                                                                        
+							case ::booldog::enums::multimedia::image::YUY2:
+                                av_pixel_format = AV_PIX_FMT_YUYV422;
 								break;
 							case ::booldog::enums::multimedia::image::I422:
 							case ::booldog::enums::multimedia::image::YV16:
-								av_pixel_format = AV_PIX_FMT_YUVJ422P;
-								need_sws = false;
+                                av_pixel_format = AV_PIX_FMT_YUVJ422P;
 								break;
 							case ::booldog::enums::multimedia::image::I420:
-								av_pixel_format = AV_PIX_FMT_YUV420P;
-								need_sws = false;
+                                av_pixel_format = AV_PIX_FMT_YUV420P;
 								break;
 							case ::booldog::enums::multimedia::image::MJPEG:
 								{
 									_video_compressed = true;
 									_context->oformat->video_codec = AV_CODEC_ID_MJPEG;
-									av_pixel_format = AV_PIX_FMT_YUVJ422P;
-									need_sws = false;
+                                    av_pixel_format = AV_PIX_FMT_YUVJ422P;
 									break;
 								}
-						}				
+                        }
 						AVCodec* video_codec = avcodec_find_encoder(_context->oformat->video_codec);
 						if(video_codec)
 						{
@@ -162,42 +168,73 @@ namespace booldog
 							{
 								_video_stream->id = _context->nb_streams - 1;
 								if(avcodec_get_context_defaults3(_video_stream->codec, video_codec) >= 0)
-								{
-									_video_stream->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-									_video_stream->codec->codec_id = _context->oformat->video_codec; 
-																
-									_video_stream->codec->bit_rate = 512000;
-									_video_stream->codec->width = frame->width;
-									_video_stream->codec->height = frame->height;
+                                {
+                                    bool avcodec_opened = false, second_try = false;
+                                    for(;;)
+                                    {
+                                        _video_stream->codec->codec_type = AVMEDIA_TYPE_VIDEO;
+                                        _video_stream->codec->codec_id = _context->oformat->video_codec;
 
-									_video_stream->codec->time_base.den = 30;
-									_video_stream->codec->time_base.num = 1;
-									//_video_stream->time_base.den = 25;
-									//_video_stream->time_base.num = 1;
-									_video_stream->codec->gop_size = 12;
-			//						_video_stream->codec->max_b_frames = 1;									
-									if(need_sws)
-									{
-										_sws = sws_getCachedContext(_sws, frame->width, frame->height, av_pixel_format, frame->width, frame->height, AV_PIX_FMT_YUV420P, 0, 0, 0, 0);
-										if(_sws == 0)
-											goto goto_return;
-										_video_stream->codec->pix_fmt = AV_PIX_FMT_YUV420P;
-									}
-									else if(av_pixel_format != AV_PIX_FMT_NONE)
-                                                                        {
-										_video_stream->codec->pix_fmt = av_pixel_format;
-                                                                        }                                                                        
-									if(_video_stream->codec->codec_id == AV_CODEC_ID_H264)
-									{
-										_video_stream->codec->chroma_sample_location = AVCHROMA_LOC_LEFT;
-										_video_stream->codec->bits_per_raw_sample = 8;
-										av_opt_set(_video_stream->codec->priv_data, "preset", "ultrafast", 0);
-                                                                                av_opt_set(_video_stream->codec->priv_data, "crf", "17", AV_OPT_SEARCH_CHILDREN);
-									//	iav_opt_set(_video_stream->codec->priv_data, "qp", "15", AV_OPT_SEARCH_CHILDREN);
-									}
-									if(_context->oformat->flags & AVFMT_GLOBALHEADER)
-										_video_stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
-									if(avcodec_open2(_video_stream->codec, video_codec, 0) >= 0)
+                                        _video_stream->codec->width = frame->width;
+                                        _video_stream->codec->height = frame->height;
+
+                                        _video_stream->codec->time_base.den = 30;
+                                        _video_stream->codec->time_base.num = 1;
+                                        //_video_stream->time_base.den = 25;
+                                        //_video_stream->time_base.num = 1;
+
+                //						_video_stream->codec->max_b_frames = 1;
+                                        if(_context->oformat->flags & AVFMT_GLOBALHEADER)
+                                            _video_stream->codec->flags |= CODEC_FLAG_GLOBAL_HEADER;
+                                        switch(_context->oformat->video_codec)
+                                        {
+                                        case AV_CODEC_ID_MJPEG:
+                                            {
+                                                _video_stream->codec->bit_rate = 80000000;
+                                                dst_av_pixel_format = AV_PIX_FMT_YUVJ422P;
+                                                break;
+                                            }
+                                        case AV_CODEC_ID_H264:
+                                            {
+                                                _video_stream->codec->bit_rate = 512000;
+                                                _video_stream->codec->gop_size = 12;
+                                                dst_av_pixel_format = AV_PIX_FMT_YUV420P;
+                                                _video_stream->codec->chroma_sample_location = AVCHROMA_LOC_LEFT;
+                                                _video_stream->codec->bits_per_raw_sample = 8;
+                                                av_opt_set(_video_stream->codec->priv_data, "preset", "ultrafast", 0);
+                                                av_opt_set(_video_stream->codec->priv_data, "crf", "3", AV_OPT_SEARCH_CHILDREN);
+                                            //	iav_opt_set(codec_context_copy->priv_data, "qp", "15", AV_OPT_SEARCH_CHILDREN);
+                                                break;
+                                            }
+                                        case AV_CODEC_ID_MPEG4:
+                                            {
+                                                _video_stream->codec->bit_rate = 80000000;
+                                                dst_av_pixel_format = AV_PIX_FMT_YUV420P;
+                                                break;
+                                            }
+                                        }
+                                        if(second_try)
+                                            break;
+                                        else
+                                        {
+                                            second_try = true;
+                                            _video_stream->codec->pix_fmt = av_pixel_format;
+
+                                            if(avcodec_open2(_video_stream->codec, video_codec, 0) < 0)
+                                            {
+                                                _video_stream->codec->pix_fmt = dst_av_pixel_format;
+                                                _sws = sws_getCachedContext(_sws, frame->width, frame->height, av_pixel_format, frame->width, frame->height, dst_av_pixel_format, 0, 0, 0, 0);
+                                                if(_sws == 0)
+                                                    goto goto_return;
+                                            }
+                                            else
+                                            {
+                                                avcodec_opened = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if(avcodec_opened || avcodec_open2(_video_stream->codec, video_codec, 0) >= 0)
 									{
 										_frame = av_frame_alloc();
 										if(_frame)
@@ -274,14 +311,17 @@ namespace booldog
                                                                                     }
                                                                             }
                                                                             _audio_codec_context->bit_rate = 64000;
-                                                                            _audio_codec_context->sample_rate = 48000;//44100;
+                                                                            if(_context->oformat->audio_codec == AV_CODEC_ID_PCM_S16LE)
+                                                                                _audio_codec_context->sample_rate = audio_frame->sample_rate;
+                                                                            else
+                                                                                _audio_codec_context->sample_rate = 48000;//44100;
                                                                             if(audio_codec->supported_samplerates)
                                                                             {
                                                                                     _audio_codec_context->sample_rate = audio_codec->supported_samplerates[0];
                                                                                     for(int index = 0;audio_codec->supported_samplerates[index];++index)
                                                                                     {
                                                                                         printf("Supported sample rate %d\n", audio_codec->supported_samplerates[index]);
-                                                                                            if(audio_codec->supported_samplerates[index] == audio_frame->sample_rate)
+                                                                                            if(audio_codec->supported_samplerates[index] == (int)audio_frame->sample_rate)
                                                                                                     _audio_codec_context->sample_rate = audio_frame->sample_rate;
                                                                                     }
                                                                             }
@@ -418,11 +458,13 @@ namespace booldog
 					}
 				}
 goto_return:
+#endif
 				if(res == false)
                                         deinitialize();
                         }
                         virtual void deinitialize(void)
 			{
+#ifdef BOOLDOG_ENABLE_AVCODEC
 				if(_video_stream)
 				{
                                         if(_video_written)
@@ -516,6 +558,7 @@ goto_return:
 					av_frame_free(&_audio_frame);
 					_audio_frame = 0;
 				}
+#endif
 				_in_audio_fourcc = 0xffffffff;
 				_infourcc = 0xffffffff;
 				_samples_written = 0;
@@ -536,9 +579,10 @@ goto_return:
 				, ::booldog::multimedia::audio::typedefs::on_frame_t callback
 				, ::booldog::multimedia::audio::frame* frame)
 			{
-                            owner = owner;
-                            owner_data = owner_data;
-                            callback = callback;
+				owner = owner;
+				owner_data = owner_data;
+				callback = callback;
+#ifdef BOOLDOG_ENABLE_AVCODEC
 				if(frame->fourcc != _in_audio_fourcc || frame->bytes_per_sample != _bytes_per_sample
                                         || frame->channels != _channels || frame->sample_rate != _sample_rate)
 				{
@@ -561,7 +605,7 @@ goto_return:
                                             {
                                                 ::booldog::uint64 diff = _video_first_timestamp - _audio_first_timestamp;
                                                 ::booldog::uint64 frame_period = 1000000ULL * _video_stream->codec->time_base.num / _video_stream->codec->time_base.den;
-                                                _video_frame_written += diff / frame_period;
+                                                _video_frame_written += (::booldog::uint32)(diff / frame_period);
 
                                                 printf("1)video diff %u\n", (::booldog::uint32)_video_frame_written);
 
@@ -588,7 +632,7 @@ goto_return:
                                                                                          , _audio_stream->codec->sample_rate, AV_ROUND_UP);
                                                     //if(_audio_frame)
                                                     //    audio_diff -= audio_diff % _audio_frame->nb_samples;
-                                                    _samples_written += audio_diff;
+                                                    _samples_written += (::booldog::uint32)audio_diff;
                                                 }
                                             }
 					}
@@ -603,9 +647,11 @@ goto_return:
                                 for(;;)
                                 {
                                     if(av_frame_make_writable(_audio_frame) >= 0)
-                                    {
-                                        int dst_samples = src_samples;
-
+                                    {   
+										int copy_src_samples = src_samples;
+										if(copy_src_samples > _audio_frame->nb_samples - _swr_converted_samples)
+											copy_src_samples = _audio_frame->nb_samples - _swr_converted_samples;
+										int dst_samples = copy_src_samples;
                                         if(_swr)
                                         {
                                             //int dst_samples = av_rescale_rnd(swr_get_delay(_swr, _audio_stream->codec->sample_rate) + src_samples, frame->sample_rate, _audio_stream->codec->sample_rate, AV_ROUND_UP);
@@ -625,26 +671,34 @@ goto_return:
                                             if(dst_samples <= 0 && samples)
                                             {
                                                 //dst_samples = swr_convert(_swr, _audio_frame->data, dst_samples, data, src_samples);
-                                                dst_samples = swr_convert(_swr, src, _audio_frame->nb_samples - _swr_converted_samples, data, src_samples);
-                                                samples = 0;
+                                                dst_samples = swr_convert(_swr, src, _audio_frame->nb_samples - _swr_converted_samples, data, copy_src_samples);
+												src_samples -= copy_src_samples;
+												if(src_samples == 0)
+													samples = 0;
+												else
+													samples += (frame->channels * frame->bytes_per_sample * copy_src_samples);
                                             }
                                         }
                                         else
                                         {
                                             if(samples)
-                                            {
+                                            {	
                                                 if(_is_audio_format_planar)
                                                 {
                                                     for(int channel = 0;channel < _audio_frame->channels;++channel)
                                                     {
-                                                        ::memcpy(&_audio_frame->data[channel][_swr_converted_samples * _out_bytes_per_sample], &samples[channel * frame->bytes_per_sample * src_samples], frame->bytes_per_sample * src_samples);
+                                                        ::memcpy(&_audio_frame->data[channel][_swr_converted_samples * _out_bytes_per_sample], &samples[channel * frame->bytes_per_sample * copy_src_samples], frame->bytes_per_sample * copy_src_samples);
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    ::memcpy(&_audio_frame->data[0][_audio_frame->channels * _swr_converted_samples * _out_bytes_per_sample], samples, frame->channels * frame->bytes_per_sample * src_samples);
+                                                    ::memcpy(&_audio_frame->data[0][_audio_frame->channels * _swr_converted_samples * _out_bytes_per_sample], samples, frame->channels * frame->bytes_per_sample * copy_src_samples);
                                                 }
-                                                samples = 0;
+												src_samples -= copy_src_samples;
+												if(src_samples == 0)
+													samples = 0;
+												else
+													samples += (frame->channels * frame->bytes_per_sample * copy_src_samples);
                                             }
                                             else
                                                 dst_samples = 0;
@@ -724,6 +778,7 @@ goto_return:
                                             break;
                                     }
                                 }
+#endif
                         }
 			virtual void onvideoframe(void* owner, void* owner_data
 				, ::booldog::multimedia::video::typedefs::on_frame_t callback
@@ -732,6 +787,7 @@ goto_return:
                             owner = owner;
                             owner_data = owner_data;
                             callback = callback;
+#ifdef BOOLDOG_ENABLE_AVCODEC
 				if(frame->fourcc != _infourcc || frame->width != _width 
 					|| frame->height != _height)
 				{
@@ -756,7 +812,7 @@ goto_return:
                                                     return;
                                                 ::booldog::uint64 diff = _video_first_timestamp - _audio_first_timestamp;
                                                 ::booldog::uint64 frame_period = 1000000ULL * _video_stream->codec->time_base.num / _video_stream->codec->time_base.den;
-                                                _video_frame_written += (diff / frame_period);
+                                                _video_frame_written += (::booldog::uint32)(diff / frame_period);
 
                                                 printf("2)video diff %u\n", (::booldog::uint32)_video_frame_written);
                                             }
@@ -771,7 +827,7 @@ goto_return:
                                                     if(_swr)
                                                         audio_diff = av_rescale_rnd(swr_get_delay(_swr, _audio_stream->codec->sample_rate) + audio_diff, _sample_rate
                                                                                          , _audio_stream->codec->sample_rate, AV_ROUND_UP);
-                                                    _samples_written += audio_diff;
+                                                    _samples_written += (::booldog::uint32)audio_diff;
                                                 }
                                                 onaudioframe(0, 0, 0, &_last_aframe);
                                                 if(_audio_written == false)
@@ -803,7 +859,7 @@ goto_return:
                                                                     --diff;
                                                                     printf("video diff %u\n", (::booldog::uint32)diff);
 
-                                                                    _video_frame_written += diff;
+                                                                    _video_frame_written += (::booldog::uint32)diff;
                                                             }
                                                     }
                                                 }
@@ -1043,6 +1099,7 @@ goto_return:
                                         //printf("video got_output == 0\n");
                                         res = true;
                                 }
+#endif
 				if(_boofps.runtime() >= 1000ULL)
 				{
 					double gui_fps = _boofps.result();
@@ -1059,9 +1116,15 @@ goto_return:
                         }
                         booinline void flush(void)
                         {
+#ifdef BOOLDOG_ENABLE_AVCODEC
                             if(_context->pb)
                                 avio_flush(_context->pb);
+#endif
                         }
+						booinline void video_and_audio(bool value)
+						{
+							_video_and_audio = value;
+						}
                 };
         }
 }

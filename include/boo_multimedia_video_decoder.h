@@ -3,14 +3,15 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER(header) <header>
+#include "boo_allocator.h"
+#include "boo_multimedia_graph_chain.h"
+#include "boo_multimedia_enums.h"
+#include "boo_fps_counter.h"
+#ifdef __LINUX__
+#define BOOLDOG_ENABLE_AVCODEC
+#define BOOLDOG_ENABLE_TURBOJPEG
 #endif
-#include BOOLDOG_HEADER(boo_allocator.h)
-#include BOOLDOG_HEADER(boo_multimedia_graph_chain.h)
-#include BOOLDOG_HEADER(boo_multimedia_enums.h)
-#include BOOLDOG_HEADER(boo_fps_counter.h)
-
+#ifdef BOOLDOG_ENABLE_AVCODEC
 extern "C"
 {
 #include <libavcodec/avcodec.h>
@@ -20,11 +21,10 @@ extern "C"
 #include <libswscale/swscale.h>
 #include <libavformat/avformat.h>
 }
-#define BOOLDOG_ENABLE_TURBOJPEG
+#endif
 #ifdef BOOLDOG_ENABLE_TURBOJPEG
 #include <turbojpeg.h>
 #endif
-
 #include <stdio.h>
 namespace booldog
 {
@@ -50,9 +50,11 @@ namespace booldog
 				::booldog::uint32 _y_size;
 				::booldog::uint32 _v_size;
 				::booldog::uint32 _u_size;
+#ifdef BOOLDOG_ENABLE_AVCODEC
 				AVCodecContext* _codec_context;
 				AVFrame* _avframe;	
 				bool _avcodec_opened;
+#endif
 #ifdef BOOLDOG_ENABLE_TURBOJPEG
 				tjhandle _tj_handle;
 #endif			
@@ -60,7 +62,9 @@ namespace booldog
 				decoder(::booldog::allocator* allocator, ::booldog::typedefs::tickcount ptickcount)
                                         : _boofps(ptickcount), _allocator(allocator)
                                         , _initialized(false), _fourcc(0xffffffff)
+#ifdef BOOLDOG_ENABLE_AVCODEC
                                         , _codec_context(0), _avframe(0), _avcodec_opened(false)
+#endif
 #ifdef BOOLDOG_ENABLE_TURBOJPEG
 					, _tj_handle(0)
 #endif			
@@ -73,9 +77,11 @@ namespace booldog
                                 }
 				void initialize(::booldog::multimedia::video::frame* frame)
 				{
-					_initialized = false;					
+                                        _initialized = false;
+#ifdef BOOLDOG_ENABLE_AVCODEC
 					AVCodec* _codec = 0;
 					AVCodecID codec_id = AV_CODEC_ID_H264;
+#endif
 					_fourcc = frame->fourcc;
 					switch(frame->fourcc)
 					{
@@ -95,19 +101,24 @@ namespace booldog
 							else
 								printf("tjInitDecompress failed, %s\n", tjGetErrorStr());
 #else
+#ifdef BOOLDOG_ENABLE_AVCODEC
 							codec_id = AV_CODEC_ID_MJPEG;
+#endif
 							_compressed = true;
 							break;
 #endif						
 						case ::booldog::enums::multimedia::image::H264:
+#ifdef BOOLDOG_ENABLE_AVCODEC
 							codec_id = AV_CODEC_ID_H264;
+#endif
 							_compressed = true;
 							break;
-						case ::booldog::enums::multimedia::image::I420:
-                                                case ::booldog::enums::multimedia::image::I422:
+                        case ::booldog::enums::multimedia::image::I420:
+                        case ::booldog::enums::multimedia::image::I422:
 						case ::booldog::enums::multimedia::image::YUYV:
 						case ::booldog::enums::multimedia::image::YV12:
 						case ::booldog::enums::multimedia::image::YV16:
+                        case ::booldog::enums::multimedia::image::YUY2:
 							_initialized = true;
 							_compressed = false;
 							break;
@@ -121,6 +132,7 @@ namespace booldog
                                                 _in_height = frame->height;
 						if(_compressed)
 						{
+#ifdef BOOLDOG_ENABLE_AVCODEC
 							_codec = avcodec_find_decoder(codec_id);
 							if(_codec)
 							{
@@ -145,9 +157,12 @@ namespace booldog
 									}
 								}
 							}
+#endif
 						}	
-					}
+                    }
+#ifdef BOOLDOG_ENABLE_TURBOJPEG
 goto_return:
+#endif
 					if(_initialized == false)
 						deinitialize();
                                 }
@@ -160,6 +175,7 @@ goto_return:
 						_tj_handle = 0;
 					}
 #endif
+#ifdef BOOLDOG_ENABLE_AVCODEC
 					if(_codec_context)
 					{
 						if(_avcodec_opened)
@@ -175,6 +191,7 @@ goto_return:
 						av_frame_free(&_avframe);
 						_avframe = 0;
 					}
+#endif
 					_fourcc = 0xffffffff;
 					___frame.fourcc = ::booldog::enums::multimedia::image::Unknown;
 					_initialized = false;
@@ -276,6 +293,7 @@ goto_return:
 						}
 						else
 #endif						
+#ifdef BOOLDOG_ENABLE_AVCODEC
 						if(_codec_context)
 						{
 							AVPacket pkt;
@@ -399,6 +417,7 @@ goto_return:
 								}
 							}
 						}
+#endif
 					}
 					else
 					{

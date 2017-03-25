@@ -3,13 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER(header) <header>
-#endif
-#include BOOLDOG_HEADER(boo_multimedia_audio_capture.h)
-#include BOOLDOG_HEADER(boo_thread.h)
-#include BOOLDOG_HEADER(boo_threading_event.h)
-#include BOOLDOG_HEADER(boo_lockfree_queue.h)
+#include "boo_multimedia_audio_capture.h"
+#include "boo_thread.h"
+#include "boo_threading_event.h"
+#include "boo_lockfree_queue.h"
 
 #include <stdio.h>
 namespace booldog
@@ -20,10 +17,10 @@ namespace booldog
 		{
 			namespace async
 			{
-				class capture;
-                        }
-                }
+                class capture;
+            }
         }
+    }
 	namespace results
 	{
 		namespace multimedia
@@ -81,191 +78,217 @@ namespace booldog
 				{
 					friend class ::booldog::allocator;
 				private:
-                                        ::booldog::allocator* _allocator;
-                                        ::booldog::threading::thread* _read_thread;
+                    ::booldog::allocator* _allocator;
+                    ::booldog::threading::thread* _read_thread;
 					::booldog::multimedia::audio::capture* _audio;
 					::booldog::multimedia::audio::typedefs::read_frame_callback_t _read_frame_callback;
 					void* _read_frame_callback_udata;
-                                        ::booldog::data::lockfree::queue< ::booldog::multimedia::audio::frame > _samples;
-                                        ::booldog::data::lockfree::queue< ::booldog::multimedia::audio::frame > _avail_samples;
-                                        ::booldog::uint32 _samples_count;
+                    ::booldog::data::lockfree::queue< ::booldog::multimedia::audio::frame > _samples;
+                    ::booldog::data::lockfree::queue< ::booldog::multimedia::audio::frame > _avail_samples;
+                    ::booldog::uint32 _samples_count;
+                    bool _isuse_poll;
+                    ::booldog::uint32 _fourcc;
+                    ::booldog::uint32 _sample_rate;
+                    ::booldog::uint32 _channels;
+                    ::booldog::uint32 _bytes_per_sample;
 				private:
 					capture(::booldog::allocator* allocator)
                                                 : _allocator(allocator), _read_thread(0), _samples_count(120)
-					{
-                                        }
-                                        capture(const ::booldog::multimedia::audio::async::capture&)
-					{
-                                        }
+#ifdef __WINDOWS__
+                                                , _isuse_poll(true)
+#else
+                                                , _isuse_poll(false)
+#endif
+                    {
+                    }
+                    capture(const ::booldog::multimedia::audio::async::capture&)
+                    {
+                    }
 					::booldog::multimedia::audio::async::capture& operator = (const ::booldog::multimedia::audio::async::capture&)
 					{
 						return *this;
-                                        }
-                                        static ::booldog::uint32 tickcount(void)
-                                        {
-                                        #ifdef __LINUX__
-                                            struct timespec ts = {};
-                                            if(clock_gettime(CLOCK_MONOTONIC, &ts))
-                                                clock_gettime(CLOCK_REALTIME, &ts);
-                                            return (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-                                        #else
-                                            return 0;
-                                        #endif
-                                        }
+                    }
+                    static ::booldog::uint32 tickcount(void)
+                    {
+#ifdef __LINUX__
+                        struct timespec ts = {};
+                        if(clock_gettime(CLOCK_MONOTONIC, &ts))
+                            clock_gettime(CLOCK_REALTIME, &ts);
+                        return (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+#elif defined(__WINDOWS__)
+                        return GetTickCount();
+                    #else
+                        return 0;
+                    #endif
+                    }
 				public:
-					~capture(void)
+                    ~capture()
 					{
-                                            for(;;)
-                                            {
-                                                    ::booldog::multimedia::audio::frame* next = _samples.dequeue();
-                                                    if(next)
-                                                    {
-                                                            if(next->data)
-                                                                    _allocator->free(next->data);
-                                                            _allocator->destroy(next);
-                                                    }
-                                                    else
-                                                            break;
-                                            }
-                                            for(;;)
-                                            {
-                                                    ::booldog::multimedia::audio::frame* next = _avail_samples.dequeue();
-                                                    if(next)
-                                                    {
-                                                            if(next->data)
-                                                                    _allocator->free(next->data);
-                                                            _allocator->destroy(next);
-                                                    }
-                                                    else
-                                                            break;
-                                            }
-					}
-                                        static void callback_thread(::booldog::threading::thread* thread)
+                        for(;;)
+                        {
+                                ::booldog::multimedia::audio::frame* next = _samples.dequeue();
+                                if(next)
+                                {
+                                        if(next->data)
+                                                _allocator->free(next->data);
+                                        _allocator->destroy(next);
+                                }
+                                else
+                                        break;
+                        }
+                        for(;;)
+                        {
+                                ::booldog::multimedia::audio::frame* next = _avail_samples.dequeue();
+                                if(next)
+                                {
+                                        if(next->data)
+                                                _allocator->free(next->data);
+                                        _allocator->destroy(next);
+                                }
+                                else
+                                        break;
+                        }
+                    }
+                    static void callback_thread(::booldog::threading::thread* thread)
 					{
 						::booldog::multimedia::audio::async::capture* capture = 
 							(::booldog::multimedia::audio::async::capture*)thread->udata();
 						for(;;)
-                                                {
-                                                    ::booldog::multimedia::audio::frame* sample = capture->_samples.dequeue();
-                                                    if(sample)
-                                                    {
-                                                        capture->_read_frame_callback(capture->_allocator, capture->_read_frame_callback_udata, sample);
-                                                        capture->_avail_samples.enqueue(sample);
-                                                    }
-                                                    else
-                                                        ::booldog::threading::sleep(1);
-                                                    if(thread->pending_in_stop())
-                                                        break;
+                        {
+                            ::booldog::multimedia::audio::frame* sample = capture->_samples.dequeue();
+                            if(sample)
+                            {
+                                capture->_read_frame_callback(capture->_allocator, capture->_read_frame_callback_udata, sample);
+                                capture->_avail_samples.enqueue(sample);
+                            }
+                            else
+                                ::booldog::threading::sleep(1);
+                            if(thread->pending_in_stop())
+                                break;
 						}
-                                        }
-                                        static void read_thread(::booldog::threading::thread* thread)
+                    }
+                    static void read_thread(::booldog::threading::thread* thread)
+                    {
+                        ::booldog::multimedia::audio::async::capture* capture =
+                                (::booldog::multimedia::audio::async::capture*)thread->udata();
+
+                        if(capture->_audio->is_capturing() == false)
+                        {
+                            if(capture->_audio->is_opened() == false
+                                    || capture->_audio->start_capturing(0, capture->_fourcc, capture->_sample_rate, capture->_channels, capture->_bytes_per_sample, debuginfo_macros) == false)
+                            {
+                                printf("async video capture, start failed\n");
+                                if(capture->_audio->is_opened())
+                                {
+                                    while(capture->_audio->close(0, false, debuginfo_macros) == false)
+                                        ::booldog::threading::sleep(1);
+                                }
+                                for(;;)
+                                {
+                                    if(capture->_audio->open(0, capture->_audio->name(), debuginfo_macros))
+                                    {
+                                        if(capture->_audio->start_capturing(0, capture->_fourcc, capture->_sample_rate, capture->_channels, capture->_bytes_per_sample, debuginfo_macros))
+                                            break;
+                                        else
                                         {
-                                                ::booldog::multimedia::audio::async::capture* capture =
-                                                        (::booldog::multimedia::audio::async::capture*)thread->udata();
-                                            /*::booldog::multimedia::audio::frame* sample = 0;
-                                            ::booldog::uint32 count = 0;
-                                            while(count != capture->_samples_count)
-                                            {
-                                                sample = capture->_avail_samples.dequeue();
-                                                if(sample == 0)
-                                                {
-                                                    sample = capture->_allocator->create< ::booldog::multimedia::audio::frame >(debuginfo_macros);
-                                                    if(sample == 0)
-                                                        break;
-                                                }
-                                                if(capture->_audio->prepare_frame(0, capture->_allocator, sample, debuginfo_macros) == false)
-                                                {
-                                                    if(sample->data)
-                                                        capture->_allocator->free(sample->data);
-                                                    capture->_allocator->destroy(sample);
-                                                    for(;;)
-                                                    {
-                                                            sample = capture->_avail_samples.dequeue();
-                                                            if(sample)
-                                                            {
-                                                                    if(sample->data)
-                                                                            capture->_allocator->free(sample->data);
-                                                                    capture->_allocator->destroy(sample);
-                                                            }
-                                                            else
-                                                                    break;
-                                                    }
-                                                    break;
-                                                }
-                                                capture->_samples.enqueue(sample);
-                                                ++count;
-                                            }
-                                            for(;;)
-                                            {
-                                                    sample = capture->_samples.dequeue();
-                                                    if(sample)
-                                                        capture->_avail_samples.enqueue(sample);
-                                                    else
-                                                        break;
-                                            }
-                                            ::booldog::threading::thread* _thread = ::booldog::threading::thread::create(0, capture->_allocator, 30 * 1024, 0, 0, callback_thread, capture);
-                                            */
-                                                ::booldog::result_bool resbool;
-                                                for(;;)
-                                                {
-                                                        if(capture->_audio->is_frame_available(&resbool) && resbool.bres)
-                                                        {
-                                                            {
-                                                                ::booldog::uint32 ttick = tickcount();
-
-                                                                //sample = capture->_avail_samples.dequeue();
-
-                                                                ::booldog::uint32 now = tickcount();
-                                                                if(now - ttick > 10)
-                                                                    printf("avail_samples %u\n", now - ttick);
-
-                                                                //if(sample)
-                                                                {
-                                                                    //::booldog::uint32 ttick0 = tickcount();
-                                                                    if(capture->_audio->read_frame(0, capture->_read_frame_callback, capture->_read_frame_callback_udata, debuginfo_macros))
-                                                                    //if(capture->_audio->read_frame(0, sample, debuginfo_macros))
-                                                                    {
-
-
-                                                                        //capture->_read_frame_callback(capture->_allocator, capture->_read_frame_callback_udata, sample);
-                                                                        //capture->_avail_samples.enqueue(sample);
-
-
-
-                                                                        /*now = tickcount();
-                                                                        if(now - ttick0 > 10)
-                                                                            printf("read_frame %u\n", now - ttick0);
-
-
-                                                                        ttick0 = tickcount();
-                                                                        capture->_samples.enqueue(sample);
-
-                                                                        now = tickcount();
-                                                                        if(now - ttick0 > 10)
-                                                                            printf("samples.enqueue %u\n", now - ttick0);
-
-
-                                                                        now = tickcount();
-                                                                        if(now - ttick > 22)
-                                                                            printf("read_audio %u\n", now - ttick);*/
-                                                                    }
-                                                                    else
-                                                                    {
-                                                                        printf("read sample error\n");
-                                                                        //capture->_avail_samples.enqueue(sample);
-                                                                    }
-                                                                }
-                                                                //else
-                                                                //    printf("cannot get sample from avail\n");
-                                                            }
-                                                        }
-                                                        if(thread->pending_in_stop())
-                                                                break;
-                                                }                                                
-                                                //::booldog::threading::thread::stop(_thread);
-                                                //::booldog::threading::thread::wait_for_stop(_thread);
-                                                //::booldog::threading::thread::destroy(_thread);
+                                            printf("async video capture, start failed again\n");
+                                            while(capture->_audio->close(0, false, debuginfo_macros) == false)
+                                                ::booldog::threading::sleep(1);
                                         }
+                                    }
+                                    else
+                                        printf("async audio capture, open failed\n");
+                                    if(thread->pending_in_stop())
+                                        break;
+                                }
+                            }
+                        }
+
+                        ::booldog::multimedia::audio::frame* sample = 0;
+                        ::booldog::uint32 count = 0;
+                        while(count != capture->_samples_count)
+                        {
+                            sample = capture->_avail_samples.dequeue();
+                            if(sample == 0)
+                            {
+                                sample = capture->_allocator->create< ::booldog::multimedia::audio::frame >(debuginfo_macros);
+                                if(sample == 0)
+                                    break;
+                            }
+#ifndef __WINDOWS__
+                            if(capture->_audio->prepare_frame(0, capture->_allocator, sample, debuginfo_macros) == false)
+                            {
+                                if(sample->data)
+                                    capture->_allocator->free(sample->data);
+                                capture->_allocator->destroy(sample);
+                                for(;;)
+                                {
+                                        sample = capture->_avail_samples.dequeue();
+                                        if(sample)
+                                        {
+                                                if(sample->data)
+                                                        capture->_allocator->free(sample->data);
+                                                capture->_allocator->destroy(sample);
+                                        }
+                                        else
+                                                break;
+                                }
+                                break;
+                            }
+#endif
+                            capture->_samples.enqueue(sample);
+                            ++count;
+                        }
+                        for(;;)
+                        {
+                                sample = capture->_samples.dequeue();
+                                if(sample)
+                                    capture->_avail_samples.enqueue(sample);
+                                else
+                                    break;
+                        }
+                        ::booldog::threading::thread* _thread = ::booldog::threading::thread::create(0, capture->_allocator, 30 * 1024, 0, 0, callback_thread, capture);
+
+						::booldog::result_bool resbool;
+						for(;;)
+						{
+								if(capture->_isuse_poll == false || (capture->_audio->is_frame_available(&resbool) && resbool.bres))
+								{
+									{
+										sample = capture->_avail_samples.dequeue();
+										if(sample)
+										{
+											//if(capture->_audio->read_frame(0, capture->_read_frame_callback, capture->_read_frame_callback_udata, debuginfo_macros))
+											if(capture->_audio->read_frame(0, capture->_allocator, sample, debuginfo_macros))
+											{
+												//capture->_read_frame_callback(capture->_allocator, capture->_read_frame_callback_udata, sample);
+												//capture->_avail_samples.enqueue(sample);
+												capture->_samples.enqueue(sample);
+											}
+											else
+											{
+												printf("read sample error\n");
+												capture->_avail_samples.enqueue(sample);
+											}
+										}
+										else
+											printf("cannot get sample from avail\n");
+									}
+								}
+                                else
+                                    ::booldog::threading::sleep(1);
+                                if(thread->pending_in_stop())
+                                    break;
+						}                                                
+						::booldog::threading::thread::stop(_thread);
+						::booldog::threading::thread::wait_for_stop(_thread);
+						::booldog::threading::thread::destroy(_thread);
+
+                        while(capture->_audio->stop_capturing(0, debuginfo_macros) == false)
+                            ::booldog::threading::sleep(1);
+                        if(capture->_audio->is_opened())
+                            capture->_audio->close(0, false, debuginfo_macros);
+                    }
 					static bool open(::booldog::results::multimedia::audio::async::capture* pres, ::booldog::allocator* allocator, ::booldog::typedefs::tickcount ptickcount
 						, const char* name, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 					{
@@ -278,68 +301,76 @@ namespace booldog
 							if(res->audio)
 							{
 								res->audio->_audio = capture.audio;
+#ifdef __WINDOWS__
+                                capture.audio->close(0, false, debuginfo);
+#endif
 								return true;
 							}
 							else
 							{
-								capture.audio->close(0);
+                                capture.audio->close(0, true, debuginfo);
 								res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
 								return false;
 							}
 						}
 						else
 							res->copy(capture);
-						return false;
-                                        }
+                        return false;
+                    }
 					booinline bool close(::booldog::result* pres, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 					{
 						debuginfo = debuginfo;
 						::booldog::result locres;
 						BOOINIT_RESULT(::booldog::result);						
-						_audio->close(res);						
+                        _audio->close(res, true, debuginfo);
 						_allocator->destroy(this);
-						return res->succeeded();
-                                        }
+                        return res->succeeded();
+                    }
 					booinline bool stop_capturing(::booldog::result* pres, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 					{
 						::booldog::result locres;
-                                                BOOINIT_RESULT(::booldog::result);
-                                                ::booldog::threading::thread::stop(_read_thread);
-                                                ::booldog::threading::thread::wait_for_stop(_read_thread);
-                                                ::booldog::threading::thread::destroy(_read_thread);
-                                                _read_thread = 0;
+                        BOOINIT_RESULT(::booldog::result);
+                        ::booldog::threading::thread::stop(_read_thread);
+                        ::booldog::threading::thread::wait_for_stop(_read_thread);
+                        ::booldog::threading::thread::destroy(_read_thread);
+                        _read_thread = 0;
 
-                                                ::booldog::multimedia::audio::frame* sample = 0;
-                                                for(;;)
-                                                {
-                                                    sample = _samples.dequeue();
-                                                    if(sample)
-                                                        _avail_samples.enqueue(sample);
-                                                    else
-                                                        break;
-                                                }
+                        ::booldog::multimedia::audio::frame* sample = 0;
+                        for(;;)
+                        {
+                            sample = _samples.dequeue();
+                            if(sample)
+                                _avail_samples.enqueue(sample);
+                            else
+                                break;
+                        }
 						return _audio->stop_capturing(res, debuginfo);
 					}
-					booinline bool start_capturing(::booldog::result* pres, ::booldog::uint32 fourcc, ::booldog::multimedia::audio::typedefs::read_frame_callback_t read_frame_callback
-						, void* read_frame_callback_udata, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+                    booinline bool start_capturing(::booldog::result* pres, ::booldog::uint32 fourcc, ::booldog::uint32 sample_rate, ::booldog::uint32 channels
+                                                   , ::booldog::uint32 bytes_per_sample, ::booldog::multimedia::audio::typedefs::read_frame_callback_t read_frame_callback
+                                                   , void* read_frame_callback_udata, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 					{
-						::booldog::result locres;
-						BOOINIT_RESULT(::booldog::result);
-						if(_audio->start_capturing(res, fourcc, debuginfo))
-						{					
-							_read_frame_callback = read_frame_callback;
-							_read_frame_callback_udata = read_frame_callback_udata;							
-                                                        _read_thread = ::booldog::threading::thread::create(0, _allocator, 30 * 1024, 0, 0, read_thread, this);
-						}
-						return res->succeeded();
-                                        }
-                                        booinline bool is_capturing(void)
-                                        {
-                                                return _read_thread != 0;
-                                        }
-				};
-                        }
-                }
+                        debuginfo = debuginfo;
+                        ::booldog::result locres;
+                        BOOINIT_RESULT(::booldog::result);
+
+                        _fourcc = fourcc;
+                        _sample_rate = sample_rate;
+                        _channels = channels;
+                        _bytes_per_sample = bytes_per_sample;
+                        _read_frame_callback = read_frame_callback;
+                        _read_frame_callback_udata = read_frame_callback_udata;
+                        _read_thread = ::booldog::threading::thread::create(0, _allocator, 30 * 1024, 0, 0, read_thread, this);
+
+                        return res->succeeded();
+                    }
+                    booinline bool is_capturing()
+                    {
+                        return _read_thread != 0;
+                    }
+                };
+            }
         }
+    }
 }
 #endif

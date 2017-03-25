@@ -34,7 +34,7 @@
 				[
 					"./src",
 					"./../include",
-					"./../../inc",
+					"./../../inc/booldog",
 					"./../config",
 					"./../extern_sources"
 				],

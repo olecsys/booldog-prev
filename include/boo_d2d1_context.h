@@ -3,13 +3,10 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#ifndef BOOLDOG_HEADER
-#define BOOLDOG_HEADER( header ) <header>
-#endif
-#include BOOLDOG_HEADER(boo_base_loader.h)
-#include BOOLDOG_HEADER(boo_render_context.h)
-#include BOOLDOG_HEADER(boo_math_utils.h)
-#include BOOLDOG_HEADER(boo_thread.h)
+#include "boo_base_loader.h"
+#include "boo_render_context.h"
+#include "boo_math_utils.h"
+#include "boo_thread.h"
 
 #ifdef __WINDOWS__
 #include <D3D11.h>
