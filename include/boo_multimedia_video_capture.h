@@ -1290,7 +1290,7 @@ namespace booldog
                                 ::memset(&req, 0, sizeof(req));
                                 req.count  = 0;
                                 req.type   = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-                                req.memory = _capture_type;
+                                req.memory = (v4l2_memory)_capture_type;
                                 xioctl(_fd, VIDIOC_REQBUFS, &req);
                                 _streaming = false;
                             }
