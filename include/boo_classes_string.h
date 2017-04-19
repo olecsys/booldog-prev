@@ -283,6 +283,11 @@ namespace booldog
 				string.copyto(*this);
 				return *this;
 			}
+			/*::booldog::classes::string& operator =(const ::booldog::classes::string::string_return string)
+			{
+				string.copyto(*this);
+				return *this;
+			}*/
 			/** Assign a new C string
 			* @param pres store the function result or detailed error
 			* @param str a new C string
@@ -474,14 +479,13 @@ namespace booldog
 				return true;
 			}
 #endif
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
 				, const char* string1);
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string& string0
 				, const char* string1)
 			{
 				::booldog::classes::string result(string0, string1);
-				::booldog::classes::string::string_return res(result);
-				return res;
+				return ::booldog::classes::string::string_return(result);
 			}
 			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string& string0
 				, const char string1)
@@ -490,21 +494,21 @@ namespace booldog
 				::booldog::classes::string::string_return res(result);
 				return res;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const char* string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const char* string0
 				, const ::booldog::classes::string& string1)
 			{
 				::booldog::classes::string result(string0, string1);
 				::booldog::classes::string::string_return res(result);
 				return res;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string& string0
 				, const ::booldog::classes::string& string1)
 			{
 				::booldog::classes::string result(string0, string1);
 				::booldog::classes::string::string_return res(result);
 				return res;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
 				, const char* string1)
 			{
 				::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
@@ -512,35 +516,35 @@ namespace booldog
 					, str->_size, string1, 0, SIZE_MAX, debuginfo_macros);
 				return *str;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
 				, ::booldog::int32 string1)
 			{
 				::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
 				::booldog::utils::string::mbs::append< 16 >(0, str->_allocator, str->_str, str->_length, str->_size, string1, debuginfo_macros);
 				return *str;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
 				, ::booldog::uint32 string1)
 			{
 				::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
 				::booldog::utils::string::mbs::append< 16 >(0, str->_allocator, str->_str, str->_length, str->_size, string1, debuginfo_macros);
 				return *str;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
 				, ::booldog::int64 string1)
 			{
 				::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
 				::booldog::utils::string::mbs::append< 16 >(0, str->_allocator, str->_str, str->_length, str->_size, string1, debuginfo_macros);
 				return *str;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
 				, ::booldog::uint64 string1)
 			{
 				::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
 				::booldog::utils::string::mbs::append< 16 >(0, str->_allocator, str->_str, str->_length, str->_size, string1, debuginfo_macros);
 				return *str;
 			}
-			booinline friend ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
 				, const char string1)
 			{
 				::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
@@ -550,42 +554,42 @@ namespace booldog
 			}
 		};
 	}
-	booinline ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
+	booinline const ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
 		, const char* string1)
 	{
 		::booldog::classes::string result(string0, string1);
 		::booldog::classes::string::string_return res(result);
 		return res;
 	}
-	booinline ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
+	booinline const ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
 		, const char string1)
 	{
 		::booldog::classes::string result(string0, &string1, 1);
 		::booldog::classes::string::string_return res(result);
 		return res;
 	}
-	booinline ::booldog::classes::string::string_return operator +(const char string0
+	booinline const ::booldog::classes::string::string_return operator +(const char string0
 		, const ::booldog::results::mbchar& string1)
 	{
 		::booldog::classes::string result(&string0, string1, 1);
 		::booldog::classes::string::string_return res(result);
 		return res;
 	}
-	booinline ::booldog::classes::string::string_return operator +(const char* string0
+	booinline const ::booldog::classes::string::string_return operator +(const char* string0
 		, const ::booldog::results::mbchar& string1)
 	{
 		::booldog::classes::string result(string0, string1);
 		::booldog::classes::string::string_return res(result);
 		return res;
 	}
-	booinline ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
+	booinline const ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
 		, const ::booldog::results::mbchar& string1)
 	{
 		::booldog::classes::string result(string0, string1);
 		::booldog::classes::string::string_return res(result);
 		return res;
 	}
-	booinline ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+	booinline const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
 		, const ::booldog::results::mbchar& string1)
 	{
 		::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
