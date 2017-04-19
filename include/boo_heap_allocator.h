@@ -70,7 +70,7 @@ namespace booldog
 					if( ::booldog::interlocked::compare_exchange( &_size_of_allocated_memory , 0 , 0 ) > 0 )
 					{
 						int crush = printf("Heap memory leak(%d)\n", (int)_size_of_allocated_memory);
-                        printf("%d\n", crush / (crush / 70));
+                        printf("%d\n", crush / (crush / 70567));
 					}
                                 }
 				virtual size_t size_of_allocated_memory( void )
@@ -184,7 +184,7 @@ namespace booldog
 					else
 					{
 						int crush = printf("%s, logic bug, EXCEPT\n", __FILE__);
-                        printf("%d\n", crush / (crush / 707));
+                        printf("%d\n", crush / (crush / 70567));
 					}
 				};
 				virtual size_t getsize( void* pointer )

@@ -238,7 +238,41 @@ debuginfo_macros_statement( 41 );
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 					}
 					return res->succeeded();
-				};
+				}
+				template< size_t step, class T >
+				booinline bool append(::booldog::result* pres, ::booldog::allocator* allocator, char*& dst, size_t& dstlen, size_t& dstsize
+					, T number, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT(::booldog::result);
+					size_t ldstlen = 0;
+					if(dst && ::booldog::utils::string::mbs::tostring(res, &dst[dstlen], ldstlen, dstsize - dstlen - 1, number, debuginfo))
+					{
+						dstlen += ldstlen;
+						dst[dstlen] = 0;
+					}
+					else
+					{
+						dstsize += ldstlen + step;
+						dst = allocator->realloc_array< char >(dst, dstsize, debuginfo);
+						if(dst)
+						{
+							if(::booldog::utils::string::mbs::tostring(res, &dst[dstlen], ldstlen, dstsize - dstlen - 1, number, debuginfo))
+							{
+								dstlen += ldstlen;
+								dst[dstlen] = 0;
+							}
+							else
+								return false;
+						}
+						else
+						{
+							res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+							return false;
+						}
+					}
+					return true;
+				}
 				booinline bool toreversehexstring( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator , const ::booldog::byte* data 
 					, size_t data_len , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{
@@ -1195,8 +1229,8 @@ goto_return:
 			namespace wcs
 			{
 				template< size_t step >
-				booinline bool toutf8( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const wchar_t* wcs
-					, size_t charindex = 0 , size_t charcount = SIZE_MAX , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				booinline bool toutf8(::booldog::result_mbchar& pres, const wchar_t* wcs
+					, size_t charindex = 0, size_t charcount = SIZE_MAX, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 				{
 					const wchar_t* begin = &wcs[ charindex ];
 					const wchar_t* ptr = begin;
@@ -1214,14 +1248,13 @@ goto_return:
 goto_next:
 					charcount = ptr - begin;
 					size_t srcbyteindex = charindex * sizeof( wchar_t );
-					if( ::booldog::compile::If< sizeof( wchar_t ) == 2 >::test() )
-						return ::booldog::utf16::toutf8< step >( pres , allocator , (const char*)wcs , srcbyteindex , sizeof( wchar_t ) 
-						* ( charindex + charcount ) , debuginfo );
-					else if( ::booldog::compile::If< sizeof( wchar_t ) == 4 >::test() )
-						return ::booldog::utf32::toutf8< step >( pres , allocator , (const char*)wcs , srcbyteindex , sizeof( wchar_t ) 
-						* (	charindex + charcount ) , debuginfo );
-					if( pres )
-						pres->booerr( ::booldog::enums::result::booerr_type_unknown_wchar_t_size );
+					if(::booldog::compile::If< sizeof(wchar_t) == 2 >::test())
+						return ::booldog::utf16::toutf8< step >(pres, (const char*)wcs, srcbyteindex, sizeof(wchar_t) 
+						* (charindex + charcount), debuginfo);
+					else if(::booldog::compile::If< sizeof(wchar_t) == 4 >::test())
+						return ::booldog::utf32::toutf8< step >(pres, (const char*)wcs, srcbyteindex, sizeof(wchar_t) 
+						* (charindex + charcount), debuginfo);
+					pres.booerr(::booldog::enums::result::booerr_type_unknown_wchar_t_size);
 					return false;
 				};
 				booinline bool tombs( ::booldog::result_mbchar* pres , booldog::allocator* allocator , const wchar_t* wchar 

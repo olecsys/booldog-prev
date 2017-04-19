@@ -2445,7 +2445,7 @@ namespace booldog
 										if(SUCCEEDED(hr))
 										{
 											size_t wlen = wcslen(var.bstrVal), srcbyteindex = 0;
-											if(::booldog::utf16::toutf8< 16 >(&name, allocator, (char*)var.bstrVal, srcbyteindex
+											if(::booldog::utf16::toutf8< 16 >(name, (char*)var.bstrVal, srcbyteindex
 												, wlen * sizeof(wchar_t), debuginfo) == false)
 											{
 												res->copy(name);
@@ -2476,7 +2476,7 @@ namespace booldog
 												if(moniker_display_name)
 												{
 													size_t wlen = wcslen(moniker_display_name), srcbyteindex = 0;
-													if(::booldog::utf16::toutf8< 16 >(&deviceid, allocator, (char*)moniker_display_name
+													if(::booldog::utf16::toutf8< 16 >(deviceid, (char*)moniker_display_name
 														, srcbyteindex, wlen * sizeof(wchar_t), debuginfo) == false)
 													{
 														res->copy(deviceid);

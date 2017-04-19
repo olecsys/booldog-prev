@@ -105,6 +105,22 @@ namespace booldog
 			error
 #endif
 		};
+		namespace automatic
+		{
+			struct decrementer
+			{
+				::booldog::interlocked::atomic* target;
+				decrementer(::booldog::interlocked::atomic* ptarget)
+					: target(ptarget)
+				{
+				}
+				~decrementer()
+				{
+					if(target)
+						::booldog::interlocked::decrement(target);
+				}
+			};
+		}
 	};
 };
 #endif

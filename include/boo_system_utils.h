@@ -105,7 +105,7 @@ namespace booldog
 					res->mballocator->free(buf);
 #endif
 					return true;
-				};
+				}
 			}
 		}
 	}

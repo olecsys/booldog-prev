@@ -174,6 +174,8 @@ char utf8_TESTil_var[] =
 #include <boo_multimedia_video_capture.h>
 #include <boo_multimedia_audio_capture.h>
 #include <boo_system_utils.h>
+#include <boo_environment_utils.h>
+#include <boo_classes_string.h>
 TEST_CASE("boo_bits_utilsTest", "test")
 {
 	::booldog::byte eq = 0;
@@ -2002,7 +2004,49 @@ TEST_CASE("boo_jsonTest", "test")
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
-	
+	{
+		size_t length = 0;
+		const char* comparand = "{\"encode\":\"\"}";
+		::booldog::data::json::serializator parser0(&allocator), parser1(&allocator);
+		::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+		
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root0.count() == 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root0.name() == 0);
+
+		::booldog::data::json::object field = root0.add< 16 >(0, "common", "t");
+
+		comparand = "{\"encode\":\"\",\"common\":\"t\"}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root0.count() == 2);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root0.name() == 0);
+		
+		comparand = "{\"1\":true,\"2\":3,\"4\":{}}";
+		::booldog::data::json::object root1 = ::booldog::data::json::parse(parser1, comparand, SIZE_MAX);
+		
+		REQUIRE(root1.isobject());
+		REQUIRE(::booldog::utils::get_bit(root1.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root1.count() == 3);
+		REQUIRE(strcmp(root1.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root1.name() == 0);
+
+		field.value = root1;
+		comparand = "{\"encode\":\"\",\"common\":{\"1\":true,\"2\":3,\"4\":{}}}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root0.count() == 2);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root0.name() == 0);
+	}
+
 	{
 		::booldog::data::json::serializator serializator( &allocator );
 		serializator.fast.json = allocator.realloc_array<char>(0, 19);
@@ -2016,6 +2060,7 @@ TEST_CASE("boo_jsonTest", "test")
 	}
 
 	{
+		const char* comparand = 0;
 		::booldog::data::json::serializator serializator(&allocator);
 		::booldog::data::json::result resjs(&serializator);
 
@@ -2035,7 +2080,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":{}}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":{}}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 11);
 
 
@@ -2049,7 +2094,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":1986}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":1986}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 13);
 
 
@@ -2063,7 +2108,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":true}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":true}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 13);
 
 
@@ -2077,7 +2122,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":false}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":false}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 14);
 
 
@@ -2091,7 +2136,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":null}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":null}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 13);
 
 
@@ -2105,7 +2150,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":\"text\"}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":\"text\"}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 15);
 
 
@@ -2119,7 +2164,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":[]}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":[]}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 11);
 
 
@@ -2133,7 +2178,7 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":[1986,true,\"string\"]}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":[1986,true,\"string\"]}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 29);
 
 
@@ -2147,11 +2192,559 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(res.succeeded());
 		REQUIRE(formatter.fast.end_object< 16 >(&res));
 		REQUIRE(res.succeeded());
-		REQUIRE(strcmp(formatter.fast.json, "{\"test\":{\"field\":\"string\"}}") == 0);
+		REQUIRE(strcmp(formatter, "{\"test\":{\"field\":\"string\"}}") == 0);
 		REQUIRE(formatter.fast.jsonlen == 27);
+
+
+		formatter.clear();
+		REQUIRE(formatter.fast.begin_array< 16 >(&res));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.add< 16 >(&res, root));
+		REQUIRE(res.succeeded());
+		REQUIRE(formatter.fast.end_array< 16 >(&res));
+		REQUIRE(res.succeeded());
+		comparand = "[{\"field\":\"string\"}]";
+		REQUIRE(strcmp(formatter, comparand) == 0);
+		REQUIRE(formatter.fast.jsonlen == strlen(comparand));
 	}
 
 	{
+		::booldog::data::json::object field0, field1, root0;
+		size_t length = 0;
+		const char* comparand = 0;
+		::booldog::data::json::serializator parser0(&allocator), parser1(&allocator);
+
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":{\"5\":false,\"6\":7},\"8\":true}";
+		root0 = ::booldog::data::json::parse< 16 >(parser0, comparand, SIZE_MAX);
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+
+		field0 = root0("4");
+		REQUIRE(field0.isobject());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+
+		field0.value = "test\n";
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":\"test\\n\",\"8\":true}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+
+
+		comparand = "[{\"2\":[]},\"3\",true]";
+		field0 = root0("1");
+		REQUIRE(field0.isarray());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 3);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "1") == 0);
+
+		comparand = "{\"2\":[]}";
+		REQUIRE(field0[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 1);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[0].name() == 0);
+
+		comparand = "[]";
+		REQUIRE(field0[0][0].isarray());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0].count() == 0);
+		REQUIRE(strcmp(field0[0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0].name(), "2") == 0);
+
+		comparand = "\"3\"";
+		REQUIRE(field0[1].isstring());
+		REQUIRE(::booldog::utils::get_bit(field0[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[1].count() == 0);
+		REQUIRE(strcmp(field0[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[1].name() == 0);
+		REQUIRE(strcmp(field0[1].value, "3") == 0);
+
+		comparand = "true";
+		REQUIRE(field0[2].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[2].count() == 0);
+		REQUIRE(strcmp(field0[2].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[2].name() == 0);
+		REQUIRE((bool)field0[2].value == true);
+
+		comparand = "true";
+		field0 = root0("8");
+		REQUIRE(field0.isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 0);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "8") == 0);
+		REQUIRE((bool)field0.value == true);
+
+
+
+
+
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":{\"5\":false,\"6\":7},\"8\":true}";
+		root0 = ::booldog::data::json::parse< 16 >(parser0, comparand, SIZE_MAX);
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+
+		field0 = root0("4");
+		REQUIRE(field0.isobject());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+
+		field0.value = true;
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":true,\"8\":true}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		//check
+		comparand = "[{\"2\":[]},\"3\",true]";
+		field0 = root0("1");
+		REQUIRE(field0.isarray());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 3);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "1") == 0);
+
+		comparand = "{\"2\":[]}";
+		REQUIRE(field0[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 1);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[0].name() == 0);
+
+		comparand = "[]";
+		REQUIRE(field0[0][0].isarray());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0].count() == 0);
+		REQUIRE(strcmp(field0[0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0].name(), "2") == 0);
+
+		comparand = "\"3\"";
+		REQUIRE(field0[1].isstring());
+		REQUIRE(::booldog::utils::get_bit(field0[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[1].count() == 0);
+		REQUIRE(strcmp(field0[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[1].name() == 0);
+		REQUIRE(strcmp(field0[1].value, "3") == 0);
+
+		comparand = "true";
+		REQUIRE(field0[2].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[2].count() == 0);
+		REQUIRE(strcmp(field0[2].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[2].name() == 0);
+		REQUIRE((bool)field0[2].value == true);
+
+		comparand = "true";
+		field0 = root0("8");
+		REQUIRE(field0.isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 0);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "8") == 0);
+		REQUIRE((bool)field0.value == true);
+
+
+
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":{\"5\":false,\"6\":7},\"8\":true}";
+		root0 = ::booldog::data::json::parse< 16 >(parser0, comparand, SIZE_MAX);
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+
+		field0 = root0("4");
+		REQUIRE(field0.isobject());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+
+		field0.value = false;
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":false,\"8\":true}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		//check
+		comparand = "[{\"2\":[]},\"3\",true]";
+		field0 = root0("1");
+		REQUIRE(field0.isarray());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 3);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "1") == 0);
+
+		comparand = "{\"2\":[]}";
+		REQUIRE(field0[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 1);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[0].name() == 0);
+
+		comparand = "[]";
+		REQUIRE(field0[0][0].isarray());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0].count() == 0);
+		REQUIRE(strcmp(field0[0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0].name(), "2") == 0);
+
+		comparand = "\"3\"";
+		REQUIRE(field0[1].isstring());
+		REQUIRE(::booldog::utils::get_bit(field0[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[1].count() == 0);
+		REQUIRE(strcmp(field0[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[1].name() == 0);
+		REQUIRE(strcmp(field0[1].value, "3") == 0);
+
+		comparand = "true";
+		REQUIRE(field0[2].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[2].count() == 0);
+		REQUIRE(strcmp(field0[2].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[2].name() == 0);
+		REQUIRE((bool)field0[2].value == true);
+
+		comparand = "true";
+		field0 = root0("8");
+		REQUIRE(field0.isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 0);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "8") == 0);
+		REQUIRE((bool)field0.value == true);
+
+
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":{\"5\":false,\"6\":7},\"8\":true}";
+		root0 = ::booldog::data::json::parse< 16 >(parser0, comparand, SIZE_MAX);
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+
+		field0 = root0("4");
+		REQUIRE(field0.isobject());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+
+		field0.value = 1986;
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":1986,\"8\":true}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		//check
+		comparand = "[{\"2\":[]},\"3\",true]";
+		field0 = root0("1");
+		REQUIRE(field0.isarray());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 3);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "1") == 0);
+
+		comparand = "{\"2\":[]}";
+		REQUIRE(field0[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 1);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[0].name() == 0);
+
+		comparand = "[]";
+		REQUIRE(field0[0][0].isarray());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0].count() == 0);
+		REQUIRE(strcmp(field0[0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0].name(), "2") == 0);
+
+		comparand = "\"3\"";
+		REQUIRE(field0[1].isstring());
+		REQUIRE(::booldog::utils::get_bit(field0[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[1].count() == 0);
+		REQUIRE(strcmp(field0[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[1].name() == 0);
+		REQUIRE(strcmp(field0[1].value, "3") == 0);
+
+		comparand = "true";
+		REQUIRE(field0[2].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[2].count() == 0);
+		REQUIRE(strcmp(field0[2].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[2].name() == 0);
+		REQUIRE((bool)field0[2].value == true);
+
+		comparand = "true";
+		field0 = root0("8");
+		REQUIRE(field0.isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 0);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "8") == 0);
+		REQUIRE((bool)field0.value == true);
+
+
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":{\"5\":false,\"6\":7},\"8\":true}";
+		root0 = ::booldog::data::json::parse< 16 >(parser0, comparand, SIZE_MAX);
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+
+		field0 = root0("4");
+		REQUIRE(field0.isobject());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+
+		field0.value = field1;
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":null,\"8\":true}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		//check
+		comparand = "[{\"2\":[]},\"3\",true]";
+		field0 = root0("1");
+		REQUIRE(field0.isarray());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 3);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "1") == 0);
+
+		comparand = "{\"2\":[]}";
+		REQUIRE(field0[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 1);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[0].name() == 0);
+
+		comparand = "[]";
+		REQUIRE(field0[0][0].isarray());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0].count() == 0);
+		REQUIRE(strcmp(field0[0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0].name(), "2") == 0);
+
+		comparand = "\"3\"";
+		REQUIRE(field0[1].isstring());
+		REQUIRE(::booldog::utils::get_bit(field0[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[1].count() == 0);
+		REQUIRE(strcmp(field0[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[1].name() == 0);
+		REQUIRE(strcmp(field0[1].value, "3") == 0);
+
+		comparand = "true";
+		REQUIRE(field0[2].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[2].count() == 0);
+		REQUIRE(strcmp(field0[2].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[2].name() == 0);
+		REQUIRE((bool)field0[2].value == true);
+
+		comparand = "true";
+		field0 = root0("8");
+		REQUIRE(field0.isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 0);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "8") == 0);
+		REQUIRE((bool)field0.value == true);
+
+
+		comparand = "{\"9\":[10,true,false],\"11\":{\"12\":{\"13\":{\"14\":true,\"15\":1280}}}}";
+		field1 = ::booldog::data::json::parse< 16 >(parser1, comparand, SIZE_MAX);
+		REQUIRE(field1.isobject());
+		REQUIRE(::booldog::utils::get_bit(field1.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(field1.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		
+
+
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":{\"5\":false,\"6\":7},\"8\":true}";
+		root0 = ::booldog::data::json::parse< 16 >(parser0, comparand, SIZE_MAX);
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+
+		field0 = root0("4");
+		REQUIRE(field0.isobject());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+
+		field0.value = field1;
+		comparand = "{\"1\":[{\"2\":[]},\"3\",true],\"4\":{\"9\":[10,true,false],\"11\":{\"12\":{\"13\":{\"14\":true,\"15\":1280}}}},\"8\":true}";
+		REQUIRE(root0.isobject());
+		REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		
+		//"{\"9\":[10,true,false],\"11\":{\"12\":{\"13\":{\"14\":true,\"15\":1280}}}}";
+		field1 = field0;
+
+		comparand = "[10,true,false]";
+		field0 = field1("9");
+		REQUIRE(field0.isarray());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 3);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "9") == 0);
+
+		comparand = "10";
+		REQUIRE(field0[0].isnumber());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 0);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[0].name() == 0);
+		REQUIRE((int)field0[0].value == 10);
+
+		comparand = "true";
+		REQUIRE(field0[1].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[1].count() == 0);
+		REQUIRE(strcmp(field0[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[1].name() == 0);
+		REQUIRE((bool)field0[1].value == true);
+
+		comparand = "false";
+		REQUIRE(field0[2].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[2].count() == 0);
+		REQUIRE(strcmp(field0[2].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[2].name() == 0);
+		REQUIRE((bool)field0[2].value == false);
+
+		comparand = "{\"12\":{\"13\":{\"14\":true,\"15\":1280}}}";
+		field0 = field1("11");
+		REQUIRE(field0.isobject());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 1);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "11") == 0);
+
+		comparand = "{\"13\":{\"14\":true,\"15\":1280}}";
+		REQUIRE(field0[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 1);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0].name(), "12") == 0);
+
+		comparand = "{\"14\":true,\"15\":1280}";
+		REQUIRE(field0[0][0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0].count() == 2);
+		REQUIRE(strcmp(field0[0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0].name(), "13") == 0);
+
+		comparand = "1280";
+		REQUIRE(field0[0][0][1].isnumber());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0][1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0][1].count() == 0);
+		REQUIRE(strcmp(field0[0][0][1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0][1].name(), "15") == 0);
+		REQUIRE((int)field0[0][0][1].value == 1280);
+
+		comparand = "true";
+		REQUIRE(field0[0][0][0].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0][0].count() == 0);
+		REQUIRE(strcmp(field0[0][0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0][0].name(), "14") == 0);
+		REQUIRE((bool)field0[0][0][0].value == true);
+
+		//check
+		comparand = "[{\"2\":[]},\"3\",true]";
+		field0 = root0("1");
+		REQUIRE(field0.isarray());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 3);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "1") == 0);
+
+		comparand = "{\"2\":[]}";
+		REQUIRE(field0[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(field0[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0].count() == 1);
+		REQUIRE(strcmp(field0[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[0].name() == 0);
+
+		comparand = "[]";
+		REQUIRE(field0[0][0].isarray());
+		REQUIRE(::booldog::utils::get_bit(field0[0][0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[0][0].count() == 0);
+		REQUIRE(strcmp(field0[0][0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0[0][0].name(), "2") == 0);
+
+		comparand = "\"3\"";
+		REQUIRE(field0[1].isstring());
+		REQUIRE(::booldog::utils::get_bit(field0[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[1].count() == 0);
+		REQUIRE(strcmp(field0[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[1].name() == 0);
+		REQUIRE(strcmp(field0[1].value, "3") == 0);
+
+		comparand = "true";
+		REQUIRE(field0[2].isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0[2].count() == 0);
+		REQUIRE(strcmp(field0[2].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(field0[2].name() == 0);
+		REQUIRE((bool)field0[2].value == true);
+
+		comparand = "true";
+		field0 = root0("8");
+		REQUIRE(field0.isboolean());
+		REQUIRE(::booldog::utils::get_bit(field0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(field0.count() == 0);
+		REQUIRE(strcmp(field0.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(field0.name(), "8") == 0);
+		REQUIRE((bool)field0.value == true);
+	}
+
+	{
+		size_t length = 0;
 		::booldog::data::json::serializator serializator(&allocator);
 		::booldog::data::json::result resjs(&serializator);
 
@@ -2165,25 +2758,99 @@ TEST_CASE("boo_jsonTest", "test")
 
 		REQUIRE(obj.isobject());
 
-		REQUIRE(strcmp(root.json, "{\"_test\":{}}") == 0);
+		REQUIRE(strcmp(serializator, "{\"_test\":{}}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{}}"));
+
+		::booldog::data::json::object obj1 = root.add_object_if_not_exists< 16 >(0, "_test");
+
+		REQUIRE(obj1.isobject());
+
+		REQUIRE(strcmp(serializator, "{\"_test\":{}}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{}}"));
+
 
 		::booldog::data::json::object Hello = obj.add< 16 >(0, "Hello", true);
 
 		REQUIRE(Hello.isboolean());
 
-		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true}}") == 0);
+		REQUIRE(strcmp(serializator, "{\"_test\":{\"Hello\":true}}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true}}"));
 
 		::booldog::data::json::object fail = Hello.add< 16 >(0, "fail", "fail");
 
 		REQUIRE(fail.exists() == false);
 
-		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true}}") == 0);
+		REQUIRE(strcmp(serializator, "{\"_test\":{\"Hello\":true}}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true}}"));
 
 		::booldog::data::json::object String = obj.add< 16 >(0, "String", "StringValue");
 
 		REQUIRE(String.isstring());
 
 		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"}}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"}}"));
+
+		obj1 = root.add_array_if_not_exists< 16 >(0, "_test_array");
+
+		REQUIRE(obj1.isarray());
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[]}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[]}"));
+
+		obj1 = root.add_array_if_not_exists< 16 >(0, "_test_array");
+
+		REQUIRE(obj1.isarray());
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[]}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[]}"));
+
+		obj = obj1.add< 16 >(0, "primer", "primer");
+
+		REQUIRE(obj.exists() == false);
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[]}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[]}"));
+
+		obj = obj1.add< 16 >(0, "primer");
+
+		REQUIRE(obj.isstring());
+
+		REQUIRE(obj.name() == 0);
+
+		REQUIRE(strcmp(obj.value, "primer") == 0);
+				
+		REQUIRE(strcmp(obj.json.json(length), "\"primer\"") == 0);		
+
+		REQUIRE(length == 8);
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[\"primer\"]}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[\"primer\"]}"));
+
+
+		obj = obj1.add< 16 >(0, "China 𦈘");
+
+		REQUIRE(obj.isstring());
+
+		REQUIRE(obj.name() == 0);
+
+		REQUIRE(strcmp(obj.value, "China 𦈘") == 0);
+				
+		REQUIRE(strcmp(obj.json.json(length), "\"China 𦈘\"") == 0);		
+
+		REQUIRE(length == 8 + strlen("𦈘"));
+
+		REQUIRE(strcmp(root.json, "{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[\"primer\",\"China 𦈘\"]}") == 0);
+
+		REQUIRE(serializator.slow.jsonlen == strlen("{\"_test\":{\"Hello\":true,\"String\":\"StringValue\"},\"_test_array\":[\"primer\",\"China 𦈘\"]}"));
 	}
 
 	{
@@ -2191,7 +2858,7 @@ TEST_CASE("boo_jsonTest", "test")
 
 		::booldog::data::json::result res( &serializator );
 
-		::booldog::data::json::parse< 64 >( &res , &allocator , "{\r\n"
+		::booldog::data::json::parse< 64 >(&res, serializator,"{\r\n"
 			"	\"databases\":\r\n"
 			"	[\r\n"
 			"		{\"key\":\"conf\",\"connection\":{\"hostname\":\"localhost\",\"filename\":\"configuration.db\",\"upgrade\":\"server_upgrade.sql\"}},\r\n"
@@ -10747,9 +11414,9 @@ TEST_CASE("boo_string_utilsTest", "test")
 	}
 
 	{
-		::booldog::result_mbchar resmbchar( &allocator );
+		::booldog::result_mbchar resmbchar(&allocator);
 
-		::booldog::utils::string::wcs::toutf8< 1 >( &resmbchar , &allocator , L"locale" , 0 , SIZE_MAX );
+		::booldog::utils::string::wcs::toutf8< 1 >(resmbchar, L"locale", 0, SIZE_MAX);
 		
 		REQUIRE( resmbchar.succeeded() );
 
@@ -10758,6 +11425,36 @@ TEST_CASE("boo_string_utilsTest", "test")
 		REQUIRE( resmbchar.mblen == 6 );
 
 		REQUIRE( strcmp( resmbchar.mbchar , "locale" ) == 0 );
+	}
+
+	{
+		::booldog::result_mbchar resmbchar(&allocator);
+
+		size_t srcbyteindex = 0;
+		REQUIRE(::booldog::utf32::toutf8< 1 >(resmbchar, utf32_April_var, srcbyteindex, 24));
+		
+		REQUIRE(resmbchar.succeeded());
+
+		REQUIRE(resmbchar.mbsize == 13);
+
+		REQUIRE(resmbchar.mblen == 12);
+
+		REQUIRE(strcmp(resmbchar.mbchar, "Апрель") == 0);
+	}
+
+	{
+		::booldog::result_mbchar resmbchar(&allocator);
+
+		size_t srcbyteindex = 0;
+		REQUIRE(::booldog::utf16::toutf8< 1 >(resmbchar, utf16_April_var, srcbyteindex, 12));
+		
+		REQUIRE(resmbchar.succeeded());
+
+		REQUIRE(resmbchar.mbsize == 13);
+
+		REQUIRE(resmbchar.mblen == 12);
+
+		REQUIRE(strcmp(resmbchar.mbchar, "Апрель") == 0);
 	}
 
 	{
@@ -10775,9 +11472,9 @@ TEST_CASE("boo_string_utilsTest", "test")
 	}
 
 	{
-		::booldog::result_mbchar resmbchar( &allocator );
+		::booldog::result_mbchar resmbchar(&allocator);
 
-		::booldog::utils::string::wcs::toutf8< 1 >( &resmbchar , &allocator , L"locale" , 3 , SIZE_MAX );
+		::booldog::utils::string::wcs::toutf8< 1 >(resmbchar, L"locale", 3, SIZE_MAX);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -10803,9 +11500,9 @@ TEST_CASE("boo_string_utilsTest", "test")
 	}
 
 	{
-		::booldog::result_mbchar resmbchar( &allocator );
+		::booldog::result_mbchar resmbchar(&allocator);
 
-		::booldog::utils::string::wcs::toutf8< 1 >( &resmbchar , &allocator , L"locale" , 3 , 2 );
+		::booldog::utils::string::wcs::toutf8< 1 >(resmbchar, L"locale", 3, 2);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -13336,6 +14033,38 @@ TEST_CASE("boo_io_utilsTest", "test")
 //class boo_base_loaderTest : public ::testing::Test 
 //{
 //};
+struct boo_base_loader_thread_struct_thread
+{
+	::booldog::loader* loader;
+	::booldog::base::module* module;
+	const wchar_t* library;
+	::booldog::interlocked::atomic errors;
+	::booldog::interlocked::atomic unloads;
+	::booldog::interlocked::atomic load_tries;
+	::booldog::interlocked::atomic unload_tries;
+};
+void boo_base_loader_thread_onbeforeunload(void* udata, ::booldog::base::module* module)
+{
+	boo_base_loader_thread_struct_thread* struct_thread = (boo_base_loader_thread_struct_thread*)udata;
+	::booldog::interlocked::increment(&struct_thread->unloads);
+}
+void boo_base_loader_thread(::booldog::threading::thread* thread)
+{
+	boo_base_loader_thread_struct_thread* struct_thread = (boo_base_loader_thread_struct_thread*)thread->udata();
+	while(thread->pending_in_stop() == false)
+	{
+		::booldog::result_module res;
+		::booldog::interlocked::increment(&struct_thread->load_tries);
+		if(struct_thread->loader->wcsload(&res, struct_thread->loader->allocator(), struct_thread->library, 0) == false)
+			::booldog::interlocked::increment(&struct_thread->errors);
+		if(struct_thread->module != res.module)
+			::booldog::interlocked::increment(&struct_thread->errors);
+		::booldog::interlocked::increment(&struct_thread->unload_tries);
+		if(struct_thread->loader->unload(0, res.module, boo_base_loader_thread_onbeforeunload, struct_thread) == false)
+			::booldog::interlocked::increment(&struct_thread->errors);
+	}
+}
+
 TEST_CASE("boo_base_loaderTest", "test")
 {
 	::booldog::allocators::stack< 4096 > allocator;
@@ -13739,9 +14468,51 @@ TEST_CASE("boo_base_loaderTest", "test")
 		loader.unload( &resres , module0 , 0 , 0 );
 
 		REQUIRE( resres.succeeded() );
+
+		{
+			::booldog::allocators::easy::heap heap;
+			{
+				::booldog::loader newloader(&heap);
+
+				::booldog::threading::thread* thread_writers[50] = {}; 
+#ifdef __WINDOWS__
+				const wchar_t* library = L"kernel32";
+#else
+				const wchar_t* library = L"rt";
+#endif
+				::booldog::result_module res;
+				REQUIRE(newloader.wcsload(&res, newloader.allocator(), library, 0));
+				REQUIRE(res.succeeded());
+				boo_base_loader_thread_struct_thread struct_thread = {&newloader, res.module, library, 0, 0, 0, 0};
+				REQUIRE(newloader.unload(&resres, res.module, 0, 0));
+				REQUIRE(resres.succeeded());
+
+				for(size_t index = 0;index < sizeof(thread_writers) / sizeof(thread_writers[0]);++index)
+				{
+					thread_writers[index] = ::booldog::threading::thread::create(&resres, &heap, 100 * 1024, 0, 0
+						, boo_base_loader_thread, &struct_thread);
+					REQUIRE(thread_writers[index] != 0);
+					REQUIRE(resres.succeeded());
+				}
+
+				::booldog::threading::sleep(20000);
+
+				for(size_t index = 0;index < sizeof(thread_writers) / sizeof(thread_writers[0]);++index)
+					::booldog::threading::thread::stop(thread_writers[index]);
+				for(size_t index = 0;index < sizeof(thread_writers) / sizeof(thread_writers[0]);++index)
+					::booldog::threading::thread::destroy(thread_writers[index]);
+
+				REQUIRE(::booldog::interlocked::compare_exchange(&struct_thread.errors, 0, 0) == 0);
+
+				printf("Multithreading load tries count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.load_tries, 0, 0));
+				printf("Multithreading unload tries count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.unload_tries, 0, 0));
+				printf("Multithreading unload count: %u\n\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.unloads, 0, 0));
+			}
+			REQUIRE(heap.size_of_allocated_memory() == 0);
+		}
 	}
 
-	REQUIRE( allocator.begin() == begin );
+	REQUIRE(allocator.begin() == begin);
 
 	REQUIRE(allocator.available() == total);
 };
@@ -14222,6 +14993,300 @@ TEST_CASE("boo_lockfree_stack", "test")
 		REQUIRE(count == real_count);
 		REQUIRE(struct_thread.allocated_count == avail_count + count);
 	}
+
+	REQUIRE(allocator.stack.begin() == begin);
+
+	REQUIRE(allocator.stack.available() == total);
+
+	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
+}
+TEST_CASE("boo_environment_utils", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+	{
+		::booldog::result res;
+#ifdef __WINDOWS__
+		REQUIRE(::booldog::utils::environment::mbs::add_path(res, &allocator, "/new_path"));
+		REQUIRE(res.succeeded());
+
+		REQUIRE(::booldog::utils::environment::mbs::add_path(res, &allocator, "/new_path"));
+		REQUIRE(res.succeeded());
+
+		REQUIRE(::booldog::utils::environment::mbs::add_path(res, &allocator, "/new_path/yes"));
+		REQUIRE(res.succeeded());
+		
+		REQUIRE(::booldog::utils::environment::mbs::add_path(res, &allocator, "/new_path/yer"));
+		REQUIRE(res.succeeded());
+
+		REQUIRE(::booldog::utils::environment::mbs::add_path(res, &allocator, "/new_path"));
+		REQUIRE(res.succeeded());
+#else
+		REQUIRE(::booldog::utils::environment::mbs::add_path(res, &allocator, "/new_path") == false);
+		REQUIRE(res.succeeded() == false);
+
+		REQUIRE(::booldog::utils::environment::mbs::add_path(res, &allocator, "/new_path") == false);
+		REQUIRE(res.succeeded() == false);
+#endif		
+	}
+
+	REQUIRE(allocator.stack.begin() == begin);
+
+	REQUIRE(allocator.stack.available() == total);
+
+	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
+}
+TEST_CASE("boo_string_classes", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
+	::booldog::allocators::single_threaded::mixed< 3 * 1024 > allocator2(&heap);
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+
+	size_t total2 = allocator2.stack.available();
+
+	char* begin2 = (char*)allocator2.stack.begin();
+	{
+		{
+			const char* comparand = 0;
+			::booldog::results::mbchar mbchar(&allocator);
+			mbchar.cmbchar = "MBCHAR";
+			mbchar.mblen = 6;
+
+			::booldog::classes::string string0(&allocator, 0, 0);
+			REQUIRE(strcmp(string0.cstr(), "") == 0);
+			REQUIRE(string0.length() == 0);
+
+			::booldog::classes::string string1(&allocator, 0, "Hashes");
+			REQUIRE(strcmp(string1.cstr(), "Hashes") == 0);
+			REQUIRE(string1.length() == 6);
+
+			::booldog::classes::string string2(&allocator2, "Hashes", 0);
+			REQUIRE(strcmp(string2.cstr(), "Hashes") == 0);
+			REQUIRE(string2.length() == 6);
+
+			::booldog::classes::string string3(&allocator, "Double", "Hashes");
+			REQUIRE(strcmp(string3.cstr(), "DoubleHashes") == 0);
+			REQUIRE(string3.length() == 12);
+						
+			string0 = string1 + " it's a good test";
+			comparand = "Hashes it's a good test";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = "it's a good test " + string1;
+			comparand = "it's a good test Hashes";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string1 + string1;
+			comparand = "HashesHashes";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string1 + 'B';
+			comparand = "HashesB";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string1 + string1 + "Testing";
+			comparand = "HashesHashesTesting";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string1 + string1 + "Testing" + 'B';
+			comparand = "HashesHashesTestingB";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string1 + string1 + "Testing" + 'B' + (-1986);
+			comparand = "HashesHashesTestingB-1986";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+
+			string0 = string2 + " it's a good test";
+			comparand = "Hashes it's a good test";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = "it's a good test " + string2;
+			comparand = "it's a good test Hashes";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string2 + string2;
+			comparand = "HashesHashes";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string2 + 'B';
+			comparand = "HashesB";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string2 + string2 + "Testing";
+			comparand = "HashesHashesTesting";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = string2 + string2 + "Testing" + 'B';
+			comparand = "HashesHashesTestingB";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = mbchar + "Testing";
+			comparand = "MBCHARTesting";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = "Testing" + mbchar;
+			comparand = "TestingMBCHAR";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = mbchar + 'B';
+			comparand = "MBCHARB";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = 'B' + mbchar;
+			comparand = "BMBCHAR";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = mbchar + mbchar;
+			comparand = "MBCHARMBCHAR";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+
+			string0 = mbchar + mbchar + mbchar;
+			comparand = "MBCHARMBCHARMBCHAR";
+			REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+			REQUIRE(string0.length() == strlen(comparand));
+			{
+				::booldog::classes::string string0 = string1 + " it's a good test";
+				comparand = "Hashes it's a good test";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = "it's a good test " + string1;
+				comparand = "it's a good test Hashes";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string1 + string1;
+				comparand = "HashesHashes";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string1 + 'B';
+				comparand = "HashesB";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string1 + string1 + "Testing";
+				comparand = "HashesHashesTesting";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string1 + string1 + "Testing" + 'B';
+				comparand = "HashesHashesTestingB";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string2 + " it's a good test";
+				comparand = "Hashes it's a good test";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = "it's a good test " + string2;
+				comparand = "it's a good test Hashes";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string2 + string2;
+				comparand = "HashesHashes";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string2 + 'B';
+				comparand = "HashesB";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string2 + string2 + "Testing";
+				comparand = "HashesHashesTesting";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = string2 + string2 + "Testing" + 'B';
+				comparand = "HashesHashesTestingB";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = mbchar + "Testing";
+				comparand = "MBCHARTesting";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = "Testing" + mbchar;
+				comparand = "TestingMBCHAR";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = mbchar + 'B';
+				comparand = "MBCHARB";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = 'B' + mbchar;
+				comparand = "BMBCHAR";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = mbchar + mbchar;
+				comparand = "MBCHARMBCHAR";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+			{
+				::booldog::classes::string string0 = mbchar + mbchar + mbchar;
+				comparand = "MBCHARMBCHARMBCHAR";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+
+			mbchar.mbchar = 0;
+		}
+	}
+
+	REQUIRE(allocator2.stack.begin() == begin2);
+
+	REQUIRE(allocator2.stack.available() == total2);
 
 	REQUIRE(allocator.stack.begin() == begin);
 

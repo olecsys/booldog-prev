@@ -30,6 +30,7 @@
     <ClInclude Include="..\include\boo_debug_info.h" />
     <ClInclude Include="..\include\boo_directory_utils.h" />
     <ClInclude Include="..\include\boo_doubly_linked_list.h" />
+    <ClInclude Include="..\include\boo_environment_utils.h" />
     <ClInclude Include="..\include\boo_error.h" />
     <ClInclude Include="..\include\boo_error_format.h" />
     <ClInclude Include="..\include\boo_executable_utils.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="..\include\boo_thread.h" />
     <ClInclude Include="..\include\boo_threading_event.h" />
     <ClInclude Include="..\include\boo_threading_utils.h" />
+    <ClInclude Include="..\include\boo_tickcount.h" />
     <ClInclude Include="..\include\boo_time_utils.h" />
     <ClInclude Include="..\include\boo_types.h" />
     <ClInclude Include="..\include\boo_ui_application.h" />
@@ -162,6 +164,7 @@
       </PrecompiledHeaderOutputFile>
       <ExceptionHandling>Async</ExceptionHandling>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>4714</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -192,6 +195,7 @@
       <OmitFramePointers>false</OmitFramePointers>
       <AdditionalIncludeDirectories>$(ProjectDir)..\config;$(ProjectDir)..\..\inc\booldog;$(ProjectDir)..\extern_sources;$(ProjectDir)..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>Async</ExceptionHandling>
+      <DisableSpecificWarnings>4714</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

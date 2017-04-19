@@ -69,9 +69,10 @@ namespace booldog
 				booerr_type_video_capture_device_has_not_frame_yet,
 				booerr_type_windows_has_not_fifo,
 				booerr_type_select_except,
-				booerr_type_incorrect_packet_size
+				booerr_type_incorrect_packet_size,
+				booerr_type_json_parent_is_not_array
 			};
-		};
-	};
-};
+		}
+	}
+}
 #endif

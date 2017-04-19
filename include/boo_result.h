@@ -72,7 +72,7 @@ namespace booldog
 			::booldog::uint32 booerror;
 			unsigned int openglerror;
 		};
-		result( void )
+		result()
 		{
 			error_type = ::booldog::enums::result::error_type_no_error;
 		};
@@ -253,7 +253,11 @@ goto_next:
 			if( _obj_->wchar )
 				_obj_->wchar[ 0 ] = 0;
 			_obj_->wlen = 0;
-		};
+		}
+		booinline operator ::booldog::allocator*() const
+		{
+			return wallocator;
+		}
 	};
 	class result_mbchar : public ::booldog::result
 	{
@@ -263,7 +267,11 @@ goto_next:
 		result_mbchar(const ::booldog::result&);
 		::booldog::result_mbchar& operator = (const ::booldog::result_mbchar&);
 	public:
-		char* mbchar;
+		union
+		{
+			char* mbchar;
+			const char* cmbchar;
+		};
 		size_t mblen;
 		size_t mbsize;
 		booldog::allocator* mballocator;
@@ -271,12 +279,12 @@ goto_next:
                         : result(), mbchar(0), mblen(0), mbsize(0), mballocator(allocator)
 		{
                 }
-		virtual ~result_mbchar( void )
+		virtual ~result_mbchar()
 		{
-			if( mbchar )
+			if(mbchar)
 				mballocator->free( mbchar );
-		};
-		char* detach( void )
+		}
+		char* detach()
 		{
 			char* res = mbchar;
 			mbchar = 0;
@@ -284,7 +292,7 @@ goto_next:
 			mblen = 0;
 			return res;
 		};
-		virtual void clear( void ) const
+		virtual void clear() const
 		{
 			::booldog::result_mbchar* _obj_ = const_cast< ::booldog::result_mbchar* >( this );
 #ifdef __UNIX__
@@ -294,7 +302,15 @@ goto_next:
 			if( _obj_->mbchar )
 				_obj_->mbchar[ 0 ] = 0;
 			_obj_->mblen = 0;
-		};
+		}
+		booinline operator ::booldog::allocator*() const
+		{
+			return mballocator;
+		}
+		booinline operator const char*() const
+		{
+			return mbchar;
+		}
 	};
 	class result_buffer : public ::booldog::result
 	{
@@ -333,7 +349,7 @@ goto_next:
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
 			_obj_->bufdatasize = 0;
-		};
+		}
 		bool copyfrom(const result_buffer& resbuf)
 		{
 			if(resbuf.bufdatasize)
@@ -350,7 +366,7 @@ goto_next:
 				return true;
 			}
 			return false;
-		};
+		}
 		template< size_t step >
 		booinline bool append(unsigned char* buffer, size_t buffer_size, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 		{
@@ -369,6 +385,10 @@ goto_next:
 				return true;
 			}
 			return false;
+		}
+		booinline operator ::booldog::allocator*() const
+		{
+			return allocator;
 		}
 		booinline bool append(unsigned char* buffer, size_t buffer_size, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 		{
@@ -393,10 +413,10 @@ goto_next:
 		::booldog::result_bool& operator = (const ::booldog::result_bool&);
 	public:
 		bool bres;
-		result_bool( void )
+		result_bool()
  			: result()
 		{
-		};
+		}
 		virtual ~result_bool( void )
 		{
 		};
@@ -419,15 +439,15 @@ goto_next:
 		::booldog::result_pointer& operator = (const ::booldog::result_pointer&);
 	public:
 		void* pres;
-		result_pointer( void )
+		result_pointer()
  			: result()
 		{
 			pres = 0;
 		};
-		virtual ~result_pointer( void )
+		virtual ~result_pointer()
 		{
 		};
-		virtual void clear( void ) const
+		virtual void clear() const
 		{
 			::booldog::result_pointer* _obj_ = const_cast< ::booldog::result_pointer* >( this );
 #ifdef __UNIX__

@@ -1,6 +1,8 @@
-/*
-  sudo apt-get install libasound2-dev
-  name example: hw:0
+/** class capture
+* Simplify work with audio capture
+* Linux(sudo apt-get install libasound2-dev, sudo yum install TODO, libraries: asound)
+* Windows(libraries: Ole32 OleAut32 strmiids)
+* Linux name example: hw:0
 */
 #ifndef BOO_MULTIMEDIA_AUDIO_CAPTURE_H
 #define BOO_MULTIMEDIA_AUDIO_CAPTURE_H
@@ -1785,7 +1787,7 @@ goto_return:
                                         if(SUCCEEDED(hr))
                                         {
                                             size_t wlen = wcslen(var.bstrVal), srcbyteindex = 0;
-                                            if(::booldog::utf16::toutf8< 16 >(&name, allocator, (char*)var.bstrVal, srcbyteindex
+                                            if(::booldog::utf16::toutf8< 16 >(name, (char*)var.bstrVal, srcbyteindex
                                                 , wlen * sizeof(wchar_t), debuginfo) == false)
                                             {
                                                 res->copy(name);
@@ -1816,7 +1818,7 @@ goto_return:
                                                 if(moniker_display_name)
                                                 {
                                                     size_t wlen = wcslen(moniker_display_name), srcbyteindex = 0;
-                                                    if(::booldog::utf16::toutf8< 16 >(&deviceid, allocator, (char*)moniker_display_name
+                                                    if(::booldog::utf16::toutf8< 16 >(deviceid, (char*)moniker_display_name
                                                         , srcbyteindex, wlen * sizeof(wchar_t), debuginfo) == false)
                                                     {
                                                         res->copy(deviceid);

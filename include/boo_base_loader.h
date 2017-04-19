@@ -25,32 +25,25 @@ namespace booldog
 	{
 		namespace typedefs
 		{
-			typedef void (*onbeforeunload)( void* udata , ::booldog::base::module* module );
-		};
-	};
+			typedef void (*onbeforeunload)(void* udata, ::booldog::base::module* module);
+		}
+	}
 	class result_module : public ::booldog::result
 	{
 	private:
-		result_module( const ::booldog::result& )
-		{
-		};
-		result_module( const ::booldog::result_module& )
-		{
-		};
-		::booldog::result_module& operator = ( const ::booldog::result_module& )
-		{
-			return *this;
-		};
+		result_module(const ::booldog::result&);
+		result_module(const ::booldog::result_module&);
+		::booldog::result_module& operator = (const ::booldog::result_module&);
 	public:
 		::booldog::base::module* module;
-		result_module( void )
+		result_module()
+			: module(0)
 		{
-			module = 0;
-		};
-		virtual ~result_module( void )
+		}
+		virtual ~result_module()
 		{
-		};
-		virtual void clear( void ) const
+		}
+		virtual void clear() const
 		{
 			::booldog::result_module* _obj_ = const_cast< ::booldog::result_module* >( this );
 #ifdef __UNIX__
@@ -58,23 +51,21 @@ namespace booldog
 #endif
 			_obj_->error_type = ::booldog::enums::result::error_type_no_error;
 			_obj_->module = 0;
-		};
+		}
 	};
 	namespace base
 	{
 		class loader
 		{
 		public:
-			virtual bool utf8load( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
-				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
-			virtual bool mbsload( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
-				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
-			virtual bool wcsload( ::booldog::result_module* pres , booldog::allocator* allocator , const wchar_t* name_or_path 
-				, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
-			virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module 
-				, ::booldog::events::typedefs::onbeforeunload ponbeforeunload , void* udata 
-				, const ::booldog::debug::info& debuginfo = debuginfo_macros ) = 0;
-			virtual booldog::allocator* allocator( void ) = 0;
+			virtual bool mbsload(::booldog::result_module* pres, ::booldog::allocator* allocator, const char* name_or_path
+				, ::booldog::named_param* named_params = 0, const ::booldog::debug::info& debuginfo = debuginfo_macros) = 0;
+			virtual bool wcsload(::booldog::result_module* pres, ::booldog::allocator* allocator, const wchar_t* name_or_path
+				, ::booldog::named_param* named_params = 0, const ::booldog::debug::info& debuginfo = debuginfo_macros) = 0;
+			virtual bool unload(::booldog::result* pres, ::booldog::base::module* module
+				, ::booldog::events::typedefs::onbeforeunload ponbeforeunload, void* udata
+				, const ::booldog::debug::info& debuginfo = debuginfo_macros) = 0;
+			virtual booldog::allocator* allocator() = 0;
 		};
 	};
 	class loader : public ::booldog::base::loader
@@ -88,139 +79,536 @@ namespace booldog
 #endif
 	private:
 #ifdef __WINDOWS__
-		booinline bool get_loaded_module( ::booldog::result_module* pres , const wchar_t* res_name_or_path 
-			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		typedef wchar_t tchar;
+#else
+		typedef char tchar;
+#endif
+		::booldog::interlocked::atomic _loading_count;
+		::booldog::interlocked::atomic _unloading_count;
+		booinline ::booldog::module* find_or_create(const ::booldog::loader::tchar* res_name_or_path
+			, ::booldog::module_handle module_handle, bool& tryagain, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 		{
-			::booldog::module_handle module_handle = 0;
-			if( GetModuleHandleExW( 0 , res_name_or_path , &module_handle ) )
+			tryagain = false;
+			_lock.wlock(debuginfo);
+			::booldog::module* module_next = _modules_begin, * module_free = 0;
+			while(module_next)
 			{
-				if( GetModuleHandle( 0 ) == module_handle )
+				if(module_next->_handle == module_handle)
+				{	
+					if(module_next->addref() == 1)
+					{
+						module_next->lock();
+						if(module_next->_handle)
+						{
+							module_next->unlock();
+							module_next->release();
+#ifdef __WINDOWS__
+							FreeLibrary(module_handle);
+#else
+							dlclose(module_handle);
+#endif
+							_lock.wunlock(debuginfo);
+							while(::booldog::interlocked::compare_exchange(&_unloading_count, 0, 0) == 0)
+								::booldog::threading::sleep(1);
+							::booldog::interlocked::decrement(&_loading_count);
+							while(::booldog::interlocked::compare_exchange(&_unloading_count, 0, 0))
+								::booldog::threading::sleep(1);
+							::booldog::interlocked::increment(&_loading_count);
+							tryagain = true;
+							return 0;
+						}
+						module_next->_handle = module_handle;
+						module_next->unlock();
+#ifdef __UNIX__
+						debuginfo.log_debug("<booldog>mbsload, %s loaded", res_name_or_path);
+#else
+						res_name_or_path = res_name_or_path;
+#endif
+					}
+					_lock.wunlock(debuginfo);
+					return module_next;
+				}
+				else if(module_free == 0 && ::booldog::interlocked::compare_exchange(&module_next->_ref, 0, 0) == 0)
 				{
-					FreeLibrary( module_handle );
+					if(module_next->_handle == 0)
+					{
+						module_next->lock();
+						if(module_next->_handle == 0)
+							module_free = module_next;
+						module_next->unlock();
+					}
+				}
+				module_next = module_next->_prev;
+			}
+			if(module_free)
+			{
+				module_next = module_free;
+				module_next->addref();
+			}
+			else
+			{
+				module_next = _allocator->create< ::booldog::module >(debuginfo);
+				module_next->_prev = _modules_begin;
+				_modules_begin = module_next;
+			}
+			module_next->_handle = module_handle;
+#ifdef __UNIX__
+			debuginfo.log_debug("<booldog>mbsload, %s loaded", res_name_or_path);
+#else
+			res_name_or_path = res_name_or_path;
+#endif
+			_lock.wunlock(debuginfo);
+			return module_next;
+		}
+		booinline bool get_loaded_module(::booldog::result_module* pres, const ::booldog::loader::tchar* res_name_or_path
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+		{
+#ifdef __WINDOWS__
+			::booldog::module_handle module_handle = 0;
+			if(GetModuleHandleExW(0, res_name_or_path, &module_handle))
+			{
+				if(GetModuleHandle(0) == module_handle)
+				{
+					FreeLibrary(module_handle);
 					module_handle = 0;
 				}
 			}
 #else
-		booinline bool get_loaded_module( ::booldog::result_module* pres , const char* res_name_or_path 
-			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
-		{
-			char* dl_error = 0;
-			::booldog::module_handle module_handle = ::booldog::utils::module::mbs::handle( 0 , _allocator 
-				, res_name_or_path , debuginfo );
+			::booldog::module_handle module_handle = ::booldog::utils::module::mbs::handle(0, _allocator, res_name_or_path
+				, debuginfo);
 #endif
-			if( module_handle )
+			if(module_handle)
 			{
-				::booldog::module* module = 0;
-
-
-				_lock.wlock( debuginfo );
-				::booldog::module* module_next = _modules_begin , * module_free = 0;
-				for( ; ; )
-				{
-					if( module_next == 0 )
-						break;
-					if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
-						module_free = module_next;
-					else if( module_next->handle() == module_handle )
-					{
-						module = module_next;
-						break;
-					}
-					module_next = module_next->_prev;
-				}
-				if( module == 0 )
-				{
-					if( module_free )
-						module = module_free;
-					else
-					{
-						module = _allocator->create< ::booldog::module >( debuginfo );
-
-						module->_prev = _modules_begin;
-						_modules_begin = module;
-					}
-					module->_handle = module_handle;
-#ifdef __UNIX__
-					debuginfo.log_debug( "<booldog>mbsload, %s loaded" , res_name_or_path );
-#endif
-				}
-				module->addref();
-				_lock.wunlock( debuginfo );
+				bool tryagain = false;
+				::booldog::module* module = find_or_create(res_name_or_path, module_handle, tryagain, debuginfo);
+				if(tryagain)
+					return get_loaded_module(pres, res_name_or_path, debuginfo);
 				pres->clear();
 				pres->module = module;
 				return true;
 			}
 			return false;
-		};
-	public:
-		loader( booldog::allocator* allocator )
-			: _modules_begin( 0 )
-#ifdef __UNIX__
-			, _loaded_dirs( allocator )
-#endif
+		}
+		bool load(::booldog::result_module* pres, ::booldog::allocator* allocator
+			, const ::booldog::loader::tchar* name_or_path, ::booldog::named_param* named_params, bool inc
+			, const ::booldog::debug::info& debuginfo)
 		{
-			_allocator = allocator;
-		};
-		~loader( void )
-		{
-			_lock.wlock( debuginfo_macros );
-			::booldog::module* module_next = _modules_begin;
-			for( ; ; )
+			::booldog::interlocked::automatic::decrementer decrementer(0);
+			if(inc)
 			{
-				if( module_next == 0 )
-					break;
-				::booldog::module* prev = module_next->_prev;
-				_allocator->destroy( module_next );
-				module_next = prev;
+				while(::booldog::interlocked::compare_exchange(&_unloading_count, 0, 0))
+					::booldog::threading::sleep(1);
+				decrementer.target = &_loading_count;
+				::booldog::interlocked::increment(&_loading_count);
 			}
-			_lock.wunlock( debuginfo_macros );
-#ifdef __UNIX__
-			_lock_loaded_dirs.wlock( debuginfo_macros );
-			for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
-				_allocator->free( _loaded_dirs[ index0 ] );
-			_lock_loaded_dirs.wunlock( debuginfo_macros );
-#endif
-		};
-		virtual booldog::allocator* allocator( void )
-		{
-			return _allocator;
-		};
-		virtual bool utf8load( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
-			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-		{
-			named_params = named_params;
-			name_or_path = name_or_path;
-			allocator = allocator;
-			debuginfo = debuginfo;
+			bool tryagain = false;
 			::booldog::result_module locres;
-			BOOINIT_RESULT( ::booldog::result_module );
-			
-			return res->succeeded();
-		};
-		virtual bool mbsload( ::booldog::result_module* pres , booldog::allocator* allocator , const char* name_or_path 
-			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
-		{
-			::booldog::result_module locres;
-			BOOINIT_RESULT( ::booldog::result_module );
-#ifdef __WINDOWS__
-			::booldog::result_wchar reswchar( allocator );
-			if( ::booldog::utils::string::mbs::towcs( &reswchar , allocator , name_or_path , 0 , SIZE_MAX , debuginfo ) )
-				wcsload( res , allocator , reswchar.wchar , named_params , debuginfo );
-			else
-				res->copy( reswchar );
-#else
-			bool locked = false;
+			BOOINIT_RESULT(::booldog::result_module);
+#ifdef __WINDOWS__			
 			booldog::named_param settings[] =
 			{
-				BOO_SEARCH_NAMED_PARAM_PPARAM( "search_paths" ) ,
-				BOO_SEARCH_NAMED_PARAM_PCHAR( "root_path" ) ,
-				BOO_SEARCH_NAMED_PARAM_WCHAR( "root_path" ) ,
-				BOO_SEARCH_NAMED_PARAM_BOOL( "exedir_as_root_path" ) ,
+				BOO_SEARCH_NAMED_PARAM_PPARAM("search_paths"),
+				BOO_SEARCH_NAMED_PARAM_PCHAR("root_path"),
+				BOO_SEARCH_NAMED_PARAM_WCHAR("root_path") ,
+				BOO_SEARCH_NAMED_PARAM_BOOL("exedir_as_root_path") ,
 				BOO_SEARCH_NAMED_PARAM_NONE
 			};
-			::booldog::utils::param::search( named_params , settings );
+			::booldog::utils::param::search(named_params, settings);
 
-			::booldog::result_mbchar res_name_or_path( allocator );
+			::booldog::result_wchar res_name_or_path(allocator);
+			::booldog::result_module resmod;			
+
+			::booldog::result_bool resbool;
+			::booldog::result resres;
+			if( ::booldog::utils::string::wcs::insert(&resres, allocator, true, 0, res_name_or_path.wchar, res_name_or_path.wlen
+				, res_name_or_path.wsize, name_or_path, 0, SIZE_MAX, debuginfo) == false)
+			{
+				res->copy(resres);
+				goto goto_return;
+			}
+			if(::booldog::utils::io::path::wcs::isabsolute(&resbool, res_name_or_path.wchar) == false)
+			{
+				res->copy(resbool);
+				goto goto_return;
+			}
+			if( resbool.bres )
+			{
+				if( ::booldog::utils::io::path::wcs::normalize( &resres , res_name_or_path.wchar , res_name_or_path.wlen 
+					, res_name_or_path.wsize ) == false )
+				{
+					res->copy( resres );
+					goto goto_return;
+				}
+				if(::booldog::utils::io::file::wcs::exists(&resbool, allocator, res_name_or_path.wchar, debuginfo)
+					== false || resbool.bres == false)
+					goto goto_return;
+
+				::booldog::module_handle module_handle = 0;
+				
+				if(get_loaded_module(res, res_name_or_path.wchar, debuginfo))
+					goto goto_return;
+				module_handle = LoadLibraryExW(res_name_or_path.wchar, 0, 0);
+				if(module_handle)
+				{
+					::booldog::module* module = find_or_create(name_or_path, module_handle, tryagain, debuginfo);
+					if(tryagain)
+						return load(pres, allocator, name_or_path, named_params, false, debuginfo);
+					res->clear();
+					res->module = module;
+					goto goto_return;
+				}
+				else
+					res->GetLastError();
+			}
+			else
+			{
+				::booldog::result_wchar res_root_dir(allocator);
+
+				if(settings[1].type != ::booldog::enums::param::type_not_found && settings[1].pcharvalue)
+				{
+					if( ::booldog::utils::string::mbs::towcs( &res_root_dir , allocator , settings[ 1 ].pcharvalue , 0 , SIZE_MAX 
+						, debuginfo ) == false )
+					{
+						res->copy( res_root_dir );
+						goto goto_return;							
+					}
+				}
+				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found
+					&& settings[ 2 ].pwcharvalue)
+				{
+					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , SIZE_MAX , res_root_dir.wchar , res_root_dir.wlen 
+						, res_root_dir.wsize , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;							
+					}
+				}
+				else
+				{
+					if( settings[ 3 ].type != ::booldog::enums::param::type_not_found && settings[ 3 ].boolvalue )
+					{
+						if( ::booldog::utils::executable::wcs::directory< 256 >( &res_root_dir , allocator , debuginfo ) == false )
+						{
+							res->copy( res_root_dir );
+							goto goto_return;
+						}
+					}
+				}
+				size_t res_root_dir_wlen = 0;
+				if( res_root_dir.wchar )
+				{
+					::booldog::result resres;
+					if( ::booldog::utils::io::path::wcs::normalize( &resres , res_root_dir.wchar , res_root_dir.wlen 
+						, res_root_dir.wsize ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					res_root_dir_wlen = res_root_dir.wlen;
+				}
+				if( settings[ 0 ].type != ::booldog::enums::param::type_not_found )
+				{
+					for( size_t index = 0 ; settings[ 0 ].pparamvalue[ index ].type != ::booldog::enums::param::type_none ; index++ )
+					{
+						if( res_root_dir.wchar )
+						{
+							res_root_dir.wchar[ res_root_dir_wlen ] = 0;
+							res_root_dir.wlen = res_root_dir_wlen;
+						}
+						if( res_root_dir_wlen )
+						{
+							if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+								, res_root_dir.wlen , res_root_dir.wsize , &::booldog::io::wcs::slash , 0
+								, 1 , debuginfo ) == false )
+							{
+								res->copy( resres );
+								goto goto_return;
+							}
+						}
+						if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pchar )
+						{
+							if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].pparamvalue[ index ].pcharvalue , 0
+								, SIZE_MAX , debuginfo ) == false )
+							{
+								res->copy( resres );
+								goto goto_return;
+							}
+						}
+						else if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pwchar )
+						{
+							if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].pparamvalue[ index ].pwcharvalue , 0
+								, SIZE_MAX , debuginfo ) == false )
+							{
+								res->copy( resres );
+								goto goto_return;
+							}
+						}
+						else
+							continue;
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , &::booldog::io::wcs::slash , 0
+							, 1 , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						size_t res_dir_wlen = res_root_dir.wlen;
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+						{
+							res->clear();
+							res->module = resmod.module;
+							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
+
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+						{
+							res->clear();
+							res->module = resmod.module;
+							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
+
+						res_root_dir.wchar[ res_dir_wlen ] = 0;
+						res_root_dir.wlen = res_dir_wlen;
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+						{
+							res->clear();
+							res->module = resmod.module;
+							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
+
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+						{
+							res->clear();
+							res->module = resmod.module;
+							goto goto_return;
+						}
+						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+							res->copy( resmod );
+					}
+				}
+				if( res_root_dir.wchar )
+				{
+					res_root_dir.wchar[ res_root_dir_wlen ] = 0;
+					res_root_dir.wlen = res_root_dir_wlen;
+					if( res_root_dir_wlen )
+					{
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , &::booldog::io::wcs::slash , 0
+							, 1 , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+					}
+					size_t res_dir_wlen = res_root_dir.wlen;
+					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+						, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
+						, SIZE_MAX , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+					{
+						res->clear();
+						res->module = resmod.module;
+						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
+
+					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+						, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+						, SIZE_MAX , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+					{
+						res->clear();
+						res->module = resmod.module;
+						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
+
+					res_root_dir.wchar[ res_dir_wlen ] = 0;
+					res_root_dir.wlen = res_dir_wlen;
+					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+						, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
+						, SIZE_MAX , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+						, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
+						, SIZE_MAX , debuginfo ) == false )
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+					{
+						res->clear();
+						res->module = resmod.module;
+						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
+
+					if(::booldog::utils::string::wcs::insert(&resres, allocator, false, res_root_dir.wlen, res_root_dir.wchar
+						, res_root_dir.wlen, res_root_dir.wsize, L".dll", 0, SIZE_MAX, debuginfo) == false)
+					{
+						res->copy( resres );
+						goto goto_return;
+					}
+					if(load(&resmod, allocator, res_root_dir.wchar, 0, false, debuginfo))
+					{
+						res->clear();
+						res->module = resmod.module;
+						goto goto_return;
+					}
+					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
+						res->copy( resmod );
+				}
+				else
+				{
+					if(::booldog::utils::io::path::wcs::normalize(&resres, res_name_or_path.wchar, res_name_or_path.wlen
+						, res_name_or_path.wsize) == false)
+					{
+						res->copy(resres);
+						goto goto_return;
+					}
+					::booldog::module_handle module_handle = 0;
+					
+					if(get_loaded_module(res, res_name_or_path.wchar, debuginfo))
+						goto goto_return;
+					module_handle = LoadLibraryExW(res_name_or_path.wchar, 0, 0);
+					if( module_handle == 0 )
+						res->GetLastError();
+
+					if( module_handle == 0 )
+					{
+						size_t res_root_dir_prev = res_root_dir.wlen;
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if(get_loaded_module(res, res_name_or_path.wchar, debuginfo))
+							goto goto_return;
+						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+						if( module_handle == 0 )
+						{
+							res->GetLastError();
+							res_root_dir.wchar[ res_root_dir_prev ] = 0;
+							res_root_dir.wlen = res_root_dir_prev;
+						}
+					}
+
+					if( module_handle == 0 )
+					{
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , 0 , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if(get_loaded_module(res, res_name_or_path.wchar, debuginfo))
+							goto goto_return;
+						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+						if( module_handle == 0 )
+							res->GetLastError();
+					}
+					
+					if( module_handle == 0 )
+					{
+						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
+							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
+							, SIZE_MAX , debuginfo ) == false )
+						{
+							res->copy( resres );
+							goto goto_return;
+						}
+						if(get_loaded_module(res, res_name_or_path.wchar, debuginfo))
+							goto goto_return;
+						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
+						if( module_handle == 0 )
+							res->GetLastError();
+					}
+										
+					if( module_handle )
+					{
+						::booldog::module* module = find_or_create(name_or_path, module_handle, tryagain, debuginfo);
+						if(tryagain)
+							return load(pres, allocator, name_or_path, named_params, false, debuginfo);
+						res->clear();
+						res->module = module;
+						goto goto_return;
+					}
+				}
+			}
+goto_return:			
+#else
+			booldog::named_param settings[] =
+			{
+				BOO_SEARCH_NAMED_PARAM_PPARAM("search_paths"),
+				BOO_SEARCH_NAMED_PARAM_PCHAR("root_path"),
+				BOO_SEARCH_NAMED_PARAM_WCHAR("root_path"),
+				BOO_SEARCH_NAMED_PARAM_BOOL("exedir_as_root_path"),
+				BOO_SEARCH_NAMED_PARAM_NONE
+			};
+			::booldog::utils::param::search(named_params, settings);
+
+			::booldog::result_mbchar res_name_or_path(allocator);
 			
 			::booldog::result_module resmod;
 
@@ -249,50 +637,21 @@ namespace booldog
 					== false || resbool.bres == false )
 					goto goto_return;
 
-				::booldog::module_handle module_handle = 0;				
+				::booldog::module_handle module_handle = 0;
 
-				if( get_loaded_module( res , res_name_or_path.mbchar , debuginfo ) )
+				if(get_loaded_module(res, res_name_or_path.mbchar, debuginfo))
 					goto goto_return;
-				module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
+				module_handle = dlopen(res_name_or_path.mbchar, RTLD_NOW);
 				if( module_handle )
 				{
 					::booldog::result_mbchar resdirmbchar( _allocator );
 					if( ::booldog::utils::io::path::mbs::directory( &resdirmbchar , _allocator , res_name_or_path.mbchar , 0 , SIZE_MAX 
 						, debuginfo ) )
 					{
-						::booldog::module* module = 0;
-
-						_lock.wlock( debuginfo );
-						::booldog::module* module_next = _modules_begin , * module_free = 0;
-						for( ; ; )
-						{
-							if( module_next == 0 )
-								break;
-							if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
-								module_free = module_next;
-							else if( module_next->handle() == module_handle )
-							{
-								module = module_next;
-								break;
-							}
-							module_next = module_next->_prev;
-						}
-						if( module == 0 )
-						{
-							if( module_free )
-								module = module_free;
-							else
-							{
-								module = _allocator->create< ::booldog::module >( debuginfo );
-
-								module->_prev = _modules_begin;
-								_modules_begin = module;
-							}
-							module->_handle = module_handle;
-							debuginfo.log_debug( "<booldog>mbsload, %s loaded" , name_or_path );
-						}
-						module->addref();
-						_lock.wunlock( debuginfo );
+						::booldog::module* module = find_or_create(name_or_path, module_handle, tryagain
+							, debuginfo);
+						if(tryagain)
+							return load(pres, allocator, name_or_path, named_params, false, debuginfo);
 						res->clear();
 						res->module = module;						
 
@@ -423,7 +782,7 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 						{
 							res->clear();
 							res->module = resmod.module;
@@ -448,7 +807,7 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 						{
 							res->clear();
 							res->module = resmod.module;
@@ -473,7 +832,7 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 						{
 							res->clear();
 							res->module = resmod.module;
@@ -489,7 +848,7 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
-						if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+						if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 						{
 							res->clear();
 							res->module = resmod.module;
@@ -521,7 +880,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 					{
 						res->clear();
 						res->module = resmod.module;
@@ -546,7 +905,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 					{
 						res->clear();
 						res->module = resmod.module;
@@ -571,7 +930,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 					{
 						res->clear();
 						res->module = resmod.module;
@@ -587,7 +946,7 @@ namespace booldog
 						res->copy( resres );
 						goto goto_return;
 					}
-					if( mbsload( &resmod , allocator , res_root_dir.mbchar , 0 , debuginfo ) )
+					if(load(&resmod, allocator, res_root_dir.mbchar, 0, false, debuginfo))
 					{
 						res->clear();
 						res->module = resmod.module;
@@ -695,9 +1054,9 @@ namespace booldog
 						}
 					}
 					_lock_loaded_dirs.runlock( debuginfo );
-					
-					::booldog::module_handle module_handle = dlopen( res_name_or_path.mbchar , RTLD_NOW );
-					if( module_handle )
+
+					::booldog::module_handle module_handle = dlopen(res_name_or_path.mbchar, RTLD_NOW);
+					if(module_handle)
 						goto goto_loaded_module;
 					else
 						res->setdlerror( allocator , dlerror() , debuginfo );
@@ -748,12 +1107,11 @@ namespace booldog
 						res->setdlerror( allocator , dlerror() , debuginfo );
 					goto goto_return;
 goto_loaded_module:	
-					::booldog::result_mbchar resdirmbchar( _allocator );
-					if( ::booldog::utils::module::mbs::pathname< 64 >( &resdirmbchar , _allocator , module_handle
-						, debuginfo ) == false )
+					::booldog::result_mbchar resdirmbchar(_allocator);
+					if(::booldog::utils::module::mbs::pathname< 64 >(&resdirmbchar, _allocator, module_handle, debuginfo) == false)
 					{
-						res->copy( resdirmbchar );
-						dlclose( module_handle );
+						res->copy(resdirmbchar);
+						dlclose(module_handle);
 						goto goto_return;
 					}
 					if( ::booldog::utils::io::path::mbs::directory( &resres , resdirmbchar.mbchar 
@@ -770,39 +1128,9 @@ goto_loaded_module:
 						dlclose( module_handle );
 						goto goto_return;
 					}	
-					::booldog::module* module = 0;
-
-					_lock.wlock( debuginfo );
-					::booldog::module* module_next = _modules_begin , * module_free = 0;
-					for( ; ; )
-					{
-						if( module_next == 0 )
-							break;
-						if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
-							module_free = module_next;
-						else if( module_next->handle() == module_handle )
-						{
-							module = module_next;
-							break;
-						}
-						module_next = module_next->_prev;
-					}
-					if( module == 0 )
-					{
-						if( module_free )
-							module = module_free;
-						else
-						{
-							module = _allocator->create< ::booldog::module >( debuginfo );
-
-							module->_prev = _modules_begin;
-							_modules_begin = module;
-						}
-						module->_handle = module_handle;
-						debuginfo.log_debug( "<booldog>mbsload, %s loaded" , name_or_path );
-					}
-					module->addref();
-					_lock.wunlock( debuginfo );
+					::booldog::module* module = find_or_create(name_or_path, module_handle, tryagain, debuginfo);
+					if(tryagain)
+						return load(pres, allocator, name_or_path, named_params, false, debuginfo);
 					res->clear();
 					res->module = module;
 						
@@ -822,536 +1150,108 @@ goto_loaded_module:
 				}
 			}
 goto_return:
-			if( locked )
-				_lock.wunlock( debuginfo );
 #endif
-			if( res->module == 0 )
+			if(res->module == 0)
 			{
-				if( res->succeeded() )
-					res->booerr( ::booldog::enums::result::booerr_type_file_does_not_exist );
-			}	
+				if(res->succeeded())
+					res->booerr(::booldog::enums::result::booerr_type_file_does_not_exist);
+			}
 			return res->succeeded();
+		}
+	public:
+		loader(::booldog::allocator* allocator)
+			: _allocator(allocator), _modules_begin(0)
+#ifdef __UNIX__
+			, _loaded_dirs(allocator)
+#endif
+			, _loading_count(0), _unloading_count(0)
+		{
+		}
+		~loader()
+		{
+			_lock.wlock(debuginfo_macros);
+			::booldog::module* module_next = _modules_begin;
+			while(module_next)
+			{
+				::booldog::module* prev = module_next->_prev;
+				_allocator->destroy(module_next);
+				module_next = prev;
+			}
+			_lock.wunlock(debuginfo_macros);
+#ifdef __UNIX__
+			_lock_loaded_dirs.wlock(debuginfo_macros);
+			for( size_t index0 = 0 ; index0 < _loaded_dirs.count() ; index0++ )
+				_allocator->free( _loaded_dirs[ index0 ] );
+			_lock_loaded_dirs.wunlock(debuginfo_macros);
+#endif
 		};
+		virtual booldog::allocator* allocator()
+		{
+			return _allocator;
+		}
+		virtual bool mbsload(::booldog::result_module* pres, ::booldog::allocator* allocator, const char* name_or_path
+			, ::booldog::named_param* named_params = 0, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+		{	
+#ifdef __WINDOWS__
+			::booldog::result_wchar reswchar(allocator);
+			if(::booldog::utils::string::mbs::towcs(&reswchar, allocator, name_or_path, 0, SIZE_MAX, debuginfo))
+				return load(pres, allocator, reswchar.wchar, named_params, true, debuginfo);
+			else if(pres)
+				pres->copy(reswchar);
+			return false;
+#else
+			return load(pres, allocator, name_or_path, named_params, true, debuginfo);
+#endif
+		}
 		virtual bool wcsload( ::booldog::result_module* pres , booldog::allocator* allocator , const wchar_t* name_or_path 
 			, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 		{
-			::booldog::result_module locres;
-			BOOINIT_RESULT( ::booldog::result_module );
 #ifdef __WINDOWS__
-			bool locked = false;
-			booldog::named_param settings[] =
-			{
-				BOO_SEARCH_NAMED_PARAM_PPARAM( "search_paths" ) ,
-				BOO_SEARCH_NAMED_PARAM_PCHAR( "root_path" ) ,
-				BOO_SEARCH_NAMED_PARAM_WCHAR( "root_path" ) ,
-				BOO_SEARCH_NAMED_PARAM_BOOL( "exedir_as_root_path" ) ,
-				BOO_SEARCH_NAMED_PARAM_NONE
-			};
-			::booldog::utils::param::search( named_params , settings );
-
-			::booldog::result_wchar res_name_or_path( allocator );
-			::booldog::result_module resmod;			
-
-			::booldog::result_bool resbool;
-			::booldog::result resres;
-			if( ::booldog::utils::string::wcs::insert( &resres , allocator , true , 0 , res_name_or_path.wchar , res_name_or_path.wlen
-				, res_name_or_path.wsize , name_or_path , 0 , SIZE_MAX , debuginfo ) == false )
-			{
-				res->copy( resres );
-				goto goto_return;
-			}
-			if( ::booldog::utils::io::path::wcs::isabsolute( &resbool , res_name_or_path.wchar ) == false )
-			{
-				res->copy( resbool );
-				goto goto_return;
-			}
-			if( resbool.bres )
-			{
-				if( ::booldog::utils::io::path::wcs::normalize( &resres , res_name_or_path.wchar , res_name_or_path.wlen 
-					, res_name_or_path.wsize ) == false )
-				{
-					res->copy( resres );
-					goto goto_return;
-				}
-				if( ::booldog::utils::io::file::wcs::exists( &resbool , allocator , res_name_or_path.wchar , debuginfo ) 
-					== false || resbool.bres == false )
-					goto goto_return;
-
-				::booldog::module_handle module_handle = 0;
-				
-				if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
-					goto goto_return;
-				module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-				if( module_handle )
-				{
-					::booldog::module* module = 0;
-
-					_lock.wlock( debuginfo );
-					::booldog::module* module_next = _modules_begin , * module_free = 0;
-					for( ; ; )
-					{
-						if( module_next == 0 )
-							break;
-						if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
-							module_free = module_next;
-						else if( module_next->handle() == module_handle )
-						{
-							module = module_next;
-							break;
-						}
-						module_next = module_next->_prev;
-					}
-					if( module == 0 )
-					{
-						if( module_free )
-							module = module_free;
-						else
-						{
-							module = _allocator->create< ::booldog::module >( debuginfo );
-
-							module->_prev = _modules_begin;
-							_modules_begin = module;
-						}
-						module->_handle = module_handle;
-					}
-					module->addref();
-					_lock.wunlock( debuginfo );
-					res->clear();
-					res->module = module;
-					goto goto_return;
-				}
-				else
-					res->GetLastError();
-			}
-			else
-			{
-				::booldog::result_wchar res_root_dir( allocator );
-
-				if( settings[ 1 ].type != ::booldog::enums::param::type_not_found
-					&& settings[ 1 ].pcharvalue)
-				{
-					if( ::booldog::utils::string::mbs::towcs( &res_root_dir , allocator , settings[ 1 ].pcharvalue , 0 , SIZE_MAX 
-						, debuginfo ) == false )
-					{
-						res->copy( res_root_dir );
-						goto goto_return;							
-					}
-				}
-				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found
-					&& settings[ 2 ].pwcharvalue)
-				{
-					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , SIZE_MAX , res_root_dir.wchar , res_root_dir.wlen 
-						, res_root_dir.wsize , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;							
-					}
-				}
-				else
-				{
-					if( settings[ 3 ].type != ::booldog::enums::param::type_not_found && settings[ 3 ].boolvalue )
-					{
-						if( ::booldog::utils::executable::wcs::directory< 256 >( &res_root_dir , allocator , debuginfo ) == false )
-						{
-							res->copy( res_root_dir );
-							goto goto_return;
-						}
-					}
-				}
-				size_t res_root_dir_wlen = 0;
-				if( res_root_dir.wchar )
-				{
-					::booldog::result resres;
-					if( ::booldog::utils::io::path::wcs::normalize( &resres , res_root_dir.wchar , res_root_dir.wlen 
-						, res_root_dir.wsize ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					res_root_dir_wlen = res_root_dir.wlen;
-				}
-				if( settings[ 0 ].type != ::booldog::enums::param::type_not_found )
-				{
-					for( size_t index = 0 ; settings[ 0 ].pparamvalue[ index ].type != ::booldog::enums::param::type_none ; index++ )
-					{
-						if( res_root_dir.wchar )
-						{
-							res_root_dir.wchar[ res_root_dir_wlen ] = 0;
-							res_root_dir.wlen = res_root_dir_wlen;
-						}
-						if( res_root_dir_wlen )
-						{
-							if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-								, res_root_dir.wlen , res_root_dir.wsize , &::booldog::io::wcs::slash , 0
-								, 1 , debuginfo ) == false )
-							{
-								res->copy( resres );
-								goto goto_return;
-							}
-						}
-						if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pchar )
-						{
-							if( ::booldog::utils::string::mbs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].pparamvalue[ index ].pcharvalue , 0
-								, SIZE_MAX , debuginfo ) == false )
-							{
-								res->copy( resres );
-								goto goto_return;
-							}
-						}
-						else if( settings[ 0 ].pparamvalue[ index ].type == ::booldog::enums::param::type_pwchar )
-						{
-							if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-								, res_root_dir.wlen , res_root_dir.wsize , settings[ 0 ].pparamvalue[ index ].pwcharvalue , 0
-								, SIZE_MAX , debuginfo ) == false )
-							{
-								res->copy( resres );
-								goto goto_return;
-							}
-						}
-						else
-							continue;
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , &::booldog::io::wcs::slash , 0
-							, 1 , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						size_t res_dir_wlen = res_root_dir.wlen;
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-						{
-							res->clear();
-							res->module = resmod.module;
-							goto goto_return;
-						}
-						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-							res->copy( resmod );
-
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-						{
-							res->clear();
-							res->module = resmod.module;
-							goto goto_return;
-						}
-						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-							res->copy( resmod );
-
-						res_root_dir.wchar[ res_dir_wlen ] = 0;
-						res_root_dir.wlen = res_dir_wlen;
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-						{
-							res->clear();
-							res->module = resmod.module;
-							goto goto_return;
-						}
-						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-							res->copy( resmod );
-
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-						{
-							res->clear();
-							res->module = resmod.module;
-							goto goto_return;
-						}
-						else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-							res->copy( resmod );
-					}
-				}
-				if( res_root_dir.wchar )
-				{
-					res_root_dir.wchar[ res_root_dir_wlen ] = 0;
-					res_root_dir.wlen = res_root_dir_wlen;
-					if( res_root_dir_wlen )
-					{
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , &::booldog::io::wcs::slash , 0
-							, 1 , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-					}
-					size_t res_dir_wlen = res_root_dir.wlen;
-					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-						, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
-						, SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-					{
-						res->clear();
-						res->module = resmod.module;
-						goto goto_return;
-					}
-					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-						res->copy( resmod );
-
-					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-						, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
-						, SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-					{
-						res->clear();
-						res->module = resmod.module;
-						goto goto_return;
-					}
-					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-						res->copy( resmod );
-
-					res_root_dir.wchar[ res_dir_wlen ] = 0;
-					res_root_dir.wlen = res_dir_wlen;
-					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-						, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
-						, SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-						, res_root_dir.wlen , res_root_dir.wsize , res_name_or_path.wchar , 0
-						, SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-					{
-						res->clear();
-						res->module = resmod.module;
-						goto goto_return;
-					}
-					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-						res->copy( resmod );
-
-					if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-						, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
-						, SIZE_MAX , debuginfo ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					if( wcsload( &resmod , allocator , res_root_dir.wchar , 0 , debuginfo ) )
-					{
-						res->clear();
-						res->module = resmod.module;
-						goto goto_return;
-					}
-					else if( resmod.error_type == ::booldog::enums::result::error_type_GetLastError )
-						res->copy( resmod );
-				}
-				else
-				{
-					if( ::booldog::utils::io::path::wcs::normalize( &resres , res_name_or_path.wchar , res_name_or_path.wlen 
-						, res_name_or_path.wsize ) == false )
-					{
-						res->copy( resres );
-						goto goto_return;
-					}
-					::booldog::module_handle module_handle = 0;
-					
-					if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
-						goto goto_return;
-					module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-					if( module_handle == 0 )
-						res->GetLastError();
-
-					if( module_handle == 0 )
-					{
-						size_t res_root_dir_prev = res_root_dir.wlen;
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
-							goto goto_return;
-						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-						if( module_handle == 0 )
-						{
-							res->GetLastError();
-							res_root_dir.wchar[ res_root_dir_prev ] = 0;
-							res_root_dir.wlen = res_root_dir_prev;
-						}
-					}
-
-					if( module_handle == 0 )
-					{
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , 0 , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , L"lib" , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
-							goto goto_return;
-						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-						if( module_handle == 0 )
-							res->GetLastError();
-					}
-					
-					if( module_handle == 0 )
-					{
-						if( ::booldog::utils::string::wcs::insert( &resres , allocator , false , res_root_dir.wlen , res_root_dir.wchar 
-							, res_root_dir.wlen , res_root_dir.wsize , L".dll" , 0
-							, SIZE_MAX , debuginfo ) == false )
-						{
-							res->copy( resres );
-							goto goto_return;
-						}
-						if( get_loaded_module( res , res_name_or_path.wchar , debuginfo ) )
-							goto goto_return;
-						module_handle = LoadLibraryExW( res_name_or_path.wchar , 0 , 0 );
-						if( module_handle == 0 )
-							res->GetLastError();
-					}
-										
-					if( module_handle )
-					{
-						::booldog::module* module = 0;
-
-
-						_lock.wlock( debuginfo );
-						::booldog::module* module_next = _modules_begin , * module_free = 0;
-						for( ; ; )
-						{
-							if( module_next == 0 )
-								break;
-							if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) == 0 )
-								module_free = module_next;
-							else if( module_next->handle() == module_handle )
-							{
-								module = module_next;
-								break;
-							}
-							module_next = module_next->_prev;
-						}
-						if( module == 0 )
-						{
-							if( module_free )
-								module = module_free;
-							else
-							{
-								module = _allocator->create< ::booldog::module >( debuginfo );
-
-								module->_prev = _modules_begin;
-								_modules_begin = module;
-							}
-							module->_handle = module_handle;
-						}
-						module->addref();
-						_lock.wunlock( debuginfo );
-						res->clear();
-						res->module = module;
-						goto goto_return;
-					}
-				}
-			}
-goto_return:
-			if( locked )
-				_lock.wunlock( debuginfo );
+			return load(pres, allocator, name_or_path, named_params, true, debuginfo);
 #else
-			::booldog::result_mbchar resmbchar( allocator );
-			if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , name_or_path , 0 , SIZE_MAX , debuginfo ) )
-				mbsload( res , allocator , resmbchar.mbchar , named_params , debuginfo );
-			else
-				res->copy( resmbchar );
+			::booldog::result_mbchar resmbchar(allocator);
+			if(::booldog::utils::string::wcs::tombs(&resmbchar, allocator, name_or_path, 0, SIZE_MAX, debuginfo))
+				return load(pres, allocator, resmbchar.mbchar, named_params, true, debuginfo);
+			else if(pres)
+				pres->copy(resmbchar);
+			return false;
 #endif
-			if( res->module == 0 && res->succeeded() )
-				res->booerr( ::booldog::enums::result::booerr_type_file_does_not_exist );
-			return res->succeeded();
-		};
-		virtual bool unload( ::booldog::result* pres , ::booldog::base::module* module 
-			, ::booldog::events::typedefs::onbeforeunload ponbeforeunload , void* udata 
-			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		}
+		virtual bool unload(::booldog::result* pres, ::booldog::base::module* module
+			, ::booldog::events::typedefs::onbeforeunload ponbeforeunload, void* udata
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 		{
-			debuginfo = debuginfo;
 			::booldog::result locres;
-			BOOINIT_RESULT( ::booldog::result );
-
-
-			_lock.wlock( debuginfo );
-			::booldog::module* module_next = _modules_begin;
-			for( ; ; )
+			BOOINIT_RESULT(::booldog::result);
+			::booldog::module* mod = (::booldog::module*)module;			
+			if(mod->release() == 0)
 			{
-				if( module_next == 0 )
-					break;
-				if( ::booldog::interlocked::compare_exchange( &module_next->_ref , 0 , 0 ) > 0 
-					&& module_next == module )
-				{
-					::booldog::module* mod = module_next;
-					if( mod->release() == 0 )
-					{	
-						if( ponbeforeunload )
-							ponbeforeunload( udata , mod );
+				if(ponbeforeunload)
+					ponbeforeunload(udata, mod);
+
+				::booldog::interlocked::increment(&_unloading_count);
+				while(::booldog::interlocked::compare_exchange(&_loading_count, 0, 0))
+					::booldog::threading::sleep(1);
 #ifdef __WINDOWS__
-						FreeLibrary( mod->_handle );
+				FreeLibrary(mod->_handle);
 #else
-						dlclose( mod->_handle );
+				dlclose(mod->_handle);
 #endif
-						mod->_udata = 0;
-						mod->_inited_ref = 0;
-						mod->_handle = 0;
-					}
-					else
-#ifdef __WINDOWS__
-						FreeLibrary( mod->_handle );
-#else
-						dlclose( mod->_handle );
-#endif
-					goto goto_return;
-				}
-				module_next = module_next->_prev;
+				mod->lock(debuginfo);
+				mod->_inited_ref = 0;
+				mod->_udata = 0;
+				mod->_handle = 0;
+				mod->unlock(debuginfo);
+				::booldog::interlocked::decrement(&_unloading_count);
 			}
-			res->booerr( ::booldog::enums::result::booerr_type_module_not_found_in_the_list );
-goto_return:
-			_lock.wunlock( debuginfo );
-			return res->succeeded();
-		};
+			else
+#ifdef __WINDOWS__
+				FreeLibrary(mod->_handle);
+#else
+				dlclose(mod->_handle);
+#endif
+			return true;
+		}
 	};
-};
+}
 #endif

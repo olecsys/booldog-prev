@@ -133,7 +133,7 @@ namespace booldog
 #else
 			const char slash = '/';
 #endif
-		};
+		}
 		namespace wcs
 		{
 #ifdef __WINDOWS__
@@ -141,8 +141,8 @@ namespace booldog
 #else
 			const wchar_t slash = '/';
 #endif
-		};
-	};
+		}
+	}
 #ifdef __WINDOWS__	
 	typedef HMODULE module_handle;
 #else

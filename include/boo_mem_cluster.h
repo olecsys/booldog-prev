@@ -525,7 +525,7 @@ namespace booldog
 				else
 				{
 					int crush = printf("%s, logic bug, EXCEPT!!!\n", __FILE__);
-					printf("%d\n", crush / (crush / 70));
+					printf("%d\n", crush / (crush / 70567));
 				}
 			};
 			size_t getsize( void* pointer )
