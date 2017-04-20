@@ -157,19 +157,10 @@ namespace booldog
 				const_cast< ::booldog::classes::string::string_return* >(&string0)->_str = 0;
 			}
 			/** Copy constructor
-			* @param string0 copy string
-			* @param copy if true then _str C string will be copied, if false then string0.mbchar will be detached from string0
-			*/
-			/*string(const ::booldog::classes::string::string_return string0)
-				: _allocator(string0._allocator), _str(string0._str), _size(string0._size), _length(string0._length)
-			{
-				const_cast< ::booldog::classes::string::string_return* >(&string0)->_str = 0;
-			}*/
-			/** Copy constructor
 			* @param string0 copy string(can be null)
 			* @param copy if true then _str C string will be copied, if false then string0.mbchar will be detached from string0
 			*/
-			explicit string(::booldog::results::mbchar& string0, bool copy = true)
+			explicit string(const ::booldog::results::mbchar& string0, bool copy = true)
 				: _allocator(string0)
 			{
 				if(copy)
@@ -185,7 +176,7 @@ namespace booldog
 			* @param string0 copy string
 			* @param copy if true then _str C string will be copied, if false then string0._str will be detached from string0
 			*/
-			explicit string(::booldog::classes::string& string0, bool copy)
+			explicit string(const ::booldog::classes::string& string0, bool copy)
 				: _allocator(string0)
 			{
 				if(copy)
@@ -195,15 +186,16 @@ namespace booldog
 					_size = string0._size;
 					_length = string0._length;
 					_str = string0._str;
-					string0._str = 0;
-					string0._size = 0;
-					string0._length = 0;
+					::booldog::classes::string* str = const_cast< ::booldog::classes::string* >(&string0);
+					str->_str = 0;
+					str->_size = 0;
+					str->_length = 0;
 				}
 			}
 			/** Copy constructor
 			* @param string0 copy string
 			*/
-			explicit string(::booldog::classes::string& string0)
+			string(const ::booldog::classes::string& string0)
 				: _allocator(string0)
 			{
 				ctor(string0._str, 0, string0._length, 0);
@@ -283,11 +275,6 @@ namespace booldog
 				string.copyto(*this);
 				return *this;
 			}
-			/*::booldog::classes::string& operator =(const ::booldog::classes::string::string_return string)
-			{
-				string.copyto(*this);
-				return *this;
-			}*/
 			/** Assign a new C string
 			* @param pres store the function result or detailed error
 			* @param str a new C string

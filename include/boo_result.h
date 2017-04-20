@@ -284,14 +284,15 @@ goto_next:
 			if(mbchar)
 				mballocator->free( mbchar );
 		}
-		char* detach()
+		char* detach() const
 		{
 			char* res = mbchar;
-			mbchar = 0;
-			mbsize = 0;
-			mblen = 0;
+			::booldog::result_mbchar* _this = const_cast< ::booldog::result_mbchar* >(this);
+			_this->mbchar = 0;
+			_this->mbsize = 0;
+			_this->mblen = 0;
 			return res;
-		};
+		}
 		virtual void clear() const
 		{
 			::booldog::result_mbchar* _obj_ = const_cast< ::booldog::result_mbchar* >( this );
