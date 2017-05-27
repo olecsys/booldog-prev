@@ -82,7 +82,7 @@ namespace booldog
 						debuginfo = debuginfo;
 						pathname_length = pathname_length;
 						allocator = allocator;
-						if(::remove(path) == 0)
+						if(::remove(pathname) == 0)
 							return true;
 						else
 						{
