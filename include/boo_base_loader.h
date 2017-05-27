@@ -696,8 +696,7 @@ goto_return:
 				else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found
 					&& settings[ 2 ].pwcharvalue)
 				{
-					if( ::booldog::utils::string::wcs::tombs( &res_root_dir , allocator , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX 
-						, debuginfo ) == false )
+					if(::booldog::utils::string::wcs::tombs(res_root_dir, settings[2].pwcharvalue, 0, SIZE_MAX, debuginfo) == false)
 					{
 						res->copy( resres );
 						goto goto_return;							
@@ -1210,7 +1209,7 @@ goto_return:
 			return load(pres, allocator, name_or_path, named_params, true, debuginfo);
 #else
 			::booldog::result_mbchar resmbchar(allocator);
-			if(::booldog::utils::string::wcs::tombs(&resmbchar, allocator, name_or_path, 0, SIZE_MAX, debuginfo))
+			if(::booldog::utils::string::wcs::tombs(resmbchar, name_or_path, 0, SIZE_MAX, debuginfo))
 				return load(pres, allocator, resmbchar.mbchar, named_params, true, debuginfo);
 			else if(pres)
 				pres->copy(resmbchar);

@@ -8,7 +8,7 @@
 #include <config.h>
 #endif
 #include "boo_string_utils.h"
-#if defined(BOO_UTF16_H) && defined(BOO_UTF32_H)
+#if (defined(BOO_UTF16_H) && defined(BOO_UTF32_H)) || defined(BOO_UTF8_H)
 #include "boo_if.h"
 #endif
 namespace booldog
@@ -171,6 +171,16 @@ namespace booldog
 					_length = string0.mblen;
 					_str = string0.detach();					
 				}
+			}
+			/** Make C string pointer, size, length null(without free) and return C string pointer
+			* @return The C string pointer
+			*/
+			char* detach()
+			{
+				char* res = _str;
+				_size = _length = 0;
+				_str = 0;
+				return res;
 			}
 			/** Copy constructor
 			* @param string0 copy string
@@ -464,6 +474,45 @@ namespace booldog
 					return false;
 				}
 				return true;
+			}
+#endif
+#if defined(BOO_UTF8_H)
+			/** Convert a C utf8 string to C multibyte string
+			* @param pres store the function result or detailed error
+			* @param allocator a temporary allocator
+			* @param debuginfo a debug information
+			* @return The function result
+			*/
+			template< size_t step >
+			bool tombs(::booldog::result* pres, ::booldog::allocator* allocator, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT(::booldog::result);
+				::booldog::results::mbchar mbchar(allocator);
+				size_t srcbyteindex = 0;
+				if(::booldog::compile::If< sizeof(wchar_t) == 2 >::test())
+				{
+					if(::booldog::utf8::toutf16< step >(mbchar, _str, srcbyteindex, _length, debuginfo) == false)
+					{
+						res->copy(mbchar);
+						return false;
+					}
+				}
+				else if(::booldog::compile::If< sizeof(wchar_t) == 4 >::test())
+				{
+					if(::booldog::utf8::toutf32< step >(mbchar, _str, srcbyteindex, _length, debuginfo) == false)
+					{
+						res->copy(mbchar);
+						return false;
+					}
+				}
+				else
+				{
+					res->booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
+					return false;
+				}
+				return ::booldog::utils::string::wcs::tombs(res, _allocator, _str, _length, _size, (wchar_t*)mbchar.mbchar, 0
+					, sizeof(wchar_t) * mbchar.mblen, debuginfo);
 			}
 #endif
 			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0

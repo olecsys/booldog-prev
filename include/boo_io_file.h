@@ -246,8 +246,8 @@ namespace booldog
 					else if(settings[ 2 ].type != ::booldog::enums::param::type_not_found 
 						&& settings[ 2 ].pwcharvalue)
 					{
-						if( ::booldog::utils::string::wcs::tombs( &res_root_dir , allocator , settings[ 2 ].pwcharvalue , 0 , SIZE_MAX 
-							, debuginfo ) == false )
+						if(::booldog::utils::string::wcs::tombs(res_root_dir, settings[ 2 ].pwcharvalue, 0, SIZE_MAX, debuginfo)
+							== false)
 						{
 							res->copy( resres );
 							goto goto_return;							

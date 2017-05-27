@@ -123,8 +123,8 @@ namespace booldog
 							}
 							else if( settings[ 2 ].type != ::booldog::enums::param::type_not_found )
 							{
-								if( ::booldog::utils::string::wcs::tombs( &res_root_dir , allocator , settings[ 2 ].pwcharvalue 
-									, 0 , SIZE_MAX , debuginfo ) == false )
+								if( ::booldog::utils::string::wcs::tombs(res_root_dir, settings[2].pwcharvalue, 0, SIZE_MAX
+									, debuginfo) == false)
 								{
 									res->copy( resres );
 									goto goto_return;							
@@ -277,9 +277,8 @@ goto_return:
 						}
 #else
 						::booldog::result_mbchar resmbchar( allocator );
-						if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , name_or_path , 0 , SIZE_MAX 
-							, debuginfo ) )
-							::booldog::utils::io::directory::mbs::exists( res , allocator , resmbchar.mbchar , debuginfo );
+						if(::booldog::utils::string::wcs::tombs(resmbchar, name_or_path, 0, SIZE_MAX, debuginfo))
+							::booldog::utils::io::directory::mbs::exists(res, allocator, resmbchar.mbchar, debuginfo);
 						else
 							res->copy( resmbchar );
 #endif
@@ -478,8 +477,7 @@ goto_return:
 goto_return:
 #else
 						::booldog::result_mbchar resmbchar( allocator );
-						if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , name_or_path , 0 , SIZE_MAX 
-							, debuginfo ) )
+						if(::booldog::utils::string::wcs::tombs(resmbchar, name_or_path, 0, SIZE_MAX, debuginfo))
 							::booldog::utils::io::directory::mbs::exists( res , allocator , resmbchar.mbchar , named_params
 							, debuginfo );
 						else

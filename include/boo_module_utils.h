@@ -376,7 +376,7 @@ goto_return:
 					}
 #else
 					::booldog::result_mbchar resmbchar( allocator );
-					if( ::booldog::utils::string::wcs::tombs( &resmbchar , allocator , modulename , 0 , SIZE_MAX , debuginfo ) )
+					if(::booldog::utils::string::wcs::tombs(resmbchar, modulename, 0, SIZE_MAX, debuginfo))
 						module_handle = ::booldog::utils::module::mbs::handle( res , allocator , resmbchar.mbchar , debuginfo );
 					else
 						res->copy( resmbchar );

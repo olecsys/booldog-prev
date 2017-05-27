@@ -17,20 +17,20 @@ namespace booldog
 			T* _last;
 			size_t _count;
 		public:
-			doubly_linked_list( void )
-				: _first( 0 ) , _last( 0 ) , _count( 0 )
+			doubly_linked_list()
+				: _first(0), _last(0), _count(0)
 			{
-			};
-			size_t count( void )
+			}
+			size_t count()
 			{
 				return _count;
-			};
-			void clear( void )
+			}
+			void clear()
 			{
 				_last = 0;
 				_first = 0;
 				_count = 0;
-			};
+			}
 			bool exists(T* item)
 			{
 #ifdef BOOLDOG_DOUBLY_LINKED_PARENT_ENABLE
@@ -45,22 +45,33 @@ namespace booldog
 				}
 				return next != 0;
 #endif
-			};
-			void remove( T* item )
+			}
+			void remove(T* item)
 			{
-				if( item == _first )
+				if(item == _first)
+				{
+					if(item == _last)
+					{
+						_first = _last = 0;
+						--_count;
+#ifdef BOOLDOG_DOUBLY_LINKED_PARENT_ENABLE
+						item->_doubly_linked_list_parent = 0;
+#endif
+						return;
+					}
 					_first = item->_doubly_linked_list_next;
+				}
 				else
 					item->_doubly_linked_list_prev->_doubly_linked_list_next = item->_doubly_linked_list_next;
-				if( item == _last )
+				if(item == _last)
 					_last = item->_doubly_linked_list_prev;
 				else
 					item->_doubly_linked_list_next->_doubly_linked_list_prev = item->_doubly_linked_list_prev;	
 #ifdef BOOLDOG_DOUBLY_LINKED_PARENT_ENABLE
 				item->_doubly_linked_list_parent = 0;
 #endif
-				_count--;
-			};
+				--_count;
+			}
 			void insert_before(T* item, T* insertion_item)
 			{
 				if(_first == item)
@@ -74,7 +85,7 @@ namespace booldog
 				insertion_item->_doubly_linked_list_parent = this;
 #endif
 				++_count;
-			};
+			}
 			size_t add(T* item)
 			{
 				if( _first == 0 )
@@ -88,45 +99,45 @@ namespace booldog
 				item->_doubly_linked_list_parent = this;
 #endif
 				return _count++;
-			};
+			}
 			void remove(T& item)
 			{
 				remove(&item);
-			};
+			}
 			size_t add(T& item)
 			{
 				return add(&item);
-			};
-			T* first( void )
+			}
+			T* first()
 			{
 				return _first;
-			};
-			T* last( void )
+			}
+			T* last()
 			{
 				return _last;
-			};
-			T* operator[] ( size_t index )
+			}
+			T* operator[] (size_t index)
 			{
 				T* find = 0;
-				if( index < _count )
+				if(index < _count)
 				{
-					if( index > _count / 2 )
+					if(index > _count / 2)
 					{
 						index = _count - index - 1;
 						find = _last;
-						while( index-- != 0 )
+						while(index-- != 0)
 							find = find->_doubly_linked_list_prev;
 					}
 					else
 					{
 						find = _first;
-						while( index-- != 0 )
+						while(index-- != 0)
 							find = find->_doubly_linked_list_next;
 					}
 				}
 				return find;
-			};
+			}
 		};
-	};
-};
+	}
+}
 #endif

@@ -805,8 +805,7 @@ namespace booldog
 
                             ::booldog::result_mbchar mbchar(_allocator);
                             size_t utf8len = strlen(name), srcbyteindex = 0;
-                            if(::booldog::utf8::toutf16< 16 >(&mbchar, _allocator, name, srcbyteindex, utf8len
-                                , debuginfo))
+                            if(::booldog::utf8::toutf16< 16 >(mbchar, name, srcbyteindex, utf8len, debuginfo))
                             {
                                 hr = MkParseDisplayName(bind_ctx, (wchar_t*)mbchar.mbchar, &eaten, &moniker);
                                 if(SUCCEEDED(hr))
@@ -895,8 +894,7 @@ namespace booldog
 
 							::booldog::result_mbchar mbchar(allocator);
 							size_t utf8len = strlen(name), srcbyteindex = 0;
-							if(::booldog::utf8::toutf16< 16 >(&mbchar, allocator, name, srcbyteindex, utf8len
-								, debuginfo))
+							if(::booldog::utf8::toutf16< 16 >(mbchar, name, srcbyteindex, utf8len, debuginfo))
 							{
 								hr = MkParseDisplayName(bind_ctx, (wchar_t*)mbchar.mbchar, &eaten, &moniker);
 								if(SUCCEEDED(hr))

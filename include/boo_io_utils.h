@@ -60,21 +60,7 @@ namespace booldog
 						res->seterrno();
 #endif
 					return res->succeeded();
-				};
-				booinline bool remove(::booldog::result* pres, const char* path, const ::booldog::debug::info& debuginfo = debuginfo_macros)
-				{
-					debuginfo = debuginfo;
-					::booldog::result locres;
-					BOOINIT_RESULT(::booldog::result);
-#ifdef __WINDOWS__
-					if(DeleteFileA(path) == 0)
-						res->GetLastError();
-#else
-					if(::remove(path) == -1)
-						res->seterrno();
-#endif
-					return res->succeeded();
-				};
+				}
 				booinline bool rmdir(::booldog::result* pres, const char* path
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 				{
@@ -102,6 +88,8 @@ namespace booldog
 						if( mbchar [ 0 ] != 0 )
 						{
 							const char* ptr = mbchar;
+							if(strncmp(mbchar, "\\\\?\\", 4) == 0)
+								ptr += 4;
 							size_t sections_count = *ptr == '\\' || *ptr == '/' ? 0 : 1;
 							for( ; ; )
 							{
@@ -955,8 +943,10 @@ goto_return:
 						BOOINIT_RESULT( ::booldog::result );
 						if( wchar[ 0 ] != 0 )
 						{
-							wsize_in_bytes /= sizeof( wchar_t );
+							wsize_in_bytes /= sizeof( wchar_t );							
 							const wchar_t* ptr = wchar;
+							if(wcsncmp(wchar, L"\\\\?\\", 4) == 0)
+								ptr += 4 * sizeof(wchar_t);
 							size_t sections_count = *ptr == '\\' || *ptr == '/' ? 0 : 1;
 							for( ; ; )
 							{

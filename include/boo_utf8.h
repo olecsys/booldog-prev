@@ -336,57 +336,66 @@ goto_conversion_result_targetExhausted:
 			}
 			return ::booldog::enums::string::conversion_result_targetExhausted;
 		};
-		booinline ::booldog::enums::string::conversion_result to_utf32( const char* utf8_ptr , size_t utf8_ptr_count , char* utf32_ptr , size_t utf32_ptr_count , size_t& utf32_bytes )
+		booinline ::booldog::enums::string::conversion_result to_utf32(const char* utf8_ptr, size_t& srcbyteindex
+			, size_t utf8_ptr_count, char* utf32_ptr, size_t& dstbyteindex, size_t utf32_ptr_count, size_t& utf32_bytes
+			, size_t& utf32length)
 		{
-			const ::booldog::uint8* source = (::booldog::uint8*)utf8_ptr , * source_end = (::booldog::uint8*)( &utf8_ptr[ utf8_ptr_count - 1 ] + 1 );
-			::booldog::uint32* target = (::booldog::uint32*)utf32_ptr , * target_end = (::booldog::uint32*)( utf32_ptr + utf32_ptr_count );
+			const ::booldog::uint8* source = (::booldog::uint8*)utf8_ptr + srcbyteindex
+				, * source_end = (::booldog::uint8*)utf8_ptr + utf8_ptr_count;
+			::booldog::uint32* target = (::booldog::uint32*)(utf32_ptr + dstbyteindex)
+				, * target_end = (::booldog::uint32*)(utf32_ptr + utf32_ptr_count);
 			::booldog::uint32 letter0 = 0;
-			if( target == 0 )
+			::booldog::byte diff = 0;
+			if(utf32_ptr == 0)
 				goto goto_conversion_result_targetExhausted;
-			while( source < source_end )
+			while(source < source_end)
 			{
 				if( *source <= 0x7f )
 				{
-					if( *source == 0 )
+					diff = 1;
+					if(*source == 0)
 					{
-						if( target < target_end )
+						if(target < target_end)
 							*target++ = 0;
 						break;
 					}
 					letter0 = *source++;
 				}
-				else if( (*source >> 5 ) == 0x6 )
+				else if((*source >> 5) == 0x6)
 				{
+					diff = 2;
 					source += 2;
-					if( source > source_end )
+					if(source > source_end)
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
 					letter0 = source[-2];
 					letter0 <<= 6;
-					if( !( ( ( source[ -1 ] ) >> 6 ) == 0x2 ) )
+					if(!(((source[-1]) >> 6) == 0x2))
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
 					letter0 += source[-1];
 					letter0 -= 0x00003080UL;//::booldog::utils::string::utf8::_offsets_from_UTF8[ 2 ];
 				}
-				else if( ( *source >> 4 ) == 0x0e )
+				else if((*source >> 4) == 0x0e)
 				{
+					diff = 3;
 					source += 3;
-					if( source > source_end )
+					if(source > source_end)
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
 					letter0 = source[-3];
 					letter0 <<= 6;
-					if( !( ( source[ -2 ] >> 6 ) == 0x2 ) )
+					if(!((source[-2] >> 6) == 0x2))
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
 					letter0 += source[-2];
 					letter0 <<= 6;
-					if( !( ( ( source[ -1 ] ) >> 6 ) == 0x2 ) )
+					if(!(((source[-1]) >> 6) == 0x2))
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
 					letter0 += source[-1];
 					letter0 -= 0x000E2080UL;//::booldog::utils::string::utf8::_offsets_from_UTF8[ 3 ];
 				}
-				else if( ( *source >> 3 ) == 0x1e )
+				else if((*source >> 3) == 0x1e)
 				{
+					diff = 4;
 					source += 4;
-					if( source > source_end )
+					if(source > source_end)
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
 					letter0 = source[-4];
 					letter0 <<= 6;
@@ -421,67 +430,90 @@ goto_conversion_result_targetExhausted:
 					}								
 				}
 				else
-					return ::booldog::enums::string::conversion_result_sourceIllegal;						
+					return ::booldog::enums::string::conversion_result_sourceIllegal;
+				++utf32length;
 			}
-			if( target )
-				utf32_bytes = (char*)target - utf32_ptr;
+			utf32_bytes = (char*)target - utf32_ptr;
+			srcbyteindex = ((char*)source - utf8_ptr);
+			dstbyteindex = utf32_bytes;
 			return ::booldog::enums::string::conversion_result_OK;
 goto_conversion_result_targetExhausted:
-			while( source < source_end ) 
+			if(utf32_ptr)
 			{
-				if( *source == 0 )
+				utf32_bytes = (char*)target - utf32_ptr;
+				srcbyteindex = ((char*)source - utf8_ptr) - diff;
+				dstbyteindex = utf32_bytes - 4;
+			}
+			while(source < source_end) 
+			{
+				if(*source == 0)
 				{
-					target++;
+					utf32_bytes += 4;
 					break;
 				}
-				else if( *source <= 0x7f )
-					source++;
-				else if( (*source >> 5 ) == 0x6 )
+				else if(*source <= 0x7f)
+					letter0 = *source++;
+				else if((*source >> 5) == 0x6)
 				{
 					source += 2;
-					if( source > source_end )
+					if(source > source_end)
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
-					if( !( ( ( source[ -1 ] ) >> 6 ) == 0x2 ) )
+					letter0 = source[-2];
+					letter0 <<= 6;
+					if(!(((source[-1]) >> 6) == 0x2))
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
+					letter0 += source[-1];
+					letter0 -= 0x00003080UL;//::booldog::utils::string::utf8::_offsets_from_UTF8[ 2 ];
 				}
-				else if( ( *source >> 4 ) == 0x0e )
+				else if((*source >> 4) == 0x0e)
 				{
 					source += 3;
-					if( source > source_end )
+					if(source > source_end)
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
-					if( !( ( source[ -2 ] >> 6 ) == 0x2 ) )
+					letter0 = source[-3];
+					letter0 <<= 6;
+					if(!((source[-2] >> 6) == 0x2))
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
-					if( !( ( ( source[ -1 ] ) >> 6 ) == 0x2 ) )
+					letter0 += source[-2];
+					letter0 <<= 6;
+					if(!(((source[-1]) >> 6) == 0x2))
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
+					letter0 += source[-1];
+					letter0 -= 0x000E2080UL;//::booldog::utils::string::utf8::_offsets_from_UTF8[ 3 ];
 				}
-				else if( ( *source >> 3 ) == 0x1e )
+				else if((*source >> 3) == 0x1e)
 				{
 					source += 4;
-					if( source > source_end )
+					if(source > source_end)
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
+					letter0 = source[-4];
+					letter0 <<= 6;
 					if( !( ( source[ -3 ] >> 6 ) == 0x2 ) )
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
+					letter0 += source[-3];
+					letter0 <<= 6;
 					if( !( ( source[ -2 ] >> 6 ) == 0x2 ) )
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
+					letter0 += source[-2];
+					letter0 <<= 6;
 					if( !( ( ( source[ -1 ] ) >> 6 ) == 0x2 ) )
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
+					letter0 += source[-1];
+					letter0 -= 0x03C82080UL;//::booldog::utils::string::utf8::_offsets_from_UTF8[ 4 ];
 				}
 				else
 					return ::booldog::enums::string::conversion_result_sourceIllegal;
-				if( letter0 <= (::booldog::uint32)0x0010FFFF ) 
+				if(letter0 <= (::booldog::uint32)0x0010FFFF) 
 				{
-					if( letter0 >= (::booldog::uint32)0xD800 && letter0 <= (::booldog::uint32)0xDFFF )
+					if(letter0 >= (::booldog::uint32)0xD800 && letter0 <= (::booldog::uint32)0xDFFF)
 						return ::booldog::enums::string::conversion_result_sourceIllegal;
-					else
-						target++;
 				}
 				else
 					return ::booldog::enums::string::conversion_result_sourceIllegal;
+				utf32_bytes += 4;
 			}
-			if( target )
-				utf32_bytes = (char*)target - utf32_ptr;
 			return ::booldog::enums::string::conversion_result_targetExhausted;
-		};
+		}
 		booinline ::booldog::enums::string::conversion_result to_upper( const char* src_ptr , size_t src_ptr_count , char* dst_ptr , size_t dst_ptr_count , size_t& dst_bytes )
 		{
 			const ::booldog::uint8* source = (::booldog::uint8*)src_ptr , * source_end = (::booldog::uint8*)( src_ptr + src_ptr_count );
@@ -3622,27 +3654,76 @@ goto_conversion_result_targetExhausted:
 			return res->succeeded();
 		}
 		template< size_t step >
-		booinline bool toutf16(::booldog::result_mbchar* pres, ::booldog::allocator* allocator, const char* utf8
-			, size_t& srcbyteindex, size_t utf8bytescount, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+		booinline bool toutf16(::booldog::result_mbchar& pres, const char* utf8, size_t& srcbyteindex, size_t utf8bytescount
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 		{
-			::booldog::result_mbchar locres(allocator);
-			BOOINIT_RESULT(::booldog::result_mbchar);
 			size_t dstbyteindex = 0 , utf16bytes = 2 * step;
 			::booldog::enums::string::conversion_result convres = ::booldog::enums::string::conversion_result_OK;
 			for(;;)
 			{
-				if(res->mbsize < utf16bytes + 2)
+				if(pres.mbsize < utf16bytes + 2)
 				{
-					res->mbsize = utf16bytes + 2;
-					res->mbchar = res->mballocator->realloc_array< char >(res->mbchar, res->mbsize, debuginfo);
+					pres.mbsize = utf16bytes + 2;
+					pres.mbchar = pres.mballocator->realloc_array< char >(pres.mbchar, pres.mbsize, debuginfo);
 				}
-				if(res->mbchar == 0)
+				if(pres.mbchar == 0)
+				{
+					pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+					return false;
+				}
+				convres = ::booldog::utf8::to_utf16(utf8, srcbyteindex, utf8bytescount, pres.mbchar, dstbyteindex, pres.mbsize
+					, utf16bytes, pres.mblen);
+				if(convres == ::booldog::enums::string::conversion_result_sourceIllegal)
+				{
+					pres.booerr(::booldog::enums::result::booerr_type_conversion_result_source_illegal);
+					return false;
+				}
+				else if(convres == ::booldog::enums::string::conversion_result_OK)
+				{
+					if(utf16bytes == pres.mbsize)
+					{
+						pres.mbsize +=2;
+						pres.mbchar = pres.mballocator->realloc_array< char >(pres.mbchar, pres.mbsize, debuginfo);
+						if(pres.mbchar == 0)
+						{
+							pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+							return false;
+						}
+					}
+					*((::booldog::uint16*)&pres.mbchar[utf16bytes]) = 0;
+					break;
+				}
+				else if(convres == ::booldog::enums::string::conversion_result_sourceExhausted)
+				{
+					pres.booerr(::booldog::enums::result::booerr_type_conversion_result_source_exhausted);
+					return false;
+				}
+			}
+			return true;
+		}
+		template< size_t step >
+		booinline bool toutf32(::booldog::result* pres, booldog::allocator* allocator, char*& dst, size_t& dstlen, size_t& dstsize
+			, const char* utf8, size_t& srcbyteindex, size_t utf8bytescount
+			, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+		{
+			::booldog::result locres;
+			BOOINIT_RESULT(::booldog::result);
+			size_t dstbyteindex = 0 , utf32bytes = 4 * step;
+			::booldog::enums::string::conversion_result convres = ::booldog::enums::string::conversion_result_OK;
+			for(;;)
+			{
+				if(dstsize < utf32bytes + 4)
+				{
+					dstsize = utf32bytes + 4;
+					dst = allocator->realloc_array< char >(dst, dstsize, debuginfo);
+				}
+				if(dst == 0)
 				{
 					res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
 					break;
 				}
-				convres = ::booldog::utf8::to_utf16(utf8, srcbyteindex, utf8bytescount, res->mbchar, dstbyteindex, res->mbsize
-					, utf16bytes, res->mblen);
+				convres = ::booldog::utf8::to_utf32(utf8, srcbyteindex, utf8bytescount, dst, dstbyteindex, dstsize, utf32bytes
+					, dstlen);
 				if(convres == ::booldog::enums::string::conversion_result_sourceIllegal)
 				{
 					res->booerr(::booldog::enums::result::booerr_type_conversion_result_source_illegal);
@@ -3650,17 +3731,17 @@ goto_conversion_result_targetExhausted:
 				}
 				else if(convres == ::booldog::enums::string::conversion_result_OK)
 				{
-					if(utf16bytes == res->mbsize)
+					if(utf32bytes == dstsize)
 					{
-						res->mbsize +=2;
-						res->mbchar = res->mballocator->realloc_array< char >(res->mbchar, res->mbsize, debuginfo);
-						if(res->mbchar == 0)
+						dstsize += 4;
+						dst = allocator->realloc_array< char >(dst, dstsize, debuginfo);
+						if(dst == 0)
 						{
 							res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
 							break;
 						}
 					}
-					*((::booldog::uint16*)&res->mbchar[utf16bytes]) = 0;
+					*((::booldog::uint32*)&dst[utf32bytes]) = 0;
 					break;
 				}
 				else if(convres == ::booldog::enums::string::conversion_result_sourceExhausted)
@@ -3670,6 +3751,54 @@ goto_conversion_result_targetExhausted:
 				}
 			}
 			return res->succeeded();
+		}
+		template< size_t step >
+		booinline bool toutf32(::booldog::result_mbchar& pres, const char* utf8
+			, size_t& srcbyteindex, size_t utf8bytescount, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+		{
+			size_t dstbyteindex = 0 , utf32bytes = 4 * step;
+			::booldog::enums::string::conversion_result convres = ::booldog::enums::string::conversion_result_OK;
+			for(;;)
+			{
+				if(pres.mbsize < utf32bytes + 4)
+				{
+					pres.mbsize = utf32bytes + 4;
+					pres.mbchar = pres.mballocator->realloc_array< char >(pres.mbchar, pres.mbsize, debuginfo);
+				}
+				if(pres.mbchar == 0)
+				{
+					pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+					return false;
+				}
+				convres = ::booldog::utf8::to_utf32(utf8, srcbyteindex, utf8bytescount, pres.mbchar, dstbyteindex, pres.mbsize
+					, utf32bytes, pres.mblen);
+				if(convres == ::booldog::enums::string::conversion_result_sourceIllegal)
+				{
+					pres.booerr(::booldog::enums::result::booerr_type_conversion_result_source_illegal);
+					return false;
+				}
+				else if(convres == ::booldog::enums::string::conversion_result_OK)
+				{
+					if(utf32bytes == pres.mbsize)
+					{
+						pres.mbsize += 4;
+						pres.mbchar = pres.mballocator->realloc_array< char >(pres.mbchar, pres.mbsize, debuginfo);
+						if(pres.mbchar == 0)
+						{
+							pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+							return false;
+						}
+					}
+					*((::booldog::uint32*)&pres.mbchar[utf32bytes]) = 0;
+					break;
+				}
+				else if(convres == ::booldog::enums::string::conversion_result_sourceExhausted)
+				{
+					pres.booerr(::booldog::enums::result::booerr_type_conversion_result_source_exhausted);
+					return false;
+				}
+			}
+			return true;
 		}
 	}
 }

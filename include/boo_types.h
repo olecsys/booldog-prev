@@ -22,7 +22,7 @@
 #ifdef __WINDOWS__
 #define booexport booexternc __declspec(dllexport)
 #define boointernal
-#define booinline __forceinline
+#define booinline inline
 #define dlsym( handle , name ) GetProcAddress( handle , name )
 #elif defined( __UNIX__ )
 #ifdef __LINUX__

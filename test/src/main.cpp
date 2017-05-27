@@ -12,6 +12,8 @@
 #include <config.h>
 #endif
 
+#define TURNON_LONG_TESTS 0
+
 #define test_rpr_cp1251 -16 , -17 , -16
 #define test_Apr_cp1251 -64 , -17 , -16
 #define test_0Apr_cp1251 48 , -64 , -17 , -16
@@ -145,6 +147,7 @@ char utf8_TESTil_var[] =
 
 #define BOOLDOG_STRING_TEST
 
+#include <boo_utf8.h>
 #include <boo_object.h>
 #include <boo_thread.h>
 #include <boo_if.h>
@@ -1997,6 +2000,906 @@ TEST_CASE("boo_memTest", "test")
 		
 	REQUIRE( allocator.available() == total );
 };
+void boo_jsonTest_check(::booldog::data::json::object& root0)
+{
+	size_t length = 0;
+	const char* comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+		
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 3);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("2").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("2").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("2").count() == 0);
+	REQUIRE(strcmp(root0("encode")("2").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("2").name(), "2") == 0);
+	REQUIRE((bool)root0("encode")("2").value == true);
+
+	comparand = "[null,false,true,-1987,\"4\"]";
+	REQUIRE(root0("encode")("3").isarray());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3").count() == 5);
+	REQUIRE(strcmp(root0("encode")("3").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("3").name(), "3") == 0);
+
+	comparand = "null";
+	REQUIRE(root0("encode")("3")[0].isnull());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[0].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[0].name() == 0);
+
+	comparand = "false";
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[1].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[1].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[1].value == false);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[2].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[2].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[2].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[2].value == true);
+
+	comparand = "-1987";
+	REQUIRE(root0("encode")("3")[3].isnumber());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[3].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[3].name() == 0);
+	REQUIRE((int)root0("encode")("3")[3].value == -1987);
+
+	comparand = "\"4\"";
+	REQUIRE(root0("encode")("3")[4].isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[4].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[4].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[4].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[4].name() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[4].value, "4") == 0);
+
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5").count() == 2);
+	REQUIRE(strcmp(root0("encode")("5").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5").name(), "5") == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("6").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("6").name(), "6") == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").value, "print") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("7").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("7").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("7").name(), "7") == 0);
+	REQUIRE((bool)root0("encode")("5")("7").value == true);
+}
+void test_jsonTest0_0(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+	REQUIRE(root0.remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0.exists() == false);
+	REQUIRE(parser0.slow.hasjson() == false);
+	root0 = parser0;		
+	REQUIRE(root0.exists() == false);
+	REQUIRE(root0.json.node == 0);
+	REQUIRE(root0.count() == 0);
+	REQUIRE(root0.json.json(length) == 0);
+	REQUIRE(length == 0);
+	REQUIRE(root0.name() == 0);
+}
+void test_jsonTest0_1(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+		
+	comparand = "{}";
+	REQUIRE(root0("encode").remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode").exists() == false);
+	REQUIRE(parser0.slow.hasjson());
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 0);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+}
+void test_jsonTest0_2(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+
+	REQUIRE(root0("encode")("2").remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode")("2").exists() == false);
+	REQUIRE(parser0.slow.hasjson());
+
+	comparand = "{\"encode\":{\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 2);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	REQUIRE(root0("encode")("2").exists() == false);
+	REQUIRE(root0("encode")("2").json.node == 0);
+	REQUIRE(root0("encode")("2").count() == 0);
+
+	comparand = "[null,false,true,-1987,\"4\"]";
+	REQUIRE(root0("encode")("3").isarray());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3").count() == 5);
+	REQUIRE(strcmp(root0("encode")("3").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("3").name(), "3") == 0);
+
+	comparand = "null";
+	REQUIRE(root0("encode")("3")[0].isnull());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[0].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[0].name() == 0);
+
+	comparand = "false";
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[1].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[1].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[1].value == false);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[2].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[2].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[2].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[2].value == true);
+
+	comparand = "-1987";
+	REQUIRE(root0("encode")("3")[3].isnumber());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[3].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[3].name() == 0);
+	REQUIRE((int)root0("encode")("3")[3].value == -1987);
+
+	comparand = "\"4\"";
+	REQUIRE(root0("encode")("3")[4].isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[4].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[4].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[4].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[4].name() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[4].value, "4") == 0);
+
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5").count() == 2);
+	REQUIRE(strcmp(root0("encode")("5").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5").name(), "5") == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("6").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("6").name(), "6") == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").value, "print") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("7").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("7").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("7").name(), "7") == 0);
+	REQUIRE((bool)root0("encode")("5")("7").value == true);
+}
+void test_jsonTest0_3(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+
+	REQUIRE(root0("encode")("3").remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode")("3").exists() == false);
+	REQUIRE(parser0.slow.hasjson());
+
+	comparand = "{\"encode\":{\"2\":true,\"5\":{\"6\":\"print\",\"7\":true}}}";
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"2\":true,\"5\":{\"6\":\"print\",\"7\":true}}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 2);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("2").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("2").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("2").count() == 0);
+	REQUIRE(strcmp(root0("encode")("2").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("2").name(), "2") == 0);
+	REQUIRE((bool)root0("encode")("2").value == true);
+
+	comparand = "[null,false,true,-1987,\"4\"]";
+	REQUIRE(root0("encode")("3").exists() == false);
+	REQUIRE(root0("encode")("3").json.node == 0);
+	REQUIRE(root0("encode")("3").count() == 0);
+
+	comparand = "null";
+	REQUIRE(root0("encode")("3")[0].exists() == false);
+	REQUIRE(root0("encode")("3")[0].json.node == 0);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+
+	comparand = "false";
+	REQUIRE(root0("encode")("3")[1].exists() == false);
+	REQUIRE(root0("encode")("3")[1].json.node == 0);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[2].exists() == false);
+	REQUIRE(root0("encode")("3")[2].json.node == 0);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+
+	comparand = "-1987";
+	REQUIRE(root0("encode")("3")[3].exists() == false);
+	REQUIRE(root0("encode")("3")[3].json.node == 0);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+
+	comparand = "\"4\"";
+	REQUIRE(root0("encode")("3")[4].exists() == false);
+	REQUIRE(root0("encode")("3")[4].json.node == 0);
+	REQUIRE(root0("encode")("3")[4].count() == 0);
+
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5").count() == 2);
+	REQUIRE(strcmp(root0("encode")("5").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5").name(), "5") == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("6").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("6").name(), "6") == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").value, "print") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("7").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("7").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("7").name(), "7") == 0);
+	REQUIRE((bool)root0("encode")("5")("7").value == true);
+}
+void test_jsonTest0_4(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+
+	REQUIRE(root0("encode")("5").remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode")("5").exists() == false);
+	REQUIRE(parser0.slow.hasjson());
+
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"]}}";		
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"2\":true,\"3\":[null,false,true,-1987,\"4\"]}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 2);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("2").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("2").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("2").count() == 0);
+	REQUIRE(strcmp(root0("encode")("2").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("2").name(), "2") == 0);
+	REQUIRE((bool)root0("encode")("2").value == true);
+
+	comparand = "[null,false,true,-1987,\"4\"]";
+	REQUIRE(root0("encode")("3").isarray());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3").count() == 5);
+	REQUIRE(strcmp(root0("encode")("3").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("3").name(), "3") == 0);
+
+	comparand = "null";
+	REQUIRE(root0("encode")("3")[0].isnull());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[0].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[0].name() == 0);
+
+	comparand = "false";
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[1].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[1].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[1].value == false);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[2].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[2].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[2].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[2].value == true);
+
+	comparand = "-1987";
+	REQUIRE(root0("encode")("3")[3].isnumber());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[3].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[3].name() == 0);
+	REQUIRE((int)root0("encode")("3")[3].value == -1987);
+
+	comparand = "\"4\"";
+	REQUIRE(root0("encode")("3")[4].isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[4].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[4].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[4].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[4].name() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[4].value, "4") == 0);
+
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").exists() == false);
+	REQUIRE(root0("encode")("5").json.node == 0);
+	REQUIRE(root0("encode")("5").count() == 0);
+	REQUIRE(root0("encode")("5").json.json(length) == 0);
+	REQUIRE(length == 0);
+	REQUIRE(root0("encode")("5").name() == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").exists() == false);
+	REQUIRE(root0("encode")("5")("6").json.node == 0);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(root0("encode")("5")("6").json.json(length) == 0);
+	REQUIRE(length == 0);
+	REQUIRE(root0("encode")("5")("6").name() == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").exists() == false);
+	REQUIRE(root0("encode")("5")("7").json.node == 0);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(root0("encode")("5")("7").json.json(length) == 0);
+	REQUIRE(length == 0);
+	REQUIRE(root0("encode")("5")("7").name() == 0);
+}
+void test_jsonTest0_5(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+
+	REQUIRE(root0("encode")("3")[0].remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode")("3")[0].isboolean());
+	REQUIRE(parser0.slow.hasjson());
+
+	comparand = "{\"encode\":{\"2\":true,\"3\":[false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";		
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"2\":true,\"3\":[false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 3);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("2").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("2").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("2").count() == 0);
+	REQUIRE(strcmp(root0("encode")("2").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("2").name(), "2") == 0);
+	REQUIRE((bool)root0("encode")("2").value == true);
+
+	comparand = "[false,true,-1987,\"4\"]";
+	REQUIRE(root0("encode")("3").isarray());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3").count() == 4);
+	REQUIRE(strcmp(root0("encode")("3").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("3").name(), "3") == 0);
+		
+	comparand = "false";
+	REQUIRE(root0("encode")("3")[0].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[0].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[0].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[0].value == false);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[1].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[1].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[1].value == true);
+
+	comparand = "-1987";
+	REQUIRE(root0("encode")("3")[2].isnumber());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[2].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[2].name() == 0);
+	REQUIRE((int)root0("encode")("3")[2].value == -1987);
+
+	comparand = "\"4\"";
+	REQUIRE(root0("encode")("3")[3].isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[3].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[3].name() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].value, "4") == 0);
+
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5").count() == 2);
+	REQUIRE(strcmp(root0("encode")("5").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5").name(), "5") == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("6").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("6").name(), "6") == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").value, "print") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("7").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("7").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("7").name(), "7") == 0);
+	REQUIRE((bool)root0("encode")("5")("7").value == true);
+}
+void test_jsonTest0_6(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+
+	REQUIRE(root0("encode")("3")[1].remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(parser0.slow.hasjson());
+
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";		
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"2\":true,\"3\":[null,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 3);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("2").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("2").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("2").count() == 0);
+	REQUIRE(strcmp(root0("encode")("2").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("2").name(), "2") == 0);
+	REQUIRE((bool)root0("encode")("2").value == true);
+
+	comparand = "[null,true,-1987,\"4\"]";
+	REQUIRE(root0("encode")("3").isarray());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3").count() == 4);
+	REQUIRE(strcmp(root0("encode")("3").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("3").name(), "3") == 0);
+
+	comparand = "null";
+	REQUIRE(root0("encode")("3")[0].isnull());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[0].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[0].name() == 0);
+		
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[1].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[1].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[1].value == true);
+
+	comparand = "-1987";
+	REQUIRE(root0("encode")("3")[2].isnumber());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[2].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[2].name() == 0);
+	REQUIRE((int)root0("encode")("3")[2].value == -1987);
+
+	comparand = "\"4\"";
+	REQUIRE(root0("encode")("3")[3].isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[3].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[3].name() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].value, "4") == 0);
+
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5").count() == 2);
+	REQUIRE(strcmp(root0("encode")("5").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5").name(), "5") == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("6").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("6").name(), "6") == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").value, "print") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("7").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("7").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("7").name(), "7") == 0);
+	REQUIRE((bool)root0("encode")("5")("7").value == true);
+}
+void test_jsonTest0_7(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+
+	REQUIRE(root0("encode")("3")[4].remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode")("3")[4].exists() == false);
+	REQUIRE(parser0.slow.hasjson());
+		
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"2\":true,\"3\":[null,false,true,-1987],\"5\":{\"6\":\"print\",\"7\":true}}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 3);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("2").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("2").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("2").count() == 0);
+	REQUIRE(strcmp(root0("encode")("2").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("2").name(), "2") == 0);
+	REQUIRE((bool)root0("encode")("2").value == true);
+
+	comparand = "[null,false,true,-1987]";
+	REQUIRE(root0("encode")("3").isarray());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3").count() == 4);
+	REQUIRE(strcmp(root0("encode")("3").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("3").name(), "3") == 0);
+
+	comparand = "null";
+	REQUIRE(root0("encode")("3")[0].isnull());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[0].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[0].name() == 0);
+
+	comparand = "false";
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[1].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[1].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[1].value == false);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[2].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[2].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[2].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[2].value == true);
+
+	comparand = "-1987";
+	REQUIRE(root0("encode")("3")[3].isnumber());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[3].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[3].name() == 0);
+	REQUIRE((int)root0("encode")("3")[3].value == -1987);
+		
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5").count() == 2);
+	REQUIRE(strcmp(root0("encode")("5").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5").name(), "5") == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("6").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("6").name(), "6") == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").value, "print") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("7").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("7").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("7").name(), "7") == 0);
+	REQUIRE((bool)root0("encode")("5")("7").value == true);
+}
+void test_jsonTest0_8(::booldog::result& resres, size_t& length, const char* comparand, ::booldog::data::json::serializator& parser0)
+{
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::object root0 = ::booldog::data::json::parse(parser0, comparand, SIZE_MAX);
+	boo_jsonTest_check(root0);
+
+	REQUIRE(root0("encode")("3")[3].remove(&resres));
+	REQUIRE(resres.succeeded());
+	REQUIRE(root0("encode")("3")[3].isstring());
+	REQUIRE(parser0.slow.hasjson());
+
+	comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";		
+	REQUIRE(root0.isobject());
+	REQUIRE(::booldog::utils::get_bit(root0.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0.count() == 1);
+	REQUIRE(strcmp(root0.json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0.name() == 0);
+
+	comparand = "{\"2\":true,\"3\":[null,false,true,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}";
+	REQUIRE(root0("encode").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode").count() == 3);
+	REQUIRE(strcmp(root0("encode").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode").name(), "encode") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("2").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("2").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("2").count() == 0);
+	REQUIRE(strcmp(root0("encode")("2").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("2").name(), "2") == 0);
+	REQUIRE((bool)root0("encode")("2").value == true);
+
+	comparand = "[null,false,true,\"4\"]";
+	REQUIRE(root0("encode")("3").isarray());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3").count() == 4);
+	REQUIRE(strcmp(root0("encode")("3").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("3").name(), "3") == 0);
+
+	comparand = "null";
+	REQUIRE(root0("encode")("3")[0].isnull());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[0].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[0].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[0].name() == 0);
+
+	comparand = "false";
+	REQUIRE(root0("encode")("3")[1].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[1].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[1].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[1].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[1].value == false);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("3")[2].isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[2].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[2].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[2].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[2].name() == 0);
+	REQUIRE((bool)root0("encode")("3")[2].value == true);
+	
+	comparand = "\"4\"";
+	REQUIRE(root0("encode")("3")[3].isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("3")[3].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("3")[3].count() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(root0("encode")("3")[3].name() == 0);
+	REQUIRE(strcmp(root0("encode")("3")[3].value, "4") == 0);
+
+	comparand = "{\"6\":\"print\",\"7\":true}";
+	REQUIRE(root0("encode")("5").isobject());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5").count() == 2);
+	REQUIRE(strcmp(root0("encode")("5").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5").name(), "5") == 0);
+
+	comparand = "\"print\"";
+	REQUIRE(root0("encode")("5")("6").isstring());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("6").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("6").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("6").name(), "6") == 0);
+	REQUIRE(strcmp(root0("encode")("5")("6").value, "print") == 0);
+
+	comparand = "true";
+	REQUIRE(root0("encode")("5")("7").isboolean());
+	REQUIRE(::booldog::utils::get_bit(root0("encode")("5")("7").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+	REQUIRE(root0("encode")("5")("7").count() == 0);
+	REQUIRE(strcmp(root0("encode")("5")("7").json.json(length), comparand) == 0);
+	REQUIRE(length == strlen(comparand));
+	REQUIRE(strcmp(root0("encode")("5")("7").name(), "7") == 0);
+	REQUIRE((bool)root0("encode")("5")("7").value == true);
+}
+void test_jsonTest0(::booldog::allocators::stack< 4096 >& allocator)
+{
+	::booldog::result resres;
+	size_t length = 0;
+	const char* comparand = "{\"encode\":{\"2\":true,\"3\":[null,false,true,-1987,\"4\"],\"5\":{\"6\":\"print\",\"7\":true}}}";
+	::booldog::data::json::serializator parser0(&allocator);
+	::booldog::data::json::object root0;
+	test_jsonTest0_0(resres, length, comparand, parser0);
+	
+	test_jsonTest0_1(resres, length, comparand, parser0);
+
+	test_jsonTest0_2(resres, length, comparand, parser0);
+	
+	test_jsonTest0_3(resres, length, comparand, parser0);
+
+	test_jsonTest0_4(resres, length, comparand, parser0);
+
+	test_jsonTest0_5(resres, length, comparand, parser0);
+
+	test_jsonTest0_6(resres, length, comparand, parser0);
+
+	test_jsonTest0_7(resres, length, comparand, parser0);
+
+	test_jsonTest0_8(resres, length, comparand, parser0);
+}
 TEST_CASE("boo_jsonTest", "test")
 {
 	::booldog::allocators::stack< 4096 > allocator;
@@ -2004,6 +2907,79 @@ TEST_CASE("boo_jsonTest", "test")
 	size_t total = allocator.available();
 
 	char* begin = (char*)allocator.begin();
+	
+	test_jsonTest0(allocator);
+	{
+		::booldog::result resres;
+		size_t length = 0;
+		const char* comparand = "{\"encode\":[]}";
+		::booldog::data::json::serializator parser(&allocator);
+		::booldog::data::json::object root = ::booldog::data::json::parse(parser, comparand, SIZE_MAX), field;
+		REQUIRE(root.isobject());
+		field = root("encode").add_object< 16 >(&resres);
+		REQUIRE(field.isobject());
+
+		comparand = "{\"encode\":[{}]}";
+		REQUIRE(root.isobject());
+		REQUIRE(::booldog::utils::get_bit(root.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root.count() == 1);
+		REQUIRE(strcmp(root.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root.name() == 0);
+
+		comparand = "[{}]";
+		REQUIRE(root("encode").isarray());
+		REQUIRE(::booldog::utils::get_bit(root("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root("encode").count() == 1);
+		REQUIRE(strcmp(root("encode").json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(root("encode").name(), "encode") == 0);
+
+		comparand = "{}";
+		REQUIRE(root("encode")[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(root("encode")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root("encode")[0].count() == 0);
+		REQUIRE(strcmp(root("encode")[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root("encode")[0].name() == 0);
+
+
+		field = root("encode").add_object< 16 >(&resres);
+		REQUIRE(field.isobject());
+
+		comparand = "{\"encode\":[{},{}]}";
+		REQUIRE(root.isobject());
+		REQUIRE(::booldog::utils::get_bit(root.json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root.count() == 1);
+		REQUIRE(strcmp(root.json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root.name() == 0);
+
+		comparand = "[{},{}]";
+		REQUIRE(root("encode").isarray());
+		REQUIRE(::booldog::utils::get_bit(root("encode").json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root("encode").count() == 2);
+		REQUIRE(strcmp(root("encode").json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(strcmp(root("encode").name(), "encode") == 0);
+
+		comparand = "{}";
+		REQUIRE(root("encode")[0].isobject());
+		REQUIRE(::booldog::utils::get_bit(root("encode")[0].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root("encode")[0].count() == 0);
+		REQUIRE(strcmp(root("encode")[0].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root("encode")[0].name() == 0);
+
+		comparand = "{}";
+		REQUIRE(root("encode")[1].isobject());
+		REQUIRE(::booldog::utils::get_bit(root("encode")[1].json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) != 1);
+		REQUIRE(root("encode")[1].count() == 0);
+		REQUIRE(strcmp(root("encode")[1].json.json(length), comparand) == 0);
+		REQUIRE(length == strlen(comparand));
+		REQUIRE(root("encode")[1].name() == 0);
+
+	}
 	{
 		size_t length = 0;
 		const char* comparand = "{\"encode\":\"\"}";
@@ -2741,6 +3717,25 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE(length == strlen(comparand));
 		REQUIRE(strcmp(field0.name(), "8") == 0);
 		REQUIRE((bool)field0.value == true);
+	}
+
+	{
+		const char* comparand = "{\"testing\":{\"testing1\":null},\"set\":null}";
+		::booldog::data::json::serializator parser(&allocator);
+		::booldog::data::json::object root = ::booldog::data::json::parse(parser, "{}", SIZE_MAX), field;
+		REQUIRE(root.isobject());
+		root = root.add_object_if_not_exists< 16 >(0, "testing");
+		REQUIRE(strcmp(root.name(), "testing") == 0);
+		field = root.add_object_if_not_exists< 16 >(0, "testing1");
+		field.value = ::booldog::data::json::object();
+		root = root.parent();
+
+		root = root.add_object< 16 >(0, "set");
+		root.value = ::booldog::data::json::object();
+		root = root.parent();
+		
+		const char* json = parser;
+		REQUIRE(strcmp(json, comparand) == 0);
 	}
 
 	{
@@ -7685,9 +8680,42 @@ struct boo_doubly_linked_listTest_struct
 		value = pvalue;
 	};
 };
-//class boo_doubly_linked_listTest : public ::testing::Test 
-//{
-//};
+struct boo_doubly_linked_listTest_struct_thread
+{
+	::booldog::threading::rdwrlock* rwlock;
+	::booldog::data::doubly_linked_list< boo_doubly_linked_listTest_struct >* list;
+};
+void boo_doubly_linked_listTest_struct_thread_tester(::booldog::threading::thread* thread)
+{
+	boo_doubly_linked_listTest_struct_thread* struct_thread = (boo_doubly_linked_listTest_struct_thread*)thread->udata();
+	while(thread->pending_in_stop() == false)
+	{
+		boo_doubly_linked_listTest_struct item0("item0");
+		struct_thread->rwlock->wlock();
+		struct_thread->list->add(&item0);
+		struct_thread->rwlock->wunlock();
+		::booldog::threading::sleep(13);
+		struct_thread->rwlock->wlock();
+		if(struct_thread->list->count())
+			struct_thread->list->remove(struct_thread->list->first());
+		struct_thread->rwlock->wunlock();
+	}
+}
+void boo_doubly_linked_listTest_struct_thread_tester1(::booldog::threading::thread* thread)
+{
+	boo_doubly_linked_listTest_struct_thread* struct_thread = (boo_doubly_linked_listTest_struct_thread*)thread->udata();
+	while(thread->pending_in_stop() == false)
+	{
+		boo_doubly_linked_listTest_struct item0("item0");
+		struct_thread->rwlock->wlock();
+		struct_thread->list->add(&item0);
+		struct_thread->rwlock->wunlock();
+		::booldog::threading::sleep(13);
+		struct_thread->rwlock->wlock();
+		struct_thread->list->remove(item0);
+		struct_thread->rwlock->wunlock();
+	}
+}
 TEST_CASE("boo_doubly_linked_listTest", "test")
 {
 	boo_doubly_linked_listTest_struct item0( "item0" );
@@ -7815,6 +8843,60 @@ TEST_CASE("boo_doubly_linked_listTest", "test")
 	REQUIRE( doubly_linked_list[ 3 ] == 0 );
 
 	REQUIRE( doubly_linked_list[ 4 ] == 0 );
+
+
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+	{
+#if TURNON_LONG_TESTS
+		::booldog::threading::thread* thread_readers[100] = {};
+
+		::booldog::threading::rdwrlock rwlock;
+		::booldog::data::doubly_linked_list< boo_doubly_linked_listTest_struct > list;
+
+		boo_doubly_linked_listTest_struct_thread struct_thread = {&rwlock, &list};
+		::booldog::result res;
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+		{
+			thread_readers[index] = ::booldog::threading::thread::create(&res, &allocator, 100 * 1024, 0, 0
+				, boo_doubly_linked_listTest_struct_thread_tester, &struct_thread);
+			REQUIRE(thread_readers[index] != 0);
+			REQUIRE(res.succeeded());
+		}
+
+		::booldog::threading::sleep(20000);
+
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+			::booldog::threading::thread::stop(thread_readers[index]);
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+			::booldog::threading::thread::destroy(thread_readers[index]);
+
+
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+		{
+			thread_readers[index] = ::booldog::threading::thread::create(&res, &allocator, 100 * 1024, 0, 0
+				, boo_doubly_linked_listTest_struct_thread_tester1, &struct_thread);
+			REQUIRE(thread_readers[index] != 0);
+			REQUIRE(res.succeeded());
+		}
+
+		::booldog::threading::sleep(20000);
+
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+			::booldog::threading::thread::stop(thread_readers[index]);
+		for(size_t index = 0;index < sizeof(thread_readers) / sizeof(thread_readers[0]);++index)
+			::booldog::threading::thread::destroy(thread_readers[index]);
+#endif
+	}
+	REQUIRE(allocator.stack.begin() == begin);
+
+	REQUIRE(allocator.stack.available() == total);
+
+	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
 };
 //class boo_stringTest : public ::testing::Test 
 //{
@@ -11402,7 +12484,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 0 , SIZE_MAX );
+		::booldog::utils::string::wcs::tombs(resmbchar, L"locale", 0, SIZE_MAX);
 		
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11460,7 +12542,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , SIZE_MAX );
+		::booldog::utils::string::wcs::tombs(resmbchar, L"locale", 3, SIZE_MAX);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11488,7 +12570,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , 2 );
+		::booldog::utils::string::wcs::tombs(resmbchar, L"locale", 3, 2);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11516,7 +12598,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::string::wcs::tombs( &resmbchar , &allocator , L"locale" , 3 , 2 );
+		::booldog::utils::string::wcs::tombs(resmbchar, L"locale", 3, 2);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -14030,9 +15112,7 @@ TEST_CASE("boo_io_utilsTest", "test")
 		
 	REQUIRE(allocator.available() == total);
 };
-//class boo_base_loaderTest : public ::testing::Test 
-//{
-//};
+
 struct boo_base_loader_thread_struct_thread
 {
 	::booldog::loader* loader;
@@ -14042,7 +15122,22 @@ struct boo_base_loader_thread_struct_thread
 	::booldog::interlocked::atomic unloads;
 	::booldog::interlocked::atomic load_tries;
 	::booldog::interlocked::atomic unload_tries;
+	::booldog::named_param* load_params;
+	::booldog::interlocked::atomic init_tries;
+	::booldog::interlocked::atomic inits;
+	::booldog::interlocked::atomic free_tries;
+	::booldog::interlocked::atomic frees;
 };
+void boo_base_loader_thread_onbeforefree(void* udata, ::booldog::base::module* module)
+{
+	boo_base_loader_thread_struct_thread* struct_thread = (boo_base_loader_thread_struct_thread*)udata;
+	::booldog::interlocked::increment(&struct_thread->frees);
+}
+void boo_base_loader_thread_onafterinit(void* udata, ::booldog::base::module* module)
+{
+	boo_base_loader_thread_struct_thread* struct_thread = (boo_base_loader_thread_struct_thread*)udata;
+	::booldog::interlocked::increment(&struct_thread->inits);
+}
 void boo_base_loader_thread_onbeforeunload(void* udata, ::booldog::base::module* module)
 {
 	boo_base_loader_thread_struct_thread* struct_thread = (boo_base_loader_thread_struct_thread*)udata;
@@ -14055,10 +15150,21 @@ void boo_base_loader_thread(::booldog::threading::thread* thread)
 	{
 		::booldog::result_module res;
 		::booldog::interlocked::increment(&struct_thread->load_tries);
-		if(struct_thread->loader->wcsload(&res, struct_thread->loader->allocator(), struct_thread->library, 0) == false)
+		if(struct_thread->loader->wcsload(&res, struct_thread->loader->allocator(), struct_thread->library, struct_thread->load_params) == false)
 			::booldog::interlocked::increment(&struct_thread->errors);
 		if(struct_thread->module != res.module)
 			::booldog::interlocked::increment(&struct_thread->errors);
+
+		::booldog::result resres;
+		::booldog::interlocked::increment(&struct_thread->init_tries);
+		if(struct_thread->module->init(&resres, struct_thread->loader->allocator(), 0, boo_base_loader_thread_onafterinit, struct_thread
+			, false))
+		{
+			::booldog::interlocked::increment(&struct_thread->free_tries);
+			struct_thread->module->free(&resres, struct_thread->loader->allocator(), boo_base_loader_thread_onbeforefree, struct_thread);
+		}
+
+
 		::booldog::interlocked::increment(&struct_thread->unload_tries);
 		if(struct_thread->loader->unload(0, res.module, boo_base_loader_thread_onbeforeunload, struct_thread) == false)
 			::booldog::interlocked::increment(&struct_thread->errors);
@@ -14472,25 +15578,45 @@ TEST_CASE("boo_base_loaderTest", "test")
 		{
 			::booldog::allocators::easy::heap heap;
 			{
+#if TURNON_LONG_TESTS
+#ifdef __x64__
+				booldog::param search_paths_params[] =
+				{
+					BOOPARAM_PCHAR("../../test_data\\modules0/x64"),
+					BOOPARAM_NONE
+				};
+#elif defined( __x86__ )
+				booldog::param search_paths_params[] =
+				{
+					BOOPARAM_PCHAR("../../test_data\\modules0/x86"),
+					BOOPARAM_NONE
+				};
+#endif
+				booldog::named_param load_params[] =
+				{
+					BOONAMED_PARAM_PPARAM("search_paths", search_paths_params),
+					BOONAMED_PARAM_BOOL("exedir_as_root_path", true),
+					BOONAMED_PARAM_NONE
+				};
 				::booldog::loader newloader(&heap);
 
 				::booldog::threading::thread* thread_writers[50] = {}; 
 #ifdef __WINDOWS__
-				const wchar_t* library = L"kernel32";
+				const wchar_t* library = L"core";
 #else
-				const wchar_t* library = L"rt";
+				const wchar_t* library = L"libcore";
 #endif
 				::booldog::result_module res;
-				REQUIRE(newloader.wcsload(&res, newloader.allocator(), library, 0));
+				REQUIRE(newloader.wcsload(&res, newloader.allocator(), library, load_params));
 				REQUIRE(res.succeeded());
-				boo_base_loader_thread_struct_thread struct_thread = {&newloader, res.module, library, 0, 0, 0, 0};
+				boo_base_loader_thread_struct_thread struct_thread = {&newloader, res.module, library, 0, 0, 0, 0, load_params, 0, 0, 0, 0};
 				REQUIRE(newloader.unload(&resres, res.module, 0, 0));
 				REQUIRE(resres.succeeded());
 
 				for(size_t index = 0;index < sizeof(thread_writers) / sizeof(thread_writers[0]);++index)
 				{
-					thread_writers[index] = ::booldog::threading::thread::create(&resres, &heap, 100 * 1024, 0, 0
-						, boo_base_loader_thread, &struct_thread);
+					thread_writers[index] = ::booldog::threading::thread::create(&resres, &heap, 100 * 1024, 0, 0, boo_base_loader_thread
+						, &struct_thread);
 					REQUIRE(thread_writers[index] != 0);
 					REQUIRE(resres.succeeded());
 				}
@@ -14503,10 +15629,19 @@ TEST_CASE("boo_base_loaderTest", "test")
 					::booldog::threading::thread::destroy(thread_writers[index]);
 
 				REQUIRE(::booldog::interlocked::compare_exchange(&struct_thread.errors, 0, 0) == 0);
+				REQUIRE(::booldog::interlocked::compare_exchange(&struct_thread.inits, 0, 0) == 
+					::booldog::interlocked::compare_exchange(&struct_thread.frees, 0, 0));
+				REQUIRE(::booldog::interlocked::compare_exchange(&struct_thread.unloads, 0, 0) == 
+					::booldog::interlocked::compare_exchange(&struct_thread.frees, 0, 0));
 
 				printf("Multithreading load tries count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.load_tries, 0, 0));
 				printf("Multithreading unload tries count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.unload_tries, 0, 0));
+				printf("Multithreading init tries count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.init_tries, 0, 0));
+				printf("Multithreading free tries count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.free_tries, 0, 0));
+				printf("Multithreading init count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.inits, 0, 0));
+				printf("Multithreading free count: %u\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.frees, 0, 0));
 				printf("Multithreading unload count: %u\n\n", (::booldog::uint32)::booldog::interlocked::compare_exchange(&struct_thread.unloads, 0, 0));
+#endif
 			}
 			REQUIRE(heap.size_of_allocated_memory() == 0);
 		}
@@ -14671,6 +15806,7 @@ struct boo_web_camera_info
 	{
 	}
 };
+#if TURNON_LONG_TESTS
 void boo_web_camera_read_frame_callback(::booldog::allocator* allocator, void* udata, ::booldog::multimedia::video::frame* vframe)
 {
 	boo_web_camera_info* info = (boo_web_camera_info*)udata;
@@ -14716,6 +15852,7 @@ static bool boo_web_camera_available_cameras_callback(::booldog::allocator* allo
 	}
 	return true; 
 }
+#endif
 TEST_CASE("boo_web_camera", "test")
 {
 	::booldog::allocators::easy::heap heap;
@@ -14725,6 +15862,7 @@ TEST_CASE("boo_web_camera", "test")
 
 	char* begin = (char*)allocator.stack.begin();
 	{
+#if TURNON_LONG_TESTS
 		boo_web_camera_info info(&allocator);		
 		info.exists = false;
 		info.width = 0;
@@ -14757,6 +15895,7 @@ TEST_CASE("boo_web_camera", "test")
 				camera.video->close(0, true);
 			}
 		}
+#endif
 	}
 
 	REQUIRE( allocator.stack.begin() == begin );
@@ -14780,6 +15919,7 @@ struct boo_audio_info
 	{
 	}
 };
+#if TURNON_LONG_TESTS
 void boo_audio_read_frame_callback(::booldog::allocator* allocator, void* udata, ::booldog::multimedia::audio::frame* vframe)
 {
 	boo_audio_info* info = (boo_audio_info*)udata;
@@ -14825,6 +15965,7 @@ static bool boo_available_audio_callback(::booldog::allocator* allocator, void* 
 	}
 	return true; 
 }
+#endif
 TEST_CASE("boo_multimedia_audio_capture", "test")
 {
 	::booldog::allocators::easy::heap heap;
@@ -14834,6 +15975,7 @@ TEST_CASE("boo_multimedia_audio_capture", "test")
 
 	char* begin = (char*)allocator.stack.begin();
 	{
+#if TURNON_LONG_TESTS
 		boo_audio_info info(&allocator);		
 		info.exists = false;
 		::booldog::multimedia::audio::capture::available_capture_devices(0, &allocator, boo_available_audio_callback
@@ -14863,6 +16005,7 @@ TEST_CASE("boo_multimedia_audio_capture", "test")
 				camera.audio->close(0, true);
 			}
 		}
+#endif
 	}
 
 	REQUIRE( allocator.stack.begin() == begin );
@@ -14938,6 +16081,7 @@ TEST_CASE("boo_lockfree_stack", "test")
 
 	char* begin = (char*)allocator.stack.begin();
 	{
+#if TURNON_LONG_TESTS
 		::booldog::threading::thread* thread_readers[50] = {}; 
 		::booldog::threading::thread* thread_writers[50] = {}; 
 
@@ -14992,6 +16136,7 @@ TEST_CASE("boo_lockfree_stack", "test")
 		}
 		REQUIRE(count == real_count);
 		REQUIRE(struct_thread.allocated_count == avail_count + count);
+#endif
 	}
 
 	REQUIRE(allocator.stack.begin() == begin);
@@ -15040,7 +16185,7 @@ TEST_CASE("boo_environment_utils", "test")
 
 	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
 }
-TEST_CASE("boo_string_classes", "test")
+TEST_CASE("boo_classes_string", "test")
 {
 	::booldog::allocators::easy::heap heap;
 	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
@@ -15282,6 +16427,132 @@ TEST_CASE("boo_string_classes", "test")
 
 			mbchar.mbchar = 0;
 		}
+	}
+
+	REQUIRE(allocator2.stack.begin() == begin2);
+
+	REQUIRE(allocator2.stack.available() == total2);
+
+	REQUIRE(allocator.stack.begin() == begin);
+
+	REQUIRE(allocator.stack.available() == total);
+
+	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
+}
+TEST_CASE("boo_utf8", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
+	::booldog::allocators::single_threaded::mixed< 3 * 1024 > allocator2(&heap);
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+
+	size_t total2 = allocator2.stack.available();
+
+	char* begin2 = (char*)allocator2.stack.begin();
+	{
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf32< 1 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(4 * mbchar0.mblen == sizeof(utf32_April_var) - 4);
+			REQUIRE(memcmp(mbchar0.mbchar, utf32_April_var, 4 * mbchar0.mblen) == 0);
+		}
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf32< 2 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(4 * mbchar0.mblen == sizeof(utf32_April_var) - 4);
+			REQUIRE(memcmp(mbchar0.mbchar, utf32_April_var, 4 * mbchar0.mblen) == 0);
+		}
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf32< 3 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(4 * mbchar0.mblen == sizeof(utf32_April_var) - 4);
+			REQUIRE(memcmp(mbchar0.mbchar, utf32_April_var, 4 * mbchar0.mblen) == 0);
+		}
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf32< 4 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(4 * mbchar0.mblen == sizeof(utf32_April_var) - 4);
+			REQUIRE(memcmp(mbchar0.mbchar, utf32_April_var, 4 * mbchar0.mblen) == 0);
+		}
+
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf16< 1 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(2 * mbchar0.mblen == sizeof(utf16_April_var) - 2);
+			REQUIRE(memcmp(mbchar0.mbchar, utf16_April_var, 2 * mbchar0.mblen) == 0);
+		}
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf16< 2 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(2 * mbchar0.mblen == sizeof(utf16_April_var) - 2);
+			REQUIRE(memcmp(mbchar0.mbchar, utf16_April_var, 2 * mbchar0.mblen) == 0);
+		}
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf16< 3 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(2 * mbchar0.mblen == sizeof(utf16_April_var) - 2);
+			REQUIRE(memcmp(mbchar0.mbchar, utf16_April_var, 2 * mbchar0.mblen) == 0);
+		}
+		{
+			size_t srcbyteindex = 0;
+			::booldog::results::mbchar mbchar0(&allocator);
+			::booldog::utf8::toutf16< 4 >(mbchar0, utf8_April_var, srcbyteindex, sizeof(utf8_April_var) - 1);
+			REQUIRE(2 * mbchar0.mblen == sizeof(utf16_April_var) - 2);
+			REQUIRE(memcmp(mbchar0.mbchar, utf16_April_var, 2 * mbchar0.mblen) == 0);
+		}
+	}
+
+	REQUIRE(allocator2.stack.begin() == begin2);
+
+	REQUIRE(allocator2.stack.available() == total2);
+
+	REQUIRE(allocator.stack.begin() == begin);
+
+	REQUIRE(allocator.stack.available() == total);
+
+	REQUIRE(allocator.holder.heap->size_of_allocated_memory() == 0);
+}
+TEST_CASE("boo_file_utils", "test")
+{
+	::booldog::allocators::easy::heap heap;
+	::booldog::allocators::single_threaded::mixed< 16 * 1024 > allocator(&heap);
+	::booldog::allocators::single_threaded::mixed< 3 * 1024 > allocator2(&heap);
+	
+	size_t total = allocator.stack.available();
+
+	char* begin = (char*)allocator.stack.begin();
+
+	size_t total2 = allocator2.stack.available();
+
+	char* begin2 = (char*)allocator2.stack.begin();
+	{
+		::booldog::result res;
+		::booldog::results::wchar srcwchar(&allocator), dstwchar(&allocator);
+		REQUIRE(::booldog::utils::executable::wcs::directory< 16 >(&srcwchar, srcwchar));
+		REQUIRE(::booldog::utils::string::wcs::insert(&res, srcwchar, false, srcwchar.wlen, srcwchar.wchar, srcwchar.wlen
+			, srcwchar.wsize, L"/../../test_data/json/json_test2.txt", 0, SIZE_MAX));
+		REQUIRE(::booldog::utils::executable::wcs::directory< 16 >(&dstwchar, dstwchar));
+		REQUIRE(::booldog::utils::string::wcs::insert(&res, dstwchar, false, dstwchar.wlen, dstwchar.wchar, dstwchar.wlen
+			, dstwchar.wsize, L"/copy_of_json_test2.txt", 0, SIZE_MAX));
+
+		REQUIRE(::booldog::utils::io::file::wcs::copyfile(&res, &allocator, srcwchar.wchar, SIZE_MAX, dstwchar.wchar, SIZE_MAX));
+
+		REQUIRE(::booldog::utils::io::file::wcs::remove(&res, dstwchar, dstwchar.wchar, SIZE_MAX));
+
+		REQUIRE(::booldog::utils::io::file::wcs::copyfile(&res, &allocator, srcwchar.wchar, srcwchar.wlen, dstwchar.wchar
+			, dstwchar.wlen));
+
+		REQUIRE(::booldog::utils::io::file::wcs::remove(&res, dstwchar, dstwchar.wchar, dstwchar.wlen));
 	}
 
 	REQUIRE(allocator2.stack.begin() == begin2);

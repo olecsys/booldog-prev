@@ -206,24 +206,28 @@ goto_return:
 				if(_inited_ref == 0)
 				{
 					_inited_ref = UINT32_MAX;
-					if( ponbeforefree )
-						ponbeforefree( udata , this );
+					_lock.wunlock(debuginfo);
+					if(ponbeforefree)
+						ponbeforefree(udata, this);
 					::booldog::result_pointer respointer;
-					if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "core_free" , debuginfo ) )
+					if(::booldog::utils::module::mbs::method(&respointer, allocator, _handle, "core_free", debuginfo))
 						goto goto_method_success_return;
-					if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "rux_module_free" , debuginfo ) )
+					if(::booldog::utils::module::mbs::method(&respointer, allocator, _handle, "rux_module_free", debuginfo))
 						goto goto_method_success_return;
-					if( ::booldog::utils::module::mbs::method( &respointer , allocator , _handle , "dll_free" , debuginfo ) )
+					if(::booldog::utils::module::mbs::method(&respointer, allocator, _handle, "dll_free", debuginfo))
 						goto goto_method_success_return;
-					res->copy( respointer );
+					res->copy(respointer);
 					goto goto_return;
 goto_method_success_return:
 					::booldog::module_free_t module_free = (::booldog::module_free_t)respointer.pres;
 					module_free();
 				}
+				else
+					_lock.wunlock( debuginfo );
 			}
+			else
+				_lock.wunlock( debuginfo );
 goto_return:
-			_lock.wunlock( debuginfo );
 			return res->succeeded();
 		}
 	};
