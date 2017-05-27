@@ -7,6 +7,7 @@
 #include "boo_string_utils.h"
 #include "boo_param.h"
 #include "boo_executable_utils.h"
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifdef __UNIX__
