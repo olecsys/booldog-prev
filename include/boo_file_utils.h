@@ -217,6 +217,12 @@ namespace booldog
 										}
 #endif
 									}
+									else
+									{
+										::close(dstfd);
+										::close(srcfd);
+										return true;
+									}
 								}
 								else
 								{
