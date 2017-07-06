@@ -18,6 +18,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <wchar.h>
 #endif
 namespace booldog
 {	
@@ -280,7 +281,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -353,7 +354,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -372,7 +373,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -482,7 +483,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -501,7 +502,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -545,7 +546,7 @@ goto_return:
 									}
 									if( (size_t)( ptr - begin ) >= charcount )
 									{
-										ptr++;
+										++ptr;
 										break;
 									}
 								}
@@ -616,7 +617,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -634,7 +635,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -673,7 +674,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -712,7 +713,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -823,7 +824,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -842,7 +843,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -887,7 +888,7 @@ goto_return:
 									}
 									if( (size_t)( ptr - begin ) >= charcount )
 									{
-										ptr++;
+										++ptr;
 										break;
 									}
 								}
@@ -1165,7 +1166,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -1213,7 +1214,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -1253,7 +1254,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -1272,7 +1273,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -1312,7 +1313,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -1330,7 +1331,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -1370,7 +1371,7 @@ goto_return:
 							}
 							if( (size_t)( ptr - begin ) >= charcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}

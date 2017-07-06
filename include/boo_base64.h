@@ -97,7 +97,7 @@ namespace booldog
 							}
 							if( (size_t)( ptr - srcbegin ) >= srccharcount )
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}

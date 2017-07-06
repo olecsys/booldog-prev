@@ -306,6 +306,16 @@ namespace booldog
 				assign< 16 >(0, str, debuginfo_macros);
 				return *this;
 			}
+			/** Assign a new C string 
+			* @param str a string object with new C string
+			* @return this
+			*/
+			booinline ::booldog::classes::string& operator =(const ::booldog::classes::string& str)
+			{
+				::booldog::utils::string::mbs::assign< 16 >(0, _allocator, false, 0, _str, _length, _size, str._str, 0, str._length
+					, debuginfo_macros);
+				return *this;
+			}
 			/** Append a C string to _str
 			* @param pres store the function result or detailed error
 			* @param str a appended C string

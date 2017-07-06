@@ -493,7 +493,7 @@ namespace booldog
 						}
 						if( *ptr == 0 )
 							break;
-						ptr++;
+						++ptr;
 					}
 				}
 			};

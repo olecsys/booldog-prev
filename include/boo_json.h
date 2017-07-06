@@ -231,6 +231,8 @@ namespace booldog
 				booinline ::booldog::data::json::object operator()(::booldog::uint64 utf8namehash);
 				booinline ::booldog::data::json::object operator++(int);
 				booinline ::booldog::data::json::object& operator++();
+				booinline ::booldog::data::json::object operator--(int);
+				booinline ::booldog::data::json::object& operator--();
 				booinline ::booldog::uint64 namehash()
 				{
 					return value.namehash();
@@ -1733,10 +1735,11 @@ goto_return:
 			};
 			object_value::operator bool()
 			{
-				if( node )
+				if(node)
 				{
-					::booldog::data::json::checknode( this );
-					return node->operator bool();
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->operator bool();
 				}
 				return false;
 			};
@@ -1762,7 +1765,7 @@ goto_return:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next0;
@@ -1788,7 +1791,7 @@ goto_next0:
 				if( *ptr == '-' )
 				{
 					negative = true;
-					ptr++;
+					++ptr;
 				}
 				int res_float_part_count = 0;
 				::booldog::uint64 res_float_part = 0;				
@@ -1800,12 +1803,12 @@ goto_next0:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					case (::booldog::byte)'.':
 						{
-							ptr++;
+							++ptr;
 							goto goto_float;
 						}
 					default:
@@ -1825,7 +1828,7 @@ goto_float:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					default:
@@ -1841,10 +1844,10 @@ goto_exponent_part:
 				switch( *ptr )
 				{
 				case '-':
-					ptr++;
+					++ptr;
 					goto goto_exponent_part_minus;
 				case '+':
-					ptr++;
+					++ptr;
 				}
 				for( ; ; )
 				{
@@ -1900,12 +1903,14 @@ goto_return:
 			};
 			object_value::operator ::booldog::int32()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
-					return 0;
-				return node->operator booldog::int32();
-			};
+				if(node)
+				{
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->operator booldog::int32();
+				}
+				return 0;
+			}
 			node::operator float()
 			{
 				if( this->type != ::booldog::enums::data::json::number )
@@ -1922,7 +1927,7 @@ goto_return:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next0;
@@ -1948,7 +1953,7 @@ goto_next0:
 				if( *ptr == '-' )
 				{
 					negative = true;
-					ptr++;
+					++ptr;
 				}
 				int res_float_part_count = 0;
 				::booldog::uint64 res_float_part = 0;				
@@ -1960,12 +1965,12 @@ goto_next0:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					case (::booldog::byte)'.':
 						{
-							ptr++;
+							++ptr;
 							goto goto_float;
 						}
 					default:
@@ -1985,7 +1990,7 @@ goto_float:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					default:
@@ -2001,10 +2006,10 @@ goto_exponent_part:
 				switch( *ptr )
 				{
 				case '-':
-					ptr++;
+					++ptr;
 					goto goto_exponent_part_minus;
 				case '+':
-					ptr++;
+					++ptr;
 				}
 				for( ; ; )
 				{
@@ -2059,11 +2064,13 @@ goto_return:
 			};
 			object_value::operator float()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
-					return 0;
-				return node->operator float();
+				if(node)
+				{
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->operator float();
+				}
+				return 0;
 			};
 			node::operator ::booldog::uint32()
 			{
@@ -2081,7 +2088,7 @@ goto_return:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next0;
@@ -2114,12 +2121,12 @@ goto_next0:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					case (::booldog::byte)'.':
 						{
-							ptr++;
+							++ptr;
 							goto goto_float;
 						}
 					default:
@@ -2139,7 +2146,7 @@ goto_float:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					default:
@@ -2155,10 +2162,10 @@ goto_exponent_part:
 				switch( *ptr )
 				{
 				case '-':
-					ptr++;
+					++ptr;
 					goto goto_exponent_part_minus;
 				case '+':
-					ptr++;
+					++ptr;
 				}
 				for( ; ; )
 				{
@@ -2212,12 +2219,14 @@ goto_return:
 			};
 			object_value::operator ::booldog::uint32()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
-					return 0;
-				return node->operator booldog::uint32();
-			};
+				if(node)
+				{
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->operator booldog::uint32();
+				}
+				return 0;
+			}
 			node::operator ::booldog::uint64()
 			{
 				if( this->type != ::booldog::enums::data::json::number )
@@ -2234,7 +2243,7 @@ goto_return:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next0;
@@ -2267,12 +2276,12 @@ goto_next0:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					case (::booldog::byte)'.':
 						{
-							ptr++;
+							++ptr;
 							goto goto_float;
 						}
 					default:
@@ -2292,7 +2301,7 @@ goto_float:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					default:
@@ -2308,10 +2317,10 @@ goto_exponent_part:
 				switch( *ptr )
 				{
 				case '-':
-					ptr++;
+					++ptr;
 					goto goto_exponent_part_minus;
 				case '+':
-					ptr++;
+					++ptr;
 				}
 				for( ; ; )
 				{
@@ -2365,12 +2374,14 @@ goto_return:
 			};
 			object_value::operator ::booldog::uint64()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
-					return 0;
-				return node->operator booldog::uint64();
-			};
+				if(node)
+				{
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->operator booldog::uint64();
+				}
+				return 0;
+			}
 			node::operator ::booldog::int64()
 			{
 				if( this->type != ::booldog::enums::data::json::number )
@@ -2387,7 +2398,7 @@ goto_return:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next0;
@@ -2413,7 +2424,7 @@ goto_next0:
 				if( *ptr == '-' )
 				{
 					negative = true;
-					ptr++;
+					++ptr;
 				}
 				int res_float_part_count = 0;
 				::booldog::uint64 res_float_part = 0;				
@@ -2425,12 +2436,12 @@ goto_next0:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					case (::booldog::byte)'.':
 						{
-							ptr++;
+							++ptr;
 							goto goto_float;
 						}
 					default:
@@ -2450,7 +2461,7 @@ goto_float:
 					{
 					case (::booldog::byte)'e':
 						{
-							ptr++;
+							++ptr;
 							goto goto_exponent_part;
 						}
 					default:
@@ -2466,10 +2477,10 @@ goto_exponent_part:
 				switch( *ptr )
 				{
 				case '-':
-					ptr++;
+					++ptr;
 					goto goto_exponent_part_minus;
 				case '+':
-					ptr++;
+					++ptr;
 				}
 				for( ; ; )
 				{
@@ -2525,12 +2536,14 @@ goto_return:
 			};
 			object_value::operator ::booldog::int64()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
-					return 0;
-				return node->operator booldog::int64();
-			};
+				if(node)
+				{
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->operator booldog::int64();
+				}
+				return 0;
+			}
 			booinline bool checknewjssonptr( char*& ptr , ::booldog::data::json::serializator* parentserializator 
 				, const ::booldog::debug::info& debuginfo )
 			{
@@ -2909,7 +2922,12 @@ goto_return:
 					res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
 					return false;
 				}
-				::booldog::data::json::checknode(this);				
+				::booldog::data::json::checknode(this);
+				if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+				{
+					res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+					return false;
+				}
 				if(valuebegin == 0)
 				{
 					valuebegin = node->name_or_valuebegin;
@@ -3438,7 +3456,7 @@ goto_next0:
 										switch( *++ptr )
 										{
 										case '\\':
-											ptr++;
+											++ptr;
 											break;
 										case '"':
 											goto goto_next1;
@@ -3863,7 +3881,7 @@ goto_next5:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next3;
@@ -3899,6 +3917,11 @@ goto_error:
 					return false;
 				}
 				::booldog::data::json::checknode(&json);
+				if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+				{
+					res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+					return false;
+				}
 				if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT) == 0)
 				{					
 					json.node->freechild(json.parentserializator->slow.nodesindex);
@@ -3993,6 +4016,8 @@ goto_next0:
 				if(node == 0)
 					return 0;
 				::booldog::data::json::checknode(this);
+				if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+					return 0;
 				return node->json(parentserializator);
 			};			
 			node::operator const char*()
@@ -4011,7 +4036,7 @@ goto_next0:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next0;
@@ -4031,7 +4056,7 @@ goto_next0:
 					ptr += 3;
 				}
 				else
-					ptr++;
+					++ptr;
 				if(::booldog::utils::get_bit(this->flags, BOOLDOG_DATA_JSON_VALUE_SERIALIZED))
 				{
 					::booldog::data::json::serializator* parentserializator = getserializator();
@@ -4123,18 +4148,21 @@ goto_next0:
 			};
 			object_value::operator const char*()
 			{
-				if( node )
-					::booldog::data::json::checknode( this );
-				else
-					return 0;
-				return node->operator const char *();
+				if(node)
+				{
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->operator const char *();
+				}
+				return 0;
 			};
 			booinline ::booldog::data::json::object_value& object_value::operator = (const char* value)
 			{		
 				if(node)
 				{
 					::booldog::data::json::checknode(this);
-					node->set< 16 >(0, 0, value, debuginfo_macros);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						node->set< 16 >(0, 0, value, debuginfo_macros);
 				}
 				return *this;
 			}
@@ -4148,7 +4176,8 @@ goto_next0:
 				if(node)
 				{
 					::booldog::data::json::checknode(this);
-					node->set< 16 >(0, 0, value, debuginfo_macros);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						node->set< 16 >(0, 0, value, debuginfo_macros);
 				}
 				return *this;
 			};
@@ -4156,8 +4185,9 @@ goto_next0:
 			{
 				if(node)
 				{
-					::booldog::data::json::checknode( this );
-					node->set< 16 >(0, 0, value, debuginfo_macros);
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						node->set< 16 >(0, 0, value, debuginfo_macros);
 				}
 				return *this;
 			};
@@ -4165,8 +4195,9 @@ goto_next0:
 			{
 				if( node )
 				{
-					::booldog::data::json::checknode( this );
-					node->set< 16 >( 0 , 0 , value , debuginfo_macros );
+					::booldog::data::json::checknode(this);
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						node->set< 16 >( 0 , 0 , value , debuginfo_macros );
 				}
 				return *this;
 			};
@@ -4175,7 +4206,8 @@ goto_next0:
 				if( node )
 				{
 					::booldog::data::json::checknode( this );
-					node->set< 16 >(0, 0, value , debuginfo_macros );
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						node->set< 16 >(0, 0, value , debuginfo_macros );
 				}
 				return *this;
 			};
@@ -4184,7 +4216,8 @@ goto_next0:
 				if( node )
 				{
 					::booldog::data::json::checknode( this );
-					node->set< 16 >( 0 , 0 , value , debuginfo_macros );
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						node->set< 16 >( 0 , 0 , value , debuginfo_macros );
 				}
 				return *this;
 			};
@@ -4194,18 +4227,22 @@ goto_next0:
 				if( node )
 				{
 					::booldog::data::json::checknode( this );
-					return node->name( pres , newname , debuginfo );
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->name( pres , newname , debuginfo );
+					else if(pres)
+						pres->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
 				}
 				else if(pres)
 					pres->booerr( ::booldog::enums::result::booerr_type_json_object_has_not_node );
 				return false;
 			}
-			::booldog::uint64 object_value::namehash( void )
+			::booldog::uint64 object_value::namehash()
 			{
 				if( node )
 				{
 					::booldog::data::json::checknode( this );
-					return node->namehash;
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->namehash;
 				}
 				return 0;
 			};
@@ -4214,7 +4251,8 @@ goto_next0:
 				if( node )
 				{
 					::booldog::data::json::checknode(this);
-					return node->name();
+					if(::booldog::utils::get_bit(node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return node->name();
 				}
 				return 0;
 			};
@@ -4242,7 +4280,7 @@ goto_next0:
 					switch( *ptr )
 					{
 					case 0:
-						ptr++;
+						++ptr;
 						goto goto_next;
 					default:
 						{
@@ -4509,7 +4547,8 @@ goto_return:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT) == 0)
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0 
+						&& ::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT) == 0)
 						return ::booldog::data::json::object(json.node->parent);
 				}
 				return ::booldog::data::json::object();
@@ -4538,7 +4577,7 @@ goto_return:
 							switch( *++ptr )
 							{
 							case '\\':
-								ptr++;
+								++ptr;
 								break;
 							case '"':
 								goto goto_next0;
@@ -4599,24 +4638,28 @@ goto_next0:
 				if( json.node )
 				{
 					::booldog::data::json::checknode( &json );
-					return json.node->type == ::booldog::enums::data::json::string;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return json.node->type == ::booldog::enums::data::json::string;
 				}
 				return false;
 			};
 			booinline bool object::isnegativenumber()
 			{
 				if(json.node)
+				{
 					::booldog::data::json::checknode(&json);
-				else
-					return false;
-				return json.node->isnegativenumber();
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return json.node->isnegativenumber();
+				}
+				return false;
 			};
 			booinline bool object::isnumber()
 			{
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					return json.node->type == ::booldog::enums::data::json::number;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return json.node->type == ::booldog::enums::data::json::number;
 				}
 				return false;
 			};
@@ -4625,7 +4668,8 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					return json.node->type == ::booldog::enums::data::json::null;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return json.node->type == ::booldog::enums::data::json::null;
 				}
 				return false;
 			};
@@ -4634,8 +4678,9 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					return (json.node->type == ::booldog::enums::data::json::boolean_true
-						|| json.node->type == ::booldog::enums::data::json::boolean_false);
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return (json.node->type == ::booldog::enums::data::json::boolean_true
+							|| json.node->type == ::booldog::enums::data::json::boolean_false);
 				}
 				return false;
 			};
@@ -4644,7 +4689,8 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					return json.node->type == ::booldog::enums::data::json::object;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return json.node->type == ::booldog::enums::data::json::object;
 				}
 				return false;
 			};
@@ -4653,16 +4699,18 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					return json.node->type == ::booldog::enums::data::json::array;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return json.node->type == ::booldog::enums::data::json::array;
 				}
 				return false;
-			};
+			}
 			booinline size_t object::count()
 			{
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					return json.node->count();
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+						return json.node->count();
 				}
 				return 0;
 			};
@@ -4679,17 +4727,20 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					if(json.node->type == ::booldog::enums::data::json::array || json.node->type == ::booldog::enums::data::json::object)
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
 					{
-						::booldog::data::json::node* pnext = json.node->child;
-						for( ; ; )
+						if(json.node->type == ::booldog::enums::data::json::array || json.node->type == ::booldog::enums::data::json::object)
 						{
-							if( pnext == 0 )
-								break;
-							if( index == 0 )
-								return ::booldog::data::json::object( pnext );
-							pnext = pnext->next;
-							index--;
+							::booldog::data::json::node* pnext = json.node->child;
+							for( ; ; )
+							{
+								if( pnext == 0 )
+									break;
+								if( index == 0 )
+									return ::booldog::data::json::object( pnext );
+								pnext = pnext->next;
+								index--;
+							}
 						}
 					}
 				}
@@ -4701,6 +4752,7 @@ goto_next0:
 				{
 					::booldog::data::json::checknode(&json);
 					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT)
+						|| ::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE)
 						|| (json.node->parent->type != ::booldog::enums::data::json::object
 						&& json.node->parent->type != ::booldog::enums::data::json::array))
 						json.node = 0;
@@ -4709,15 +4761,43 @@ goto_next0:
 				}
 				return *this;
 			}
+			::booldog::data::json::object& object::operator--()
+			{
+				if(json.node)
+				{
+					::booldog::data::json::checknode(&json);
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT)
+						|| ::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE)
+						|| (json.node->parent->type != ::booldog::enums::data::json::object
+						&& json.node->parent->type != ::booldog::enums::data::json::array))
+						json.node = 0;
+					else
+					{
+						::booldog::data::json::node* pnext = json.node->parent->child, * pprev = 0;
+						while(pnext)
+						{
+							if(pnext == json.node)
+								break;
+							pprev = pnext;
+							pnext = pnext->next;
+						}
+						json.node = pprev;
+					}
+				}
+				return *this;
+			}
 			bool object::islast()
 			{
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT) == 0
-						&& (json.node->parent->type == ::booldog::enums::data::json::object
-						|| json.node->parent->type == ::booldog::enums::data::json::array))
-						return json.node->next == 0;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+					{
+						if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT) == 0
+							&& (json.node->parent->type == ::booldog::enums::data::json::object
+							|| json.node->parent->type == ::booldog::enums::data::json::array))
+							return json.node->next == 0;
+					}
 				}
 				return false;
 			}
@@ -4726,10 +4806,13 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT) == 0
-						&& (json.node->parent->type == ::booldog::enums::data::json::object
-						|| json.node->parent->type == ::booldog::enums::data::json::array))
-						return json.node->parent->child == json.node;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
+					{
+						if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_ROOT) == 0
+							&& (json.node->parent->type == ::booldog::enums::data::json::object
+							|| json.node->parent->type == ::booldog::enums::data::json::array))
+							return json.node->parent->child == json.node;
+					}
 				}
 				return false;
 			}
@@ -4739,42 +4822,51 @@ goto_next0:
 				++*this;
 				return copy;
 			};
+			::booldog::data::json::object object::operator--(int)
+			{
+				::booldog::data::json::object copy(json.node);
+				--*this;
+				return copy;
+			}
 			::booldog::data::json::object object::operator()(const char* utf8name)
 			{
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-					if(utf8name && json.node->type == ::booldog::enums::data::json::object)
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
 					{
-						const char* ptr = utf8name;
-						::booldog::uint64 utf8namehash = 0;
-						for( ; *ptr != 0 ; ptr++ )
-							utf8namehash = utf8namehash * 33 + (::booldog::byte)*ptr;
-						::booldog::data::json::node* pnext = json.node->child;
-						for( ; ; )
+						if(utf8name && json.node->type == ::booldog::enums::data::json::object)
 						{
-							if( pnext == 0 )
-								break;
-							if( pnext->namehash == utf8namehash )
+							const char* ptr = utf8name;
+							::booldog::uint64 utf8namehash = 0;
+							for(;*ptr != 0; ++ptr)
+								utf8namehash = utf8namehash * 33 + (::booldog::byte)*ptr;
+							::booldog::data::json::node* pnext = json.node->child;
+							for( ; ; )
 							{
-								const char* ptr0 = pnext->name_or_valuebegin , * ptr1 = utf8name;
-								if( ::booldog::utils::get_bit( pnext->flags	, BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
-									ptr0 = pnext->name();
-								for( ; ; )
+								if( pnext == 0 )
+									break;
+								if( pnext->namehash == utf8namehash )
 								{
-									if( *ptr0 == 0 || *ptr1 == 0 )
+									const char* ptr0 = pnext->name_or_valuebegin , * ptr1 = utf8name;
+									if( ::booldog::utils::get_bit( pnext->flags	, BOOLDOG_DATA_JSON_NAME_SERIALIZED ) )
+										ptr0 = pnext->name();
+									for( ; ; )
 									{
-										if( *ptr0 == *ptr1 )
-											break;
-										goto goto_next;
+										if( *ptr0 == 0 || *ptr1 == 0 )
+										{
+											if( *ptr0 == *ptr1 )
+												break;
+											goto goto_next;
+										}
+										if( *ptr0++ != *ptr1++ )
+											goto goto_next;
 									}
-									if( *ptr0++ != *ptr1++ )
-										goto goto_next;
+									return ::booldog::data::json::object( pnext );
 								}
-								return ::booldog::data::json::object( pnext );
+				goto_next:
+								pnext = pnext->next;
 							}
-			goto_next:
-							pnext = pnext->next;
 						}
 					}
 				}
@@ -4785,16 +4877,19 @@ goto_next0:
 				if( json.node )
 				{
 					::booldog::data::json::checknode( &json );
-					if( json.node->type == ::booldog::enums::data::json::object )
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE) == 0)
 					{
-						::booldog::data::json::node* pnext = json.node->child;
-						for( ; ; )
+						if( json.node->type == ::booldog::enums::data::json::object )
 						{
-							if( pnext == 0 )
-								break;
-							if( pnext->namehash == utf8namehash )
-								return ::booldog::data::json::object( pnext );
-							pnext = pnext->next;
+							::booldog::data::json::node* pnext = json.node->child;
+							for( ; ; )
+							{
+								if( pnext == 0 )
+									break;
+								if( pnext->namehash == utf8namehash )
+									return ::booldog::data::json::object( pnext );
+								pnext = pnext->next;
+							}
 						}
 					}
 				}
@@ -4827,7 +4922,6 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-
 					::booldog::data::json::node* newnode = 0;
 					::booldog::uint64 newutf8namehash = 0;
 				
@@ -4835,6 +4929,11 @@ goto_next0:
 					::booldog::byte* ptrbyte = (::booldog::byte*)utf8name;
 
 					size_t size = 0;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+					{
+						res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+						goto goto_return;
+					}
 					if(json.node->type != ::booldog::enums::data::json::object)
 					{
 						res->booerr(::booldog::enums::result::booerr_type_json_parent_is_not_object);
@@ -5017,6 +5116,11 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+					{
+						res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+						return ::booldog::data::json::object();
+					}
 					if(json.node->type != ::booldog::enums::data::json::array)
 					{
 						res->booerr(::booldog::enums::result::booerr_type_json_parent_is_not_array);
@@ -5105,7 +5209,6 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-
 					::booldog::data::json::node* newnode = 0;
 					::booldog::uint64 newutf8namehash = 0;
 				
@@ -5113,6 +5216,11 @@ goto_next0:
 					::booldog::byte* ptrbyte = (::booldog::byte*)utf8name;
 
 					size_t size = 0;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+					{
+						res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+						goto goto_return;
+					}					
 					if(json.node->type != ::booldog::enums::data::json::object)
 					{
 						res->booerr(::booldog::enums::result::booerr_type_json_parent_is_not_object);
@@ -5296,7 +5404,6 @@ goto_next0:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-
 					::booldog::data::json::node* newnode = 0;
 					::booldog::uint64 newutf8namehash = 0;
 				
@@ -5304,6 +5411,11 @@ goto_next0:
 					::booldog::byte* ptrbyte = (::booldog::byte*)utf8name;
 
 					size_t size = 0;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+					{
+						res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+						goto goto_return;
+					}					
 					if(json.node->type != ::booldog::enums::data::json::object)
 					{
 						res->booerr(::booldog::enums::result::booerr_type_json_parent_is_not_object);
@@ -5569,7 +5681,6 @@ goto_next5:
 				if(json.node)
 				{
 					::booldog::data::json::checknode(&json);
-
 					::booldog::data::json::node* newnode = 0;
 					::booldog::uint64 newutf8namehash = 0;
 				
@@ -5577,6 +5688,11 @@ goto_next5:
 					::booldog::byte* ptrbyte = (::booldog::byte*)value;
 
 					size_t size = 0;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+					{
+						res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+						goto goto_return;
+					}
 					if(json.node->type != ::booldog::enums::data::json::array)
 					{
 						res->booerr(::booldog::enums::result::booerr_type_json_parent_is_not_array);
@@ -5754,7 +5870,6 @@ goto_next5:
 				if( json.node )
 				{
 					::booldog::data::json::checknode( &json );
-
 					::booldog::data::json::node* newnode = 0;
 					::booldog::uint64 newutf8namehash = 0;
 				
@@ -5762,6 +5877,11 @@ goto_next5:
 					::booldog::byte* ptrbyte = (::booldog::byte*)utf8name;
 
 					size_t size = 0;
+					if(::booldog::utils::get_bit(json.node->flags, BOOLDOG_DATA_JSON_NODE_FREE))
+					{
+						res->booerr(::booldog::enums::result::booerr_type_json_object_has_not_node);
+						goto goto_return;
+					}
 					if( json.node->type != ::booldog::enums::data::json::object )
 					{
 						res->booerr( ::booldog::enums::result::booerr_type_json_parent_is_not_object );
@@ -6246,7 +6366,7 @@ goto_value_parse:
 					{
 					case 0x20:
 						{
-							ptr++;
+							++ptr;
 							break;
 						}
 					default:
@@ -6302,7 +6422,7 @@ goto_go_away_from_ws0:
 							parentnode->child = node;
 						parentnode = node;
 
-						ptr++;
+						++ptr;
 						goto goto_comma_parse;
 					}
 				case '{':
@@ -6342,13 +6462,13 @@ goto_go_away_from_ws0:
 							parentnode->child = node;
 						parentnode = node;
 
-						ptr++;
+						++ptr;
 						goto goto_object_name_parse;
 					}
 				case '"':
 					{
 						const char* string_begin = ptr;
-						ptr++;							
+						++ptr;							
 						for( ; ; )
 						{
 							switch( *ptr++ )
@@ -6385,7 +6505,7 @@ goto_go_away_from_ws0:
 												goto goto_return;
 											}
 
-											ptr++;
+											++ptr;
 											number <<= 4;
 											if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 												number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -6400,7 +6520,7 @@ goto_go_away_from_ws0:
 												goto goto_return;
 											}
 
-											ptr++;
+											++ptr;
 											number <<= 4;
 											if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 												number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -6415,7 +6535,7 @@ goto_go_away_from_ws0:
 												goto goto_return;
 											}
 
-											ptr++;
+											++ptr;
 											number <<= 4;
 											if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 												number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -6452,7 +6572,7 @@ goto_go_away_from_ws0:
 															goto goto_return;
 														}
 
-														ptr++;
+														++ptr;
 														number <<= 4;
 														if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 															number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -6467,7 +6587,7 @@ goto_go_away_from_ws0:
 															goto goto_return;
 														}
 
-														ptr++;
+														++ptr;
 														number <<= 4;
 														if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 															number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -6482,7 +6602,7 @@ goto_go_away_from_ws0:
 															goto goto_return;
 														}
 
-														ptr++;
+														++ptr;
 														number <<= 4;
 														if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 															number |= (::booldog::byte)( ( 10 + *ptr - 0x61 ) );
@@ -6502,7 +6622,7 @@ goto_go_away_from_ws0:
 												}
 											}
 											char utf8[ 8 ] = {0};
-											ptr++;
+											++ptr;
 											size = ptr - begin;
 											size_t utf16index = 0 , utf8bytes = 0 , utf8length = 0 , utf8byteindex = 0;
 											if( ::booldog::utf16::to_utf8( (char*)&number , utf16index , size == 6 ? 2 : 4 , utf8
@@ -6662,7 +6782,7 @@ goto_go_away_from_ws0:
 						{
 							if( parentnode->child == 0 )
 								parentnode->child = node;
-							ptr++;
+							++ptr;
 							goto goto_comma_parse;
 						}
 						else
@@ -6727,7 +6847,7 @@ goto_go_away_from_ws0:
 						{
 							if( parentnode->child == 0 )
 								parentnode->child = node;
-							ptr++;
+							++ptr;
 							goto goto_comma_parse;
 						}
 						else
@@ -6792,7 +6912,7 @@ goto_go_away_from_ws0:
 						{
 							if( parentnode->child == 0 )
 								parentnode->child = node;
-							ptr++;
+							++ptr;
 							goto goto_comma_parse;
 						}
 						else
@@ -6938,7 +7058,7 @@ goto_exponent_parse:
 						case '-':
 						case '+':
 							{
-								ptr++;
+								++ptr;
 								break;
 							}
 						}
@@ -7051,7 +7171,7 @@ goto_comma_parse:
 					{
 					case 0x20:
 						{
-							ptr++;
+							++ptr;
 							break;
 						}
 					default:
@@ -7143,7 +7263,7 @@ goto_object_name_parse:
 					{
 					case 0x20:
 						{
-							ptr++;
+							++ptr;
 							break;
 						}
 					default:
@@ -7258,7 +7378,7 @@ goto_go_away_from_ws1:
 										goto goto_return;
 									}
 
-									ptr++;
+									++ptr;
 									number <<= 4;
 									if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 										number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -7273,7 +7393,7 @@ goto_go_away_from_ws1:
 										goto goto_return;
 									}
 
-									ptr++;
+									++ptr;
 									number <<= 4;
 									if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 										number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -7288,7 +7408,7 @@ goto_go_away_from_ws1:
 										goto goto_return;
 									}
 
-									ptr++;
+									++ptr;
 									number <<= 4;
 									if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 										number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -7325,7 +7445,7 @@ goto_go_away_from_ws1:
 													goto goto_return;
 												}
 
-												ptr++;
+												++ptr;
 												number <<= 4;
 												if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 													number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -7340,7 +7460,7 @@ goto_go_away_from_ws1:
 													goto goto_return;
 												}
 
-												ptr++;
+												++ptr;
 												number <<= 4;
 												if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 													number |= (::booldog::byte)( 10 + *ptr - 0x61 );
@@ -7355,7 +7475,7 @@ goto_go_away_from_ws1:
 													goto goto_return;
 												}
 
-												ptr++;
+												++ptr;
 												number <<= 4;
 												if( *ptr >= 0x61 && *ptr <= 0x66 )//a-f
 													number |= (::booldog::byte)( ( 10 + *ptr - 0x61 ) );
@@ -7375,7 +7495,7 @@ goto_go_away_from_ws1:
 										}
 									}
 									char utf8[ 8 ] = {0};
-									ptr++;
+									++ptr;
 									size = ptr - begin;
 									size_t utf16index = 0 , utf8bytes = 0 , utf8length = 0 , utf8byteindex = 0;
 									if( ::booldog::utf16::to_utf8( (char*)&number , utf16index , size == 6 ? 2 : 4 , utf8
@@ -7447,7 +7567,7 @@ goto_object_name_parse_next0:
 					{
 					case 0x20:
 						{
-							ptr++;
+							++ptr;
 							break;
 						}
 					default:
@@ -7484,7 +7604,7 @@ goto_end_parse:
 					{
 					case 0x20:
 						{
-							ptr++;
+							++ptr;
 							break;
 						}
 					case 0:
@@ -7565,7 +7685,10 @@ goto_return:
 				{	
 					const char* ptr = js;
 					if(jslength != SIZE_MAX)
+					{
+						++jslength;
 						goto goto_next1;
+					}
 					for(;;)
 					{
 						switch(*ptr++)

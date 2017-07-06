@@ -316,18 +316,13 @@ namespace booldog
 					format(%H - hour, %M - minute, %S - second, %MS - milisecond, %d - day, %m - month, %Y - year)
 					*/
 					template< size_t step >
-					booinline bool tostring( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator , const char* format
-						, ::booldog::uint64 time , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+					booinline bool tostring(::booldog::result* pres, ::booldog::allocator* allocator, char*& dst, size_t& dstlen
+						, size_t& dstsize, const char* format, ::booldog::uint64 time
+						, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 					{
-						debuginfo_macros_statement( 9 );
-
-						::booldog::result_mbchar locres( allocator );
-						BOOINIT_RESULT( ::booldog::result_mbchar );
-
-						if( format == 0 || format[ 0 ] == 0 )
+						debuginfo_macros_statement(9);
+						if(format == 0 || format[0] == 0)
 							format = "%H:%M:%S %d.%m.%Y";
-
-						::booldog::result resres;
 						::booldog::uint32 hour = 0 , minute = 0 , second = 0 , millisecond = 0;
 						::booldog::uint32 year = 0 , month = 0 , day_of_month = 0;
 						size_t diff = 0;
@@ -342,107 +337,88 @@ namespace booldog
 
 						debuginfo_macros_statement( 8 );
 
-						if( ::booldog::utils::string::mbs::assign< 8 >( &resres , res->mballocator , false , 0 , res->mbchar 
-							, res->mblen , res->mbsize , format , 0 , SIZE_MAX , debuginfo ) == false )
+						if( ::booldog::utils::string::mbs::assign< 8 >(pres, allocator, false, 0, dst, dstlen, dstsize, format, 0
+							, SIZE_MAX, debuginfo) == false)
+							return false;
+						debuginfo_macros_statement(1);
+						::booldog::utils::time::posix::time(time, hour, minute, second, millisecond);
+						debuginfo_macros_statement(2);							
+						::booldog::utils::time::posix::date(time, year, month, day_of_month);
+						debuginfo_macros_statement(3);
+						ptr = dst;
+						for(;;)
 						{
-							res->copy( resres );
-							goto goto_return;
-						}
-
-						debuginfo_macros_statement( 1 );						
-
-						::booldog::utils::time::posix::time( time , hour , minute , second , millisecond );					
-		
-						debuginfo_macros_statement( 2 );
-							
-						::booldog::utils::time::posix::date( time , year , month , day_of_month );
-
-						debuginfo_macros_statement( 3 );
-
-						ptr = res->mbchar;
-						for( ; ; )
-						{
-							debuginfo_macros_statement( 4 );
-							
-							for( ; ; )
+							debuginfo_macros_statement(4);							
+							for(;;)
 							{
-								switch( *ptr++ )
+								switch(*ptr++)
 								{
 								case 0:
-									goto goto_return;
+									return true;
 								case '%':
 									goto goto_away_from_for;
 								}
 							}
 goto_away_from_for:				
-							debuginfo_macros_statement( 6 );
-							switch( *ptr )
+							debuginfo_macros_statement(6);
+							switch(*ptr)
 							{
 							case 'H':
 								debuginfo_macros_statement( 16 );	
-								if( hourstrlen == 0 )
+								if(hourstrlen == 0)
 								{
-									if( ::booldog::utils::string::mbs::tostring( &resres , hourstr , hourstrlen , 3 , hour 
-										, debuginfo ) == false )
-									{
-										res->copy( resres );
-										goto goto_return;
-									}
+									if(::booldog::utils::string::mbs::tostring(pres, hourstr, hourstrlen, 3, hour, debuginfo)
+										== false)
+										return false;
 								}
-								if( hourstrlen == 1 )
+								if(hourstrlen == 1)
 								{
-									ptr[ -1 ] = '0';
-									*ptr = hourstr[ 0 ];
+									ptr[-1] = '0';
+									*ptr = hourstr[0];
 								}
 								else
 								{
-									ptr[ -1 ] = hourstr[ 0 ];
-									*ptr = hourstr[ 1 ];
+									ptr[-1] = hourstr[0];
+									*ptr = hourstr[1];
 								}
 								break;
 							case 'M':
 								debuginfo_macros_statement( 17 );	
-								if( ptr[ 1 ] == 'S' )
+								if(ptr[1] == 'S')
 								{
-									if( millisecondstrlen == 0 )
+									if(millisecondstrlen == 0)
 									{
-										if( ::booldog::utils::string::mbs::tostring( &resres , millisecondstr , millisecondstrlen 
-											, 4 , millisecond , debuginfo ) == false )
-										{
-											res->copy( resres );
-											goto goto_return;
-										}
+										if(::booldog::utils::string::mbs::tostring(pres, millisecondstr, millisecondstrlen
+											, 4, millisecond, debuginfo) == false)
+											return false;
 									}
-									if( millisecondstrlen == 1 )
+									if(millisecondstrlen == 1)
 									{
-										ptr[ -1 ] = '0';
+										ptr[-1] = '0';
 										*ptr = '0';
-										ptr[ 1 ] = millisecondstr[ 0 ];
+										ptr[1] = millisecondstr[0];
 									}
-									else if( millisecondstrlen == 2 )
+									else if(millisecondstrlen == 2)
 									{
-										ptr[ -1 ] = '0';
-										*ptr = millisecondstr[ 0 ];
-										ptr[ 1 ] = millisecondstr[ 1 ];
+										ptr[-1] = '0';
+										*ptr = millisecondstr[0];
+										ptr[1] = millisecondstr[1];
 									}
 									else
 									{
-										ptr[ -1 ] = millisecondstr[ 0 ];
-										*ptr = millisecondstr[ 1 ];
-										ptr[ 1 ] = millisecondstr[ 2 ];
+										ptr[-1] = millisecondstr[0];
+										*ptr = millisecondstr[1];
+										ptr[1] = millisecondstr[2];
 									}
-									ptr++;
+									++ptr;
 								}
 								else
 								{
 									if( minutestrlen == 0 )
 									{
-										if( ::booldog::utils::string::mbs::tostring( &resres , minutestr , minutestrlen , 3 
-											, minute , debuginfo ) == false )
-										{
-											res->copy( resres );
-											goto goto_return;
-										}
+										if( ::booldog::utils::string::mbs::tostring(pres, minutestr, minutestrlen, 3, minute
+											, debuginfo) == false)
+											return false;
 									}
 									if( minutestrlen == 1 )
 									{
@@ -460,12 +436,9 @@ goto_away_from_for:
 								debuginfo_macros_statement( 18 );
 								if( secondstrlen == 0 )
 								{
-									if( ::booldog::utils::string::mbs::tostring( &resres , secondstr , secondstrlen , 3 , second 
-										, debuginfo ) == false )
-									{
-										res->copy( resres );
-										goto goto_return;
-									}
+									if(::booldog::utils::string::mbs::tostring(pres, secondstr, secondstrlen, 3, second, debuginfo)
+										== false)
+										return false;
 								}
 								if( secondstrlen == 1 )
 								{
@@ -482,12 +455,9 @@ goto_away_from_for:
 								debuginfo_macros_statement( 19 );
 								if( day_of_monthstrlen == 0 )
 								{
-									if( ::booldog::utils::string::mbs::tostring( &resres , day_of_monthstr , day_of_monthstrlen 
-										, 3 , day_of_month , debuginfo ) == false )
-									{
-										res->copy( resres );
-										goto goto_return;
-									}
+									if(::booldog::utils::string::mbs::tostring(pres, day_of_monthstr, day_of_monthstrlen
+										, 3, day_of_month, debuginfo) == false)
+										return false;
 								}
 								if( day_of_monthstrlen == 1 )
 								{
@@ -505,12 +475,9 @@ goto_away_from_for:
 
 								if( monthstrlen == 0 )
 								{
-									if( ::booldog::utils::string::mbs::tostring( &resres , monthstr , monthstrlen , 3 , month 
-										, debuginfo ) == false )
-									{
-										res->copy( resres );
-										goto goto_return;
-									}
+									if(::booldog::utils::string::mbs::tostring(pres, monthstr, monthstrlen, 3, month, debuginfo) 
+										== false)
+										return false;
 								}
 								if( monthstrlen == 1 )
 								{
@@ -528,44 +495,57 @@ goto_away_from_for:
 
 								if( yearstrlen == 0 )
 								{
-									if( ::booldog::utils::string::mbs::tostring( &resres , yearstr , yearstrlen , 8 , year 
-										, debuginfo ) == false )
-									{
-										res->copy( resres );
-										goto goto_return;
-									}
+									if(::booldog::utils::string::mbs::tostring(pres, yearstr, yearstrlen, 8, year, debuginfo) == false)
+										return false;
 								}
 								debuginfo_macros_statement( 23 );
-								if( res->mblen + yearstrlen - 1 > res->mbsize )
+								if(dstlen + yearstrlen - 1 > dstsize)
 								{
 									debuginfo_macros_statement( 24 );
-									res->mbsize = res->mblen + yearstrlen - 1 + step;
-									char* oldmbchar = res->mbchar;
-									res->mbchar = res->mballocator->realloc_array< char >( res->mbchar , res->mbsize , debuginfo );
-									if( res->mbchar == 0 )
+									dstsize = dstlen + yearstrlen - 1 + step;
+									char* oldmbchar = dst;
+									dst = allocator->realloc_array< char >(dst, dstsize, debuginfo);
+									if(dst == 0)
 									{
-										res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-										goto goto_return;
+										dstlen = 0;
+										dstsize = 0;
+										if(pres)
+											pres->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+										return false;
 									}
-									ptr = &res->mbchar[ (size_t)( ptr - oldmbchar ) ];
+									ptr = &dst[(size_t)(ptr - oldmbchar)];
 								}
 								debuginfo_macros_statement( 25 );
-								::booldog::mem::insert< char >( (size_t)( ptr - res->mbchar ) - 1 , res->mbchar , res->mblen + 1 
-									, res->mbsize , 2 , yearstr , yearstrlen );
+								::booldog::mem::insert< char >((size_t)(ptr - dst) - 1, dst, dstlen + 1, dstsize, 2, yearstr
+									, yearstrlen);
 								diff = yearstrlen - 2;
-								res->mblen += diff;
+								dstlen += diff;
 								ptr += diff;
 								break;
 							case 0:
-								goto goto_return;
+								return true;
 							}
-							ptr++;
-
-							debuginfo_macros_statement( 7 );
+							++ptr;
+							debuginfo_macros_statement(7);
 						}
-	goto_return:
-						return res->succeeded();
-					};
+					}
+					/*
+					format(%H - hour, %M - minute, %S - second, %MS - milisecond, %d - day, %m - month, %Y - year)
+					*/
+					template< size_t step >
+					booinline bool tostring(::booldog::result_mbchar& pres, const char* format, ::booldog::uint64 time
+						, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+					{
+						::booldog::result res;
+						if(::booldog::utils::time::posix::mbs::tostring< step >(&res, pres.mballocator, pres.mbchar, pres.mblen
+							, pres.mbsize, format, time, debuginfo))
+							return true;
+						else
+						{
+							pres.copy(res);
+							return false;
+						}
+					}
 					/*
 					format(%H - hour, %M - minute, %S - second, %MS - milisecond, %d - day, %m - month, %Y - year)
 					*/

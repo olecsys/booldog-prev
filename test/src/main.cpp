@@ -12,7 +12,7 @@
 #include <config.h>
 #endif
 
-#define TURNON_LONG_TESTS 0
+#define TURNON_LONG_TESTS 1
 
 #define test_rpr_cp1251 -16 , -17 , -16
 #define test_Apr_cp1251 -64 , -17 , -16
@@ -2900,7 +2900,7 @@ void test_jsonTest0(::booldog::allocators::stack< 4096 >& allocator)
 
 	test_jsonTest0_8(resres, length, comparand, parser0);
 }
-TEST_CASE("boo_jsonTest", "test")
+TEST_CASE("boo_json", "test")
 {
 	::booldog::allocators::stack< 4096 > allocator;
 
@@ -3890,6 +3890,22 @@ TEST_CASE("boo_jsonTest", "test")
 		REQUIRE( root( "test0" )( "te" ).value.node->valueend == &res.serializator->slow.json[ 19 ] );
 
 		REQUIRE( strcmp( root( "test0" ).json , "{\"te\":-1986}" ) == 0 );
+	}
+
+	{
+		::booldog::data::json::serializator parser(&allocator);
+		::booldog::data::json::object root = ::booldog::data::json::parse< 16 >(parser
+			, "{\"instruction\":\"image\",\"key1\":\"fake2\"}", SIZE_MAX);
+		REQUIRE(root.isobject());
+		
+		::booldog::data::json::object field = root
+			(::booldog::hash::compile::times33<'i','n','s','t','r','u','c','t','i','o','n'>::value);
+		REQUIRE(field.isstring());
+		const char* instruction = field.value;
+		REQUIRE(strcmp(instruction, "image") == 0);
+		parser.clear();
+		field = root(::booldog::hash::compile::times33<'k','e','y','1'>::value);
+		REQUIRE(field.exists() == false);
 	}
 
 	{
@@ -11616,7 +11632,7 @@ TEST_CASE("boo_time_utilsTest", "test")
 
 		::booldog::result_mbchar resmbchar( &allocator );
 
-		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 , 1458128777336000 , debuginfo_macros );
+		::booldog::utils::time::posix::mbs::tostring< 16 >(resmbchar, 0, 1458128777336000, debuginfo_macros);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11625,8 +11641,7 @@ TEST_CASE("boo_time_utilsTest", "test")
 		REQUIRE( strcmp( resmbchar.mbchar , "11:46:17 16.03.2016" ) == 0 );
 
 
-		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %Y%" , 1458128777336000
-			, debuginfo_macros );
+		::booldog::utils::time::posix::mbs::tostring< 16 >(resmbchar, "Gt%y %Y%", 1458128777336000, debuginfo_macros);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11635,8 +11650,7 @@ TEST_CASE("boo_time_utilsTest", "test")
 		REQUIRE( strcmp( resmbchar.mbchar , "Gt%y 2016%" ) == 0 );
 
 
-		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , "Gt%y %MS%" , 1458128777336000
-			, debuginfo_macros );
+		::booldog::utils::time::posix::mbs::tostring< 16 >(resmbchar, "Gt%y %MS%", 1458128777336000, debuginfo_macros);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11649,8 +11663,8 @@ TEST_CASE("boo_time_utilsTest", "test")
 
 		
 
-		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
-			, ::booldog::utils::time::posix::add_months( 1458128777336000ULL , 27 ) , debuginfo_macros );
+		::booldog::utils::time::posix::mbs::tostring< 16 >(resmbchar, 0
+			, ::booldog::utils::time::posix::add_months(1458128777336000ULL, 27), debuginfo_macros);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11659,8 +11673,8 @@ TEST_CASE("boo_time_utilsTest", "test")
 		REQUIRE( strcmp( resmbchar.mbchar , "11:46:17 16.06.2018" ) == 0 );
 
 
-		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
-			, ::booldog::utils::time::posix::sub_months( 1458128777336000ULL , 27 ) , debuginfo_macros );
+		::booldog::utils::time::posix::mbs::tostring< 16 >(resmbchar, 0
+			, ::booldog::utils::time::posix::sub_months(1458128777336000ULL, 27), debuginfo_macros);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11669,8 +11683,8 @@ TEST_CASE("boo_time_utilsTest", "test")
 		REQUIRE( strcmp( resmbchar.mbchar , "11:46:17 16.12.2013" ) == 0 );	
 
 
-		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
-			, ::booldog::utils::time::posix::add_years( 1458128777336000ULL , 5 ) , debuginfo_macros );
+		::booldog::utils::time::posix::mbs::tostring< 16 >(resmbchar, 0
+			, ::booldog::utils::time::posix::add_years(1458128777336000ULL, 5), debuginfo_macros);
 
 		REQUIRE( resmbchar.succeeded() );
 
@@ -11679,8 +11693,8 @@ TEST_CASE("boo_time_utilsTest", "test")
 		REQUIRE( strcmp( resmbchar.mbchar , "11:46:17 16.03.2021" ) == 0 );	
 
 
-		::booldog::utils::time::posix::mbs::tostring< 16 >( &resmbchar , &allocator , 0 
-			, ::booldog::utils::time::posix::sub_years( 1458128777336000ULL , 7 ) , debuginfo_macros );
+		::booldog::utils::time::posix::mbs::tostring< 16 >(resmbchar, 0
+			, ::booldog::utils::time::posix::sub_years(1458128777336000ULL, 7), debuginfo_macros);
 
 		REQUIRE( resmbchar.succeeded() );
 

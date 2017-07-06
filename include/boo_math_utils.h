@@ -243,17 +243,41 @@ namespace booldog
 					}
 					return false;
 				};
-			};
-			booinline int nextpowerof2( int number )
+			}
+			booinline int nextpowerof2(int number)
 			{
-				if( !( number & ( number - 1 ) ) )
+				if(!(number & (number - 1)))
 					return number;
-				while( number & ( number - 1 ) )
-					number = number & ( number - 1 );
+				while(number & (number - 1))
+					number = number & (number - 1);
 				number = number << 1;
 				return number;
-			};
-		};
-	};
-};
+			}
+			booinline int greatest_common_divisor(int first, int second)
+			{
+				int temp = 0;
+                while(first != 0)
+                {
+                    second = second % first;
+                    temp = second;
+                    second = first;
+                    first = temp;
+                }
+				return second;
+			}
+			booinline int GCD(int first, int second)
+			{
+				return ::booldog::utils::math::greatest_common_divisor(first, second);
+			}
+			booinline int least_common_multiple(int first, int second)
+			{
+				return (first * second) / ::booldog::utils::math::greatest_common_divisor(first, second);
+			}
+			booinline int LCM(int first, int second)
+			{
+				return ::booldog::utils::math::least_common_multiple(first, second);
+			}
+		}
+	}
+}
 #endif

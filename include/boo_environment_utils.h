@@ -4,16 +4,6 @@
 #include <config.h>
 #endif
 #include "boo_string_utils.h"
-/*#ifdef __WINDOWS__
-#pragma comment(lib, "Advapi32")
-#else
-#ifndef _LARGEFILE64_SOURCE 
-#define _LARGEFILE64_SOURCE 
-#endif
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
-#endif*/
 namespace booldog
 {
 	namespace utils
@@ -49,7 +39,7 @@ namespace booldog
 							;
 						path_length = (ptr1 - path) - 1;
 					}
-					env_length += path_length + 2;
+					env_length += (DWORD)path_length + 2;
 					wchar_t* env_path = allocator->realloc_array< wchar_t >(0, env_length, debuginfo);
 					if(env_path == 0)
 					{
