@@ -147,7 +147,9 @@ namespace booldog
                             if(capture->_video->is_capturing() == false)
                             {
                                 ::booldog::uint32 ttick = tickcount();
+#ifdef __WINDOWS__
                                 capture->_video->is_preview(capture->_is_preview);
+#endif
                                 if(capture->_video->is_opened() == false || capture->_video->start_capturing(0, capture->_fourcc, capture->_width, capture->_height, capture->_framerate_numerator, capture->_framerate_denominator, debuginfo_macros) == false)
                                 {
                                     printf("async video capture, start failed\n");
@@ -160,7 +162,9 @@ namespace booldog
                                     {
                                         if(capture->_video->open(0, capture->_video->name(), debuginfo_macros))
                                         {
+#ifdef __WINDOWS__
                                             capture->_video->is_preview(capture->_is_preview);
+#endif
                                             if(capture->_video->start_capturing(0, capture->_fourcc, capture->_width, capture->_height, capture->_framerate_numerator, capture->_framerate_denominator, debuginfo_macros))
                                                 break;
                                             else

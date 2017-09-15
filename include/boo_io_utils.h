@@ -76,8 +76,8 @@ namespace booldog
 						res->seterrno();
 #endif
 					return res->succeeded();
-				};
-			};
+                                }
+                        }
 			namespace path
 			{
 				namespace mbs

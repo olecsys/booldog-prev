@@ -168,9 +168,9 @@ namespace booldog
 					{
 						res->copy( resres );
 						goto goto_return;
-					}
-					int mode = 0;
+					}					
 #ifdef __WINDOWS__
+					int mode = _O_BINARY;
 					if(file_mode & ::booldog::enums::io::file_mode_tmpfile)
 					{
 						mode |= _O_TEMPORARY;
@@ -179,6 +179,7 @@ namespace booldog
 					else if(file_mode & ::booldog::enums::io::file_mode_create)
 						mode |= ::booldog::enums::io::CREAT;
 #else
+					int mode = 0;
 #ifdef O_TMPFILE
 					if(file_mode & ::booldog::enums::io::file_mode_tmpfile)
 						mode |= O_TMPFILE;
@@ -220,7 +221,7 @@ namespace booldog
 							mode |= ::booldog::enums::io::RDONLY;
                                         }
 #ifdef __WINDOWS__
-					_sopen_s( &pfh , res_name_or_path.mbchar , mode , _SH_DENYNO , _S_IREAD | _S_IWRITE );
+					_sopen_s(&pfh, res_name_or_path.mbchar, mode, _SH_DENYNO, _S_IREAD|_S_IWRITE);
 #else
 					pfh = ::open( res_name_or_path.mbchar , mode , S_IRUSR | S_IWUSR );
 #endif
@@ -367,7 +368,11 @@ namespace booldog
 							res->copy( resres );
 							goto goto_return;
 						}
+#ifdef __WINDOWS__
+						int mode = _O_BINARY;
+#else
 						int mode = 0;
+#endif
 						if( file_mode & ::booldog::enums::io::file_mode_create )
 							mode |= ::booldog::enums::io::CREAT;
 						if( ( file_mode & ::booldog::enums::io::file_mode_read )
@@ -401,7 +406,7 @@ namespace booldog
 								mode |= ::booldog::enums::io::RDONLY;
 						}
 #ifdef __WINDOWS__
-						_sopen_s( &pfh , res_name_or_path.mbchar , mode , _SH_DENYNO , _S_IREAD | _S_IWRITE );
+						_sopen_s(&pfh, res_name_or_path.mbchar, mode, _SH_DENYNO, _S_IREAD|_S_IWRITE);
 #else
 						pfh = ::open( res_name_or_path.mbchar , mode , S_IRUSR | S_IWUSR );
 #endif

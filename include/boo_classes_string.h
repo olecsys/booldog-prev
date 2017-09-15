@@ -319,25 +319,14 @@ namespace booldog
 			/** Append a C string to _str
 			* @param pres store the function result or detailed error
 			* @param str a appended C string
+			* @param str_length a appended C string length(if SIZE_MAX then it will be calculated). Like strlen null terminated string length.
 			* @param debuginfo a debug information
 			* @return The function result
 			*/
 			template< size_t step >
-			bool append(::booldog::result* pres, const char* str, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+			bool append(::booldog::result* pres, const char* str, size_t str_length = SIZE_MAX, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				return ::booldog::utils::string::mbs::assign< step >(pres, _allocator, false, _length, _str, _length, _size, str, 0, SIZE_MAX
-					, debuginfo);
-			}
-			/** Append a C string to _str
-			* @param pres store the function result or detailed error
-			* @param str a appended C string
-			* @param debuginfo a debug information
-			* @return The function result
-			*/
-			template< size_t step >
-			bool append(::booldog::result* pres, char* str, const ::booldog::debug::info& debuginfo = debuginfo_macros)
-			{
-				return ::booldog::utils::string::mbs::assign< step >(pres, _allocator, false, _length, _str, _length, _size, str, 0, SIZE_MAX
+				return ::booldog::utils::string::mbs::assign< step >(pres, _allocator, false, _length, _str, _length, _size, str, 0, str_length
 					, debuginfo);
 			}
 			/** Append a C string to _str
@@ -346,9 +335,27 @@ namespace booldog
 			*/
 			::booldog::classes::string& operator +=(const char* str)
 			{
-				append< 16 >(0, str, debuginfo_macros);
+				append< 16 >(0, str, SIZE_MAX, debuginfo_macros);
 				return *this;
 			};
+			/** Append a C string to _str
+			* @param str a appended C string
+			* @return this
+			*/
+			::booldog::classes::string& operator +=(const ::booldog::classes::string& str)
+			{
+				append< 16 >(0, str._str, str._length, debuginfo_macros);
+				return *this;
+			}
+			/** Append a C string to _str
+			* @param str a appended C string
+			* @return this
+			*/
+			::booldog::classes::string& operator +=(const ::booldog::classes::string::string_return& str)
+			{
+				append< 16 >(0, str._str, str._length, debuginfo_macros);
+				return *this;
+			}
 			/** Convert number to C string and append it to _str
 			* @param pres store the function result or detailed error
 			* @param number a appended number
@@ -641,6 +648,14 @@ namespace booldog
 		::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
 		::booldog::utils::string::mbs::assign< 16 >(0, str->_allocator, false, str->_length, str->_str, str->_length
 			, str->_size, string1.mbchar, 0, string1.mblen, debuginfo_macros);
+		return *str;
+	}
+	booinline const ::booldog::classes::string::string_return operator +(const ::booldog::classes::string::string_return& string0
+		, const ::booldog::classes::string& string1)
+	{
+		::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
+		::booldog::utils::string::mbs::assign< 16 >(0, str->_allocator, false, str->_length, str->_str, str->_length
+			, str->_size, string1._str, 0, string1._length, debuginfo_macros);
 		return *str;
 	}
 }

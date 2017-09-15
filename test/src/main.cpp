@@ -7448,6 +7448,8 @@ TEST_CASE("boo_json", "test")
 	}
 
 	{
+		const char* comparand = 0;
+
 		::booldog::result resres;
 
 		::booldog::data::json::serializator serializator( &allocator );
@@ -7596,16 +7598,30 @@ TEST_CASE("boo_json", "test")
 			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true" ) == 0 );
 
 
-		serializator.fast.add< 1 >( &resres , false , debuginfo_macros );
+		serializator.fast.addnull< 1 >(&resres, debuginfo_macros);
+
+		REQUIRE(resres.succeeded());
+
+		REQUIRE(serializator.fast.nodesindex == 0);
+
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null";
+
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
+
+
+		serializator.fast.add< 1 >(&resres, false, debuginfo_macros);
 
 		REQUIRE( resres.succeeded() );
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 67 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false";
 
-		REQUIRE( strcmp( serializator.fast.json 
-			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false" ) == 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , -23 , debuginfo_macros );
@@ -7614,10 +7630,11 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 71 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23";
 
-		REQUIRE( strcmp( serializator.fast.json 
-			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23" ) == 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , "primer" , debuginfo_macros );
@@ -7626,10 +7643,24 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 80 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\"";
 
-		REQUIRE( strcmp( serializator.fast.json 
-			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"" ) == 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
+
+		::booldog::data::json::object empty;
+		serializator.fast.add< 1 >(&resres , empty, debuginfo_macros);
+
+		REQUIRE(resres.succeeded());
+
+		REQUIRE(serializator.fast.nodesindex == 0);
+
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null";
+
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.end_array< 1 >( &resres , debuginfo_macros );
@@ -7638,10 +7669,11 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 81 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null]";
 
-		REQUIRE( strcmp( serializator.fast.json 
-			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"]" ) == 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , "" , true , debuginfo_macros );
@@ -7650,11 +7682,11 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 89 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true";
 
-		REQUIRE( strcmp( serializator.fast.json 
-			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true" ) 
-			== 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , "test \" \n \f" , false , debuginfo_macros );
@@ -7663,11 +7695,12 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 111 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false";
 
-		REQUIRE( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\\" \\n \\f\":false" ) 
-			== 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , "1" , -128 , debuginfo_macros );
@@ -7676,11 +7709,12 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 120 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false,\"1\":-128";
 
-		REQUIRE( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\\" \\n \\f\":false,\"1\":-128" ) 
-			== 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , "2" , -128128128128128LL , debuginfo_macros );
@@ -7689,11 +7723,12 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 141 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128";
 
-		REQUIRE( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128" ) 
-			== 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , "3" , 256256256256256ULL , debuginfo_macros );
@@ -7702,11 +7737,12 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 161 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256";
 
-		REQUIRE( strcmp( serializator.fast.json , "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256" ) 
-			== 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.add< 1 >( &resres , "4" , 0 , debuginfo_macros );
@@ -7715,12 +7751,40 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 167 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0";
 
-		REQUIRE( strcmp( serializator.fast.json 
-			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0" ) 
-			== 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
+
+
+		serializator.fast.addnull< 1 >(&resres, "5", debuginfo_macros);
+
+		REQUIRE(resres.succeeded());
+
+		REQUIRE(serializator.fast.nodesindex == 0);
+
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0,\"5\":null";
+
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp( serializator.fast.json, comparand) == 0);
+
+
+		serializator.fast.add< 1 >(&resres, "6", empty, debuginfo_macros);
+
+		REQUIRE(resres.succeeded());
+
+		REQUIRE(serializator.fast.nodesindex == 0);
+
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0,\"5\":null,\"6\":null";
+
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
 
 
 		serializator.fast.end_object< 1 >( &resres , debuginfo_macros );
@@ -7729,12 +7793,13 @@ TEST_CASE("boo_json", "test")
 
 		REQUIRE( serializator.fast.nodesindex == 0 );
 
-		REQUIRE( serializator.fast.jsonlen == 168 );
+		comparand = "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,null,false,-23,\"primer\",null],\"\":true"
+			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0,\"5\":null,\"6\":null}";
 
-		REQUIRE( strcmp( serializator.fast.json 
-			, "{\"test\\n \\b \\\\\":{\"test\\n \\b \\\\\\\\\":\"\\f\"},\"test\\n \\\\b \\\\\":[true,false,-23,\"primer\"],\"\":true"
-			",\"test \\\" \\n \\f\":false,\"1\":-128,\"2\":-128128128128128,\"3\":256256256256256,\"4\":0}" )
-			== 0 );
+		REQUIRE(serializator.fast.jsonlen == strlen(comparand));
+
+		REQUIRE(strcmp(serializator.fast.json, comparand) == 0);
+
 
 		serializator.clear();
 
@@ -8713,8 +8778,16 @@ void boo_doubly_linked_listTest_struct_thread_tester(::booldog::threading::threa
 		::booldog::threading::sleep(13);
 		struct_thread->rwlock->wlock();
 		if(struct_thread->list->count())
-			struct_thread->list->remove(struct_thread->list->first());
+			struct_thread->list->remove(struct_thread->list->first());		
 		struct_thread->rwlock->wunlock();
+		struct_thread->rwlock->rlock();
+		while(struct_thread->list->exists(&item0))
+		{
+			struct_thread->rwlock->runlock();
+			::booldog::threading::sleep(1);
+			struct_thread->rwlock->rlock();
+		}
+		struct_thread->rwlock->runlock();
 	}
 }
 void boo_doubly_linked_listTest_struct_thread_tester1(::booldog::threading::thread* thread)
@@ -16438,6 +16511,14 @@ TEST_CASE("boo_classes_string", "test")
 				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
 				REQUIRE(string0.length() == strlen(comparand));
 			}
+			{
+				::booldog::classes::string string0 = mbchar + mbchar;
+				string0 += string2;
+				comparand = "MBCHARMBCHARHashes";
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == strlen(comparand));
+			}
+
 
 			mbchar.mbchar = 0;
 		}

@@ -11,7 +11,7 @@
 #define BOOLDOG_MEM_ALIGN_SIZE __ARM_ALIGN_MAX_STACK_PWR
 #else
 #ifdef __ELBRUS__
-#define BOOLDOG_MEM_ALIGN_SIZE 16 
+#define BOOLDOG_MEM_ALIGN_SIZE 16
 #else
 #ifdef __WINDOWS__
 #ifdef __x64__
