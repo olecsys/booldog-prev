@@ -8,10 +8,10 @@ namespace booldog
 {
 	namespace cp1251
 	{
-		booinline bool isdigit( ::booldog::byte ch )
+        booinline bool isdigit(::booldog::byte ch)
 		{
 			return ch > 47 && ch < 58;
-		};
+        }
 		booinline bool isalpha( ::booldog::byte ch )
 		{
 			return ::booldog::consts::cp1251::_isalpha[ ch ] == 1;
@@ -122,7 +122,8 @@ goto_conversion_result_targetExhausted:
 							source++;
 							goto goto_conversion_result_targetExhausted;
 						}
-						*(::booldog::uint16*)&target[ -2 ] = *(::booldog::uint16*)&::booldog::consts::cp1251::_cp1251_to_utf8[ *source++ ];
+                        ::booldog::uint8* ptr = ((::booldog::uint8*)&::booldog::consts::cp1251::_cp1251_to_utf8[*source++]);
+                        *(::booldog::uint16*)&target[-2] = *(::booldog::uint16*)ptr;
 						break;
 					}
 				case 3:
@@ -135,8 +136,8 @@ goto_conversion_result_targetExhausted:
 							goto goto_conversion_result_targetExhausted;
 						}
 						::booldog::uint8* ptr = ((::booldog::uint8*)&::booldog::consts::cp1251::_cp1251_to_utf8[ *source++ ]);
-						*(::booldog::uint16*)&target[ -3 ] = *(::booldog::uint16*)ptr;
-						target[ -1 ] = ptr[ 2 ];
+                        *(::booldog::uint16*)&target[-3] = *(::booldog::uint16*)ptr;
+                        target[-1] = ptr[2];
 						break;
 					}					
 				}

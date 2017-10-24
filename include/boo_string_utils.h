@@ -625,10 +625,246 @@ goto_return:
 							res->booerr( ::booldog::enums::result::booerr_type_string_parameter_is_empty );
 					}
 					return res->succeeded();
-				};
-				booinline bool indexof( ::booldog::result_size* pres , bool isempty_src_error , const char* src 
-					, size_t srccharindex , size_t srccharcount	, const char* target , size_t targetcharindex 
-					, size_t targetcharcount , const ::booldog::debug::info& debuginfo = debuginfo_macros )
+				}
+				/** Return the index in the C string of the first C string part whose value is any of @param pargs
+				* @param pres store the function result or detailed error
+				* @param allocator a temporary allocator
+				* @param isempty_src_error if true then function returns error if src is null or empty
+				* @param src a C string source where are we looking for search options
+				* @param srccharindex a C string source index from which we are looking for search options
+				* @param srccharcount a C string source count to which we are looking for search options
+				* @param searches a search requests C string options
+				* @param searches_count a search requests C string options count
+				* @param debuginfo a debug information
+				* @return The function result
+				*/
+				template< size_t step, size_t searches_sizes_size >
+				booinline bool indexof(::booldog::results::size& pres, ::booldog::allocator* allocator, bool isempty_src_error
+					, const char* src, size_t srccharindex , size_t srccharcount, const char** searches, size_t searches_count
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+				{
+					debuginfo = debuginfo;
+					pres.clear();
+					if(src == 0 || src[srccharindex] == 0)
+					{
+						if(isempty_src_error)
+						{
+							pres.booerr(::booldog::enums::result::booerr_type_string_parameter_is_empty);
+							return false;
+						}
+						return true;
+					}
+					const char* srcbegin = &src[srccharindex], * srcend = 0, * ptr = 0;
+					if(srccharcount == SIZE_MAX)
+					{
+						const char* ptr = srcbegin;
+						for(;;)
+						{
+							switch(*ptr++)
+							{
+							case 0:
+								--ptr;
+								goto goto_next0;
+							}
+						}
+goto_next0:
+						srccharcount = ptr - srcbegin;
+					}
+					srcend = &srcbegin[srccharcount];
+					size_t searches_sizes[searches_sizes_size] = {}, * searches_sizes_ptr = searches_sizes;
+					if(searches_count > searches_sizes_size)
+					{
+						searches_sizes_ptr = allocator->realloc_array< size_t >(0, searches_count, debuginfo);
+						if(searches_sizes_ptr == 0)
+						{
+							pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+							return false;
+						}
+					}
+					for(size_t index0 = 0;index0 < searches_count;++index0)
+					{
+						const char* targetbegin = searches[index0];
+						ptr = targetbegin;
+						for(;;)
+						{
+							switch(*ptr++)
+							{
+							case 0:
+								--ptr;
+								goto goto_next1;
+							}
+						}
+goto_next1:
+						searches_sizes_ptr[index0] = ptr - targetbegin;
+					}
+					ptr = srcbegin;
+					for(;;)
+					{
+						bool compared = false;
+						for(size_t index0 = 0;index0 < searches_count;++index0)
+						{
+							size_t size = searches_sizes_ptr[index0];
+							if(ptr <= srcend - size)
+							{
+								compared = true;
+								switch(size)
+								{
+								case sizeof(char):
+									{
+										if(*ptr == *(searches[index0]))
+										{
+											pres.sres = (size_t)(ptr - srcbegin);
+											goto goto_return;
+										}
+										break;
+									}
+								case sizeof(::booldog::uint16):
+									{
+										if(*(::booldog::uint16*)ptr == *(::booldog::uint16*)searches[index0])
+										{
+											pres.sres = (size_t)(ptr - srcbegin);
+											goto goto_return;
+										}
+										break;
+									}
+								case sizeof(::booldog::uint32):
+									{
+										if(*(::booldog::uint32*)ptr == *(::booldog::uint32*)searches[index0])
+										{
+											pres.sres = (size_t)(ptr - srcbegin);
+											goto goto_return;
+										}
+										break;
+									}
+								case sizeof(::booldog::uint64):
+									{
+										if(*(::booldog::uint64*)ptr == *(::booldog::uint64*)searches[index0])
+										{
+											pres.sres = (size_t)(ptr - srcbegin);
+											goto goto_return;
+										}
+										break;
+									}
+								default:
+									{
+										if(::memcmp(ptr, searches[index0], size) == 0)
+										{
+											pres.sres = (size_t)(ptr - srcbegin);
+											goto goto_return;
+										}
+										break;
+									}
+								}
+							}
+						}
+						if(compared == false)
+							break;
+						++ptr;
+					}
+goto_return:
+					if(searches_sizes_ptr != searches_sizes)
+						allocator->free(searches_sizes_ptr);
+					return true;
+				}
+				/** Return the index in the C string of the first C string part whose value is any of @param pargs
+				* @param pres store the function result or detailed error
+				* @param allocator a temporary allocator
+				* @param isempty_src_error if true then function returns error if src is null or empty
+				* @param src a C string source where are we looking for search options
+				* @param srccharindex a C string source index from which we are looking for search options
+				* @param srccharcount a C string source count to which we are looking for search options
+				* @param search0 first search request C string option
+				* @param pargs a search requests C string options
+				* @param debuginfo a debug information
+				* @return The function result
+				*/
+				template< size_t step, size_t searches_size >
+				booinline bool indexof(::booldog::results::size& pres, ::booldog::allocator* allocator, bool isempty_src_error
+					, const char* src, size_t srccharindex, size_t srccharcount, const char* search0, va_list pargs
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+				{
+					debuginfo = debuginfo;
+					pres.clear();
+					if(src == 0 || src[srccharindex] == 0)
+					{
+						if(isempty_src_error)
+						{
+							pres.booerr(::booldog::enums::result::booerr_type_string_parameter_is_empty);
+							return false;
+						}
+						return true;
+					}
+					const char* searches[searches_size] = {}, ** searches_ptr = searches;
+					size_t searches_count = 1, searches_ptr_size = searches_size;
+					searches[0] = search0;
+					for(;;)
+					{
+						char* val = va_arg(pargs, char*);
+						if(val)
+						{								
+							if(searches_count == searches_ptr_size)
+							{
+								searches_ptr_size += step;
+								if(searches_ptr == searches)
+								{
+									searches_ptr = allocator->realloc_array< const char* >(0, searches_ptr_size, debuginfo);
+									if(searches_ptr)
+									{
+										for(size_t index = 0;index < searches_count;++index)
+											searches_ptr[index] = searches[index];
+									}
+									else
+									{
+										pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+										return false;
+									}
+								}
+								else
+								{
+									searches_ptr = allocator->realloc_array< const char* >(searches_ptr, searches_ptr_size, debuginfo);
+									if(searches_ptr == 0)
+									{
+										pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+										return false;
+									}
+								}
+							}
+							searches_ptr[searches_count++] = val;
+						}
+						else
+							break;
+					}
+					bool retval = indexof< step, searches_size >(pres, allocator, isempty_src_error, src, srccharindex
+						, srccharcount, searches_ptr, searches_count, debuginfo);
+					if(searches_ptr != searches)
+						allocator->free(searches_ptr);
+					return retval;
+				}
+				/** Return the index in the C string of the first C string part whose value is any of @param pargs
+				* @param pres store the function result or detailed error
+				* @param allocator a temporary allocator
+				* @param isempty_src_error if true then function returns error if src is null or empty
+				* @param src a C string source where are we looking for search options
+				* @param srccharindex a C string source index from which we are looking for search options
+				* @param srccharcount a C string source count to which we are looking for search options
+				* @param debuginfo a debug information
+				* @param ... a search request C string options
+				* @return The function result
+				*/
+				template< size_t step, size_t searches_size >
+				booinline bool indexof(::booldog::results::size& pres, ::booldog::allocator* allocator, bool isempty_src_error
+					, const char* src, size_t srccharindex, size_t srccharcount, const ::booldog::debug::info& debuginfo, const char* search0, ...)
+				{
+					va_list pargs;
+					va_start(pargs, search0); 
+					bool retval = indexof<step, searches_size>(pres, allocator, isempty_src_error, src, srccharindex, srccharcount
+						, search0, pargs, debuginfo);
+					va_end(pargs);
+					return retval;						
+				}
+				booinline bool indexof(::booldog::result_size* pres, bool isempty_src_error, const char* src
+					, size_t srccharindex, size_t srccharcount, const char* target, size_t targetcharindex
+					, size_t targetcharcount, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 				{
 					debuginfo = debuginfo;
 					::booldog::result_size locres;
@@ -638,7 +874,6 @@ goto_return:
 						const char* srcbegin = &src[ srccharindex ];
 						if( *srcbegin != 0 )
 						{
-							const char* srcbegin = &src[ srccharindex ];
 							const char* ptr = srcbegin;
 							for( ; ; )
 							{
@@ -669,7 +904,7 @@ goto_return:
 							}
 		goto_next1:
 							targetcharcount = ptr - targetbegin;							
-							if( targetcharcount == sizeof( char ) )
+							if(targetcharcount == sizeof(char))
 							{
 								char targetval = targetbegin[ 0 ];
 								size_t index = 0;

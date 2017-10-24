@@ -21,7 +21,7 @@ namespace booldog
 		size_t _count;
 	public:
 		array(::booldog::allocator* allocator)
-			: _array(0), _size(0), _count(0), _allocator(allocator)
+			: _allocator(allocator), _array(0), _size(0), _count(0)
 		{
 		}
 		~array()

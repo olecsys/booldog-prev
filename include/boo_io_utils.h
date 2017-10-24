@@ -10,6 +10,12 @@
 #ifdef __WINDOWS__
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdio.h>
+#if (_MSC_VER <= 1600 )
+#define va_copy(dst, src) dst = src
+#else
+#include <stdarg.h>
+#endif
 #else
 #ifndef _LARGEFILE64_SOURCE 
 #define _LARGEFILE64_SOURCE 
@@ -55,12 +61,18 @@ namespace booldog
 					BOOINIT_RESULT(::booldog::result);
 #ifdef __WINDOWS__
 					if(MoveFileA(oldpath, newpath) == 0)
+					{
 						res->GetLastError();
+						return false;
+					}
 #else
 					if(::rename(oldpath, newpath) == -1)
+					{
 						res->seterrno();
+						return false;
+					}
 #endif
-					return res->succeeded();
+					return true;
 				}
 				booinline bool rmdir(::booldog::result* pres, const char* path
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
@@ -70,23 +82,29 @@ namespace booldog
 					BOOINIT_RESULT(::booldog::result);
 #ifdef __WINDOWS__
 					if(RemoveDirectoryA(path) == 0)
+					{
 						res->GetLastError();
+						return false;
+					}
 #else
 					if(::rmdir(path) == -1)
+					{
 						res->seterrno();
+						return false;
+					}
 #endif
-					return res->succeeded();
-                                }
-                        }
+					return true;
+				}
+			}
 			namespace path
 			{
 				namespace mbs
 				{
-					booinline bool toabsolute( ::booldog::result* pres , char* mbchar , size_t& mblen , size_t mbsize_in_bytes )
+					booinline bool toabsolute(::booldog::result* pres, char* mbchar, size_t& mblen, size_t mbsize_in_bytes)
 					{
 						::booldog::result locres;
 						BOOINIT_RESULT( ::booldog::result );
-						if( mbchar [ 0 ] != 0 )
+						if(mbchar[0] != 0)
 						{
 							const char* ptr = mbchar;
 							if(strncmp(mbchar, "\\\\?\\", 4) == 0)
@@ -730,7 +748,134 @@ goto_return:
 						else
 							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );					
 						return res->succeeded();
-					};
+					}
+					/** Join one or more path components intelligently. The return value is the concatenation of path and any members
+					* of pargs with exactly one directory separator (@param sep) following each non-empty part except the last,
+					* meaning that the result will only end in a separator if the last part is empty
+					* @param pres store the function result or detailed error
+					* @param sep a directory separator
+					* @param pargs a directory part
+					* @param debuginfo a debug information
+					* @return The function result
+					*/
+					template< size_t step, size_t sizes_size >
+					booinline bool join(::booldog::results::mbchar& pres, char sep, va_list pargs
+						, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+					{
+						size_t size = 0, sizes[sizes_size] = {}, sizes_count = 0, * sizes_ptr = sizes, sizes_ptr_size = sizes_size;
+						char* val = 0, * ptr = 0;
+						pres.clear();
+						va_list argcopy;
+						va_copy(argcopy, pargs);
+						for(;;)
+						{
+							val = va_arg(argcopy, char*);
+							if(val)
+							{								
+								if(sizes_count == sizes_ptr_size)
+								{
+									sizes_ptr_size += step;
+									if(sizes_ptr == sizes)
+									{
+										sizes_ptr = pres.mballocator->realloc_array< size_t >(0, sizes_ptr_size, debuginfo);
+										if(sizes_ptr)
+										{
+											for(size_t index = 0;index < sizes_count;++index)
+												sizes_ptr[index] = sizes[index];
+										}
+										else
+										{
+											pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+											return false;
+										}
+									}
+									else
+									{
+										sizes_ptr = pres.mballocator->realloc_array< size_t >(sizes_ptr, sizes_ptr_size, debuginfo);
+										if(sizes_ptr == 0)
+										{
+											pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+											return false;
+										}
+									}
+								}
+								for(ptr = val; *ptr; ++ptr);
+								if(val == ptr)
+									break;
+								ptr -= 1;
+								for(;;)
+								{
+									switch(*ptr)
+									{
+									case '/':
+									case '\\':
+										{
+											--ptr;
+											continue;
+										}
+									}
+									break;
+								}
+								sizes_ptr[sizes_count] = (size_t)(ptr - val + 2);
+								if(sizes_ptr[sizes_count] == 1)
+									break;
+								size += sizes_ptr[sizes_count++];
+							}
+							else
+							{
+								if(size == 0)
+									++size;
+								break;
+							}
+						}
+						va_end(argcopy);
+						if(size > pres.mbsize)
+						{
+							pres.mbsize = size;
+							pres.mbchar = pres.mballocator->realloc_array< char >(pres.mbchar, pres.mbsize, debuginfo);
+						}
+						if(pres.mbchar)
+						{
+							ptr = pres.mbchar;
+							for(size_t index0 = 0;index0 < sizes_count;++index0)
+							{
+								val = va_arg(pargs, char*);
+								::memcpy(ptr, val, sizes_ptr[index0]);
+								ptr += sizes_ptr[index0];
+								ptr[-1] = sep;
+							}
+							pres.mblen = size - 1;
+							pres.mbchar[pres.mblen] = 0;
+							if(sizes_ptr != sizes)
+								pres.mballocator->free(sizes_ptr);
+							return true;
+						}
+						else
+						{
+							if(sizes_ptr != sizes)
+								pres.mballocator->free(sizes_ptr);
+							pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+							return false;
+						}
+					}
+					/** Join one or more path components intelligently. The return value is the concatenation of path and any members
+					* of pargs with exactly one directory separator (@param sep) following each non-empty part except the last,
+					* meaning that the result will only end in a separator if the last part is empty
+					* @param pres store the function result or detailed error
+					* @param debuginfo a debug information
+					* @param sep a directory separator
+					* @param ... a directory parts
+					* @return The function result
+					*/
+					template< size_t step, size_t sizes_size >
+					booinline bool join(::booldog::results::mbchar& pres, const ::booldog::debug::info& debuginfo, char sep, ...)
+					{
+						va_list pargs;
+						va_start(pargs, sep); 
+						bool retval = join<step, sizes_size>(pres, sep, pargs, debuginfo);
+						va_end(pargs);
+						return retval;						
+					}
 				};
 				namespace wcs
 				{

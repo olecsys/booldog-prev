@@ -11808,6 +11808,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 	}
 
 	{
+		const char* comparand = 0;
 		::booldog::result resres;
 		::booldog::result_mbchar mbchar( &allocator );
 
@@ -12326,6 +12327,27 @@ TEST_CASE("boo_string_utilsTest", "test")
 		REQUIRE( mbchar.mblen == 28 );
 
 		REQUIRE( strcmp( mbchar.mbchar , "  camera2216 hi camera2216  " ) == 0 );
+
+
+		::booldog::utils::string::mbs::assign< 0 >( &resres , mbchar.mballocator , false , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize	, "  $devname hi $devname  " , 0 , SIZE_MAX , debuginfo_macros );
+
+		REQUIRE(resres.succeeded());
+
+		REQUIRE(mbchar.mblen == 24);
+
+		REQUIRE(strcmp(mbchar.mbchar, "  $devname hi $devname  ") == 0);
+
+		::booldog::utils::string::mbs::replaceall< 0 >( &resres , mbchar.mballocator , 0 , mbchar.mbchar , mbchar.mblen 
+			, mbchar.mbsize , "$devname" , 0 , SIZE_MAX , 0, 0, SIZE_MAX, debuginfo_macros);
+
+		REQUIRE(resres.succeeded());
+
+		comparand = "   hi   ";
+
+		REQUIRE(mbchar.mblen == strlen(comparand));
+
+		REQUIRE(strcmp(mbchar.mbchar, comparand) == 0);
 	}
 
 	{
@@ -12731,6 +12753,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 	}
 
 	{
+		const char* comparand = 0;
 		::booldog::result_size ressize;
 
 		::booldog::utils::string::mbs::indexof( &ressize , false , "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
@@ -12946,6 +12969,137 @@ TEST_CASE("boo_string_utilsTest", "test")
 		REQUIRE( ressize.succeeded() );
 
 		REQUIRE( ressize.sres == 72 );
+
+		comparand = "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
+			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so";
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 0, SIZE_MAX, debuginfo_macros, "video-se", "r-xp", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		size_t comparand_index = strstr(comparand, "r-xp") - comparand;
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 30, SIZE_MAX, debuginfo_macros, "video-se", "r-xp", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(&comparand[30], "video-se") - &comparand[30];
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 30, 50, debuginfo_macros, "video-se", "r-xp", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(&comparand[30], "video-se") - &comparand[30];
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 30, 10, debuginfo_macros, "video-se", "r-xp", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		REQUIRE(ressize.sres == SIZE_MAX);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 0, 30, debuginfo_macros, "video-se", "r-xp", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(comparand, "r-xp") - comparand;
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 0, 29, debuginfo_macros, "video-se", "r-xp", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		REQUIRE(ressize.sres == SIZE_MAX);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 0, SIZE_MAX, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(comparand, "r-") - comparand;
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 28, SIZE_MAX, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(&comparand[28], "video-server") - &comparand[28];
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 26, SIZE_MAX, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(&comparand[26], "r-") - &comparand[26];
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 26, 2, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(&comparand[26], "r-") - &comparand[26];
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 26, 1, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		REQUIRE(ressize.sres == SIZE_MAX);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 30, 54, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(&comparand[30], "video-server") - &comparand[30];
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 30, 10, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		REQUIRE(ressize.sres == SIZE_MAX);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 0, 28, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		comparand_index = strstr(comparand, "r-") - comparand;
+		REQUIRE(ressize.sres == comparand_index);
+
+
+		::booldog::utils::string::mbs::indexof< 1, 1 >(
+			ressize, &allocator, false, comparand, 0, 27, debuginfo_macros, "video-server", "r-", 0);
+
+		REQUIRE(ressize.succeeded());
+
+		REQUIRE(ressize.sres == SIZE_MAX);
 	}
 
 	{
@@ -15192,6 +15346,42 @@ TEST_CASE("boo_io_utilsTest", "test")
 			REQUIRE( pathnamelen == 5 );
 
 			REQUIRE( wcscmp( pathname , L"local" ) == 0 );
+		}
+
+		{
+			::booldog::results::mbchar res(&allocator);
+
+			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '/', "C:", "core", "filename", 0);
+
+			REQUIRE(res.succeeded());
+
+			REQUIRE(res.mblen == 16);
+
+			REQUIRE(strcmp(res.mbchar, "C:/core/filename") == 0);
+		}
+
+		{
+			::booldog::results::mbchar res(&allocator);
+
+			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '/', "C:", "core/\\/", "filename", 0);
+
+			REQUIRE(res.succeeded());
+
+			REQUIRE(res.mblen == 16);
+
+			REQUIRE(strcmp(res.mbchar, "C:/core/filename") == 0);
+		}
+
+		{
+			::booldog::results::mbchar res(&allocator);
+
+			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '\\', "C:", "core/\\/", "filename", "", 0);
+
+			REQUIRE(res.succeeded());
+
+			REQUIRE(res.mblen == 16);
+
+			REQUIRE(strcmp(res.mbchar, "C:\\core\\filename") == 0);
 		}
 	}
 

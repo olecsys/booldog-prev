@@ -155,6 +155,8 @@ namespace booldog
 							}
 						}
 #else
+                                                srcpathname_length = srcpathname_length;
+                                                dstpathname_length = dstpathname_length;
 						int srcfd = ::open(srcpathname, O_RDONLY, 0);
 						if(srcfd != -1)
 						{
@@ -174,7 +176,7 @@ namespace booldog
 #endif
 										{
 											size_t datasize = 8192;
-											if(datasize > st.st_size)
+                                                                                        if(datasize > (size_t)st.st_size)
 												datasize = st.st_size;
 											::booldog::byte* data = allocator->realloc_array< ::booldog::byte >(0, datasize, debuginfo);
 											if(data)
@@ -523,7 +525,7 @@ goto_return:
 						}
 #else
 						::booldog::results::mbchar mbchar(allocator);
-						if(::booldog::utils::string::wcs::tombs(mbchar, pathname, 0, SIZE_MAX, debuginfo))
+                                                if(::booldog::utils::string::wcs::tombs(mbchar, pathname, 0, pathname_length, debuginfo))
 							return ::booldog::utils::io::file::mbs::remove(res, allocator, mbchar.mbchar, mbchar.mblen, debuginfo);
 						else
 						{
@@ -583,9 +585,9 @@ goto_return:
 						}
 #else
 						::booldog::results::mbchar srcmbchar(allocator), dstmbchar(allocator);
-						if(::booldog::utils::string::wcs::tombs(srcmbchar, srcpathname, 0, SIZE_MAX, debuginfo))
+                                                if(::booldog::utils::string::wcs::tombs(srcmbchar, srcpathname, 0, srcpathname_length, debuginfo))
 						{
-							if(::booldog::utils::string::wcs::tombs(dstmbchar, dstpathname, 0, SIZE_MAX, debuginfo))
+                                                        if(::booldog::utils::string::wcs::tombs(dstmbchar, dstpathname, 0, dstpathname_length, debuginfo))
 							{
 								return ::booldog::utils::io::file::mbs::copyfile(res, allocator, srcmbchar.mbchar, srcmbchar.mblen
 									, dstmbchar.mbchar, dstmbchar.mblen, debuginfo); 

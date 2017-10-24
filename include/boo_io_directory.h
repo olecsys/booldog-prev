@@ -200,6 +200,26 @@ goto_return:
 #endif
 					return res->succeeded();
 				};
+				booinline bool create(::booldog::result* pres, const char* path
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+				{
+					::booldog::result locres;
+					BOOINIT_RESULT(::booldog::result);
+#ifdef __WINDOWS__
+					if(CreateDirectoryA(path, 0) == 0)
+					{
+						res->GetLastError();
+						return false;
+					}
+#else
+					if(mkdir(path, S_IRWXU|S_IRWXG|S_IROTH|S_IXOTH) != 0)
+					{
+						res->seterrno();
+						return false;
+					}
+#endif
+					return true;
+				}
 				static bool create( ::booldog::result* pres , booldog::allocator* allocator , const char* name_or_path 
 					, ::booldog::named_param* named_params = 0 , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				{

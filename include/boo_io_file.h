@@ -614,8 +614,9 @@ goto_return:
 					if( readres == 0 )
 						break;
 					res->bufdatasize += readres;
-					::booldog::utils::string::mbs::indexof( &resindexof , false , (char*)res->buf
-						, offset , res->bufdatasize - offset , "\n" , 0 , 1 , debuginfo );
+					const char* search[] = {"\r\n", "\n"};
+					::booldog::utils::string::mbs::indexof< 1, 2 >(resindexof, allocator, false, (char*)res->buf
+						, offset, res->bufdatasize - offset, search, 2, debuginfo);
 					if( resindexof.sres != SIZE_MAX )
 					{
 						offset += resindexof.sres;

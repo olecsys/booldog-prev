@@ -115,6 +115,10 @@ goto_leave_loop:
 					allocator->free(env_path);
 					return true;
 #else
+                                        allocator = allocator;
+                                        path = path;
+                                        path_length = path_length;
+                                        debuginfo = debuginfo;
 					pres.booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
 					return false;
 #endif
@@ -143,6 +147,10 @@ goto_leave_loop:
 						pres.copy(reswchar);
 					return false;
 #else
+                                        allocator = allocator;
+                                        path = path;
+                                        path_length = path_length;
+                                        debuginfo = debuginfo;
 					pres.booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
 					return false;
 #endif

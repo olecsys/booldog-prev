@@ -6052,7 +6052,7 @@ goto_next5:
 			public:
 				::booldog::data::json::serializator* serializator;
 				result( ::booldog::data::json::serializator* pserializator )
- 					: serializator( pserializator ) , ::booldog::result()
+                                        : ::booldog::result(), serializator(pserializator)
 				{
 				}
 				virtual ~result()
