@@ -25,9 +25,10 @@ namespace booldog
 				size_t _size;                    ///< the size of the allocated memory
 				size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
 				explicit string_return(::booldog::classes::string& string)
-					: _allocator(string.utf8._allocator), _str(string._str), _size(string._size), _length(string._length)
+					: _allocator(string.utf8._allocator), _str(string.utf8._str), _size(string.utf8._size)
+					, _length(string.utf8._length)
 				{
-					string._str = 0;
+					string.utf8._str = 0;
 				}
 				string_return(const ::booldog::classes::string::string_return& string)
 					: _allocator(string._allocator), _str(string._str), _size(string._size), _length(string._length)
@@ -48,27 +49,28 @@ namespace booldog
 					{
 						if(string.utf8._allocator == _allocator)
 						{
-							if(string._str)
-								string.utf8._allocator->free(string._str);
-							string._str = _str;
-							string._length = _length;
-							string._size = _size;
+							if(string.utf8._str)
+								string.utf8._allocator->free(string.utf8._str);
+							string.utf8._str = _str;
+							string.utf8._length = _length;
+							string.utf8._size = _size;
 						}
 						else
 						{
-							if(_length >= string._size)
+							if(_length >= string.utf8._size)
 							{
-								string._size = _length + 1;
-								string._str = string.utf8._allocator->realloc_array< char >(string._str, string._size, debuginfo_macros);
+								string.utf8._size = _length + 1;
+								string.utf8._str = string.utf8._allocator->realloc_array< char >(string.utf8._str, string.utf8._size
+									, debuginfo_macros);
 							}
-							::memcpy(string._str, _str, _length + 1);
-							string._length = _length;
+							::memcpy(string.utf8._str, _str, _length + 1);
+							string.utf8._length = _length;
 							_allocator->free(_str);
 						}
 						const_cast< ::booldog::classes::string::string_return* >(this)->_str = 0;
 					}
 					else
-						string._length = 0;
+						string.utf8._length = 0;
 				}
 			};
 		public:
@@ -80,10 +82,27 @@ namespace booldog
 				size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
 							
 				/** Converts C string _str to its lowercase equivalent. If no such conversion is possible, the value returned is C string _str unchanged.
-				* @param string0 begin concatenation string
-				* @param string1 end concatenation string(can be null)
-				* @param string1_length a string1 length(if equal to SIZE_MAX then it's calculated inside function)
+				* @param byteindex index from which starts conversion
+				* @param bytescount byte count which converts by function
+				* @param debuginfo a debug information
+				* @return ::booldog::classes::string::string_return object that stores returned lowercase string
 				*/
+				template< size_t step >
+				booinline const ::booldog::classes::string::string_return tolower(size_t byteindex = 0, size_t bytescount = SIZE_MAX
+					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
+				{					
+					::booldog::classes::string string(_allocator);
+					if(_length)
+					{
+						if(bytescount == SIZE_MAX)
+							bytescount = _length;
+						::booldog::result res;
+						::booldog::utf8::tolower< step >(&res, string.utf8._allocator, string.utf8._str, string.utf8._length
+							, string.utf8._size, _str, byteindex, bytescount, debuginfo);
+					}
+					::booldog::classes::string::string_return string_return_res(string);
+					return string_return_res;
+				}
 			};
 			struct mbsfuncs
 			{
@@ -97,10 +116,6 @@ namespace booldog
 				::booldog::classes::string::utf8funcs utf8;
 				::booldog::classes::string::mbsfuncs mbs;
 			};
-			//::booldog::allocator* _allocator;///< allocator is used to allocate/deallocate _str member
-			char* _str;                      ///< store C string data
-			size_t _size;                    ///< the size of the allocated memory
-			size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
 		private:
 			void ctor(const char* string0, const char* string1, size_t string0_length = SIZE_MAX
 				, size_t string1_length = SIZE_MAX)
@@ -130,17 +145,17 @@ namespace booldog
 					else
 						string1_length = 0;
 				}
-				_size = string0_length + string1_length + 1;
-				if(_size == 1)
+				utf8._size = string0_length + string1_length + 1;
+				if(utf8._size == 1)
 				{
-					_size = 0;
-					_length = 0;
-					_str = 0;
+					utf8._size = 0;
+					utf8._length = 0;
+					utf8._str = 0;
 				}
 				else
 				{
-					_str = utf8._allocator->realloc_array< char >(0, _size, debuginfo_macros);
-					char* ptr = _str;
+					utf8._str = utf8._allocator->realloc_array< char >(0, utf8._size, debuginfo_macros);
+					char* ptr = utf8._str;
 					if(string0_length)
 					{
 						::memcpy(ptr, string0, string0_length);
@@ -152,7 +167,7 @@ namespace booldog
 						ptr += string1_length;
 					}
 					*ptr = 0;
-					_length = _size - 1;
+					utf8._length = utf8._size - 1;
 				}
 			}
 		public:
@@ -170,17 +185,19 @@ namespace booldog
 			*/
 			~string()
 			{
-				if(_str)
-					utf8._allocator->free(_str);
+				if(utf8._str)
+					utf8._allocator->free(utf8._str);
 			}
 			/** Copy constructor
 			* @param string0 copy string
 			* @param copy if true then _str C string will be copied, if false then string0.mbchar will be detached from string0
 			*/
 			string(const ::booldog::classes::string::string_return& string0)
-				: utf8(), _str(string0._str), _size(string0._size), _length(string0._length)
 			{
 				utf8._allocator = string0._allocator;
+				utf8._str = string0._str;
+				utf8._size = string0._size;
+				utf8._length = string0._length;
 				const_cast< ::booldog::classes::string::string_return* >(&string0)->_str = 0;
 			}
 			/** Copy constructor
@@ -194,9 +211,9 @@ namespace booldog
 					ctor(string0.mbchar, 0, string0.mblen, 0);
 				else
 				{
-					_size = string0.mbsize;
-					_length = string0.mblen;
-					_str = string0.detach();					
+					utf8._size = string0.mbsize;
+					utf8._length = string0.mblen;
+					utf8._str = string0.detach();					
 				}
 			}
 			/** Make C string pointer, size, length null(without free) and return C string pointer
@@ -204,9 +221,9 @@ namespace booldog
 			*/
 			char* detach()
 			{
-				char* res = _str;
-				_size = _length = 0;
-				_str = 0;
+				char* res = utf8._str;
+				utf8._size = utf8._length = 0;
+				utf8._str = 0;
 				return res;
 			}
 			/** Copy constructor
@@ -217,16 +234,16 @@ namespace booldog
 			{
 				utf8._allocator = string0;
 				if(copy)
-					ctor(string0._str, 0, string0._length, 0);
+					ctor(string0.utf8._str, 0, string0.utf8._length, 0);
 				else
 				{
-					_size = string0._size;
-					_length = string0._length;
-					_str = string0._str;
+					utf8._size = string0.utf8._size;
+					utf8._length = string0.utf8._length;
+					utf8._str = string0.utf8._str;
 					::booldog::classes::string* str = const_cast< ::booldog::classes::string* >(&string0);
-					str->_str = 0;
-					str->_size = 0;
-					str->_length = 0;
+					str->utf8._str = 0;
+					str->utf8._size = 0;
+					str->utf8._length = 0;
 				}
 			}
 			/** Copy constructor
@@ -235,7 +252,7 @@ namespace booldog
 			string(const ::booldog::classes::string& string0)
 			{
 				utf8._allocator = string0;
-				ctor(string0._str, 0, string0._length, 0);
+				ctor(string0.utf8._str, 0, string0.utf8._length, 0);
 			}
 			/** Concatenation constructor
 			* @param string0 begin concatenation string(can be null)
@@ -257,7 +274,7 @@ namespace booldog
 			explicit string(const ::booldog::classes::string& string0, const char* string1, size_t string1_length = SIZE_MAX)
 			{
 				utf8._allocator = string0.utf8._allocator;
-				ctor(string0._str, string1, string0._length, string1_length);
+				ctor(string0.utf8._str, string1, string0.utf8._length, string1_length);
 			}
 			/** Concatenation constructor
 			* @param string0 begin concatenation string
@@ -277,7 +294,7 @@ namespace booldog
 			explicit string(const char* string0, const ::booldog::classes::string& string1, size_t string0_length = SIZE_MAX)
 			{
 				utf8._allocator = string1.utf8._allocator;
-				ctor(string0, string1._str, string0_length, string1._length);
+				ctor(string0, string1.utf8._str, string0_length, string1.utf8._length);
 			}
 			/** Concatenation constructor
 			* @param string0 begin concatenation string(can be null)
@@ -296,7 +313,7 @@ namespace booldog
 			explicit string(const ::booldog::classes::string& string0, const ::booldog::classes::string& string1)
 			{
 				utf8._allocator = string1.utf8._allocator;
-				ctor(string0._str, string1._str, string0._length, string1._length);
+				ctor(string0.utf8._str, string1.utf8._str, string0.utf8._length, string1.utf8._length);
 			}
 			/** Concatenation constructor
 			* @param string0 begin concatenation string
@@ -321,8 +338,8 @@ namespace booldog
 			template< size_t step >
 			bool assign(::booldog::result* pres, const char* str, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				return ::booldog::utils::string::mbs::assign< step >(pres, utf8._allocator, false, 0, _str, _length, _size, str, 0, SIZE_MAX
-					, debuginfo);
+				return ::booldog::utils::string::mbs::assign< step >(pres, utf8._allocator, false, 0, utf8._str, utf8._length, utf8._size
+					, str, 0, SIZE_MAX, debuginfo);
 			}
 			/** Assign a new C string
 			* @param str a new C string
@@ -339,8 +356,8 @@ namespace booldog
 			*/
 			booinline ::booldog::classes::string& operator =(const ::booldog::classes::string& str)
 			{
-				::booldog::utils::string::mbs::assign< 16 >(0, utf8._allocator, false, 0, _str, _length, _size, str._str, 0, str._length
-					, debuginfo_macros);
+				::booldog::utils::string::mbs::assign< 16 >(0, utf8._allocator, false, 0, utf8._str, utf8._length, utf8._size, str.utf8._str
+					, 0, str.utf8._length, debuginfo_macros);
 				return *this;
 			}
 			/** Append a C string to _str
@@ -353,8 +370,8 @@ namespace booldog
 			template< size_t step >
 			bool append(::booldog::result* pres, const char* str, size_t str_length = SIZE_MAX, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				return ::booldog::utils::string::mbs::assign< step >(pres, utf8._allocator, false, _length, _str, _length, _size, str, 0, str_length
-					, debuginfo);
+				return ::booldog::utils::string::mbs::assign< step >(pres, utf8._allocator, false, utf8._length, utf8._str
+					, utf8._length, utf8._size, str, 0, str_length, debuginfo);
 			}
 			/** Append a C string to _str
 			* @param str a appended C string
@@ -371,7 +388,7 @@ namespace booldog
 			*/
 			::booldog::classes::string& operator +=(const ::booldog::classes::string& str)
 			{
-				append< 16 >(0, str._str, str._length, debuginfo_macros);
+				append< 16 >(0, str.utf8._str, str.utf8._length, debuginfo_macros);
 				return *this;
 			}
 			/** Append a C string to _str
@@ -392,7 +409,8 @@ namespace booldog
 			template< size_t step, class T >
 			bool append(::booldog::result* pres, T number, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				return ::booldog::utils::string::mbs::append< step, T >(pres, utf8._allocator, _str, _length, _size, number, debuginfo);
+				return ::booldog::utils::string::mbs::append< step, T >(pres, utf8._allocator, utf8._str, utf8._length, utf8._size
+					, number, debuginfo);
 			}
 			/** Convert number to C string and append it to _str
 			* @param number a appended number
@@ -453,15 +471,15 @@ namespace booldog
 			*/
 			booinline void clear()
 			{
-				_length = 0;
+				utf8._length = 0;
 			}
 			/** Return a C string value
 			* @return C string value
 			*/
 			booinline const char* cstr() const
 			{
-				if(_length)
-					return _str;
+				if(utf8._length)
+					return utf8._str;
 				else
 					return "";
 			}
@@ -481,7 +499,7 @@ namespace booldog
 			*/
 			booinline size_t length()
 			{
-				return _length;
+				return utf8._length;
 			}
 #if defined(BOO_UTF16_H) && defined(BOO_UTF32_H)
 			/** Convert a C multibyte string to C utf8 string
@@ -497,15 +515,15 @@ namespace booldog
 				BOOINIT_RESULT(::booldog::result);
 
 				::booldog::result_wchar reswchar(allocator);
-				if(::booldog::utils::string::mbs::towcs(&reswchar, allocator, _str, 0, SIZE_MAX, debuginfo))
+				if(::booldog::utils::string::mbs::towcs(&reswchar, allocator, utf8._str, 0, SIZE_MAX, debuginfo))
 				{
 					size_t srcbyteindex = 0;
 					if(::booldog::compile::If< sizeof( wchar_t ) == 2 >::test())
-						return ::booldog::utf16::toutf8< step >(res, _allocator, _str, _length, _size, (char*)reswchar.wchar, srcbyteindex
-							, sizeof(wchar_t) * reswchar.wlen, debuginfo);
+						return ::booldog::utf16::toutf8< step >(res, utf8._allocator, utf8._str, utf8._length, utf8._size
+							, (char*)reswchar.wchar, srcbyteindex, sizeof(wchar_t) * reswchar.wlen, debuginfo);
 					else if(::booldog::compile::If< sizeof( wchar_t ) == 4 >::test())
-						return ::booldog::utf32::toutf8< step >(res, _allocator, _str, _length, _size, (char*)reswchar.wchar, srcbyteindex
-							, sizeof(wchar_t) * reswchar.wlen, debuginfo);
+						return ::booldog::utf32::toutf8< step >(res, utf8._allocator, utf8._str, utf8._length, utf8._size
+							, (char*)reswchar.wchar, srcbyteindex, sizeof(wchar_t) * reswchar.wlen, debuginfo);
 					else
 					{
 						res->booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
@@ -536,7 +554,7 @@ namespace booldog
 				size_t srcbyteindex = 0;
 				if(::booldog::compile::If< sizeof(wchar_t) == 2 >::test())
 				{
-					if(::booldog::utf8::toutf16< step >(mbchar, _str, srcbyteindex, _length, debuginfo) == false)
+					if(::booldog::utf8::toutf16< step >(mbchar, utf8._str, srcbyteindex, utf8._length, debuginfo) == false)
 					{
 						res->copy(mbchar);
 						return false;
@@ -544,7 +562,7 @@ namespace booldog
 				}
 				else if(::booldog::compile::If< sizeof(wchar_t) == 4 >::test())
 				{
-					if(::booldog::utf8::toutf32< step >(mbchar, _str, srcbyteindex, _length, debuginfo) == false)
+					if(::booldog::utf8::toutf32< step >(mbchar, utf8._str, srcbyteindex, utf8._length, debuginfo) == false)
 					{
 						res->copy(mbchar);
 						return false;
@@ -555,8 +573,8 @@ namespace booldog
 					res->booerr(::booldog::enums::result::booerr_type_method_is_not_implemented_yet);
 					return false;
 				}
-				return ::booldog::utils::string::wcs::tombs(res, _allocator, _str, _length, _size, (wchar_t*)mbchar.mbchar, 0
-					, sizeof(wchar_t) * mbchar.mblen, debuginfo);
+				return ::booldog::utils::string::wcs::tombs(res, utf8._allocator, utf8._str, utf8._length, utf8._size
+					, (wchar_t*)mbchar.mbchar, 0, sizeof(wchar_t) * mbchar.mblen, debuginfo);
 			}
 #endif
 			booinline friend const ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0
@@ -736,7 +754,7 @@ namespace booldog
 	{
 		::booldog::classes::string::string_return* str = const_cast< ::booldog::classes::string::string_return* >(&string0);
 		::booldog::utils::string::mbs::assign< 16 >(0, str->_allocator, false, str->_length, str->_str, str->_length
-			, str->_size, string1._str, 0, string1._length, debuginfo_macros);
+			, str->_size, string1.utf8._str, 0, string1.utf8._length, debuginfo_macros);
 		return *str;
 	}
 }

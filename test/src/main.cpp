@@ -16940,8 +16940,20 @@ TEST_CASE("boo_classes_string", "test")
 				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
 				REQUIRE(string0.length() == comparand_length);
 			}
+			{
+				const char* comparand = "апрель";
+				size_t comparand_length = strlen(comparand);
 
+				const char* source = "АпРеЛь";
 
+				::booldog::classes::string string0(&allocator, source);
+
+				size_t srcbyteindex = 0;
+				::booldog::classes::string string1 = string0.utf8.tolower< 1 >(srcbyteindex, SIZE_MAX);
+				REQUIRE(string1.utf8._size == comparand_length + 1);
+				REQUIRE(string1.length() == comparand_length);
+				REQUIRE(strcmp(string1.cstr(), comparand) == 0);
+			}
 
 			mbchar.mbchar = 0;
 		}
