@@ -15991,28 +15991,64 @@ TEST_CASE("boo_io_fileTest", "test")
 		
 		REQUIRE( res.succeeded() );
 
-		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
 		REQUIRE( strcmp( (char*)resbuf00.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
 			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
 
-		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
 		REQUIRE( strcmp( (char*)resbuf00.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
 			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
 
-		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
 		REQUIRE( strcmp( (char*)resbuf00.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
 			"[heap]" ) == 0 );
 
-		res.file->readline< 64 >( &resbuf00 , resbuf00.allocator , debuginfo_macros );
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
+
+		REQUIRE( resbuf00.succeeded() );
+
+		REQUIRE( strcmp( (char*)resbuf00.buf , "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 " ) == 0 );
+				
+		res.file->close( &res );
+
+		REQUIRE( res.succeeded() );
+
+
+		::booldog::io::file::mbsopen(&res, &allocator, "maps_crlf", ::booldog::enums::io::file_mode_read, load_params);
+		
+		REQUIRE( res.succeeded() );
+
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
+
+		REQUIRE( resbuf00.succeeded() );
+
+		REQUIRE( strcmp( (char*)resbuf00.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
+
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
+
+		REQUIRE( resbuf00.succeeded() );
+
+		REQUIRE( strcmp( (char*)resbuf00.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
+
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
+
+		REQUIRE( resbuf00.succeeded() );
+
+		REQUIRE( strcmp( (char*)resbuf00.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+			"[heap]" ) == 0 );
+
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
@@ -16029,28 +16065,28 @@ TEST_CASE("boo_io_fileTest", "test")
 		
 			REQUIRE( res.succeeded() );
 
-			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
 			REQUIRE( strcmp( (char*)resbuf1.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
 				"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
 
-			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
 			REQUIRE( strcmp( (char*)resbuf1.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
 				"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
 
-			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
 			REQUIRE( strcmp( (char*)resbuf1.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
 				"[heap]" ) == 0 );
 
-			res.file->readline< 64 >( &resbuf1 , resbuf1.allocator , debuginfo_macros );
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
@@ -16059,6 +16095,45 @@ TEST_CASE("boo_io_fileTest", "test")
 			res.file->close( &res );
 
 			REQUIRE( res.succeeded() );
+		}
+
+		{
+			::booldog::result_buffer resbuf1(&allocator);
+
+			::booldog::io::file::mbsopen(&res, &allocator, "maps_crlf", ::booldog::enums::io::file_mode_read, load_params);
+		
+			REQUIRE(res.succeeded());
+
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
+
+			REQUIRE(resbuf1.succeeded());
+
+			REQUIRE(strcmp((char*)resbuf1.buf, "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0") == 0);
+
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
+
+			REQUIRE( resbuf1.succeeded() );
+
+			REQUIRE(strcmp((char*)resbuf1.buf, "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0") == 0);
+
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
+
+			REQUIRE(resbuf1.succeeded());
+
+			REQUIRE(strcmp((char*)resbuf1.buf, "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+				"[heap]") == 0);
+
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
+
+			REQUIRE(resbuf1.succeeded());
+
+			REQUIRE(strcmp((char*)resbuf1.buf, "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 ") == 0);
+				
+			res.file->close(&res);
+
+			REQUIRE(res.succeeded());
 		}
 	}
 

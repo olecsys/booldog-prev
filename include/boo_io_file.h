@@ -576,68 +576,72 @@ goto_return:
 #endif
                             return true;
                         }
+			/** Read file line ending by LF or CRLF and store it in the @param pres without LF or CRLF.
+			* Every next function call read next file line.
+			* @param pres store the function result or detailed error
+			* @param debuginfo a debug information
+			* @return The function result
+			*/
 			template< size_t step >
-			bool readline( ::booldog::result_buffer* pres , booldog::allocator* allocator
-				, const ::booldog::debug::info& debuginfo = debuginfo_macros )
+			bool readline(::booldog::results::buffer& pres, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				::booldog::result_buffer locres( allocator );
-				BOOINIT_RESULT( ::booldog::result_buffer );
-				::booldog::result_size resindexof;
+				pres.clear();
+				::booldog::results::size resindexof;
 #ifdef __WINDOWS__
 				int readres = 0;
 #else
 				ssize_t readres = 0;
 #endif
-				for( ; ; )
+				const char* search[] = {"\r\n", "\n"};
+				for(;;)
 				{
-					if( res->bufsize == res->bufdatasize )
+					if(pres.bufsize == pres.bufdatasize)
 					{
-						res->bufsize += step;
-						res->buf = res->allocator->realloc_array< unsigned char >( res->buf , res->bufsize , debuginfo );
-						if( res->buf == 0 )
+						pres.bufsize += step;
+						pres.buf = pres.allocator->realloc_array< unsigned char >(pres.buf, pres.bufsize, debuginfo);
+						if(pres.buf == 0)
 						{
-							res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
-							break;
+							pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+							return false;
 						}
 					}
-					size_t offset = res->bufdatasize;
+					size_t offset = pres.bufdatasize;
 #ifdef __WINDOWS__
-					readres = _read( _file , &res->buf[ offset ] , (unsigned int)( res->bufsize - offset ) );
+					readres = _read(_file, &pres.buf[offset], (unsigned int)(pres.bufsize - offset));
 #else
-					readres = ::read( _file , &res->buf[ offset ] , res->bufsize - offset );
+					readres = ::read(_file, &pres.buf[offset], pres.bufsize - offset);
 #endif
-					if( readres == -1 )
+					if(readres == -1)
 					{
-						res->seterrno();
-						break;
+						pres.seterrno();
+						return false;
 					}
-					if( readres == 0 )
+					if(readres == 0)
 						break;
-					res->bufdatasize += readres;
-					const char* search[] = {"\r\n", "\n"};
-					::booldog::utils::string::mbs::indexof< 1, 2 >(resindexof, allocator, false, (char*)res->buf
-						, offset, res->bufdatasize - offset, search, 2, debuginfo);
-					if( resindexof.sres != SIZE_MAX )
+					pres.bufdatasize += readres;
+					::booldog::utils::string::mbs::indexof< 1, 2 >(resindexof, pres, false, (char*)pres.buf
+						, offset, pres.bufdatasize - offset, search, 2, debuginfo);
+					if(resindexof.sres != SIZE_MAX)
 					{
 						offset += resindexof.sres;
-						if( res->bufdatasize != offset )
+						if(pres.bufdatasize != offset)
 						{
+							size_t salt = pres.buf[offset] == '\r' ? 2 : 1;
 							::booldog::result resres;
-							if( position( &resres , -1 * (::booldog::int64)( res->bufdatasize - offset - 1 )
-								, ::booldog::enums::io::file_position_origin_curpos , debuginfo ) == false )
+							if(position(&resres, -1 * (::booldog::int64)(pres.bufdatasize - offset - salt)
+								, ::booldog::enums::io::file_position_origin_curpos, debuginfo) == false)
 							{
-								res->copy( resres );
-								break;
+								pres.copy(resres);
+								return false;
 							}
 						}
-
-						res->bufdatasize = offset;
-						res->buf[ res->bufdatasize ] = 0;
+						pres.bufdatasize = offset;
+						pres.buf[pres.bufdatasize] = 0;
 						break;
 					}
 				}
-				return res->succeeded();
-			};
+				return true;
+			}
 
 			template< size_t step >
 			bool readall( ::booldog::result_buffer* pres , booldog::allocator* allocator
