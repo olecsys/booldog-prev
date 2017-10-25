@@ -13038,7 +13038,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 		comparand = "7f6e0c400000-7f6e0c432000 r-xp 00000000 08:06 22283772"
 			"      /home/test1/video-server-7.0/lib/IP3S/libIP3S.so";
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 0, SIZE_MAX, debuginfo_macros, "video-se", "r-xp", 0);
+			ressize, &allocator, false, comparand, 0, SIZE_MAX, debuginfo_macros, "video-se", "r-xp", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13047,7 +13047,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 30, SIZE_MAX, debuginfo_macros, "video-se", "r-xp", 0);
+			ressize, &allocator, false, comparand, 30, SIZE_MAX, debuginfo_macros, "video-se", "r-xp", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13056,7 +13056,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 30, 50, debuginfo_macros, "video-se", "r-xp", 0);
+			ressize, &allocator, false, comparand, 30, 50, debuginfo_macros, "video-se", "r-xp", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13065,7 +13065,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 30, 10, debuginfo_macros, "video-se", "r-xp", 0);
+			ressize, &allocator, false, comparand, 30, 10, debuginfo_macros, "video-se", "r-xp", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13073,7 +13073,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 0, 30, debuginfo_macros, "video-se", "r-xp", 0);
+			ressize, &allocator, false, comparand, 0, 30, debuginfo_macros, "video-se", "r-xp", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13082,7 +13082,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 0, 29, debuginfo_macros, "video-se", "r-xp", 0);
+			ressize, &allocator, false, comparand, 0, 29, debuginfo_macros, "video-se", "r-xp", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13090,7 +13090,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 0, SIZE_MAX, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 0, SIZE_MAX, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13099,7 +13099,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 28, SIZE_MAX, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 28, SIZE_MAX, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13108,7 +13108,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 26, SIZE_MAX, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 26, SIZE_MAX, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13117,7 +13117,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 26, 2, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 26, 2, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13126,7 +13126,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 26, 1, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 26, 1, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13134,7 +13134,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 30, 54, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 30, 54, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13143,7 +13143,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 30, 10, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 30, 10, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13151,7 +13151,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 0, 28, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 0, 28, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -13160,7 +13160,7 @@ TEST_CASE("boo_string_utilsTest", "test")
 
 
 		::booldog::utils::string::mbs::indexof< 1, 1 >(
-			ressize, &allocator, false, comparand, 0, 27, debuginfo_macros, "video-server", "r-", 0);
+			ressize, &allocator, false, comparand, 0, 27, debuginfo_macros, "video-server", "r-", "");
 
 		REQUIRE(ressize.succeeded());
 
@@ -15416,7 +15416,7 @@ TEST_CASE("boo_io_utilsTest", "test")
 		{
 			::booldog::results::mbchar res(&allocator);
 
-			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '/', "C:", "core", "filename", 0);
+			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '/', "C:", "core", "filename", "");
 
 			REQUIRE(res.succeeded());
 
@@ -15428,7 +15428,7 @@ TEST_CASE("boo_io_utilsTest", "test")
 		{
 			::booldog::results::mbchar res(&allocator);
 
-			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '/', "C:", "core/\\/", "filename", 0);
+			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '/', "C:", "core/\\/", "filename", "");
 
 			REQUIRE(res.succeeded());
 
@@ -15440,7 +15440,7 @@ TEST_CASE("boo_io_utilsTest", "test")
 		{
 			::booldog::results::mbchar res(&allocator);
 
-			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '\\', "C:", "core/\\/", "filename", "", 0);
+			::booldog::utils::io::path::mbs::join< 16 , 2 >(res, debuginfo_macros, '\\', "C:", "core/\\/", "filename", "", "");
 
 			REQUIRE(res.succeeded());
 

@@ -774,7 +774,7 @@ goto_return:
 				* @param srccharindex a C string source index from which we are looking for search options
 				* @param srccharcount a C string source count to which we are looking for search options
 				* @param search0 first search request C string option
-				* @param pargs a search requests C string options
+				* @param pargs a search requests C string options. It must ends width empty string ""
 				* @param debuginfo a debug information
 				* @return The function result
 				*/
@@ -800,8 +800,8 @@ goto_return:
 					for(;;)
 					{
 						char* val = va_arg(pargs, char*);
-						if(val)
-						{								
+						if(val[0] != 0)
+						{
 							if(searches_count == searches_ptr_size)
 							{
 								searches_ptr_size += step;
@@ -848,7 +848,7 @@ goto_return:
 				* @param srccharindex a C string source index from which we are looking for search options
 				* @param srccharcount a C string source count to which we are looking for search options
 				* @param debuginfo a debug information
-				* @param ... a search request C string options
+				* @param ... a search request C string options. It must ends width empty string ""
 				* @return The function result
 				*/
 				template< size_t step, size_t searches_size >

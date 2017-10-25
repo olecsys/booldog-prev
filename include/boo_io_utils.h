@@ -754,7 +754,7 @@ goto_return:
 					* meaning that the result will only end in a separator if the last part is empty
 					* @param pres store the function result or detailed error
 					* @param sep a directory separator
-					* @param pargs a directory part
+					* @param pargs a directory part. It must ends with empty string ""
 					* @param debuginfo a debug information
 					* @return The function result
 					*/
@@ -771,7 +771,11 @@ goto_return:
 						{
 							val = va_arg(argcopy, char*);
 							if(val)
-							{								
+							{	
+								for(ptr = val; *ptr; ++ptr);
+								if(val == ptr)
+									break;
+								ptr -= 1;
 								if(sizes_count == sizes_ptr_size)
 								{
 									sizes_ptr_size += step;
@@ -798,11 +802,7 @@ goto_return:
 											return false;
 										}
 									}
-								}
-								for(ptr = val; *ptr; ++ptr);
-								if(val == ptr)
-									break;
-								ptr -= 1;
+								}								
 								for(;;)
 								{
 									switch(*ptr)
@@ -864,7 +864,7 @@ goto_return:
 					* @param pres store the function result or detailed error
 					* @param debuginfo a debug information
 					* @param sep a directory separator
-					* @param ... a directory parts
+					* @param ... a directory parts. It must ends with empty string ""
 					* @return The function result
 					*/
 					template< size_t step, size_t sizes_size >
