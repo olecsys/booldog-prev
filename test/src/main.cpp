@@ -15940,6 +15940,9 @@ TEST_CASE("boo_io_fileTest", "test")
 
 	char* begin = (char*)allocator.stack.begin();
 	{
+		const char* comparand = 0;
+		size_t comparand_length = 0;
+
 		::booldog::result_buffer resbuf00( &allocator );
 		::booldog::result_file res;
 
@@ -15993,30 +15996,49 @@ TEST_CASE("boo_io_fileTest", "test")
 
 		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
-		REQUIRE( resbuf00.succeeded() );
+		REQUIRE(resbuf00.succeeded());
 
-		REQUIRE( strcmp( (char*)resbuf00.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
-			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
-
-		res.file->readline< 64 >(resbuf00, debuginfo_macros);
-
-		REQUIRE( resbuf00.succeeded() );
-
-		REQUIRE( strcmp( (char*)resbuf00.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
-			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
+		comparand = "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
 
 		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
-		REQUIRE( strcmp( (char*)resbuf00.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
-			"[heap]" ) == 0 );
+		comparand = "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
 
 		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
-		REQUIRE( strcmp( (char*)resbuf00.buf , "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 " ) == 0 );
+		comparand = "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+			"[heap]";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
+
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
+
+		REQUIRE( resbuf00.succeeded() );
+
+		comparand = "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 ";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
+
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
+		REQUIRE(resbuf00.succeeded());
+		comparand = "";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
 				
 		res.file->close( &res );
 
@@ -16031,28 +16053,47 @@ TEST_CASE("boo_io_fileTest", "test")
 
 		REQUIRE( resbuf00.succeeded() );
 
-		REQUIRE( strcmp( (char*)resbuf00.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
-			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
+		comparand = "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
 
 		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
-		REQUIRE( strcmp( (char*)resbuf00.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
-			"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
+		comparand = "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+			"/home/test1/video-server-7.0/video-server-7.0";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
 
 		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
-		REQUIRE( strcmp( (char*)resbuf00.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
-			"[heap]" ) == 0 );
+		comparand = "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+			"[heap]";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
 
 		res.file->readline< 64 >(resbuf00, debuginfo_macros);
 
 		REQUIRE( resbuf00.succeeded() );
 
-		REQUIRE( strcmp( (char*)resbuf00.buf , "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 " ) == 0 );
+		comparand = "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 ";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
+
+		res.file->readline< 64 >(resbuf00, debuginfo_macros);
+		REQUIRE(resbuf00.succeeded());
+		comparand = "";
+		comparand_length = strlen(comparand);
+		REQUIRE(strcmp((char*)resbuf00.buf, comparand) == 0);
+		REQUIRE(resbuf00.bufdatasize - 1 == comparand_length);
 				
 		res.file->close( &res );
 
@@ -16069,28 +16110,47 @@ TEST_CASE("boo_io_fileTest", "test")
 
 			REQUIRE( resbuf1.succeeded() );
 
-			REQUIRE( strcmp( (char*)resbuf1.buf , "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
-				"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
+			comparand = "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 
 			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
-			REQUIRE( strcmp( (char*)resbuf1.buf , "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
-				"/home/test1/video-server-7.0/video-server-7.0" ) == 0 );
+			comparand = "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 
 			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
-			REQUIRE( strcmp( (char*)resbuf1.buf , "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
-				"[heap]" ) == 0 );
+			comparand = "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+				"[heap]";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 
 			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
-			REQUIRE( strcmp( (char*)resbuf1.buf , "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 " ) == 0 );
+			comparand = "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 ";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
+
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
+			REQUIRE(resbuf1.succeeded());
+			comparand = "";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 				
 			res.file->close( &res );
 
@@ -16108,28 +16168,47 @@ TEST_CASE("boo_io_fileTest", "test")
 
 			REQUIRE(resbuf1.succeeded());
 
-			REQUIRE(strcmp((char*)resbuf1.buf, "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
-				"/home/test1/video-server-7.0/video-server-7.0") == 0);
+			comparand = "00400000-004c1000 r-xp 00000000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 
 			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE( resbuf1.succeeded() );
 
-			REQUIRE(strcmp((char*)resbuf1.buf, "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
-				"/home/test1/video-server-7.0/video-server-7.0") == 0);
+			comparand = "006c0000-006c6000 rw-p 000c0000 08:06 22283081                           "
+				"/home/test1/video-server-7.0/video-server-7.0";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 
 			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE(resbuf1.succeeded());
 
-			REQUIRE(strcmp((char*)resbuf1.buf, "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
-				"[heap]") == 0);
+			comparand = "014a9000-1a803000 rw-p 00000000 00:00 0                                  "
+				"[heap]";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 
 			res.file->readline< 64 >(resbuf1, debuginfo_macros);
 
 			REQUIRE(resbuf1.succeeded());
 
-			REQUIRE(strcmp((char*)resbuf1.buf, "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 ") == 0);
+			comparand = "7f6dcc000000-7f6dcdea8000 rw-p 00000000 00:00 0 ";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
+
+			res.file->readline< 64 >(resbuf1, debuginfo_macros);
+			REQUIRE(resbuf1.succeeded());
+			comparand = "";
+			comparand_length = strlen(comparand);
+			REQUIRE(strcmp((char*)resbuf1.buf, comparand) == 0);
+			REQUIRE(resbuf1.bufdatasize - 1 == comparand_length);
 				
 			res.file->close(&res);
 

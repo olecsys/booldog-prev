@@ -577,7 +577,7 @@ goto_return:
                             return true;
                         }
 			/** Read file line ending by LF or CRLF and store it in the @param pres without LF or CRLF.
-			* Every next function call read next file line.
+			* Every next function call read next file line. If @param pres bufdatasize member is equal 0 then file reached the end.
 			* @param pres store the function result or detailed error
 			* @param debuginfo a debug information
 			* @return The function result
@@ -637,6 +637,7 @@ goto_return:
 						}
 						pres.bufdatasize = offset;
 						pres.buf[pres.bufdatasize] = 0;
+						++pres.bufdatasize;
 						break;
 					}
 				}
