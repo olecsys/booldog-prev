@@ -25,7 +25,7 @@ namespace booldog
 				size_t _size;                    ///< the size of the allocated memory
 				size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
 				explicit string_return(::booldog::classes::string& string)
-					: _allocator(string._allocator), _str(string._str), _size(string._size), _length(string._length)
+					: _allocator(string.utf8._allocator), _str(string._str), _size(string._size), _length(string._length)
 				{
 					string._str = 0;
 				}
@@ -46,10 +46,10 @@ namespace booldog
 				{
 					if(_str)
 					{
-						if(string._allocator == _allocator)
+						if(string.utf8._allocator == _allocator)
 						{
 							if(string._str)
-								string._allocator->free(string._str);
+								string.utf8._allocator->free(string._str);
 							string._str = _str;
 							string._length = _length;
 							string._size = _size;
@@ -59,7 +59,7 @@ namespace booldog
 							if(_length >= string._size)
 							{
 								string._size = _length + 1;
-								string._str = string._allocator->realloc_array< char >(string._str, string._size, debuginfo_macros);
+								string._str = string.utf8._allocator->realloc_array< char >(string._str, string._size, debuginfo_macros);
 							}
 							::memcpy(string._str, _str, _length + 1);
 							string._length = _length;
@@ -72,7 +72,32 @@ namespace booldog
 				}
 			};
 		public:
-			::booldog::allocator* _allocator;///< allocator is used to allocate/deallocate _str member
+			struct utf8funcs
+			{
+				::booldog::allocator* _allocator;///< allocator is used to allocate/deallocate _str member
+				char* _str;                      ///< store C string data
+				size_t _size;                    ///< the size of the allocated memory
+				size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
+							
+				/** Converts C string _str to its lowercase equivalent. If no such conversion is possible, the value returned is C string _str unchanged.
+				* @param string0 begin concatenation string
+				* @param string1 end concatenation string(can be null)
+				* @param string1_length a string1 length(if equal to SIZE_MAX then it's calculated inside function)
+				*/
+			};
+			struct mbsfuncs
+			{
+				::booldog::allocator* _allocator;///< allocator is used to allocate/deallocate _str member
+				char* _str;                      ///< store C string data
+				size_t _size;                    ///< the size of the allocated memory
+				size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
+			};
+			union
+			{
+				::booldog::classes::string::utf8funcs utf8;
+				::booldog::classes::string::mbsfuncs mbs;
+			};
+			//::booldog::allocator* _allocator;///< allocator is used to allocate/deallocate _str member
 			char* _str;                      ///< store C string data
 			size_t _size;                    ///< the size of the allocated memory
 			size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
@@ -114,7 +139,7 @@ namespace booldog
 				}
 				else
 				{
-					_str = _allocator->realloc_array< char >(0, _size, debuginfo_macros);
+					_str = utf8._allocator->realloc_array< char >(0, _size, debuginfo_macros);
 					char* ptr = _str;
 					if(string0_length)
 					{
@@ -136,8 +161,9 @@ namespace booldog
 			* sets a null for the fields: _str, _size, _length			
 			*/
 			explicit string(::booldog::allocator* allocator)
-				: _allocator(allocator), _str(0), _size(0), _length(0)
+				: utf8()
 			{
+				utf8._allocator = allocator;
 			}
 			/** Default destructor
 			* deallocate _str member
@@ -145,15 +171,16 @@ namespace booldog
 			~string()
 			{
 				if(_str)
-					_allocator->free(_str);
+					utf8._allocator->free(_str);
 			}
 			/** Copy constructor
 			* @param string0 copy string
 			* @param copy if true then _str C string will be copied, if false then string0.mbchar will be detached from string0
 			*/
 			string(const ::booldog::classes::string::string_return& string0)
-				: _allocator(string0._allocator), _str(string0._str), _size(string0._size), _length(string0._length)
+				: utf8(), _str(string0._str), _size(string0._size), _length(string0._length)
 			{
+				utf8._allocator = string0._allocator;
 				const_cast< ::booldog::classes::string::string_return* >(&string0)->_str = 0;
 			}
 			/** Copy constructor
@@ -161,8 +188,8 @@ namespace booldog
 			* @param copy if true then _str C string will be copied, if false then string0.mbchar will be detached from string0
 			*/
 			explicit string(const ::booldog::results::mbchar& string0, bool copy = true)
-				: _allocator(string0)
 			{
+				utf8._allocator = string0;
 				if(copy)
 					ctor(string0.mbchar, 0, string0.mblen, 0);
 				else
@@ -187,8 +214,8 @@ namespace booldog
 			* @param copy if true then _str C string will be copied, if false then string0._str will be detached from string0
 			*/
 			explicit string(const ::booldog::classes::string& string0, bool copy)
-				: _allocator(string0)
 			{
+				utf8._allocator = string0;
 				if(copy)
 					ctor(string0._str, 0, string0._length, 0);
 				else
@@ -206,8 +233,8 @@ namespace booldog
 			* @param string0 copy string
 			*/
 			string(const ::booldog::classes::string& string0)
-				: _allocator(string0)
 			{
+				utf8._allocator = string0;
 				ctor(string0._str, 0, string0._length, 0);
 			}
 			/** Concatenation constructor
@@ -218,8 +245,8 @@ namespace booldog
 			*/
 			explicit string(::booldog::allocator* allocator, const char* string0, const char* string1
 				, size_t string0_length = SIZE_MAX, size_t string1_length = SIZE_MAX)
-				: _allocator(allocator)
 			{
+				utf8._allocator = allocator;
 				ctor(string0, string1, string0_length, string1_length);
 			}
 			/** Concatenation constructor
@@ -228,8 +255,8 @@ namespace booldog
 			* @param string1_length a string1 length(if equal to SIZE_MAX then it's calculated inside function)
 			*/
 			explicit string(const ::booldog::classes::string& string0, const char* string1, size_t string1_length = SIZE_MAX)
-				: _allocator(string0._allocator)
 			{
+				utf8._allocator = string0.utf8._allocator;
 				ctor(string0._str, string1, string0._length, string1_length);
 			}
 			/** Concatenation constructor
@@ -238,8 +265,8 @@ namespace booldog
 			* @param string1_length a string1 length(if equal to SIZE_MAX then it's calculated inside function)
 			*/
 			explicit string(const ::booldog::results::mbchar& string0, const char* string1, size_t string1_length = SIZE_MAX)
-				: _allocator(string0.mballocator)
 			{
+				utf8._allocator = string0.mballocator;
 				ctor(string0.mbchar, string1, string0.mblen, string1_length);
 			}
 			/** Concatenation constructor
@@ -248,8 +275,8 @@ namespace booldog
 			* @param string0_length a string0 length(if equal to SIZE_MAX then it's calculated inside function)
 			*/
 			explicit string(const char* string0, const ::booldog::classes::string& string1, size_t string0_length = SIZE_MAX)
-				: _allocator(string1._allocator)
 			{
+				utf8._allocator = string1.utf8._allocator;
 				ctor(string0, string1._str, string0_length, string1._length);
 			}
 			/** Concatenation constructor
@@ -258,8 +285,8 @@ namespace booldog
 			* @param string0_length a string0 length(if equal to SIZE_MAX then it's calculated inside function)
 			*/
 			explicit string(const char* string0, const ::booldog::results::mbchar& string1, size_t string0_length = SIZE_MAX)
-				: _allocator(string1)
 			{
+				utf8._allocator = string1.mballocator;
 				ctor(string0, string1.mbchar, string0_length, string1.mblen);
 			}
 			/** Concatenation constructor
@@ -267,17 +294,17 @@ namespace booldog
 			* @param string1 end concatenation string
 			*/
 			explicit string(const ::booldog::classes::string& string0, const ::booldog::classes::string& string1)
-				: _allocator(string1._allocator)
 			{
+				utf8._allocator = string1.utf8._allocator;
 				ctor(string0._str, string1._str, string0._length, string1._length);
 			}
 			/** Concatenation constructor
 			* @param string0 begin concatenation string
 			* @param string1 end concatenation string
 			*/
-			explicit string(const ::booldog::results::mbchar& string0, const ::booldog::results::mbchar& string1)
-				: _allocator(string1)
+			explicit string(const ::booldog::results::mbchar& string0, const ::booldog::results::mbchar& string1)				
 			{
+				utf8._allocator = string1.mballocator;
 				ctor(string0.mbchar, string1.mbchar, string0.mblen, string1.mblen);
 			}
 			::booldog::classes::string& operator =(const ::booldog::classes::string::string_return& string)
@@ -294,7 +321,7 @@ namespace booldog
 			template< size_t step >
 			bool assign(::booldog::result* pres, const char* str, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				return ::booldog::utils::string::mbs::assign< step >(pres, _allocator, false, 0, _str, _length, _size, str, 0, SIZE_MAX
+				return ::booldog::utils::string::mbs::assign< step >(pres, utf8._allocator, false, 0, _str, _length, _size, str, 0, SIZE_MAX
 					, debuginfo);
 			}
 			/** Assign a new C string
@@ -312,7 +339,7 @@ namespace booldog
 			*/
 			booinline ::booldog::classes::string& operator =(const ::booldog::classes::string& str)
 			{
-				::booldog::utils::string::mbs::assign< 16 >(0, _allocator, false, 0, _str, _length, _size, str._str, 0, str._length
+				::booldog::utils::string::mbs::assign< 16 >(0, utf8._allocator, false, 0, _str, _length, _size, str._str, 0, str._length
 					, debuginfo_macros);
 				return *this;
 			}
@@ -326,7 +353,7 @@ namespace booldog
 			template< size_t step >
 			bool append(::booldog::result* pres, const char* str, size_t str_length = SIZE_MAX, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				return ::booldog::utils::string::mbs::assign< step >(pres, _allocator, false, _length, _str, _length, _size, str, 0, str_length
+				return ::booldog::utils::string::mbs::assign< step >(pres, utf8._allocator, false, _length, _str, _length, _size, str, 0, str_length
 					, debuginfo);
 			}
 			/** Append a C string to _str
@@ -365,7 +392,7 @@ namespace booldog
 			template< size_t step, class T >
 			bool append(::booldog::result* pres, T number, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 			{
-				return ::booldog::utils::string::mbs::append< step, T >(pres, _allocator, _str, _length, _size, number, debuginfo);
+				return ::booldog::utils::string::mbs::append< step, T >(pres, utf8._allocator, _str, _length, _size, number, debuginfo);
 			}
 			/** Convert number to C string and append it to _str
 			* @param number a appended number
@@ -447,7 +474,7 @@ namespace booldog
 			*/
 			booinline operator ::booldog::allocator*() const
 			{
-				return _allocator;
+				return utf8._allocator;
 			}
 			/** Return a C string length(without including the terminating null character itself)
 			* @return C string length(without including the terminating null character itself)

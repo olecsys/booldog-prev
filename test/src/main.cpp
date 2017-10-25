@@ -16932,9 +16932,10 @@ TEST_CASE("boo_classes_string", "test")
 				::booldog::result resres;
 				::booldog::classes::string string0 = ::booldog::classes::string::format(&resres, &allocator, debuginfo_macros
 					, "%s - %d", "ErRor", 1986);
+
 				comparand = "ErRor - 1986";
 				comparand_length = strlen(comparand);
-				REQUIRE(string0._allocator == &allocator);
+				REQUIRE(string0.utf8._allocator == &allocator);
 				REQUIRE(resres.succeeded());
 				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
 				REQUIRE(string0.length() == comparand_length);
