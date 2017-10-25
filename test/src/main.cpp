@@ -12705,6 +12705,71 @@ TEST_CASE("boo_string_utilsTest", "test")
 	}
 
 	{
+		const char* comparand = "апрель";
+		size_t comparand_length = strlen(comparand);
+
+		const char* source = "АпРеЛь";
+		size_t source_length = strlen(source);
+
+		::booldog::results::mbchar resmbchar(&allocator);
+
+		size_t srcbyteindex = 0;
+		REQUIRE(::booldog::utf8::tolower< 1 >(resmbchar, source, srcbyteindex, source_length));
+		
+		REQUIRE(resmbchar.succeeded());
+
+		REQUIRE(resmbchar.mbsize == comparand_length + 1);
+
+		REQUIRE(resmbchar.mblen == comparand_length);
+
+		REQUIRE(strcmp(resmbchar.mbchar, comparand) == 0);
+	}
+
+	{
+		const char* comparand = "рель";
+		size_t comparand_length = strlen(comparand);
+
+
+		const char* source = "АпРеЛь";
+		size_t source_length = strlen(source), offset = strlen("Ап");
+
+		::booldog::results::mbchar resmbchar(&allocator);
+
+		size_t srcbyteindex = offset;
+		REQUIRE(::booldog::utf8::tolower< 1 >(resmbchar, source, srcbyteindex, source_length));
+		
+		REQUIRE(resmbchar.succeeded());
+
+		REQUIRE(resmbchar.mbsize == comparand_length + 1);
+
+		REQUIRE(resmbchar.mblen == comparand_length);
+
+		REQUIRE(strcmp(resmbchar.mbchar, comparand) == 0);
+	}
+
+	{
+		const char* comparand = "апр";
+		size_t comparand_length = strlen(comparand);
+
+
+		const char* source = "АпРеЛь";
+		size_t source_length = strlen(source), offset = strlen("еЛь");
+
+		::booldog::results::mbchar resmbchar(&allocator);
+
+		size_t srcbyteindex = 0;
+		REQUIRE(::booldog::utf8::tolower< 1 >(resmbchar, source, srcbyteindex, source_length - offset));
+		
+		REQUIRE(resmbchar.succeeded());
+
+		REQUIRE(resmbchar.mbsize == comparand_length + 1);
+
+		REQUIRE(resmbchar.mblen == comparand_length);
+
+		REQUIRE(strcmp(resmbchar.mbchar, comparand) == 0);
+	}
+
+	{
 		::booldog::result_mbchar resmbchar( &allocator );
 
 		::booldog::utils::string::wcs::tombs(resmbchar, L"locale", 3, 2);
