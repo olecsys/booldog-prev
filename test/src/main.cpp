@@ -16632,6 +16632,7 @@ TEST_CASE("boo_classes_string", "test")
 	{
 		{
 			const char* comparand = 0;
+			size_t comparand_length = 0;
 			::booldog::results::mbchar mbchar(&allocator);
 			mbchar.cmbchar = "MBCHAR";
 			mbchar.mblen = 6;
@@ -16862,6 +16863,18 @@ TEST_CASE("boo_classes_string", "test")
 				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
 				REQUIRE(string0.length() == strlen(comparand));
 			}
+			{				
+				::booldog::result resres;
+				::booldog::classes::string string0 = ::booldog::classes::string::format(&resres, &allocator, debuginfo_macros
+					, "%s - %d", "ErRor", 1986);
+				comparand = "ErRor - 1986";
+				comparand_length = strlen(comparand);
+				REQUIRE(string0._allocator == &allocator);
+				REQUIRE(resres.succeeded());
+				REQUIRE(strcmp(string0.cstr(), comparand) == 0);
+				REQUIRE(string0.length() == comparand_length);
+			}
+
 
 
 			mbchar.mbchar = 0;

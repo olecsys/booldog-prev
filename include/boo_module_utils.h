@@ -72,8 +72,8 @@ namespace booldog
 						goto goto_return;
 					}
 					
-					::booldog::utils::string::mbs::sprintf( &mbchar , allocator , debuginfo , "/proc/%u/maps" 
-						, (::booldog::uint32)getpid() );
+					::booldog::utils::string::mbs::format(&mbchar, allocator, debuginfo, "/proc/%u/maps"
+						, (::booldog::uint32)getpid());
 					
 					if( ::booldog::io::file::mbsopen( &resfile , allocator , mbchar.mbchar 
 						, ::booldog::enums::io::RDONLY , 0 , false , debuginfo ) )
@@ -170,8 +170,8 @@ goto_return:
 #ifdef __ANDROID__
 						//goto goto_return;
 						::booldog::result_mbchar mbchar( res->mballocator );
-						::booldog::utils::string::mbs::sprintf( &mbchar , res->mballocator , debuginfo , "/proc/%u/maps" 
-							, (::booldog::uint32)getpid() );
+						::booldog::utils::string::mbs::format(&mbchar, res->mballocator, debuginfo, "/proc/%u/maps" 
+							, (::booldog::uint32)getpid());
 						::booldog::result_file resfile;
 						if( ::booldog::io::file::mbsopen( &resfile , res->mballocator , mbchar.mbchar 
 							, ::booldog::enums::io::RDONLY , 0 , false , debuginfo ) )

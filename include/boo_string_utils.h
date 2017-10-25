@@ -301,8 +301,8 @@ debuginfo_macros_statement( 41 );
 					
 					return res->succeeded();
 				};
-				booinline bool sprintf( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator , const char* format
-					, va_list pargs , const ::booldog::debug::info& debuginfo )
+				booinline bool format(::booldog::result_mbchar* pres, ::booldog::allocator* allocator, const char* format
+					, va_list pargs, const ::booldog::debug::info& debuginfo)
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
@@ -326,14 +326,14 @@ debuginfo_macros_statement( 41 );
 						res->booerr( ::booldog::enums::result::booerr_type_cannot_alloc_memory );
 					return res->succeeded();
 				};
-				booinline bool sprintf( ::booldog::result_mbchar* pres , ::booldog::allocator* allocator
-					, const ::booldog::debug::info& debuginfo , const char* format , ... )
+				booinline bool format(::booldog::result_mbchar* pres, ::booldog::allocator* allocator
+					, const ::booldog::debug::info& debuginfo, const char* format, ...)
 				{
 					::booldog::result_mbchar locres( allocator );
 					BOOINIT_RESULT( ::booldog::result_mbchar );
 					va_list ap;
 					va_start( ap , format );
-					::booldog::utils::string::mbs::sprintf( res , allocator , format , ap , debuginfo );
+					::booldog::utils::string::mbs::format(res, allocator, format, ap, debuginfo);
 					va_end( ap );
 					return res->succeeded();
 				};

@@ -605,6 +605,60 @@ namespace booldog
 					, str->_size, &string1, 0, 1, debuginfo_macros);
 				return *str;
 			}
+			/** Composes a string with the same text that would be printed if format was used on printf, but instead of
+			* being printed, the content is stored as a C string in the returned ::booldog::classes::string::string_return
+			* _str.
+			* @param pres store the function result or detailed error
+			* @param allocator a allocator that will be used by the returned ::booldog::classes::string::string_return object
+			* @param debuginfo a debug information
+			* @param format C string that contains a format string that follows the same specifications as format in printf
+			* @param ... Depending on the format string, the function may expect a sequence of additional arguments, each 
+			* containing a value to be used to replace a format specifier in the format string
+			* (or a pointer to a storage location, for n).
+			* There should be at least as many of these arguments as the number of values specified in the format specifiers.
+			* Additional arguments are ignored by the function.
+			* @return ::booldog::classes::string::string_return object that stores returned formatted string
+			*/
+			static const ::booldog::classes::string::string_return format(::booldog::result* pres
+				, ::booldog::allocator* allocator, const ::booldog::debug::info& debuginfo, const char* format, ...)
+			{
+				::booldog::result locres;
+				BOOINIT_RESULT(::booldog::result);
+				va_list ap;
+				va_start(ap, format);
+				::booldog::results::mbchar mbchar(allocator);
+				if(::booldog::utils::string::mbs::format(&mbchar, mbchar, format, ap, debuginfo) == false)
+					res->copy(mbchar);
+				va_end(ap);
+				::booldog::classes::string result(mbchar, false);
+				::booldog::classes::string::string_return string_return_res(result);
+				return string_return_res;
+			}
+			/** Composes a string with the same text that would be printed if format was used on printf, but instead of
+			* being printed, the content is stored as a C string in the returned ::booldog::classes::string::string_return
+			* _str.
+			* @param allocator a allocator that will be used by the returned ::booldog::classes::string::string_return object
+			* @param debuginfo a debug information
+			* @param format C string that contains a format string that follows the same specifications as format in printf
+			* @param ... Depending on the format string, the function may expect a sequence of additional arguments, each 
+			* containing a value to be used to replace a format specifier in the format string
+			* (or a pointer to a storage location, for n).
+			* There should be at least as many of these arguments as the number of values specified in the format specifiers.
+			* Additional arguments are ignored by the function.
+			* @return ::booldog::classes::string::string_return object that stores returned formatted string
+			*/
+			static const ::booldog::classes::string::string_return format(::booldog::allocator* allocator
+				, const ::booldog::debug::info& debuginfo, const char* format, ...)
+			{
+				va_list ap;
+				va_start(ap, format);
+				::booldog::results::mbchar mbchar(allocator);
+				::booldog::utils::string::mbs::format(&mbchar, mbchar, format, ap, debuginfo);
+				va_end(ap);
+				::booldog::classes::string result(mbchar, false);
+				::booldog::classes::string::string_return string_return_res(result);
+				return string_return_res;
+			}
 		};
 	}
 	booinline const ::booldog::classes::string::string_return operator +(const ::booldog::results::mbchar& string0

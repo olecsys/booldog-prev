@@ -77,7 +77,7 @@ namespace booldog
 						va_list ap;
 						va_start( ap , format );
 						::booldog::result_mbchar mbchar( allocator );
-						::booldog::utils::string::mbs::sprintf( &mbchar , allocator , format , ap , debuginfo );
+						::booldog::utils::string::mbs::format(&mbchar, allocator, format, ap, debuginfo);
 						va_end( ap );
 						if( mbchar.succeeded() )
 						{
@@ -154,7 +154,7 @@ namespace booldog
 						va_list ap;
 						va_start( ap , format );
 						::booldog::result_mbchar mbchar( allocator );
-						::booldog::utils::string::mbs::sprintf( &mbchar , allocator , format , ap , debuginfo );
+						::booldog::utils::string::mbs::format(&mbchar, allocator, format, ap, debuginfo);
 						va_end( ap );
 						if( mbchar.succeeded() )
 						{
