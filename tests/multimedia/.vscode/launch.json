@@ -1,0 +1,46 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        { 
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "enter program name, for example ${workspaceRoot}/a.out",
+            "processId": "${command:pickProcess}",
+            "MIMode": "gdb",
+            "additionalSOLibSearchPath": "/mnt/manual_video7_linux_debug_symbols"
+        },
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            //"program": "${workspaceRoot}/../../build/client/x64/video-client-7.0",
+            "program": "${workspaceRoot}/../../build/video-server-7.0",
+            "args": [],
+            "stopAtEntry": false,
+            //"cwd": "${workspaceRoot}/../../build/client/x64",
+            "cwd": "${workspaceRoot}/../../build",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "WOW",
+                    "text": "set debug-file-directory /mnt/manual_video7_linux_debug_symbols",
+                    "ignoreFailures": false
+                }
+            ],
+            "additionalSOLibSearchPath": "/mnt/manual_video7_linux_debug_symbols",
+            "sourceFileMap": {
+                "/home/olecsys/JENKINS/workspace/olecsys/vcli.settings linux x64/projects/linux/x64/vcli.settings/./../../../../ag/libvcli.settings/lib": "${workspaceRoot}/../libvcli.settings/lib",
+                "/home/olecsys/JENKINS/workspace/olecsys/vcli.settings linux x64/projects/linux/x64/vcli.settings/./../../../../inc": "${workspaceRoot}/../../inc"
+
+            }
+        }
+    ]
+}

@@ -1,1 +1,0 @@
-@call _build.bat "test" "Release" "Win32"
