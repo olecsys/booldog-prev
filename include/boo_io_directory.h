@@ -203,6 +203,7 @@ goto_return:
 				booinline bool create(::booldog::result* pres, const char* path
 					, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 				{
+					debuginfo = debuginfo;
 					::booldog::result locres;
 					BOOINIT_RESULT(::booldog::result);
 #ifdef __WINDOWS__

@@ -80,7 +80,7 @@ namespace booldog
 				char* _str;                      ///< store C string data
 				size_t _size;                    ///< the size of the allocated memory
 				size_t _length;                  ///< the length of the C string _str member(without including the terminating null character itself)
-							
+#if defined(BOO_UTF8_H)							
 				/** Converts C string _str to its lowercase equivalent. If no such conversion is possible, the value returned is C string _str unchanged.
 				* @param byteindex index from which starts conversion
 				* @param bytescount byte count which converts by function
@@ -103,6 +103,7 @@ namespace booldog
 					::booldog::classes::string::string_return string_return_res(string);
 					return string_return_res;
 				}
+#endif
 			};
 			struct mbsfuncs
 			{
