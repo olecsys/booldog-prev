@@ -31,9 +31,9 @@
                 "/usr/local/include",
                 "/usr/include/x86_64-linux-gnu",
                 "/usr/include",
-                "${workspaceRoot}/lib",
-                "${workspaceRoot}/../../inc",
-                "${workspaceRoot}/../../crox_headers"
+                "${workspaceRoot}",
+                "/usr/include/linux",
+                "/usr/lib/gcc/x86_64-linux-gnu/5/include"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",

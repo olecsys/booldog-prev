@@ -5,14 +5,20 @@
 #define __STDC_CONSTANT_MACROS
 #endif
 
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
-#include <catch.hpp>
+#include "acutest.h"
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-TEST_CASE("test")
+
+void test_web_camera() 
 {
 	int test = 1986;
-	REQUIRE(test == 1986);
+	  TEST_CHECK(test == 1986);
+
+	TEST_CHECK(test == 1988);
 }
+TEST_LIST = {
+    {"web camera", test_web_camera},
+    {NULL, NULL}
+};
