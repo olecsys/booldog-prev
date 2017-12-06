@@ -118,8 +118,13 @@ namespace booldog
 		{
 			void* buf;
 			size_t size;
+      size_t allocsize;
+      buffer()
+				: buf(0), size(0), allocsize(0)
+			{
+			}
 			buffer(::booldog::byte* data, size_t datasize)
-				: buf(data), size(datasize)
+				: buf(data), size(datasize), allocsize(0)
 			{
 			}
 		};

@@ -12,11 +12,11 @@ namespace booldog {
 		typedef void* (*realloc_t)(void* pointer, size_t size, void* udata);
 		typedef void (*free_t)(void* pointer, void* udata);
 	}
-	struct allocation
+	typedef struct allocation
 	{
 		typedefs::malloc_t _malloc;
 		typedefs::realloc_t _realloc;
 		typedefs::free_t _free;
-	};
+	} allocation;
 }
 #endif

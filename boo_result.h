@@ -29,7 +29,7 @@ namespace booldog
 	{
 		namespace result
 		{
-			enum error_type
+			typedef enum
 			{
 				error_type_no_error ,
 				error_type_errno ,
@@ -43,7 +43,7 @@ namespace booldog
 				error_type_booerr , 
 				error_type_OpenGL, 
 				error_type_alsa
-			};
+			} error_type;
 		};
 	};
 	class result

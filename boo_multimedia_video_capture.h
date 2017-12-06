@@ -2533,10 +2533,10 @@ namespace booldog
 #endif
 					return res->succeeded();
                 }
-                booinline const char* name(void)
-                {
-                    return _filename;
-                }
+        booinline const char* name(void)
+        {
+            return _filename;
+        }
 			};
 		}
 	}

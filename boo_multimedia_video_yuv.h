@@ -5,12 +5,91 @@
 #endif
 #include "boo_multimedia_video_frame.h"
 #include "boo_multimedia_enums.h"
+
+#include "boo_allocation.h"
+#ifndef BOOLDOG_MALLOC
+#define BOOLDOG_MALLOC(size, allocation_data, allocation_info) malloc(size)
+#define BOOLDOG_REALLOC(pointer, size, allocation_udata, allocation_info) realloc(pointer, size)
+#define BOOLDOG_FREE(pointer, allocation_udata, allocation_info) free(pointer)
+#endif
 namespace booldog
 {
+  namespace enums
+  {
+    namespace multimedia {
+      typedef enum
+      {
+        chrominance_subsampling_444,
+        chrominance_subsampling_422,
+        chrominance_subsampling_420,
+        chrominance_subsampling_gray
+      } chrominance_subsampling;
+    }
+  }
 	namespace multimedia
 	{
 		namespace video
 		{
+      namespace planes
+      {
+        struct yuv 
+        { 
+          ::booldog::data::buffer _buffer;
+          unsigned char* _yuv[3];
+          int _strides[3];
+          int _width;
+          int _height;
+          ::booldog::enums::multimedia::chrominance_subsampling _chrominance_subsampling;
+        };
+        /*void copyfrom_yuyv(yuv* dst, unsigned char* src, int width, int height, void* udata, ::booldog::allocation* allocation)
+        {
+          y_width = vframe->width;
+					y_height = vframe->height;
+					v_width = u_width = vframe->width / 2;
+					v_height = u_height = vframe->height;
+							
+					int y_size = y_width * y_height;
+					int u_size = y_size / 2;
+					int v_size = u_size;
+							
+					y = allocator->realloc_array< ::booldog::byte >(y, y_size, debuginfo);
+					if(y == 0)
+					{						
+						res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+						return false;
+					}
+					u = allocator->realloc_array< ::booldog::byte >(u, u_size, debuginfo);
+					if(u == 0)
+					{						
+						res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+						return false;
+					}
+					v = allocator->realloc_array< ::booldog::byte >(v, v_size, debuginfo);
+					if(v == 0)
+					{						
+						res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+						return false;
+					}
+					::booldog::uint32 y_offset = 0, uv_offset = 0, index = 0;
+					while(index < vframe->size)
+					{								
+						y[y_offset++] = vframe->data[index];
+						u[uv_offset] = vframe->data[++index];
+						y[y_offset++] = vframe->data[++index];
+						v[uv_offset++] = vframe->data[++index];
+						++index;
+					}
+
+
+          if(allocation)
+          {
+          }
+          else
+          {
+          }
+
+        }*/
+      }
 			struct yuv
 			{
 				bool isallocated;

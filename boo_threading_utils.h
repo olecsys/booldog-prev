@@ -3,9 +3,11 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "boo_types.h"
+#include "boo_platform.h"
 
-#ifdef __UNIX__
+#ifdef __WINDOWS__
+#include <WinBase.h>
+#else
 #include <time.h>
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE
@@ -25,57 +27,57 @@ namespace booldog
 {
 	namespace threading
 	{
-		booinline void sleep( ::booldog::uint32 milliseconds )
+		inline void sleep(unsigned int milliseconds)
 		{
 #ifdef __WINDOWS__
-                        ::Sleep(milliseconds);
+      ::Sleep(milliseconds);
 #else
-                        struct timespec ts = {};
-                        struct timespec rem = {};
+      struct timespec ts = {};
+      struct timespec rem = {};
 			ts.tv_sec = milliseconds / 1000;
-			ts.tv_nsec = ( milliseconds % 1000 ) * 1000000;
-			nanosleep( &ts , &rem );
+			ts.tv_nsec = (milliseconds % 1000) * 1000000;
+			nanosleep(&ts, &rem);
 #endif
-                }
-		booinline ::booldog::pid_t threadid( void )
+    }
+		inline unsigned int threadid( void )
 		{
 #ifdef __WINDOWS__
 			return ::GetCurrentThreadId();
 #elif defined( __LINUX__ )
 #ifdef __ANDROID__
-			return (::booldog::pid_t)gettid();
+			return (unsigned int)gettid();
 #else
-			return (::booldog::pid_t)syscall( SYS_gettid );
+			return (unsigned int)syscall( SYS_gettid );
 #endif
 #elif defined( __SOLARIS__ )
 			return pthread_self();
 #endif
 		};
-		booinline void set_thread_name( const char* name )
+		inline void set_thread_name(const char* name)
 		{
 #ifdef __WINDOWS__			
 			struct
 			{
-				::booldog::uint32 _type;
+				unsigned int _type;
 				const char* _name;
-				::booldog::uint32 _thread_id;
-				::booldog::uint32 _flags;		
-			}info = { 0x1000 , name , ::booldog::threading::threadid() , 0 }; 
+				unsigned int _thread_id;
+				unsigned int _flags;		
+			}info = {0x1000, name, ::booldog::threading::threadid(), 0}; 
 			__try
 			{
 #ifdef __x64__
-				RaiseException( 0x406d1388 , 0 , sizeof( info ) / sizeof( ::booldog::uint32 ) , (::booldog::uint64*)&info );
+				RaiseException(0x406d1388, 0, sizeof(info) / sizeof(unsigned int), (unsigned __int64*)&info);
 #elif defined( __x86__ )
-				RaiseException( 0x406d1388 , 0 , sizeof( info ) / sizeof( unsigned long ) , (unsigned long*)&info );
+				RaiseException(0x406d1388, 0, sizeof(info) / sizeof(unsigned long), (unsigned long*)&info);
 #endif
 			}
 			__except( EXCEPTION_CONTINUE_EXECUTION )
 			{
-			};
+			}
 #elif defined( __LINUX__ )
-			prctl( PR_SET_NAME , name );
+			prctl(PR_SET_NAME, name);
 #endif
-		};
-	};
-};
+		}
+	}
+}
 #endif

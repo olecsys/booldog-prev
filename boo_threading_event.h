@@ -36,9 +36,9 @@ namespace booldog
 			event( ::booldog::result* pres , const ::booldog::debug::info& debuginfo = debuginfo_macros )
 				:
 #ifdef __WINDOWS__
-                                _manual_reset_event(0), _auto_reset_event(0)
+      _manual_reset_event(0), _auto_reset_event(0)
 #else
-                                _clockid(CLOCK_REALTIME), _waiters(0), _isset(false), _wakeall(false), _mutex_inited(false), _cond_inited(false)
+      _clockid(CLOCK_REALTIME), _waiters(0), _isset(false), _wakeall(false), _mutex_inited(false), _cond_inited(false)
 #endif
 			{
 				debuginfo = debuginfo;
@@ -94,13 +94,13 @@ goto_error:
 				res->setpthreaderror( result );
 #endif
 			};
-			~event( void )
+			~event()
 			{
 #ifdef __WINDOWS__
-				if( _auto_reset_event )
-					CloseHandle( _auto_reset_event );
-				if( _manual_reset_event )
-					CloseHandle( _manual_reset_event );
+				if(_auto_reset_event)
+					CloseHandle(_auto_reset_event);
+				if(_manual_reset_event)
+					CloseHandle(_manual_reset_event);
 #else
 				if( _mutex_inited )
 					pthread_mutex_destroy( &_mutex );
