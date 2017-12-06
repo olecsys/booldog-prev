@@ -13,6 +13,7 @@
 #include "../../boo_threading_thread.h"
 #include "../../boo_threading_utils.h"
 
+const char* arglist = "Test string";
 static int test = 999;
 static void onthread(void* arglist) {
   const char* string = (const char*)arglist;
@@ -21,16 +22,14 @@ static void onthread(void* arglist) {
 void test_thread() {
   BOOLDOG_THREAD thr;
 
-  char* arglist = "Test string";
-
-  BOOLDOG_THREAD_ATTACHED(&thr, onthread, 0, arglist);
+  BOOLDOG_THREAD_ATTACHED(&thr, onthread, 0, (char*)arglist);
 
   BOOLDOG_THREAD_ATTACHED_JOIN(&thr);
 
   TEST_CHECK(test == 0);
 
   test = 999;
-  BOOLDOG_THREAD_DETACHED(&thr, onthread, 0, arglist);
+  BOOLDOG_THREAD_DETACHED(&thr, onthread, 0, (char*)arglist);
 
   int tries = 0;
   while(test == 999 && tries++ < 10)

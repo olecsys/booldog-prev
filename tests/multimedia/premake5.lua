@@ -36,7 +36,8 @@ project (module_name)
         links {
            "pthread",
            "dl",
-           "rt"
+           "rt",
+           "turbojpeg"
         }
     
     filter "configurations:unix64"

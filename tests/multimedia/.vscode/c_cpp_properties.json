@@ -32,6 +32,7 @@
                 "/usr/include/x86_64-linux-gnu",
                 "/usr/include",
                 "${workspaceRoot}",
+                "${workspaceRoot}/../..",
                 "/usr/include/linux",
                 "/usr/lib/gcc/x86_64-linux-gnu/5/include"
             ],

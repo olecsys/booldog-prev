@@ -77,7 +77,11 @@ namespace booldog
           }
         }
         unsigned long jpeg_size = (unsigned long)buffer->allocsize;
+#ifdef __WINDOWS__        
         const unsigned char* yuv_planes[3] = {yuv->_yuv[0], yuv->_yuv[1], yuv->_yuv[2]};
+#else        
+        unsigned char* yuv_planes[3] = {yuv->_yuv[0], yuv->_yuv[1], yuv->_yuv[2]};
+#endif
         unsigned char** jpeg = (unsigned char**)&buffer->buf;
         int res = tjCompressFromYUVPlanes(enc->_tj_handle, yuv_planes, yuv->_width, yuv->_strides, yuv->_height, subsamp, jpeg
           , &jpeg_size, 100, TJFLAG_NOREALLOC);
