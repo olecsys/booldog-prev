@@ -14,6 +14,7 @@
 #include "../../boo_io_file.h"
 #include "../../boo_heap_allocator.h"
 #include "../../boo_multimedia_usb_camera.h"
+#include "../../boo_multimedia_enums.h"
 void test_libjpeg_turbo() 
 {
   ::booldog::allocators::easy::heap heap;
@@ -109,14 +110,74 @@ void test_libjpeg_turbo()
   yuvbuf -= 2 * sizeof(int);
   heap.free(yuvbuf);
 }
-void test_web_camera() {
-  ::booldog::multimedia::video::usb::camera cam = {};
 
-  int res = ::booldog::multimedia::video::usb::open_camera(&cam);
+int usb_camera_test_failed = 0;
+int usb_camera_frames_count = 0;
+::booldog::multimedia::video::usb::frame* usb_camera_frames[10];
+void usb_camera_onframe(::booldog::multimedia::video::usb::frame* f, int error) {
+  if(f) {
+    if(usb_camera_frames_count == sizeof(usb_camera_frames) / sizeof(usb_camera_frames[0])) {
+      for(int index = 0;index < usb_camera_frames_count;++index) {
+        error = ::booldog::multimedia::video::usb::unlock_frame(usb_camera_frames[index]);
+        if(error)
+         usb_camera_test_failed = error;
+      }
+      usb_camera_frames_count = 0;
+    }
+    if(::booldog::multimedia::video::usb::lock_frame(f) == 0)
+      usb_camera_frames[usb_camera_frames_count++] = f;
+  }
+  else
+    usb_camera_test_failed = error;
+}
+void test_web_camera() {
+  ::booldog::multimedia::video::usb::single_threaded::camera cam;
+
+  int res = ::booldog::multimedia::video::usb::single_threaded::open_camera(&cam, "/dev/video0");
 
   if(!TEST_CHECK(res == 0) == 0) {
 
-    ::booldog::multimedia::video::usb::close_camera(&cam);
+    res = ::booldog::multimedia::video::usb::single_threaded::start_camera(&cam, ::booldog::enums::multimedia::image::YUYV
+      , 640, 480, 30, 0, 0);
+    if(!TEST_CHECK(res == 0) == 0) {
+
+      for(int index = 0;index < sizeof(usb_camera_frames) / sizeof(usb_camera_frames[0]);++index) {
+        res = ::booldog::multimedia::video::usb::single_threaded::boo_multimedia_usb_read_frame(&cam, usb_camera_onframe);
+        TEST_CHECK(res == 0);
+      }
+      for(int index = 0;index < usb_camera_frames_count;++index) {
+        res = ::booldog::multimedia::video::usb::unlock_frame(usb_camera_frames[index]);
+        TEST_CHECK(res == 0);
+      }
+      ::booldog::multimedia::video::usb::single_threaded::stop_camera(&cam);
+    }
+
+    ::booldog::multimedia::video::usb::single_threaded::close_camera(&cam, 0, 0);
+
+    ::booldog::multimedia::video::usb::multi_threaded::camera mt_cam;
+
+    res = ::booldog::multimedia::video::usb::multi_threaded::open_camera(&mt_cam, "/dev/video0");
+
+    if(!TEST_CHECK(res == 0) == 0) {
+      usb_camera_frames_count = 0;
+
+      res = ::booldog::multimedia::video::usb::multi_threaded::start_camera(&mt_cam
+        , usb_camera_onframe, ::booldog::enums::multimedia::image::YUYV, 640, 480, 30, 0, 0);
+      if(!TEST_CHECK(res == 0) == 0) {
+        ::booldog::threading::sleep(5000);
+
+        ::booldog::multimedia::video::usb::multi_threaded::stop_camera(&mt_cam);
+        
+        for(int index = 0;index < usb_camera_frames_count;++index) {
+          res = ::booldog::multimedia::video::usb::unlock_frame(usb_camera_frames[index]);
+          TEST_CHECK(res == 0);
+        }        
+      }
+
+      ::booldog::multimedia::video::usb::multi_threaded::close_camera(&mt_cam, 0, 0);
+
+      TEST_CHECK(usb_camera_test_failed == 0);
+    }
   }
 }
 TEST_LIST = {

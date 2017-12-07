@@ -3,14 +3,14 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "boo_types.h"
+#include "boo_platform.h"
 namespace booldog
 {
 	namespace enums
 	{
 		namespace result
 		{
-			enum booerr_type
+			typedef enum
 			{
 				booerr_type_no_error ,
 				booerr_type_cannot_alloc_memory , 
@@ -70,8 +70,9 @@ namespace booldog
 				booerr_type_windows_has_not_fifo,
 				booerr_type_select_except,
 				booerr_type_incorrect_packet_size,
-				booerr_type_json_parent_is_not_array
-			};
+				booerr_type_json_parent_is_not_array,
+				booerr_type_all_frames_locked
+			} booerr_type;
 		}
 	}
 }
