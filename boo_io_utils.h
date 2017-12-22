@@ -759,7 +759,7 @@ goto_return:
 					* @return The function result
 					*/
 					template< size_t step, size_t sizes_size >
-					booinline bool join(::booldog::results::mbchar& pres, char sep, va_list pargs
+          booinline bool join(::booldog::results::mbchar& pres, const char sep, va_list pargs
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 					{
 						size_t size = 0, sizes[sizes_size] = {}, sizes_count = 0, * sizes_ptr = sizes, sizes_ptr_size = sizes_size;
@@ -868,7 +868,7 @@ goto_return:
 					* @return The function result
 					*/
 					template< size_t step, size_t sizes_size >
-					booinline bool join(::booldog::results::mbchar& pres, const ::booldog::debug::info& debuginfo, char sep, ...)
+          booinline bool join(::booldog::results::mbchar& pres, const ::booldog::debug::info& debuginfo, const char sep, ...)
 					{
 						va_list pargs;
 						va_start(pargs, sep); 

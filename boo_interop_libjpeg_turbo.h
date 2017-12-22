@@ -8,14 +8,25 @@
 #define BOOLDOG_MALLOC(size, allocation_data, allocation_info) malloc(size)
 #define BOOLDOG_REALLOC(pointer, size, allocation_udata, allocation_info) realloc(pointer, size)
 #define BOOLDOG_FREE(pointer, allocation_udata, allocation_info) free(pointer)
+#include <stdlib.h>
 #endif
+
+#include <stdio.h>
 
 #include <turbojpeg.h>
 #if defined(__WINDOWS__)
 #pragma comment(lib, "turbojpeg")
 #endif
-namespace booldog
-{
+namespace booldog {
+  namespace typedefs {
+    namespace interop {
+     namespace libjpeg_turbo {
+        typedef int DLLCALL (*tjCompressFromYUVPlanes_t)(tjhandle handle,
+          unsigned char **srcPlanes, int width, int *strides, int height, int subsamp,
+          unsigned char **jpegBuf, unsigned long *jpegSize, int jpegQual, int flags);
+     }
+    }
+  }
 	namespace interop
 	{
     namespace libjpeg_turbo
@@ -23,8 +34,9 @@ namespace booldog
       struct encoder 
       {
         tjhandle _tj_handle;
+        typedefs::interop::libjpeg_turbo::tjCompressFromYUVPlanes_t _tjCompressFromYUVPlanes;
       };
-      encoder* open_encoder(void* allocation_udata, void* allocation_info) {
+      inline encoder* open_encoder(void* allocation_udata, void* allocation_info) {
         allocation_udata= allocation_udata;
         allocation_info = allocation_info;
         tjhandle handle = tjInitCompress();
@@ -32,6 +44,7 @@ namespace booldog
         {
           encoder* enc = (encoder*)BOOLDOG_MALLOC(sizeof(encoder), allocation_udata, allocation_info);
           enc->_tj_handle = handle;
+          enc->_tjCompressFromYUVPlanes = (typedefs::interop::libjpeg_turbo::tjCompressFromYUVPlanes_t)tjCompressFromYUVPlanes;
           return enc;
         }
         else
@@ -42,17 +55,18 @@ namespace booldog
         }
         return 0;
       }
-      size_t encode_buffer_size(::booldog::multimedia::video::planes::yuv* yuv) {
+      inline size_t encode_buffer_size(::booldog::multimedia::video::planes::yuv* yuv) {
         switch(yuv->_chrominance_subsampling)
         {
         case ::booldog::enums::multimedia::chrominance_subsampling_420:
           return tjBufSize(yuv->_width, yuv->_height, TJSAMP_420);
         case ::booldog::enums::multimedia::chrominance_subsampling_422:
           return tjBufSize(yuv->_width, yuv->_height, TJSAMP_422);
+        default:
+          return (size_t)-1;
         }
-        return (size_t)-1;
       }
-      int encode(encoder* enc, ::booldog::data::buffer* buffer, ::booldog::multimedia::video::planes::yuv* yuv
+      inline int encode(encoder* enc, ::booldog::data::buffer* buffer, ::booldog::multimedia::video::planes::yuv* yuv
         , void* allocation_udata, void* allocation_info) {
         allocation_udata = allocation_udata;
         allocation_info = allocation_info;
@@ -77,13 +91,9 @@ namespace booldog
           }
         }
         unsigned long jpeg_size = (unsigned long)buffer->allocsize;
-#ifdef __WINDOWS__        
-        const unsigned char* yuv_planes[3] = {yuv->_yuv[0], yuv->_yuv[1], yuv->_yuv[2]};
-#else        
         unsigned char* yuv_planes[3] = {yuv->_yuv[0], yuv->_yuv[1], yuv->_yuv[2]};
-#endif
         unsigned char** jpeg = (unsigned char**)&buffer->buf;
-        int res = tjCompressFromYUVPlanes(enc->_tj_handle, yuv_planes, yuv->_width, yuv->_strides, yuv->_height, subsamp, jpeg
+        int res = enc->_tjCompressFromYUVPlanes(enc->_tj_handle, yuv_planes, yuv->_width, yuv->_strides, yuv->_height, subsamp, jpeg
           , &jpeg_size, 100, TJFLAG_NOREALLOC);
         if(res == 0)
         {
@@ -98,7 +108,7 @@ namespace booldog
           return -1;
         }
       }
-      void close_encoder(encoder* enc, void* allocation_udata, void* allocation_info) {
+      inline void close_encoder(encoder* enc, void* allocation_udata, void* allocation_info) {
         allocation_udata = allocation_udata;
         allocation_info = allocation_info;
         tjDestroy(enc->_tj_handle);
@@ -110,7 +120,7 @@ namespace booldog
       {
         tjhandle _tj_handle;
       };
-      decoder* open_decoder(void* allocation_udata, void* allocation_info) {
+      inline decoder* open_decoder(void* allocation_udata, void* allocation_info) {
         allocation_udata = allocation_udata;
         allocation_info = allocation_info;
         tjhandle handle = tjInitDecompress();
@@ -128,7 +138,7 @@ namespace booldog
         }
         return 0;
       }
-      int decode(decoder* dec, ::booldog::data::buffer* jpg, ::booldog::multimedia::video::planes::yuv* yuv
+      inline int decode(decoder* dec, ::booldog::data::buffer* jpg, ::booldog::multimedia::video::planes::yuv* yuv
         , void* allocation_udata, void* allocation_info) {
         allocation_udata = allocation_udata;
         allocation_info = allocation_info;
@@ -139,7 +149,7 @@ namespace booldog
           if(preallocated_yuv_size == (unsigned long)-1)
           {
             //TODO
-						printf("tjBufSizeYUV, failed, arguments are out of bounds\n");
+            printf("tjBufSizeYUV, failed, arguments are out of bounds\n");
             return -1;
           }
 					else
@@ -164,6 +174,7 @@ namespace booldog
                   u_stride = v_stride = width;
                   u_offset = y_stride * height;
                   v_offset = u_offset + u_stride * height;
+                  //printf("TJSAMP_444\n");
 								  break;
                 }
 							case TJSAMP_422:
@@ -172,6 +183,7 @@ namespace booldog
                   u_stride = v_stride = width / 2;
                   u_offset = y_stride * height;
                   v_offset = u_offset + u_stride * height;
+                  //printf("TJSAMP_422\n");
 								  break;
                 }
 							case TJSAMP_420:
@@ -180,6 +192,7 @@ namespace booldog
                   u_stride = v_stride = width / 2;
                   u_offset = y_stride * height;
                   v_offset = u_offset + (u_stride * height / 2);
+                  //printf("TJSAMP_420\n");
 								  break;
                 }
 							case TJSAMP_GRAY:
@@ -187,11 +200,19 @@ namespace booldog
                   yuv->_chrominance_subsampling = ::booldog::enums::multimedia::chrominance_subsampling_gray;
                   u_stride = v_stride = 0;
                   u_offset = v_offset = 0;
+                  //printf("TJSAMP_GRAY\n");
 								  break;
                 }
 							case TJSAMP_440:
-								printf("TJSAMP_440\n");
-								break;
+                {
+                  //printf("TJSAMP_440\n");
+                  break;
+                }
+            default:
+                {
+                  printf("Unknown subsamp %d\n", subsamp);
+                  break;
+                }
 						}
             yuv->_yuv[0] = yuvbuf;
             yuv->_strides[0] = y_stride;                
@@ -199,30 +220,32 @@ namespace booldog
             yuv->_strides[1] = u_stride;
             yuv->_yuv[2] = &yuvbuf[v_offset];
             yuv->_strides[2] = v_stride;
+            yuv->_width = width;
+            yuv->_height = height;
 
             if(tjDecompressToYUVPlanes(dec->_tj_handle, (unsigned char*)jpg->buf, (unsigned long)jpg->size, yuv->_yuv, width
               , yuv->_strides, height, TJFLAG_NOREALLOC) == 0)
               return 0;
 						else
-            {  
-							printf("tjDecompressToYUV failed, %s\n", tjGetErrorStr()); 
+            {
               //TODO
               char* error = tjGetErrorStr();
+              printf("tjDecompressToYUVPlanes failed, %s\n", error);
               error = error;
               return -1;
             }
 					}									
 				}
 				else
-        {
-					printf("tjDecompressHeader2, failed, %s\n", tjGetErrorStr());
+        {          
           //TODO
           char* error = tjGetErrorStr();
+          printf("tjDecompressHeader2, failed, %s\n", error);
           error = error;
           return -1;
         }
       }
-      void close_decoder(decoder* dec, void* allocation_udata, void* allocation_info) {
+      inline void close_decoder(decoder* dec, void* allocation_udata, void* allocation_info) {
         allocation_udata = allocation_udata;
         allocation_info = allocation_info;
         tjDestroy(dec->_tj_handle);

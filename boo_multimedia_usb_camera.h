@@ -16,6 +16,7 @@
 #define BOOLDOG_MALLOC(size, allocation_data, allocation_info) malloc(size)
 #define BOOLDOG_REALLOC(pointer, size, allocation_udata, allocation_info) realloc(pointer, size)
 #define BOOLDOG_FREE(pointer, allocation_udata, allocation_info) free(pointer)
+#include <stdlib.h>
 #endif
 
 #ifndef BOOLDOG_THREAD_ATTACHED
@@ -40,6 +41,8 @@
 #include <sys/mman.h>
 #include <sys/select.h>
 #include <time.h>
+#include <errno.h>
+#include <string.h>
 
 #ifndef V4L2_PIX_FMT_H264
 #define V4L2_PIX_FMT_H264     v4l2_fourcc('H', '2', '6', '4') /* H264 with start codes */
@@ -89,7 +92,7 @@ namespace booldog
     namespace multimedia {
       namespace video {
         namespace usb {
-          typedef void (*onframe)(::booldog::multimedia::video::usb::frame* f, int error);
+          typedef void (*onframe)(::booldog::multimedia::video::usb::frame* f, int error, void* udata);
         }
       }
     }
@@ -138,7 +141,7 @@ namespace booldog
             return r;
           }          
           static int boo_multimedia_usb_read_frame(camera* cam
-            , ::booldog::typedefs::multimedia::video::usb::onframe onframe) {
+            , ::booldog::typedefs::multimedia::video::usb::onframe onframe, void* onframe_udata) {
             for(;;)
             {
               fd_set fds;
@@ -154,7 +157,7 @@ namespace booldog
                 resint = errno;
                 if(resint == EINTR)
                   continue;
-                onframe(0, resint);
+                onframe(0, resint, onframe_udata);
                 //TODO
                 return resint;
               }
@@ -166,7 +169,7 @@ namespace booldog
                 cam->timestamp += new_last_tickcount - cam->last_tickcount;
                 cam->last_tickcount = new_last_tickcount;
                 
-                int index = 0;
+                unsigned int index = 0;
                 frame* f = 0;
                 for(index = 0;index < sizeof(cam->frames) / sizeof(cam->frames[0]);++index) {
                   f = &cam->frames[index];
@@ -176,13 +179,13 @@ namespace booldog
                 if(index == sizeof(cam->frames) / sizeof(cam->frames[0])) {                  
                   //TODO
                   int error = ::booldog::enums::result::booerr_type_all_frames_locked;
-                  onframe(0, error);
+                  onframe(0, error, onframe_udata);
                   return error;
                 }
                 switch(cam->capture_type)
                 {
                 case V4L2_MEMORY_USERPTR: {
-                    ::memset(&f->v4l2buf, 0, sizeof(f->v4l2buf));
+                    memset(&f->v4l2buf, 0, sizeof(f->v4l2buf));
                     f->v4l2buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
                     f->v4l2buf.memory = V4L2_MEMORY_USERPTR;
                     if(boo_multimedia_usb_ioctl(cam->fd, VIDIOC_DQBUF, &f->v4l2buf) == -1)
@@ -191,7 +194,7 @@ namespace booldog
                       if(error != EIO) {
                         f->locked = 0;
                         //TODO
-                        onframe(0, error);
+                        onframe(0, error, onframe_udata);
                         return error;
                       }
                     }					
@@ -208,19 +211,19 @@ namespace booldog
                       f->data = (unsigned char*)f->v4l2buf.m.userptr;
                       f->sizeimage = (unsigned int)f->v4l2buf.bytesused;
                       f->timestamp = cam->timestamp;
-                      onframe(f, 0);
+                      onframe(f, 0, onframe_udata);
                     }
                     return unlock_frame(f);
                   }
                 case V4L2_MEMORY_MMAP: {
-                    ::memset(&f->v4l2buf, 0, sizeof(f->v4l2buf));
+                    memset(&f->v4l2buf, 0, sizeof(f->v4l2buf));
                     f->v4l2buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
                     f->v4l2buf.memory = V4L2_MEMORY_MMAP;
                     if(boo_multimedia_usb_ioctl(cam->fd, VIDIOC_DQBUF, &f->v4l2buf) == -1) {
                       f->locked = 0;
                       //TODO
                       int error = errno;
-                      onframe(0, error);
+                      onframe(0, error, onframe_udata);
                       return error;
                     }
                     f->fourcc = cam->fourcc;
@@ -229,7 +232,7 @@ namespace booldog
                     f->data = (unsigned char*)cam->buffers[f->v4l2buf.index].start;
                     f->sizeimage = (unsigned int)f->v4l2buf.bytesused;
                     f->timestamp = cam->timestamp;
-                    onframe(f, 0);
+                    onframe(f, 0, onframe_udata);
                     return unlock_frame(f);
                   }
                 /*default: {
@@ -255,7 +258,7 @@ namespace booldog
             }
           }
 #endif        
-          int open_camera(camera* cam, const char* name) {          
+          inline int open_camera(camera* cam, const char* name) {
 #ifdef __LINUX__
             struct stat st;
             if(stat(name, &st) == -1)
@@ -303,7 +306,7 @@ namespace booldog
 #endif          
             return 0;
           }
-          int start_camera(camera* cam, int fourcc, int width, int height, int framerate, void* allocation_data
+          inline int start_camera(camera* cam, int fourcc, int width, int height, int framerate, void* allocation_data
             , void* allocation_info) {
             allocation_data = allocation_data;
             allocation_info = allocation_info;
@@ -397,6 +400,7 @@ namespace booldog
               cam->sizeimage = fmt.fmt.pix.sizeimage;
               cam->width = fmt.fmt.pix.width;
               cam->height = fmt.fmt.pix.height;
+              cam->fourcc = fourcc;
 
               if(boo_multimedia_usb_ioctl(cam->fd, VIDIOC_G_FMT, &fmt) == -1)
               {
@@ -650,7 +654,7 @@ namespace booldog
             int error = ::booldog::enums::result::booerr_type_method_is_not_implemented_yet;
             return error;
           }
-          int stop_camera(camera* cam) {
+          inline int stop_camera(camera* cam) {
 #ifdef __LINUX__
             enum v4l2_buf_type type;
             switch (cam->capture_type)
@@ -687,10 +691,12 @@ namespace booldog
             int error = ::booldog::enums::result::booerr_type_method_is_not_implemented_yet;
             return error;
           }
-          int close_camera(camera* cam, void* allocation_data, void* allocation_info) {
+          inline int close_camera(camera* cam, void* allocation_data, void* allocation_info) {
+            allocation_data = allocation_data;
+            allocation_info = allocation_info;
 #ifdef __LINUX__
             buffer* pbuffer = 0;
-            for(int index = 0;index < sizeof(cam->buffers) / sizeof(cam->buffers[0]);++index)
+            for(unsigned int index = 0;index < sizeof(cam->buffers) / sizeof(cam->buffers[0]);++index)
             {
               pbuffer = &cam->buffers[index];
               if(pbuffer->mmap) {
@@ -725,6 +731,7 @@ namespace booldog
             unsigned char thr_started;
             unsigned char cam_started;
             ::booldog::typedefs::multimedia::video::usb::onframe onframe;
+            void* onframe_udata;
 #endif
           };
           static void camera_capture_thread(void* arglist) {
@@ -738,17 +745,17 @@ namespace booldog
               }
             }
             while(cam->cam_started == 1) {
-              res = ::booldog::multimedia::video::usb::single_threaded::boo_multimedia_usb_read_frame(&cam->cam, cam->onframe);
+              res = ::booldog::multimedia::video::usb::single_threaded::boo_multimedia_usb_read_frame(&cam->cam, cam->onframe, cam->onframe_udata);
             }
           }
-          int open_camera(camera* cam, const char* name) {          
+          inline int open_camera(camera* cam, const char* name) {
 #ifdef __LINUX__
             return ::booldog::multimedia::video::usb::single_threaded::open_camera(&cam->cam, name);            
 #endif          
             int error = ::booldog::enums::result::booerr_type_method_is_not_implemented_yet;
             return error;
           }
-          int start_camera(camera* cam, ::booldog::typedefs::multimedia::video::usb::onframe onframe
+          inline int start_camera(camera* cam, ::booldog::typedefs::multimedia::video::usb::onframe onframe, void* onframe_udata
             , int fourcc, int width, int height, int framerate, void* allocation_data, void* allocation_info) {
             allocation_data = allocation_data;
             allocation_info = allocation_info;
@@ -756,6 +763,7 @@ namespace booldog
             cam->thr_started = 0;
             cam->cam_started = 0;
             cam->onframe = onframe;
+            cam->onframe_udata = onframe_udata;
             int res = BOOLDOG_THREAD_ATTACHED(&cam->thr, camera_capture_thread, 0, cam);
             if(res == 0)
             {
@@ -782,7 +790,7 @@ namespace booldog
             int error = ::booldog::enums::result::booerr_type_method_is_not_implemented_yet;
             return error;
           }
-          int stop_camera(camera* cam) {
+          inline int stop_camera(camera* cam) {
 #ifdef __LINUX__
             cam->cam_started = 2;
             BOOLDOG_THREAD_ATTACHED_JOIN(&cam->thr);
@@ -791,7 +799,7 @@ namespace booldog
             int error = ::booldog::enums::result::booerr_type_method_is_not_implemented_yet;
             return error;
           }
-          int close_camera(camera* cam, void* allocation_data, void* allocation_info) {
+          inline int close_camera(camera* cam, void* allocation_data, void* allocation_info) {
 #ifdef __LINUX__
             return ::booldog::multimedia::video::usb::single_threaded::close_camera(&cam->cam, allocation_data, allocation_info);
 #endif
@@ -800,11 +808,11 @@ namespace booldog
           }
 
         }
-        int lock_frame(::booldog::multimedia::video::usb::frame* f) {
+        inline int lock_frame(::booldog::multimedia::video::usb::frame* f) {
           __sync_add_and_fetch(&f->locked, 1);
           return 0;
         }
-        int unlock_frame(::booldog::multimedia::video::usb::frame* f) {
+        inline int unlock_frame(::booldog::multimedia::video::usb::frame* f) {
           if(__sync_sub_and_fetch(&f->locked, 1) == 0) {
             if(::booldog::multimedia::video::usb::single_threaded::boo_multimedia_usb_ioctl(
               f->cam->fd, VIDIOC_QBUF, &f->v4l2buf) == -1) {

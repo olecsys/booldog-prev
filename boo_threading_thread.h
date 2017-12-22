@@ -63,7 +63,7 @@ namespace booldog {
       return 0;
     }
 #endif
-    static int create_detached(thread* thr, ::booldog::typedefs::threading::onthread onthread, unsigned stack_size, void* arglist) {
+    inline int create_detached(thread* thr, ::booldog::typedefs::threading::onthread onthread, unsigned stack_size, void* arglist) {
 #ifdef __WINDOWS__
       thr->onthread = onthread;
       thr->arglist = arglist;
