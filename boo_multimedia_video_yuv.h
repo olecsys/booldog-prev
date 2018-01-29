@@ -52,7 +52,7 @@ namespace booldog
           dst->_strides[0] = width;
           dst->_strides[1] = dst->_strides[2] = width / 2;
 							
-          int size = 2 * width * height;
+          unsigned int size = 2 * width * height;
           if(size > dst->_buffer.allocsize) {
             dst->_buffer.buf = BOOLDOG_REALLOC(dst->_buffer.buf, size, allocation_data, allocation_info);
             if(dst->_buffer.buf == 0) {
@@ -68,7 +68,7 @@ namespace booldog
           dst->_yuv[2] = dst->_yuv[1] + dst->_strides[1] * height;
 
           unsigned char* y = dst->_yuv[0], * u = dst->_yuv[1], * v = dst->_yuv[2];
-          int y_offset = 0, uv_offset = 0, index = 0;
+          unsigned int y_offset = 0, uv_offset = 0, index = 0;
           while(index < size)
 					{								
             y[y_offset++] = src[index];

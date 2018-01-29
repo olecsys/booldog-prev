@@ -24,6 +24,7 @@
 #endif
 #include "boo_platform.h"
 #include "boo_error.h"
+#include "boo_multimedia_structs.h"
 
 //#if 1
 #ifdef __LINUX__
@@ -71,11 +72,7 @@ namespace booldog
           struct camera;
         }
         struct frame {
-          int fourcc;
-          int width;
-          int height;
-          unsigned int sizeimage;
-          unsigned char* data;
+          ::booldog::multimedia::image image;
 #if defined(__LINUX__)
           struct v4l2_buffer v4l2buf;
           volatile long locked;
@@ -118,7 +115,7 @@ namespace booldog
             int fd;
             int capture_type;
             buffer buffers[10];
-            int buffers_count;
+            unsigned int buffers_count;
             int fourcc;
             int width;
             int height;
@@ -205,11 +202,11 @@ namespace booldog
                     }
                     if(index < cam->buffers_count)
                     {
-                      f->fourcc = cam->fourcc;
-                      f->width = cam->width;
-                      f->height = cam->height;
-                      f->data = (unsigned char*)f->v4l2buf.m.userptr;
-                      f->sizeimage = (unsigned int)f->v4l2buf.bytesused;
+                      f->image.fourcc = cam->fourcc;
+                      f->image.width = cam->width;
+                      f->image.height = cam->height;
+                      f->image.data = (unsigned char*)f->v4l2buf.m.userptr;
+                      f->image.sizeimage = (unsigned int)f->v4l2buf.bytesused;
                       f->timestamp = cam->timestamp;
                       onframe(f, 0, onframe_udata);
                     }
@@ -226,11 +223,11 @@ namespace booldog
                       onframe(0, error, onframe_udata);
                       return error;
                     }
-                    f->fourcc = cam->fourcc;
-                    f->width = cam->width;
-                    f->height = cam->height;
-                    f->data = (unsigned char*)cam->buffers[f->v4l2buf.index].start;
-                    f->sizeimage = (unsigned int)f->v4l2buf.bytesused;
+                    f->image.fourcc = cam->fourcc;
+                    f->image.width = cam->width;
+                    f->image.height = cam->height;
+                    f->image.data = (unsigned char*)cam->buffers[f->v4l2buf.index].start;
+                    f->image.sizeimage = (unsigned int)f->v4l2buf.bytesused;
                     f->timestamp = cam->timestamp;
                     onframe(f, 0, onframe_udata);
                     return unlock_frame(f);
@@ -297,9 +294,9 @@ namespace booldog
               int error = ::booldog::enums::result::booerr_type_file_is_not_video_capture_device;
               return error;
             }
-            for(int index = 0;index < sizeof(cam->buffers) / sizeof(cam->buffers[0]);++index)
+            for(unsigned int index = 0;index < sizeof(cam->buffers) / sizeof(cam->buffers[0]);++index)
               memset(&cam->buffers[index], 0, sizeof(buffer));
-            for(int index = 0;index < sizeof(cam->frames) / sizeof(cam->frames[0]);++index) {              
+            for(unsigned int index = 0;index < sizeof(cam->frames) / sizeof(cam->frames[0]);++index) {
               cam->frames[index].cam = cam;
               cam->frames[index].locked = 0;
             }
@@ -519,7 +516,7 @@ namespace booldog
                     int error = ::booldog::enums::result::booerr_type_insufficient_memory;
                     return error;
                   }
-                  for(cam->buffers_count = 0;cam->buffers_count < (int)req.count;++cam->buffers_count) {
+                  for(cam->buffers_count = 0;cam->buffers_count < req.count;++cam->buffers_count) {
                     memset(&v4l2buf, 0, sizeof(v4l2buf));
 
                     v4l2buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
@@ -596,7 +593,7 @@ namespace booldog
             {
             case V4L2_MEMORY_USERPTR:
               {
-                for(int index = 0;index < cam->buffers_count;++index)
+                for(unsigned int index = 0;index < cam->buffers_count;++index)
                 {
                   pbuffer = &cam->buffers[index];
                   memset(&v4l2buf, 0, sizeof(v4l2buf));
@@ -617,7 +614,7 @@ namespace booldog
               }
             case V4L2_MEMORY_MMAP:
               {
-                for(int index = 0;index < cam->buffers_count;++index)
+                for(unsigned int index = 0;index < cam->buffers_count;++index)
                 {
                   memset(&v4l2buf, 0, sizeof(v4l2buf));
                   v4l2buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
