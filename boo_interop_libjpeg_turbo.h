@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #include <turbojpeg.h>
-#if defined(__WINDOWS__)
+#if defined(_MSC_VER)
 #pragma comment(lib, "turbojpeg")
 #endif
 namespace booldog {

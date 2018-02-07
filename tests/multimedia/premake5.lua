@@ -37,7 +37,10 @@ project (module_name)
            "pthread",
            "dl",
            "rt",
-           "turbojpeg"
+           "turbojpeg",
+           "avformat",
+           "avcodec",
+           "avutil"
         }
     
     filter "configurations:unix64"

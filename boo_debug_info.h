@@ -154,6 +154,18 @@ namespace booldog
 				this->log( ::booldog::enums::debug::log_level_verbose , format , ap );
 				va_end( ap );
 			};
+			info& self(const char* file , int line , unsigned int label , ::booldog::debug::typedefs::statement_t pstatement 
+				, ::booldog::debug::typedefs::lineid_t plineid , ::booldog::debug::typedefs::sleep_t psleep , void* udata) {
+				this->file = file;
+				this->line = line;
+				this->label = label;
+				this->statement = pstatement;
+				this->lineid = plineid;
+				this->sleep = psleep;
+				this->udata = udata;
+				this->log = ::booldog::debug::info::write_log_empty;
+				return *this;
+			}
 		};
 #define debuginfo_macros ::booldog::debug::info( __FILE__ , __LINE__ )
 #define debuginfo_macros_label( label ) ::booldog::debug::info( __FILE__ , __LINE__ , label )

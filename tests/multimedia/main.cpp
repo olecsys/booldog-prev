@@ -10,13 +10,61 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "../../boo_interop_libjpeg_turbo.h"
+#include "../../boo_interop_avformat.h"
+//#include "../../boo_interop_libjpeg_turbo.h"
 #include "../../boo_io_file.h"
 #include "../../boo_heap_allocator.h"
+#ifdef __LINUX__
 #include "../../boo_multimedia_usb_camera.h"
+#endif
 #include "../../boo_multimedia_enums.h"
-void test_libjpeg_turbo() 
-{
+
+#ifdef _MSC_VER
+#pragma comment(lib, "avformat.lib")
+#endif
+
+#ifdef BOO_INTEROP_AVFORMAT_H
+void test_avformat() {
+  ::booldog::allocators::easy::heap heap;
+  ::booldog::result_file file;
+  TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.jpeg", ::booldog::enums::io::file_mode_read
+    , "../../../../data/multimedia", true));
+
+  if(file.file == 0)
+    return;
+
+  ::booldog::results::buffer buffer(&heap);
+  TEST_CHECK(file.file->readall< 1024 >(&buffer, buffer));
+  file.file->close(0);
+
+  if(buffer.buf == 0)
+    return;
+
+  ::booldog::multimedia::image img;
+  img.fourcc = ::booldog::enums::multimedia::image::MJPEG;
+  img.data = buffer.buf;
+  img.width = 1280;
+  img.height = 960;
+  img.sizeimage = buffer.bufdatasize;
+
+  ::booldog::interop::avformat::formatter fmt = {0, 0, 0};
+  
+
+
+  //av_log_set_level(AV_LOG_ERROR);  
+  if(!TEST_CHECK(::booldog::interop::avformat::open_formatter(&fmt, &img, "4.avi") == 0) == 0) {
+
+    for(int index = 0;index < 120;++index) {
+      TEST_CHECK(::booldog::interop::avformat::write_video(&fmt, &img) == 0);
+    }
+
+    ::booldog::interop::avformat::close_formatter(&fmt);
+  }
+}
+#endif
+
+#ifdef BOO_INTEROP_LIBJPEG_TURBO_H
+void test_libjpeg_turbo() {
   ::booldog::allocators::easy::heap heap;
   ::booldog::result_file file;
   TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.yv12", ::booldog::enums::io::file_mode_read
@@ -110,11 +158,14 @@ void test_libjpeg_turbo()
   yuvbuf -= 2 * sizeof(int);
   heap.free(yuvbuf);
 }
+#endif
 
+#ifdef __LINUX__
 int usb_camera_test_failed = 0;
 int usb_camera_frames_count = 0;
 ::booldog::multimedia::video::usb::frame* usb_camera_frames[10];
-void usb_camera_onframe(::booldog::multimedia::video::usb::frame* f, int error) {
+void usb_camera_onframe(::booldog::multimedia::video::usb::frame* f, int error, void* udata) {
+  udata = udata;
   if(f) {
     if(usb_camera_frames_count == sizeof(usb_camera_frames) / sizeof(usb_camera_frames[0])) {
       for(int index = 0;index < usb_camera_frames_count;++index) {
@@ -142,7 +193,7 @@ void test_web_camera() {
     if(!TEST_CHECK(res == 0) == 0) {
 
       for(int index = 0;index < sizeof(usb_camera_frames) / sizeof(usb_camera_frames[0]);++index) {
-        res = ::booldog::multimedia::video::usb::single_threaded::boo_multimedia_usb_read_frame(&cam, usb_camera_onframe);
+        res = ::booldog::multimedia::video::usb::single_threaded::boo_multimedia_usb_read_frame(&cam, usb_camera_onframe, 0);
         TEST_CHECK(res == 0);
       }
       for(int index = 0;index < usb_camera_frames_count;++index) {
@@ -162,7 +213,7 @@ void test_web_camera() {
       usb_camera_frames_count = 0;
 
       res = ::booldog::multimedia::video::usb::multi_threaded::start_camera(&mt_cam
-        , usb_camera_onframe, ::booldog::enums::multimedia::image::YUYV, 640, 480, 30, 0, 0);
+        , usb_camera_onframe, 0, ::booldog::enums::multimedia::image::YUYV, 640, 480, 30, 0, 0);
       if(!TEST_CHECK(res == 0) == 0) {
         ::booldog::threading::sleep(5000);
 
@@ -180,8 +231,16 @@ void test_web_camera() {
     }
   }
 }
+#endif
 TEST_LIST = {
+#ifdef BOO_INTEROP_LIBJPEG_TURBO_H
     {"interop libjpeg-turbo", test_libjpeg_turbo},
+#endif
+#ifdef __LINUX__
     {"web camera", test_web_camera},
+#endif
+#ifdef BOO_INTEROP_AVFORMAT_H
+    {"interop avformat", test_avformat},
+#endif
     {NULL, NULL}
 };
