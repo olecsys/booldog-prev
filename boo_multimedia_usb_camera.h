@@ -720,7 +720,7 @@ namespace booldog
           }
         }
         namespace multi_threaded {
-          struct camera {
+          struct camera { 
 #ifdef __WINDOWS__
 #elif defined(__LINUX__)
             ::booldog::multimedia::video::usb::single_threaded::camera cam;

@@ -248,7 +248,7 @@ namespace booldog
 								res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
 								return false;
 							}
-							::memcpy(y, vframe->data, y_size);
+							::memcpy(y, vframe->data, y_size); 
 							::memcpy(u, &vframe->data[y_size], v_size);
 							::memcpy(v, &vframe->data[y_size + v_size], u_size);
 							break;
