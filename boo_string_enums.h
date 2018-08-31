@@ -28,12 +28,5 @@ namespace booldog
                         };
                 }
         }
-	namespace global
-	{
-		namespace string
-		{
-			static ::booldog::enums::string::code_page default_code_page = BOOLDOG_STRING_CODE_PAGE;
-                }
-        }
 }
 #endif
