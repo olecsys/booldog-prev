@@ -108,6 +108,38 @@ namespace booldog {
           return -1;
         }
       }
+      inline int encode_from_bgr(encoder* enc, ::booldog::data::buffer* buffer
+        , void* bgr, int width, int height
+        , void* allocation_udata, void* allocation_info) {
+        allocation_udata = allocation_udata;
+        allocation_info = allocation_info;
+        int subsamp = TJSAMP_420;
+        size_t preallocated_jpeg_size = tjBufSize(width, height, subsamp);
+        if(preallocated_jpeg_size > buffer->allocsize) {
+          buffer->allocsize = preallocated_jpeg_size;
+          buffer->buf = BOOLDOG_REALLOC(buffer->buf, preallocated_jpeg_size, allocation_udata, allocation_info);
+          if(buffer->buf == 0)
+          {
+            //TODO
+            return -1;
+          }
+        }
+        unsigned long jpeg_size = (unsigned long)buffer->allocsize;
+        unsigned char** jpeg = (unsigned char**)&buffer->buf;
+        int res = tjCompress2(enc->_tj_handle, (unsigned char*)bgr, width, 0, height
+          , TJPF_BGR, jpeg, &jpeg_size, subsamp, 100, TJFLAG_NOREALLOC);
+        if(res == 0) {
+          buffer->size = (size_t)jpeg_size;
+          return 0;
+        }
+        else
+        {
+          //TODO
+          char* error = tjGetErrorStr();
+          error = error;
+          return -1;
+        }
+      }
       inline void close_encoder(encoder* enc, void* allocation_udata, void* allocation_info) {
         allocation_udata = allocation_udata;
         allocation_info = allocation_info;
@@ -231,6 +263,57 @@ namespace booldog {
               //TODO
               char* error = tjGetErrorStr();
               printf("tjDecompressToYUVPlanes failed, %s\n", error);
+              error = error;
+              return -1;
+            }
+					}									
+				}
+				else
+        {          
+          //TODO
+          char* error = tjGetErrorStr();
+          printf("tjDecompressHeader2, failed, %s\n", error);
+          error = error;
+          return -1;
+        }
+      }
+      inline int decode_to_bgr(decoder* dec, ::booldog::data::buffer* jpg
+        , ::booldog::data::buffer* rgb, int* pwidth, int* pheight, void* allocation_udata, void* allocation_info) {
+        allocation_udata = allocation_udata;
+        allocation_info = allocation_info;
+        int width = 0, height = 0, subsamp = 0;
+				if(tjDecompressHeader2(dec->_tj_handle, (unsigned char*)jpg->buf, (unsigned long)jpg->size
+          , &width, &height, &subsamp) == 0)
+				{									
+					size_t preallocated_yuv_size = tjBufSize(width, height, subsamp);
+          if(preallocated_yuv_size == (unsigned long)-1)
+          {
+            //TODO
+            printf("tjBufSize, failed, arguments are out of bounds\n");
+            return -1;
+          }
+					else
+					{
+            if(preallocated_yuv_size > rgb->allocsize)
+            {
+              rgb->allocsize = preallocated_yuv_size;
+              rgb->buf = BOOLDOG_REALLOC(rgb->buf, preallocated_yuv_size, allocation_udata, allocation_info);
+              if(rgb->buf == 0)
+              {
+                //TODO
+                return -1;
+              }
+            }
+            *pwidth = width;
+            *pheight = height;
+            if(tjDecompress2(dec->_tj_handle, (unsigned char*)jpg->buf, (unsigned long)jpg->size
+              , (unsigned char*)rgb->buf, width, 0, height, TJPF_BGR, TJFLAG_NOREALLOC) == 0)
+              return 0;
+						else
+            {
+              //TODO
+              char* error = tjGetErrorStr();
+              printf("tjDecompress2 failed, %s\n", error);
               error = error;
               return -1;
             }
