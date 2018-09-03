@@ -1506,7 +1506,8 @@ goto_next:
 							wchar_t* newbegin = allocator->realloc_array< wchar_t >(0, charcount + 1, debuginfo);
 							if(newbegin)
 							{
-								::memcpy(newbegin, begin, charcount * sizeof(wchar_t));
+								size_t wcharcount = charcount * sizeof(wchar_t);
+								::memcpy(newbegin, begin, wcharcount);
 								newbegin[charcount] = 0;
 								begin = newbegin;
 								ptr = &newbegin[charcount];

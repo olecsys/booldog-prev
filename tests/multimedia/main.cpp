@@ -10,12 +10,13 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
-#include "../../boo_interop_avformat.h"
-//#include "../../boo_interop_libjpeg_turbo.h"
+// #include "../../boo_interop_avformat.h"
+#include "../../boo_interop_avcodec.h"
+#include "../../boo_interop_libjpeg_turbo.h"
 #include "../../boo_io_file.h"
 #include "../../boo_heap_allocator.h"
 #ifdef __LINUX__
-#include "../../boo_multimedia_usb_camera.h"
+// #include "../../boo_multimedia_usb_camera.h"
 #endif
 #include "../../boo_multimedia_enums.h"
 
@@ -67,8 +68,8 @@ void test_avformat() {
 void test_libjpeg_turbo() {
   ::booldog::allocators::easy::heap heap;
   ::booldog::result_file file;
-  TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.yv12", ::booldog::enums::io::file_mode_read
-    , "../../../../data/multimedia", true));
+  TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "2.yv12", ::booldog::enums::io::file_mode_read
+    , "../../../data/multimedia", true));
 
   if(file.file == 0)
     return;
@@ -102,6 +103,24 @@ void test_libjpeg_turbo() {
   yuv._chrominance_subsampling = ::booldog::enums::multimedia::chrominance_subsampling_420;
 
 
+  TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.jpeg", ::booldog::enums::io::file_mode_read
+    , "../../../data/multimedia", true));
+
+  if(file.file == 0)
+    return;
+
+  TEST_CHECK(file.file->readall< 1024 >(&buffer, buffer));
+  file.file->close(0);
+
+  if(buffer.buf == 0)
+    return;
+
+  ::booldog::data::buffer jpegfiledata(0, 0);
+  jpegfiledata.size = buffer.bufdatasize;
+  jpegfiledata.allocsize = buffer.bufsize;
+  jpegfiledata.buf = buffer.detach();
+
+
   ::booldog::interop::libjpeg_turbo::encoder* enc =
     ::booldog::interop::libjpeg_turbo::open_encoder(0, 0);
 
@@ -117,7 +136,7 @@ void test_libjpeg_turbo() {
     ::booldog::data::buffer buf(0, 0);
     if(!TEST_CHECK(::booldog::interop::libjpeg_turbo::encode(enc, &buf, &yuv, 0, 0) == 0) == 0)
     {
-      TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.jpeg", ::booldog::enums::io::file_mode_create
+      TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "4.jpeg", ::booldog::enums::io::file_mode_create
         , ".", true));
 
       if(file.file)
@@ -131,7 +150,7 @@ void test_libjpeg_turbo() {
       {
         TEST_CHECK(::booldog::interop::libjpeg_turbo::encode(enc, &buf, &yuv, 0, 0) == 0);
 
-        TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.jpeg", ::booldog::enums::io::file_mode_create
+        TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "5.jpeg", ::booldog::enums::io::file_mode_create
           , ".", true));
 
         if(file.file)
@@ -141,10 +160,26 @@ void test_libjpeg_turbo() {
           file.file->close(0);
         }
       }
+    }   
+
+    if(!TEST_CHECK(::booldog::interop::libjpeg_turbo::decode(dec, &jpegfiledata, &yuv, 0, 0) == 0) == 0)
+    {
+      TEST_CHECK(::booldog::interop::libjpeg_turbo::encode(enc, &buf, &yuv, 0, 0) == 0);
+
+      TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.jpeg", ::booldog::enums::io::file_mode_create
+        , ".", true));
+
+      if(file.file)
+      {
+        size_t written = 0;
+        TEST_CHECK(file.file->write(0, (::booldog::byte*)buf.buf, buf.size, 1024, written));
+        file.file->close(0);
+      }
     }
+
     if(buf.buf)
       BOOLDOG_FREE(buf.buf, 0, 0);
-  }
+  }  
 
   if(yuv._buffer.buf)
     BOOLDOG_FREE(yuv._buffer.buf, 0, 0);
@@ -157,10 +192,152 @@ void test_libjpeg_turbo() {
 
   yuvbuf -= 2 * sizeof(int);
   heap.free(yuvbuf);
+
+  if(jpegfiledata.buf)
+    heap.free(jpegfiledata.buf);
 }
 #endif
 
-#ifdef __LINUX__
+#ifdef BOO_INTEROP_AVCODEC_H
+void test_avcodec() {
+  ::booldog::allocators::easy::heap heap;
+  ::booldog::result_file file;
+  TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.yv12", ::booldog::enums::io::file_mode_read
+    , "../../../data/multimedia", true));
+
+  if(file.file == 0)
+    return;
+
+  ::booldog::results::buffer buffer(&heap);
+  TEST_CHECK(file.file->readall< 1024 >(&buffer, buffer));
+  file.file->close(0);
+
+  if(buffer.buf == 0)
+    return;
+
+  unsigned char* yuvbuf = buffer.detach();
+
+  int width = *(int*)yuvbuf;
+  int height = *(int*)&yuvbuf[sizeof(int)];
+  yuvbuf += 2 * sizeof(int);
+  
+  ::booldog::multimedia::video::planes::yuv yuv;
+
+  int y_size = width * height;
+  int u_size = width * height / 4;
+
+  yuv._yuv[0] = yuvbuf;
+  yuv._strides[0] = width;
+  yuv._yuv[1] =  &yuvbuf[y_size + u_size];
+  yuv._strides[1] = width / 2;
+  yuv._yuv[2] = &yuvbuf[y_size];
+  yuv._strides[2] = width / 2;
+  yuv._width = width;
+  yuv._height = height;
+  yuv._chrominance_subsampling = ::booldog::enums::multimedia::chrominance_subsampling_420;
+
+#ifdef BOO_INTEROP_LIBJPEG_TURBO_H
+  ::booldog::interop::libjpeg_turbo::encoder* jpeg =
+    ::booldog::interop::libjpeg_turbo::open_encoder(0, 0);    
+
+  TEST_CHECK(jpeg != 0);
+#endif
+  
+  struct boo_avcodec_encoder enc;
+  TEST_CHECK(boo_avcodec_open_encoder(&enc, &yuv, ::booldog::enums::multimedia::image::H264) == 0);
+
+  ::booldog::data::buffer buf(0, 0);
+  // TEST_CHECK(enc != 0);
+
+  struct boo_avcodec_decoder dec;
+  TEST_CHECK(boo_avcodec_open_decoder(&dec, ::booldog::enums::multimedia::image::H264
+    , yuv._width, yuv._height) == 0);
+
+  if(enc.ctx && dec.ctx)
+  {
+    int result = 0;    
+    while(buf.size == 0) {
+      result = boo_avcodec_encode(&enc, &buf, &yuv, 0, 0);
+      if(result != 0) {
+        break;
+      }
+    }
+    if(!TEST_CHECK(result == 0) == 0)
+    {
+      ::booldog::multimedia::video::planes::yuv yuv;
+      yuv._strides[0] = 0;
+      result = 0;
+      while(yuv._strides[0] == 0) {
+        result = boo_avcodec_decode(&dec, &buf, &yuv, 0, 0);
+        if(result != 0) {
+          break;
+        }
+      }
+      if(!TEST_CHECK(result == 0) == 0)
+      {
+#ifdef BOO_INTEROP_LIBJPEG_TURBO_H        
+        TEST_CHECK(::booldog::interop::libjpeg_turbo::encode(jpeg, &buf, &yuv, 0, 0) == 0);
+
+        TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "6.jpeg", ::booldog::enums::io::file_mode_create
+          , ".", true));
+
+        if(file.file)
+        {
+          size_t written = 0;
+          TEST_CHECK(file.file->write(0, (::booldog::byte*)buf.buf, buf.size, 1024, written));
+          file.file->close(0);
+        }
+#endif        
+      }
+
+      // TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.jpeg", ::booldog::enums::io::file_mode_create
+      //   , ".", true));
+
+      // if(file.file)
+      // {
+      //   size_t written = 0;
+      //   TEST_CHECK(file.file->write(0, (::booldog::byte*)buf.buf, buf.size, 1024, written));
+      //   file.file->close(0);
+      // }
+
+      // if(!TEST_CHECK(::booldog::interop::libjpeg_turbo::decode(dec, &buf, &yuv, 0, 0) == 0) == 0)
+      // {
+      //   TEST_CHECK(::booldog::interop::libjpeg_turbo::encode(enc, &buf, &yuv, 0, 0) == 0);
+
+      //   TEST_CHECK(::booldog::io::file::mbsopen(&file, &heap, "3.jpeg", ::booldog::enums::io::file_mode_create
+      //     , ".", true));
+
+      //   if(file.file)
+      //   {
+      //     size_t written = 0;
+      //     TEST_CHECK(file.file->write(0, (::booldog::byte*)buf.buf, buf.size, 1024, written));
+      //     file.file->close(0);
+      //   }
+      // }
+    }    
+  }
+
+  if(yuv._buffer.buf)
+    BOOLDOG_FREE(yuv._buffer.buf, 0, 0);
+
+  if(dec.ctx)
+    boo_avcodec_close_decoder(&dec);
+
+  if(enc.ctx)
+    boo_avcodec_close_encoder(&enc);
+
+  if(jpeg)
+    ::booldog::interop::libjpeg_turbo::close_encoder(jpeg, 0, 0);
+
+  if(buf.buf)
+    BOOLDOG_FREE(buf.buf, 0, 0);
+
+  yuvbuf -= 2 * sizeof(int);
+  heap.free(yuvbuf);
+}
+#endif
+
+#ifdef BOO_MULTIMEDIA_USB_CAMERA_H
 int usb_camera_test_failed = 0;
 int usb_camera_frames_count = 0;
 ::booldog::multimedia::video::usb::frame* usb_camera_frames[10];
@@ -236,11 +413,14 @@ TEST_LIST = {
 #ifdef BOO_INTEROP_LIBJPEG_TURBO_H
     {"interop libjpeg-turbo", test_libjpeg_turbo},
 #endif
-#ifdef __LINUX__
+#ifdef BOO_MULTIMEDIA_USB_CAMERA_H
     {"web camera", test_web_camera},
 #endif
 #ifdef BOO_INTEROP_AVFORMAT_H
     {"interop avformat", test_avformat},
+#endif
+#ifdef BOO_INTEROP_AVCODEC_H
+    {"interop avcodec", test_avcodec},
 #endif
     {NULL, NULL}
 };

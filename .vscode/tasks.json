@@ -1,0 +1,71 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build(multimedia test)",
+            "type": "shell",
+            "command": "mkdir -p \"${workspaceRoot}/tests/multimedia/build/cmake_files\" && cd \"${workspaceRoot}/tests/multimedia/build/cmake_files\" && cmake ../.. && cmake --build . --config Debug",
+            "windows": {
+                "command": "chcp 866"
+            },
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "build(json C test)",
+            "type": "shell",
+            "command": "mkdir -p \"${workspaceRoot}/tests/c/json.build/cmake_files\" && cd \"${workspaceRoot}/tests/c/json.build/cmake_files\" && cmake ../../json && cmake --build . --config Debug",
+            "windows": {
+                "command": "chcp 866"
+            },
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "clean(multimedia test)",
+            "type": "shell",
+            "command": "rm -rf \"${workspaceRoot}/tests/multimedia/build\"",
+            "windows": {
+                "command": "chcp 866"
+            },
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "clean(json C test)",
+            "type": "shell",
+            "command": "rm -rf \"${workspaceRoot}/tests/c/json.build\"",
+            "windows": {
+                "command": "chcp 866"
+            },
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}

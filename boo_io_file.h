@@ -616,8 +616,21 @@ goto_return:
 						pres.seterrno();
 						return false;
 					}
-					if(readres == 0)
+					if(readres == 0) {
+						if(pres.bufdatasize) {
+							if(pres.bufsize == pres.bufdatasize) {
+								pres.bufsize += step;
+								pres.buf = pres.allocator->realloc_array< unsigned char >(pres.buf, pres.bufsize
+									, debuginfo);
+								if(pres.buf == 0)	{
+									pres.booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
+									return false;
+								}
+							}
+							pres.buf[pres.bufdatasize++] = 0;
+						}
 						break;
+					}
 					pres.bufdatasize += readres;
 					::booldog::utils::string::mbs::indexof< 1, 2 >(resindexof, pres, false, (char*)pres.buf
 						, offset, pres.bufdatasize - offset, search, 2, debuginfo);

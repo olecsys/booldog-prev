@@ -12,6 +12,13 @@
 #include "boo_if.h"
 namespace booldog
 {
+	namespace global
+	{
+		namespace string
+		{
+			static ::booldog::enums::string::code_page default_code_page = BOOLDOG_STRING_CODE_PAGE;
+		}
+	}
 #ifdef BOOLDOG_STRING_TEST
 	size_t string_step = 1;
 #define BOOLDOG_STRING_STEP ::booldog::string_step
