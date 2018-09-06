@@ -46,6 +46,7 @@ namespace booldog
 							res->copy( reswchar );
 #else
 						allocator = allocator;
+						debuginfo = debuginfo;
 						struct stat st;
 						if( stat( name_or_path , &st ) == 0 )
 						{
