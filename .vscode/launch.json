@@ -73,6 +73,43 @@
                 "/home/olecsys/JENKINS/workspace/olecsys/vcli.settings linux x64/projects/linux/x64/vcli.settings/./../../../../ag/libvcli.settings/lib": "${workspaceRoot}/../libvcli.settings/lib",
                 "/home/olecsys/JENKINS/workspace/olecsys/vcli.settings linux x64/projects/linux/x64/vcli.settings/./../../../../inc": "${workspaceRoot}/../../inc"
             }
+        },
+        {
+            "name": "(gdb) Run Opened Test",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}_build/test_app",
+            "args": ["--no-fork"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}_build",
+            "environment": [],
+            "logging": {
+                "trace": true
+            },
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "debug child",
+                    "text":"set follow-fork-mode child",
+                    "ignoreFailures": false
+                },
+                {
+                    "description": "debug child",
+                    "text":"set detach-on-fork off",
+                    "ignoreFailures": false
+                }
+            ],
+            "additionalSOLibSearchPath": "/mnt/manual_video7_linux_debug_symbols",
+            "sourceFileMap": {
+                "/home/olecsys/JENKINS/workspace/olecsys/vcli.settings linux x64/projects/linux/x64/vcli.settings/./../../../../ag/libvcli.settings/lib": "${workspaceRoot}/../libvcli.settings/lib",
+                "/home/olecsys/JENKINS/workspace/olecsys/vcli.settings linux x64/projects/linux/x64/vcli.settings/./../../../../inc": "${workspaceRoot}/../../inc"
+            }
         }
     ]
 }

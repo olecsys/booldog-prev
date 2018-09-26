@@ -6,6 +6,9 @@
 #include "boo_platform.h"
 
 #ifdef __WINDOWS__
+#ifndef WIN32_LEAN_AND_MEAN
+	#define WIN32_LEAN_AND_MEAN
+#endif
 #define boobegin_struct_pack( bytes ) __pragma( pack( push ) )\
 	__pragma( pack( bytes ) )\
 	__declspec( align( bytes ) )

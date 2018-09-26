@@ -20,9 +20,37 @@
             ]
         },
         {
-            "label": "build(json C test)",
+            "label": "Build Debug Opened Test",
             "type": "shell",
-            "command": "mkdir -p \"${workspaceRoot}/tests/c/json.build/cmake_files\" && cd \"${workspaceRoot}/tests/c/json.build/cmake_files\" && cmake ../../json && cmake --build . --config Debug",
+            "options": {
+                "env": {
+                    "BOO_PROJECT_DIR": "${fileDirname}",
+                    "BOO_BUILD_DIR": "${fileDirname}_build/cmake_files",
+                    "BOO_BUILD_CONF": "Debug"                    
+                }
+            },
+            "command": "mkdir -p \"$BOO_BUILD_DIR\" && cd \"$BOO_BUILD_DIR\" && cmake \"$BOO_PROJECT_DIR\" && cmake --build . --config $BOO_BUILD_CONF",
+            "windows": {
+                "command": "chcp 866"
+            },
+            "args": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Clean Opened Test",
+            "type": "shell",
+            "options": {
+                "env": {
+                    "BOO_BUILD_DIR": "${fileDirname}_build"
+                }
+            },
+            "command": "rm -rf \"$BOO_BUILD_DIR\"",
             "windows": {
                 "command": "chcp 866"
             },
@@ -39,22 +67,6 @@
             "label": "clean(multimedia test)",
             "type": "shell",
             "command": "rm -rf \"${workspaceRoot}/tests/multimedia/build\"",
-            "windows": {
-                "command": "chcp 866"
-            },
-            "args": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": [
-                "$gcc"
-            ]
-        },
-        {
-            "label": "clean(json C test)",
-            "type": "shell",
-            "command": "rm -rf \"${workspaceRoot}/tests/c/json.build\"",
             "windows": {
                 "command": "chcp 866"
             },

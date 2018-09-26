@@ -1,0 +1,25 @@
+﻿---
+AccessModifierOffset: '-2'
+AlwaysBreakBeforeMultilineStrings: 'true'
+ColumnLimit: '100'
+ConstructorInitializerAllOnOneLineOrOnePerLine: 'false'
+ContinuationIndentWidth: '2'
+IndentWidth: '2'
+IndentWrappedFunctionNames: 'true'
+Language: Cpp
+PenaltyBreakBeforeFirstCallParameter: '0'
+PenaltyBreakString: '0'
+PointerAlignment: Left
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeParens: Never
+SpaceInEmptyParentheses: 'false'
+SpacesInAngles: 'false'
+SpacesInCStyleCastParentheses: 'false'
+SpacesInParentheses: 'false'
+SpacesInSquareBrackets: 'false'
+Standard: Cpp03
+TabWidth: '2'
+UseTab: Never
+NamespaceIndentation: All
+
+...

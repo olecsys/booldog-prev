@@ -5,6 +5,10 @@
       "cerrno": "cpp",
       "array": "cpp",
       "initializer_list": "cpp",
-      "utility": "cpp"
+      "utility": "cpp",
+      "munit.h": "c",
+      "*.tcc": "cpp",
+      "unordered_map": "cpp",
+      "atomic": "cpp"
     }
   }
