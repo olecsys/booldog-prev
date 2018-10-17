@@ -5,3 +5,7 @@
 #### C++ std::streambuf
 
 * [C++ custom std::streambuf](https://habr.com/post/326578/)
+
+#### Clang Format
+
+* [Clang Format online helper](https://zed0.co.uk/clang-format-configurator/)
