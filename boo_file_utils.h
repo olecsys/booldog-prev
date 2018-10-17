@@ -158,7 +158,7 @@ namespace booldog {
               return false;
             }
             struct stat st;
-            if(fstat(srcfd, &st) == 0) {
+            if(fstat(srcfd, &st) == -1) {
               ::close(dstfd);
               ::close(srcfd);
               res->seterrno();
