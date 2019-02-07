@@ -43,7 +43,7 @@ namespace booldog {
         ptr->~type();
       }
     };
-#define BDOG_STD_ALLOCATOR_TRAITS(T)                                                            \
+#define BDOG_STD_ALLOCATOR_TRAITS(T)                                                               \
   typedef T type;                                                                                  \
   typedef type value_type;                                                                         \
   typedef value_type* pointer;                                                                     \
@@ -83,7 +83,7 @@ namespace booldog {
       // Max number of objects that can be allocated in one call
       size_type max_size() const { return max_allocations<T>::value; }
     };
-#define BDOG_STD_FORWARD_ALLOCATOR_TRAITS(C)                                                    \
+#define BDOG_STD_FORWARD_ALLOCATOR_TRAITS(C)                                                       \
   typedef typename C::value_type value_type;                                                       \
   typedef typename C::pointer pointer;                                                             \
   typedef typename C::const_pointer const_pointer;                                                 \
@@ -116,5 +116,48 @@ namespace booldog {
     };
   } // namespace std
 } // namespace booldog
+
+template <typename T, typename PolicyT, typename TraitsT, typename U, typename PolicyU,
+          typename TraitsU>
+bool operator==(booldog::std::allocator<T, PolicyT, TraitsT> const& left,
+                booldog::std::allocator<U, PolicyU, TraitsU> const& right) {
+  return false;
+}
+
+// Also implement inequality
+template <typename T, typename PolicyT, typename TraitsT, typename U, typename PolicyU,
+          typename TraitsU>
+bool operator!=(booldog::std::allocator<T, PolicyT, TraitsT> const& left,
+                booldog::std::allocator<U, PolicyU, TraitsU> const& right) {
+  return !(left == right);
+}
+
+// Comparing an allocator to anything else should not show equality
+template <typename T, typename PolicyT, typename TraitsT, typename OtherAllocator>
+bool operator==(booldog::std::allocator<T, PolicyT, TraitsT> const& left,
+                OtherAllocator const& right) {
+  return false;
+}
+
+// Also implement inequality
+template <typename T, typename PolicyT, typename TraitsT, typename OtherAllocator>
+bool operator!=(booldog::std::allocator<T, PolicyT, TraitsT> const& left,
+                OtherAllocator const& right) {
+  return !(left == right);
+}
+
+// Specialize for the heap policy
+template <typename T, typename TraitsT, typename U, typename TraitsU>
+bool operator==(booldog::std::allocator<T, booldog::std::heap<T>, TraitsT> const& left,
+                booldog::std::allocator<U, booldog::std::heap<U>, TraitsU> const& right) {
+  return true;
+}
+
+// Also implement inequality
+template <typename T, typename TraitsT, typename U, typename TraitsU>
+bool operator!=(booldog::std::allocator<T, booldog::std::heap<T>, TraitsT> const& left,
+                booldog::std::allocator<U, booldog::std::heap<U>, TraitsU> const& right) {
+  return !(left == right);
+}
 
 #endif
