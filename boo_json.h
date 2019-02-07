@@ -2598,7 +2598,7 @@ goto_return:
 				T locnumber = value;
 				if( locnumber == 0 )
 				{
-					int diff = 0;
+					int diff0 = 0;
 					if( parentserializator->slow.jsonlen + 1 - removed_size + 1 > parentserializator->slow.jsonsize )
 					{
 						char* oldjsonstr = parentserializator->slow.json;
@@ -2623,23 +2623,23 @@ goto_return:
 					}
 					if( 1 > removed_size )
 					{		
-						diff = (int)( 1 - removed_size );
+						diff0 = (int)( 1 - removed_size );
 						::booldog::mem::expand< char >( valuebegin - parentserializator->slow.json
 							, parentserializator->slow.json , parentserializator->slow.jsonlen + 1 , parentserializator->slow.jsonsize
-							, diff );
+							, diff0 );
 					}
 					else if( 1 < removed_size )
 					{
-						diff = (int)( removed_size - 1 );
+						diff0 = (int)( removed_size - 1 );
 						::booldog::mem::remove< char >( valuebegin - parentserializator->slow.json
 							, parentserializator->slow.json , parentserializator->slow.jsonlen + 1 , diff );
-						diff *= -1;
+						diff0 *= -1;
 					}
-					if( diff != 0 )
+					if( diff0 != 0 )
 					{
-						parentserializator->slow.nodes[ 0 ].jsonoffset( diff , valueend );
-						parentserializator->slow.nodes[ 0 ].valueend += diff;
-						parentserializator->slow.jsonlen += diff;
+						parentserializator->slow.nodes[ 0 ].jsonoffset( diff0 , valueend );
+						parentserializator->slow.nodes[ 0 ].valueend += diff0;
+						parentserializator->slow.jsonlen += diff0;
 					}
 					*valueend = '0';
 					type = ::booldog::enums::data::json::number;

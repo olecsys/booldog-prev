@@ -514,7 +514,7 @@ goto_return:
 						const char* srcbegin = &src[ srccharindex ];
 						if( *srcbegin != 0 )
 						{
-							const char* srcbegin = &src[ srccharindex ];
+							srcbegin = &src[ srccharindex ];
 							const char* ptr = srcbegin;
 							for( ; ; )
 							{
@@ -657,7 +657,7 @@ goto_return:
 					const char* srcbegin = &src[srccharindex], * srcend = 0, * ptr = 0;
 					if(srccharcount == SIZE_MAX)
 					{
-						const char* ptr = srcbegin;
+						ptr = srcbegin;
 						for(;;)
 						{
 							switch(*ptr++)

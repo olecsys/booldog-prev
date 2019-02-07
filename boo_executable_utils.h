@@ -117,9 +117,9 @@ goto_return:
 					BOOINIT_RESULT( ::booldog::result_mbchar );
 					if( ::booldog::utils::executable::mbs::pathname< step >( res , allocator , debuginfo ) )
 					{
-						::booldog::result locres;
-						if( ::booldog::utils::io::path::mbs::directory( &locres , res->mbchar , res->mblen ) == false )
-							res->copy( locres );
+						::booldog::result locres0;
+						if( ::booldog::utils::io::path::mbs::directory( &locres0 , res->mbchar , res->mblen ) == false )
+							res->copy( locres0 );
 					}
 					return res->succeeded();
 				};
@@ -200,9 +200,9 @@ goto_return:
 					BOOINIT_RESULT( ::booldog::result_wchar );
 					if( ::booldog::utils::executable::wcs::pathname< step >( res , allocator , debuginfo ) )
 					{
-						::booldog::result locres;
-						if( ::booldog::utils::io::path::wcs::directory( &locres , res->wchar , res->wlen ) == false )
-							res->copy( locres );
+						::booldog::result locres1;
+						if( ::booldog::utils::io::path::wcs::directory( &locres1 , res->wchar , res->wlen ) == false )
+							res->copy( locres1 );
 					}
 					return res->succeeded();
 				};

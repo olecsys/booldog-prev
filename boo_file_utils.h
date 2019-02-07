@@ -164,9 +164,9 @@ namespace booldog {
               res->seterrno();
               return false;
             }
-						ssize_t written = 0;
+            ssize_t written = 0;
 #ifdef __LINUX__
-            off_t offset = 0;            
+            off_t offset = 0;
             while(offset != st.st_size) {
               written = sendfile(dstfd, srcfd, &offset, st.st_size);
               if(written == -1) {
@@ -193,29 +193,28 @@ namespace booldog {
             size_t datasize = 8192;
             if(datasize > (size_t)st.st_size)
               datasize = st.st_size;
-            unsigned char* data =
-              allocator->realloc_array< unsigned char >(0, datasize, debuginfo);
+            unsigned char* data = allocator->realloc_array<unsigned char>(0, datasize, debuginfo);
             if(data == NULL) {
-							::close(dstfd);
+              ::close(dstfd);
               ::close(srcfd);
               res->booerr(::booldog::enums::result::booerr_type_cannot_alloc_memory);
               return false;
-						}
-						while((written = ::read(srcfd, data, datasize)) > 0) {
-							if(::write(dstfd, data, written) == -1) {
-								written = -1;
-								break;
-							}
-						}
-						allocator->free(data);
-						::close(dstfd);
-						::close(srcfd);
-						if(written != -1) {
-							return true;
-						} else {
-							res->seterrno();
-							return false;
-						}
+            }
+            while((written = ::read(srcfd, data, datasize)) > 0) {
+              if(::write(dstfd, data, written) == -1) {
+                written = -1;
+                break;
+              }
+            }
+            allocator->free(data);
+            ::close(dstfd);
+            ::close(srcfd);
+            if(written != -1) {
+              return true;
+            } else {
+              res->seterrno();
+              return false;
+            }
 #endif
           }
           booinline bool exists(::booldog::result_bool* pres, ::booldog::allocator* allocator,
@@ -644,10 +643,11 @@ namespace booldog {
               }
               size_t res_root_dir_wlen = 0;
               if(res_root_dir.wchar) {
-                ::booldog::result resres;
-                if(::booldog::utils::io::path::wcs::normalize(
-                     &resres, res_root_dir.wchar, res_root_dir.wlen, res_root_dir.wsize) == false) {
-                  res->copy(resres);
+                ::booldog::result resres1;
+                if(::booldog::utils::io::path::wcs::normalize(&resres1, res_root_dir.wchar,
+                                                              res_root_dir.wlen,
+                                                              res_root_dir.wsize) == false) {
+                  res->copy(resres1);
                   goto goto_return;
                 }
                 res_root_dir_wlen = res_root_dir.wlen;
