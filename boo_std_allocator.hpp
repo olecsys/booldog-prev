@@ -25,7 +25,7 @@ namespace booldog {
       object_traits() {}
 
       // Copy Constructor
-      template <typename U> object_traits(object_traits<U> const& other) {}
+      template <typename U> object_traits(object_traits<U> const& other) { (void)other; }
 
       // Address of object
       type* address(type& obj) const { return &obj; }
@@ -67,7 +67,7 @@ namespace booldog {
       heap() {}
 
       // Copy Constructor
-      template <typename U> heap(heap<U> const& other) {}
+      template <typename U> heap(heap<U> const& other) { (void)other; }
 
       // Allocate memory
       pointer allocate(size_type count, const_pointer /* hint */ = 0) {
