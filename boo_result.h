@@ -44,8 +44,8 @@ namespace booldog
 				error_type_OpenGL, 
 				error_type_alsa
 			} error_type;
+			};
 		};
-	};
 	class result
 	{
 	private:
@@ -121,11 +121,11 @@ namespace booldog
 			this->error_type = ::booldog::enums::result::error_type_GetLastError;
 			this->get_last_error = ::GetLastError();
 		};
-		void GetLastError( ::booldog::uint32 get_last_error )
+		void GetLastError( ::booldog::uint32 _get_last_error )
 		{
 			clear();
 			this->error_type = ::booldog::enums::result::error_type_GetLastError;
-			this->get_last_error = get_last_error;
+			this->get_last_error = _get_last_error;
 		};
 #else
 		void setalsaerror(int alsaerror)
@@ -183,11 +183,11 @@ goto_next:
 			}
 		};
 #endif
-		void booerr( ::booldog::uint32 booerror )
+		void booerr( ::booldog::uint32 _booerror )
 		{
 			clear();
 			this->error_type = ::booldog::enums::result::error_type_booerr;
-			this->booerror = booerror;
+			this->booerror = _booerror;
 		}
 		/* Copy obj to this
 		* @param obj a source object

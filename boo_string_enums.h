@@ -27,6 +27,6 @@ namespace booldog
 				UTF32 = 12000
                         };
                 }
-        }
+        }	
 }
 #endif

@@ -297,11 +297,11 @@ namespace booldog
 				size_t res_root_dir_wlen = 0;
 				if( res_root_dir.wchar )
 				{
-					::booldog::result resres;
-					if( ::booldog::utils::io::path::wcs::normalize( &resres , res_root_dir.wchar , res_root_dir.wlen 
+					::booldog::result resres1;
+					if( ::booldog::utils::io::path::wcs::normalize( &resres1 , res_root_dir.wchar , res_root_dir.wlen 
 						, res_root_dir.wsize ) == false )
 					{
-						res->copy( resres );
+						res->copy( resres1 );
 						goto goto_return;
 					}
 					res_root_dir_wlen = res_root_dir.wlen;

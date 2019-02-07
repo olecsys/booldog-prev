@@ -82,7 +82,7 @@ namespace booldog
 				for( index1 = 16 ; index1 < 80 ; index1++ )
 				{			
 					*w_ptr = ( w[ index1 - 3 ] ^ w[ index1 - 8 ] ^ w[ index1 - 14 ] ^ w[ index1 - 16 ] );
-					*w_ptr++ = ( ( *w_ptr ) << 1 ) | ( ( *w_ptr ) >> 31 );//циклический сдвиг
+					*w_ptr++ = ( ( *w_ptr ) << 1 ) | ( ( *w_ptr ) >> 31 );//С†РёРєР»РёС‡РµСЃРєРёР№ СЃРґРІРёРі
 				}
 				w_ptr = w;
 				for( index1 = 0 ; index1 < 20 ; index1++ )

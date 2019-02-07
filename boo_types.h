@@ -23,8 +23,17 @@
 #define booexternc extern "C"
 #endif
 #ifdef __WINDOWS__
+#ifdef booexport
+#undef booexport
+#endif
 #define booexport booexternc __declspec(dllexport)
+#ifdef boointernal
+#undef boointernal
+#endif
 #define boointernal
+#ifdef booinline
+#undef booinline
+#endif
 #define booinline inline
 #define dlsym( handle , name ) GetProcAddress( handle , name )
 #elif defined( __UNIX__ )

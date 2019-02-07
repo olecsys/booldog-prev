@@ -13,7 +13,7 @@
 #include "boo_multimedia_video_frame.h"
 #include "boo_time_utils.h"
 #include "boo_error.h"
-#include "boo_result.h" 
+#include "boo_result.h"
 
 //#if 1
 #ifdef __LINUX__
@@ -2533,10 +2533,10 @@ namespace booldog
 #endif
 					return res->succeeded();
                 }
-        booinline const char* name(void)
-        {
-            return _filename;
-        }
+                booinline const char* name(void)
+                {
+                    return _filename;
+                }
 			};
 		}
 	}

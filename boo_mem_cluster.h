@@ -718,11 +718,11 @@ namespace booldog
 							if( old_offset != new_offset )
 								::memmove( &begin[ new_offset ] , &begin[ old_offset ] , begin_size );
 
-							::booldog::mem::info1* info = (::booldog::mem::info1*)begin;
-							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+							::booldog::mem::info1* info_1 = (::booldog::mem::info1*)begin;
+							info_1->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_BUSY , BOOLDOG_MEM_INFO_USE_INFO1 >::value;
-							info->_size = (::booldog::byte)info_begin_size;
-							begin[ sizeof( *info ) - 1 ] = info->_flags;
+							info_1->_size = (::booldog::byte)info_begin_size;
+							begin[ sizeof( *info_1 ) - 1 ] = info_1->_flags;
 						}
 						else if( diff - sizeof( ::booldog::mem::info2 ) < UINT16_MAX )
 						{
@@ -734,11 +734,11 @@ namespace booldog
 							if( old_offset != new_offset )
 								::memmove( &begin[ new_offset ] , &begin[ old_offset ] , begin_size );
 
-							::booldog::mem::info2* info = (::booldog::mem::info2*)begin;
-							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+							::booldog::mem::info2* info_2 = (::booldog::mem::info2*)begin;
+							info_2->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_BUSY , BOOLDOG_MEM_INFO_USE_INFO2 >::value;
-							info->_size = (::booldog::ushort)info_begin_size;
-							begin[ sizeof( *info ) - 1 ] = info->_flags;
+							info_2->_size = (::booldog::ushort)info_begin_size;
+							begin[ sizeof( *info_2 ) - 1 ] = info_2->_flags;
 						}
 						else if( diff - sizeof( ::booldog::mem::info3 ) < UINT32_MAX )
 						{
@@ -750,11 +750,11 @@ namespace booldog
 							if( old_offset != new_offset )
 								::memmove( &begin[ new_offset ] , &begin[ old_offset ] , begin_size );
 
-							::booldog::mem::info3* info = (::booldog::mem::info3*)begin;
-							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+							::booldog::mem::info3* info_3 = (::booldog::mem::info3*)begin;
+							info_3->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_BUSY , BOOLDOG_MEM_INFO_USE_INFO3 >::value;
-							info->_size = (::booldog::uint32)info_begin_size;
-							begin[ sizeof( *info ) - 1 ] = info->_flags;
+							info_3->_size = (::booldog::uint32)info_begin_size;
+							begin[ sizeof( *info_3 ) - 1 ] = info_3->_flags;
 						}
 						else
 						{
@@ -766,24 +766,24 @@ namespace booldog
 							if( old_offset != new_offset )
 								::memmove( &begin[ new_offset ] , &begin[ old_offset ] , begin_size );
 
-							::booldog::mem::info4* info = (::booldog::mem::info4*)begin;
-							info->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
+							::booldog::mem::info4* info_4 = (::booldog::mem::info4*)begin;
+							info_4->_flags = ::booldog::utils::bits::compile::number_from_bit_index< ::booldog::byte , 
 								BOOLDOG_MEM_INFO_BUSY , BOOLDOG_MEM_INFO_USE_INFO4 >::value;
-							info->_size = info_begin_size;
-							begin[ sizeof( *info ) - 1 ] = info->_flags;
+							info_4->_size = info_begin_size;
+							begin[ sizeof( *info_4 ) - 1 ] = info_4->_flags;
 						}
 						if( _begin > begin && _begin < &begin[ info_offsize ] )
 						{
-							::booldog::byte* info = begin;
+							::booldog::byte* info_bt = begin;
 							for( ; ; )
 							{
-								info = info + info_offsize;
-								if( info >= endptr || ::booldog::utils::get_bit( info[ 1 ] , BOOLDOG_MEM_INFO_BUSY ) == 0 )
+								info_bt = info_bt + info_offsize;
+								if( info_bt >= endptr || ::booldog::utils::get_bit( info_bt[ 1 ] , BOOLDOG_MEM_INFO_BUSY ) == 0 )
 								{
-									_begin = info;
+									_begin = info_bt;
 									break;
 								}
-								from_info( info , info_offsize , info_begin_size );
+								from_info( info_bt , info_offsize , info_begin_size );
 							}
 						}
 #ifdef BOOLDOG_MEM_CLUSTER_LOG

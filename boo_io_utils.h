@@ -313,12 +313,12 @@ goto_return:
 								::memcpy( res->mbchar , begin , res->mblen );
 							res->mbchar[ res->mblen ] = 0;
 						
-							::booldog::result locres;
-							::booldog::utils::io::path::mbs::toabsolute( &locres , res->mbchar , res->mblen , res->mbsize );
-							if( locres.succeeded() == false )
+							::booldog::result locres1;
+							::booldog::utils::io::path::mbs::toabsolute( &locres1 , res->mbchar , res->mblen , res->mbsize );
+							if( locres1.succeeded() == false )
 							{
 								res->clear();
-								res->copy( locres );
+								res->copy( locres1 );
 							}
 						}
 						else
@@ -759,7 +759,7 @@ goto_return:
 					* @return The function result
 					*/
 					template< size_t step, size_t sizes_size >
-          booinline bool join(::booldog::results::mbchar& pres, const char sep, va_list pargs
+					booinline bool join(::booldog::results::mbchar& pres, char sep, va_list pargs
 						, const ::booldog::debug::info& debuginfo = debuginfo_macros)
 					{
 						size_t size = 0, sizes[sizes_size] = {}, sizes_count = 0, * sizes_ptr = sizes, sizes_ptr_size = sizes_size;
@@ -868,7 +868,7 @@ goto_return:
 					* @return The function result
 					*/
 					template< size_t step, size_t sizes_size >
-          booinline bool join(::booldog::results::mbchar& pres, const ::booldog::debug::info& debuginfo, const char sep, ...)
+					booinline bool join(::booldog::results::mbchar& pres, const ::booldog::debug::info& debuginfo, char sep, ...)
 					{
 						va_list pargs;
 						va_start(pargs, sep); 
@@ -1326,12 +1326,12 @@ goto_return:
 							res->wchar[ res->wlen ] = 0;
 							res->wsize *= sizeof( wchar_t );
 						
-							::booldog::result locres;
-							::booldog::utils::io::path::wcs::toabsolute( &locres , res->wchar , res->wlen , res->wsize );
-							if( locres.succeeded() == false )
+							::booldog::result locres1;
+							::booldog::utils::io::path::wcs::toabsolute( &locres1 , res->wchar , res->wlen , res->wsize );
+							if( locres1.succeeded() == false )
 							{
 								res->clear();
-								res->copy( locres );
+								res->copy( locres1 );
 							}
 						}
 						else
