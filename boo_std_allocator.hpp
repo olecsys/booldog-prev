@@ -5,6 +5,7 @@
 #endif
 #include <cstddef>
 #include <new>
+#include <limits>
 
 #ifndef BDOG_STD_NEW
 #define BDOG_STD_NEW(size) ::operator new(size, ::std::nothrow)
@@ -51,11 +52,7 @@ namespace booldog {
   typedef value_type& reference;                                                                   \
   typedef value_type const& const_reference;                                                       \
   typedef ::std::size_t size_type;                                                                 \
-  typedef ::std::ptrdiff_t difference_type;
-
-    template <typename T> struct max_allocations {
-      enum { value = static_cast< ::std::size_t>(-1) / sizeof(T) };
-    };
+  typedef ::std::ptrdiff_t difference_type;    
 
     template <typename T> class heap {
     public:
@@ -81,7 +78,7 @@ namespace booldog {
       void deallocate(pointer ptr, size_type /* count */) { BDOG_STD_DELETE(ptr); }
 
       // Max number of objects that can be allocated in one call
-      size_type max_size() const { return max_allocations<T>::value; }
+      size_type max_size() const { return (::std::numeric_limits<size_type>::max)() / sizeof(value_type); }
     };
 #define BDOG_STD_FORWARD_ALLOCATOR_TRAITS(C)                                                       \
   typedef typename C::value_type value_type;                                                       \
