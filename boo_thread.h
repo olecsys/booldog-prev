@@ -124,75 +124,70 @@ namespace booldog
 				thr->_onthreadstarted = onthreadstarted;
 				thr->_onthreadstopped = onthreadstopped;
 				thr->_onthreadprocedure = onthreadprocedure;
-#ifdef __WINDOWS__
+#ifdef __WINDOWS__				
 				thr->_handle = (HANDLE)_beginthreadex(0, (unsigned)stack_size, ::booldog::threading::thread::func, thr
 					, 0, 0);
-				if(thr->_handle == 0)
-				{
+				if(thr->_handle == 0)	{
 					res->seterrno();
-					goto goto_destroy;
+					::booldog::interlocked::exchange(&thr->_state, ::booldog::enums::threading::state_stop);
+					return false;
 				}
+				return true;
 #else
 				cpu_set_t cpus;
 				int numberOfProcessors = 0;
-				pthread_attr_t pthread_attr;		
+				pthread_attr_t pthread_attr;
 				int result = pthread_attr_init(&pthread_attr);		
-				if(result != 0)
-				{
+				if(result != 0)	{
 					res->setpthreaderror(result);
-					goto goto_destroy;
+					::booldog::interlocked::exchange(&thr->_state, ::booldog::enums::threading::state_stop);
+					return false;
 				}
-				if(stack_size != 0)
-				{
+				for(;;) {	
+					if(stack_size != 0)	{
 #ifdef PTHREAD_STACK_MIN
-					if(stack_size < PTHREAD_STACK_MIN)
-						stack_size = PTHREAD_STACK_MIN;
-					else
+						if(stack_size < PTHREAD_STACK_MIN)
+							stack_size = PTHREAD_STACK_MIN;
+						else
 #endif
-					{
-						long sz = sysconf(_SC_PAGESIZE);
-						if(stack_size % sz)
-							stack_size = sz * (stack_size / sz) + sz;
+						{
+							long sz = sysconf(_SC_PAGESIZE);
+							if(stack_size % sz)
+								stack_size = sz * (stack_size / sz) + sz;
+						}
+						result = pthread_attr_setstacksize(&pthread_attr, stack_size);							
+						if(result != 0)	{
+							res->setpthreaderror(result);							
+							break;
+						}
 					}
-					result = pthread_attr_setstacksize(&pthread_attr, stack_size);							
-					if(result != 0)
-					{
+					result = pthread_attr_setdetachstate(&pthread_attr, PTHREAD_CREATE_DETACHED);
+					if(result != 0)	{
 						res->setpthreaderror(result);
-						pthread_attr_destroy(&pthread_attr);
-						goto goto_destroy;
+						break;
 					}
-				}
-				result = pthread_attr_setdetachstate(&pthread_attr, PTHREAD_CREATE_DETACHED);
-				if(result != 0)
-				{
-					res->setpthreaderror(result);
+					numberOfProcessors = sysconf(_SC_NPROCESSORS_ONLN);
+					if(numberOfProcessors > BOO_THREAD_CPU_MAX)
+						numberOfProcessors = BOO_THREAD_CPU_MAX;
+					CPU_ZERO(&cpus);
+					for(int i = BOO_THREAD_CPU_MIN;i < numberOfProcessors; ++i)	{
+						if(i != BOO_THREAD_EXCLUDE_CPU) {
+							CPU_SET(i, &cpus);
+						}
+					}
+					pthread_attr_setaffinity_np(&pthread_attr, sizeof(cpu_set_t), &cpus);
+					result = pthread_create(&thr->_handle, &pthread_attr, func, (void*)thr);
+					if(result != 0)	{
+						res->setpthreaderror(result);					
+						break;
+					}
 					pthread_attr_destroy(&pthread_attr);
-					goto goto_destroy;
+					return true;
 				}
-				numberOfProcessors = sysconf(_SC_NPROCESSORS_ONLN);
-				if(numberOfProcessors > BOO_THREAD_CPU_MAX)
-					numberOfProcessors = BOO_THREAD_CPU_MAX;
-				CPU_ZERO(&cpus);
-				for(int i = BOO_THREAD_CPU_MIN;i < numberOfProcessors; ++i)
-				{
-					if(i != BOO_THREAD_EXCLUDE_CPU)
-						CPU_SET(i, &cpus);
-				}
-				pthread_attr_setaffinity_np(&pthread_attr, sizeof(cpu_set_t), &cpus);
-				result = pthread_create(&thr->_handle, &pthread_attr, func, (void*)thr);
-				if(result != 0)
-				{
-					res->setpthreaderror(result);
-					pthread_attr_destroy(&pthread_attr);
-					goto goto_destroy;
-				}
-#endif
-				goto goto_return;
-goto_destroy:
+				pthread_attr_destroy(&pthread_attr);
 				::booldog::interlocked::exchange(&thr->_state, ::booldog::enums::threading::state_stop);
 				return false;
-goto_return:
-				return true;
+#endif				
 			}
 			booinline static ::booldog::threading::thread* create(::booldog::result* pres, booldog::allocator* allocator
 				, size_t stack_size, ::booldog::events::typedefs::onthreadstarted onthreadstarted
